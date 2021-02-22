@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html class="bg-white">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>计算控件属性</title>
+        <link rel="stylesheet" href="../../../../dist/app.min.css">
+        <script type="text/javascript" src="../../../../dist/app.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+    </head>
+    <body>
+
+        <div class="container">
+
+            <div class="m-t">
+
+                <div class="form-group">
+                    <label class="control-label">控件名称 <span class="text-danger">*</span></label>
+                    <input type="text" id="itemName" name="name" placeholder="必填项" class="form-control input-sm">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">控件样式</label>
+                    
+                        <div class="input-group">
+                            <input id="itemWidth" name="width" class="form-control input-sm" type="text">
+                            <div class="input-group-addon">宽(px)</div>
+                        </div>
+
+                </div>
+
+                <div class="form-group">
+                
+                    <label class="control-label">计算公式</label>
+                    <a class="pull-right" title="计算控件说明" onclick="fnShowGuide();">帮助</a>
+                    <textarea id="itemValue" class="form-control"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">计算精度</label>
+                    <input id="itemPrec" name="prec" class="form-control input-inline input-sm" type="text" value="2">
+                    <span class="help-inline">默认保留小数点后2位</span>
+                </div>
+
+            </div>
+
+            <div id="tblwrap" style="display:none;">
+                <div class="page-header m-t-md">
+                    <h3>计算控件说明<span style="position:fixed;right:20px;"><a title="回到控件属性页" onclick="fnShowGuide();">关闭</a></span></h3>
+                </div>
+                <div>
+                    <blockquote>
+                        <p>在日常的工作中，填写表单时，经常会存在一些计算项目，比如金额的计算，比如天数的计算，使用计算控件可以简化人员操作，提高准确性。 </p>
+                        <p>以下举例说明计算控件的使用方法(以日历控件计算天数为例)：</p>
+                    </blockquote>
+                    <p>首先，先建立好需要参与计算的项目，如图建立好开始时间和结束时间这两个日历控件，当然了每个日历控件都有对应的输入框控件</p><br/><br/>
+                    <img src="helper/calc/calc1.jpg">
+                    <p>接下来点击计算控件按钮，新建一个计算控件，设定时需要输入计算公式，公式的规则就是四则运算规则，可以利用括号和加减乘除，公式的计算项目就是上面
+                        建立的单行输入框控件的名称，如图：</p><br/><br/>
+                    <img src="helper/calc/calc2.jpg" width="453px"><br/><br/>
+                    <p>上面日期差的实例实现的效果如图，而且<span  class="label label-important">计算控件的输入内容是不允许修改的。</span></p><br/><br/>
+                    <img src="helper/calc/calc3.jpg">
+                    <p>计算公式支持+ - * / ^和英文括号以及特定计算函数，例如：(数值1+数值2)*数值3-ABS(数值4)，其中数值1、数值2等为表单控件名称。 计算控件支持的函数计算如下： </p><br/><br/>
+                    <p>1、MAX(数值1,数值2,数值3...) 输出最大值,英文逗号分割； </p><br/><br/>
+                    <p>2、MIN(数值1,数值2,数值3...) 输出最小值,英文逗号分割； </p><br/><br/>
+                    <p>3、ABS(数值1) 输出绝对值；  </p><br/><br/>
+                    <p>4、AVG(数值1,数值2,数值3) 输出平均值； </p><br/><br/>
+                    <p>5、RMB(数值1) 输出人民币大写形式，数值范围0～9999999999.99； </p><br/><br/>
+                    <p>6、DAY(日期1-日期2) 输出时间差的整数天数； </p><br/><br/>
+                    <p>7、HOUR(日期1-日期2) 输出时间差的小时数； </p><br/><br/>
+                    <p>8、DATE(日期1-日期2) 输出时间差，形如：xx天xx小时xx分xx秒； </p><br/><br/>
+                    <p>9、LIST(列表控件名,第几列) 计算列表控件指定列的和；</p><br/><br/>
+                    <p>10、LISTS(列表控件名:第几列 + 列表控件名:第几列)；</p><br/><br/>
+                    
+                    <p>值得说明的是LIST函数，它可以读取列表控件某列数据的和，下面以实例说明一下： </p><br/><br/>
+                    <p>假如设计的列表控件如下图</p><br/><br/>
+                    <img src="helper/calc/calc4.jpg" width="453px"><br/><br/>
+                    <p>我们现在用计算控件将价格这一列的数据取出来，添加计算控件，公式书写如下：</p><br/><br/>
+                    <img src="helper/calc/calc5.jpg" width="453px"><br/><br/>
+                    <p>实现效果如下：</p><br/><br/>
+                    <p>LIST函数主要用于列表控件数据参与条件设置的情况。 </p><br/><br/>
+                    <span class="label label-important">注意：参与日期计算的控件必须为日期类型或者日期+时间类型。</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+        <script type="text/javascript">
+            var oNode = null;
+            var oListText;
+            window.onload = function() {
+                // 弹出窗口初始化函数，这里主要是判断是编辑下拉列表还是新增
+                if(UE.plugins['calc'].editdom) {
+                    oNode = UE.plugins['calc'].editdom;
+                    $G('itemName').value = oNode.getAttribute('title');
+                    $G('itemValue').value = oNode.getAttribute('value');
+                    var sPrec = oNode.getAttribute('prec') ;
+                    if( sPrec ) {
+                        $G('itemPrec').value = sPrec;
+                    }
+                     var sItemWidth = oNode.style.width;
+                    $G('itemWidth').value = sItemWidth.substr(0, sItemWidth.length - 2);
+                }
+            }
+            function fnShowGuide(){
+                $('#tblwrap').slideToggle().siblings().slideToggle();
+            }
+            dialog.oncancel = function () {
+                if( UE.plugins['calc'].editdom ) {
+                    delete UE.plugins['calc'].editdom;
+                }
+            };
+            dialog.onok = function (){
+                if( $G('itemName').value == '') {
+                    alert('控件名称不能为空');
+                    $('#itemName').focus();
+                    return false;
+                } else if( $G('itemValue').value == '' ) {
+                    alert('请添加计算公式');
+                    $('#itemValue').focus();
+                    return false;
+                }
+                //检查公式
+                if( $G('itemValue').value.indexOf("(")>=0 ) {
+                    var nNum1 = $G('itemValue').value.split("(").length - 1;
+                    var nNum2 = $G('itemValue').value.split(")").length - 1;
+                    if( nNum1!=nNum2 ) {
+                        alert("公式书写错误,请检查括号匹配！");
+                        return false;
+                    }
+                }
+                if( !oNode ) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {async:false,timeout:60000,onsuccess:function (xhr) {
+                            try {
+                                nItemId = xhr.responseText;
+                                oNode = document.createElement("input");
+                                oNode.setAttribute('name', 'data_' + nItemId);
+                                oNode.setAttribute('title', $G('itemName').value.replace("\"","&quot;") );
+                                oNode.setAttribute('class', 'calc');
+                                oNode.setAttribute('value',$.trim($G('itemValue').value));
+                                oNode.setAttribute('prec',$G('itemPrec').value);
+                                if( $G('itemWidth').value!="" ) {
+                                    oNode.style.width = $G('itemWidth').value + 'px';
+                                }
+                                editor.execCommand('insertHtml',oNode.outerHTML);
+                                return true ;
+                            } catch ( e ) {
+                                alert ( '插入控件出错，请联系OA管理员解决 ');
+                                return false;
+                            }
+                        },onerror:function() {
+                            alert('Request TimeOut');
+                        }});
+                } else {
+                    oNode.setAttribute('title', $G('itemName').value.replace("\"","&quot;"));
+                    oNode.setAttribute('value',$.trim($G('itemValue').value));
+                    oNode.setAttribute('prec',$G('itemPrec').value);
+                    if( $G('itemWidth').value!="" ){
+                        oNode.style.width = $G('itemWidth').value + 'px';
+                    }
+                    delete UE.plugins['calc'].editdom; //使用后清空这个对象，变回新增模式
+                }
+            };
+        </script>
+    </body>
+</html>

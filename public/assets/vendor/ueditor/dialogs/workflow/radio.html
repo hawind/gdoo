@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html class="bg-white">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>单选框属性</title>
+        <link rel="stylesheet" href="../../../../dist/app.min.css">
+        <script type="text/javascript" src="../../../../dist/app.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+        <script type="text/javascript" src="radio.js"></script>
+    </head>
+    <body>
+
+        <div class="container">
+
+            <div class="m-t">
+
+                <div class="form-group">
+                    <label class="control-label">控件名称 <span class="text-danger">*</span></label>
+                    <input type="text" id="txtName" name="name" placeholder="必填项" class="form-control input-sm">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">默认值</label>
+                    <div id="txtSelValue" class="form-control input-sm"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">单选项目</label>
+                    <select id="cmbText" class="form-control input-sm" multiple="multiple"></select>
+                </div>
+
+                <div class="form-group">
+
+                    <a title="新增" class="btn btn-sm btn-default" onclick="fnAdd();">新增</a>
+                    <a title="修改" class="btn btn-sm btn-default" onclick="fnModify();">修改</a>
+                    <input type="text" class="form-control input-inline input-sm" placeholder="输入单选框值" size="16" id="txtText">
+                    <a title="上移" class="btn btn-sm btn-default" onclick="fnMove(-1);">上移</a>
+                    <a title="下移" class="btn btn-sm btn-default" onclick="fnMove(1);">下移</a>
+                    <a title="设为初始化时选定值" class="btn btn-sm btn-default" onclick="fnSetSelectedValue();">默认</a>
+                    <a title="删除" class="btn btn-sm btn-default" onclick="fnDelete();">删除</a>
+                </div>
+
+            </div>
+        </div>
+        <script type="text/javascript">
+            var oNode = null;
+            var oListText;
+            window.onload = function() {
+                oListText	= $G('cmbText') ;
+                //弹出窗口初始化函数，这里主要是判断是编辑下拉列表还是新增
+                if( UE.plugins['radio'].editdom ){
+                    oNode = UE.plugins['radio'].editdom;
+                    $G('txtName').value = oNode.getAttribute('title');
+                    $G('txtSelValue').innerHTML = oNode.getAttribute('radio_check');
+                    var sDataField = oNode.getAttribute('radio_field');
+                    var aDataField = sDataField.split('`');
+                    var sLvCheck = oNode.getAttribute("radio_check");
+                    // Load the actual options
+                    for ( var i = 0 ; i < aDataField.length ; i++ ) {
+                        var sText = aDataField[i];
+                        if(aDataField[i] == "") {
+                            continue;
+                        }
+                        fnAddComboOption( oListText, sText, sText ) ;
+                    }
+                }
+            }
+            dialog.oncancel = function () {
+                if( UE.plugins['radio'].editdom ) {
+                    delete UE.plugins['radio'].editdom;
+                }
+            };
+            dialog.onok = function (){
+                if($G('txtName').value == '') {
+                    alert('控件名称不能为空');
+                    $G('txtName').focus();
+                    return false;
+                }
+                if( oListText.options.length == 0 ) {
+                    alert('请添加单选选项！');
+                    $G('txtText').focus();
+                    return false;
+                }
+                var sDataField = '',sLvCheck = '';
+                for ( var i = 0 ; i < oListText.options.length ; i++ ) {
+                    var sText	= oListText.options[i].value ;
+                    if ( sText.length == 0 ) sText = sText ;
+
+                    if ( sText == $G('txtSelValue').innerHTML ) {
+                        sLvCheck = sText;
+                    }
+                    if( sDataField.indexOf(sText+"`") != -1 && sText != "`") {
+                        alert("菜单项目'"+sText+"'重复");
+                        return false;
+                    }
+                    sDataField += sText+"`";
+                }
+                if(!oNode) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {async:false,timeout:60000,onsuccess:function(xhr) {
+                            try {
+                                nItemId = xhr.responseText;
+                                oNode = document.createElement("img");
+                                oNode.setAttribute('title',$G('txtName').value.replace("\"","&quot;"));
+                                oNode.setAttribute('name','data_' + nItemId);
+                                oNode.setAttribute('radio_field',sDataField);
+                                oNode.setAttribute('radio_check',sLvCheck);
+                                oNode.setAttribute('class','radio');
+                                oNode.setAttribute('src','./../../../../assets/images/icon-circle.png');
+                                editor.execCommand('insertHtml',oNode.outerHTML);
+                                return true;
+                            } catch (e) {
+                                alert ('插入控件出错，请联系管理员。');
+                                return false;
+                            }
+                        },onerror:function() {
+                            alert('Request TimeOut');
+                        }});
+                } else {
+                    oNode.setAttribute('title',$G('txtName').value.replace("\"","&quot;"));
+                    oNode.setAttribute('radio_field',sDataField);
+                    oNode.setAttribute('radio_check',sLvCheck);
+                    delete UE.plugins['radio'].editdom; //使用后清空这个对象，变回新增模式
+                    return true;
+                }
+            };
+        </script>
+    </body>
+</html>

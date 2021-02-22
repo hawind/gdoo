@@ -1,0 +1,122 @@
+
+
+input {
+    vertical-align: middle;
+}
+
+select,
+textarea,
+input.date,
+input.popDate,
+input.text,
+input.auto,
+input.calc,
+input.popDateTime,
+input.endDate,
+input.readonly,
+/*
+input.date,
+*/
+input.endDate,
+.measure-input,
+.input-text,
+.text-sort,
+.input-required,
+.input-focus {
+    vertical-align: middle;
+    display: inline-block;
+    outline: none;
+    color: #333;
+    height: 28px;
+    margin-right: 5px;
+    padding: 0 5px;
+    line-height: 26px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.form-control.input-xs {
+    margin: 0;
+    margin-right: 3px;
+    font-size: 12px;
+    padding:0 3px;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.select-group div.input-sm {
+    height: 30px;
+    min-height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+select {
+    text-align: left;
+    height: 28px;
+    margin: 0;
+    padding: 4px 2px;
+}
+
+/*
+input.date,
+*/
+input.popDateTime,
+input.popDate,
+input.endDate {
+    cursor: pointer;
+    background: #fff url(../images/input_date.png) no-repeat right 5px;
+}
+
+input.inpit-dialog {
+    background: #fff url(../images/combo_arrow.png) no-repeat right 5px;
+}
+
+input.text-sort {
+    color: #666;
+    width: 30px;
+}
+
+textarea.input-text {
+    height: auto;
+    padding: 0 3px;
+    margin: 0;
+}
+
+select[disabled],
+select.readonly,
+input.readonly,
+textarea.readonly {
+    cursor: not-allowed;
+    background-color: #eee;
+}
+
+.input-required {
+    background-color: #fdf9e8;
+    box-shadow: inset 0px 1px 3px #efe7c7;
+    -webkit-box-shadow: inset 0px 1px 3px #efe7c7;
+    -moz-box-shadow: inset 0px 1px 3px #efe7c7;
+    border: 1px solid #d0d0d0;
+}
+
+.input-text:focus,
+.input-required:focus
+{
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+input[type=radio] {
+    margin-top:0;
+}

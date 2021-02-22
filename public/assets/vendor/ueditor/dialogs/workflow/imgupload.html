@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html class="bg-white">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>图片上传控件</title>
+        <link rel="stylesheet" href="../../../../css/app.min.css">
+        <script type="text/javascript" src="../../../../js/app.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+
+    </head>
+    <body>
+
+        <div class="container">
+
+        <div class="m-t">
+
+            <div class="form-group">
+                <label class="control-label">控件名称 <span class="text-danger">*</span></label>
+                <input type="text" id="itemName" name="name" placeholder="必填项" class="form-control input-sm">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">控件样式</label>
+                
+                <div class="row">
+
+                    <div class="col-xs-6">
+                        <div class="input-group">
+                            <div class="input-group-addon">宽</div>
+                            <input id="imgSize" name="width" class="form-control input-sm" type="text" value="100">
+                            <div class="input-group-addon">px</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <div class="input-group">
+                            <div class="input-group-addon">高</div>
+                            <input id="imgHeight" name="height" class="form-control input-sm" type="text" value="100">
+                            <div class="input-group-addon">px</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+        <script type="text/javascript">
+            var oNode = null;
+            window.onload = function() {
+                //弹出窗口初始化函数，这里主要是判断是编辑下拉列表还是新增
+                if( UE.plugins['imgupload'].editdom ){
+                    oNode = UE.plugins['imgupload'].editdom;
+                    $G('itemName').value = oNode.getAttribute('title');
+                    var sImgSize = oNode.style.width;
+                    $G('imgSize').value = sImgSize.substr(0, sImgSize.length - 2);//这里的substr是为了去掉末尾的'px'
+                    var sImgHeight = oNode.style.height;
+                    $G('imgHeight').value = sImgHeight.substr(0, sImgHeight.length - 2);
+                }
+            }
+            dialog.oncancel = function () {
+                if( UE.plugins['imgupload'].editdom ) {
+                    delete UE.plugins['imgupload'].editdom;
+                }
+            };
+            dialog.onok = function (){
+                if( $G('itemName').value == '') {
+                    alert('控件名称不能为空');
+                    $G('itemName').focus();
+                    return false;
+                }
+                if( !oNode ) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {async:false,timeout:60000,onsuccess:function (xhr) {
+                            try {
+                                nItemId = xhr.responseText;
+                                oNode = document.createElement("img");
+                                oNode.setAttribute('title',$G('itemName').value.replace("\"","&quot;"));
+                                oNode.setAttribute('name','data_' + nItemId);
+                                if( $G('imgSize').value !="" ){
+                                    oNode.style.width = $G('imgSize').value + 'px';
+                                }
+                                if( $G('imgHeight').value != "" ) {
+                                    oNode.style.height = $G('imgHeight').value + 'px';
+                                }
+                                var sImgWidth = $G('imgSize').value;
+                                if ( sImgWidth == '' ) {
+                                    sImgWidth = '100';
+                                }
+                                var sImgHeight = $G('imgHeight').value;
+                                if ( sImgHeight == '' ) {
+                                    sImgHeight = '100';
+                                }
+                                oNode.setAttribute('class','imgupload');
+                                oNode.setAttribute('src','./../../../../images/icon/icon-picture.png');
+                                oNode.setAttribute('img_width',sImgWidth);
+                                oNode.setAttribute('img_height',sImgHeight);
+                                editor.execCommand('insertHtml',oNode.outerHTML);
+                                return true;
+                            } catch (e) {
+                                alert('插入控件出错，请联系OA管理员解决');
+                                return false;
+                            }
+                        },onerror:function() {
+                            alert('Request TimeOut');
+                        }});
+                } else {
+                    oNode.setAttribute('title',$G('itemName').value.replace("\"","&quot;"));
+                    var sImgWidth = $G('imgSize').value;
+                    if ( sImgWidth == '' ) {
+                        sImgWidth = '100';
+                    }
+                    var sImgHeight = $G('imgHeight').value;
+                    if ( sImgHeight == '' ) {
+                        sImgHeight = '100';
+                    }
+                    if( $G('imgSize').value!="" ){
+                        oNode.style.width = $G('imgSize').value + 'px';
+                    }
+                    if( $G('imgHeight').value!="" ) {
+                        oNode.style.height = $G('imgHeight').value + 'px';
+                    }
+                    oNode.setAttribute('img_width',sImgWidth);
+                    oNode.setAttribute('img_height',sImgHeight);
+                    delete UE.plugins['imgupload'].editdom; //使用后清空这个对象，变回新增模式
+                    return true;
+                }
+            };
+        </script>
+    </body>
+</html>

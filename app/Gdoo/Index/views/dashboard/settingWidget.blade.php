@@ -1,0 +1,53 @@
+<form method="post" id="setting-widget" name="setting_widget">
+    <table class="table table-form m-b-none">
+        <tr>
+            <td align="right">名称</td>
+            <td align="left">
+                <input type="text" autocomplete="off" class="form-control input-sm" readonly="readonly" value="{{$row['widget_name']}}">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">显示名称</td>
+            <td align="left">
+                <input type="text" autocomplete="off" class="form-control input-sm" id="name" name="name" value="{{$row['name']}}">
+            </td>
+        </tr>
+        <!--
+        <tr>
+            <td align="right">图标</td>
+            <td align="left">
+                <div class="input-group">
+                    <span class="input-group-addon" id="icon-picker"></span>
+                    <input data-placement="bottomLeft" type="text" autocomplete="off" class="form-control icp icp-auto input-sm" id="icon" name="icon">
+                </div>
+            </td>
+        </tr>
+        -->
+        <tr>
+            <td align="right">背景颜色</td>
+            <td align="left">
+                <div class="colorpicker-controller" title="选择颜色">
+                    <div id="color-picker" class="colorpicker"></div>
+                </div>
+                <input type="hidden" id="color" name="color">
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    $(function() {
+        $('#icon').iconpicker();
+        $("#color-picker").colorpicker({
+            fillcolor: true,
+            target: "#color",
+            change: function(obj, color) {
+                $(obj).css({'background-color': color});
+                $('#color').val(color);
+            },
+            reset: function(obj, color) {
+                $(obj).css({'background-color': color});
+                $('#color').val(color);
+            }
+        });
+    });
+</script>

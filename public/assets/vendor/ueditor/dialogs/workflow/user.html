@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html class="bg-white">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>部门人员控件属性</title>
+        <link rel="stylesheet" href="../../../../dist/app.min.css">
+        <script type="text/javascript" src="../../../../dist/app.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+    </head>
+    <body>
+
+        <div class="container">
+
+        <div class="m-t">
+
+            <div class="form-group">
+                <label class="control-label">控件名称 <span class="text-danger">*</span></label>
+                <input type="text" id="itemName" name="name" placeholder="必填项" class="form-control input-sm">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">类型</label>
+                <select class="form-control input-sm" id="selectType">
+                    <option value="user" selected>选择人员</option>
+                    <option value="role">选择角色</option>
+                    <option value="department">选择部门</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">控件样式</label>
+                <div class="input-group">
+                    <div class="input-group-addon">宽</div>
+                    <input id="txtWidth" name="width" class="form-control input-sm" type="text" value="150">
+                    <div class="input-group-addon">px</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><input id="issingle" name="issingle" type="checkbox"> 单选</label>
+            </div>
+
+        </div>
+    </div>
+
+        <script type="text/javascript">
+            var oNode = null;
+            window.onload = function() {
+                //弹出窗口初始化函数，这里主要是判断是编辑下拉列表还是新增
+                if( UE.plugins['user'].editdom ){
+                    oNode = UE.plugins['user'].editdom;
+                    $G('itemName').value = oNode.getAttribute('title');
+                    $G('selectType').value = oNode.getAttribute('selecttype');
+                    if(oNode.getAttribute('single')=='true') {
+                        $G('issingle').checked = true;
+                    }
+                    var sWidth = oNode.style.width;
+                    $G('txtWidth').value = sWidth.substr(0, sWidth.length - 2);//这里的substr是为了去掉末尾的'px'
+                    var sHeight = oNode.style.height;
+                    $G('txtHeight').value = sHeight.substr(0, sHeight.length - 2);
+                }
+            }
+            dialog.oncancel = function () {
+                if( UE.plugins['user'].editdom ) {
+                    delete UE.plugins['user'].editdom;
+                }
+            };
+            dialog.onok = function (){
+                if( $G('itemName').value == '') {
+                    alert('控件名称不能为空');
+                    $G('itemName').focus();
+                    return false;
+                }
+                if( !oNode ) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {async:false,timeout:60000,onsuccess:function (xhr) {
+                            try {
+                                nItemId = xhr.responseText;
+                                oNode = document.createElement('input');
+                                oNode.setAttribute('name','data_' + nItemId);
+                                oNode.setAttribute('class','user');
+                                oNode.setAttribute('title',$G('itemName').value.replace("\"","&quot;"));
+                                oNode.setAttribute('selecttype',$G('selectType').value);
+                                if( $G('txtWidth').value!=''){
+                                    oNode.style.width = $G('txtWidth').value + 'px';
+                                    oNode.setAttribute('user_width',$G('txtWidth').value);
+                                } else {
+                                    oNode.style.width = '148px';
+                                    oNode.setAttribute('user_width','148');
+                                }
+                                if( $G('txtHeight').value!='') {
+                                    oNode.style.height = $G('txtHeight').value + 'px';
+                                    oNode.setAttribute('user_height',$G('txtHeight').value);
+                                } else {
+                                    oNode.style.height = '25px';
+                                    oNode.setAttribute('user_height','25');
+                                }
+                                if($G('issingle').checked == true) {
+                                    oNode.setAttribute('single','true');
+                                } else {
+                                    oNode.setAttribute('single','false');
+                                }
+                                editor.execCommand('insertHtml',oNode.outerHTML);
+                                return true;
+                            } catch (e) {
+                                alert ( '插入控件出错，请联系OA管理员解决 ');
+                                return false;
+                            }
+                        },
+                        error:function () {
+                            alert('Request TimeOut');
+                            return false;
+                        }
+                    })
+                } else {
+                    if( $G('txtWidth').value!=''){
+                        oNode.style.width = $G('txtWidth').value + 'px';
+                        oNode.setAttribute('user_width',$G('txtWidth').value);
+                    } else {
+                        oNode.style.width = '148px';
+                        oNode.setAttribute('user_width','148');
+                    }
+                    if( $G('txtHeight').value!=''){
+                        oNode.style.height = $G('txtHeight').value + 'px';
+                        oNode.setAttribute('user_height',$G('txtHeight').value);
+                    } else {
+                        oNode.style.height = '25px';
+                        oNode.setAttribute('user_height','25');
+                    }
+                    if($G('issingle').checked==true){
+                        oNode.setAttribute('single','true');
+                    } else {
+                        oNode.setAttribute('single','false');
+                    }
+                    oNode.setAttribute('title',$G('itemName').value.replace("\"","&quot;"));
+                    oNode.setAttribute('selecttype',$G('selectType').value);
+                    delete UE.plugins['user'].editdom; //使用后清空这个对象，变回新增模式
+                }
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html class="bg-white">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>下拉菜单属性</title>
+        <link rel="stylesheet" href="../../../../dist/app.min.css">
+        <script type="text/javascript" src="../../../../dist/app.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+        <script type="text/javascript" src="listmenu.js"></script>
+    </head>
+
+    <body>
+
+        <div class="container">
+
+            <div class="m-t">
+
+                <div class="form-group">
+                    <label class="control-label">控件名称 <span class="text-danger">*</span></label>
+                    <input type="text" id="listName" placeholder="必填项" name="name" class="form-control input-sm">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">控件样式</label>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="input-group">
+                                <div class="input-group-addon">宽</div>
+                                <input id="listWidth" name="width" class="form-control input-sm" type="text">
+                                <div class="input-group-addon">px</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="input-group">
+                                <div class="input-group-addon">高</div>
+                                <input id="listLines" name="height" class="form-control input-sm" type="text">
+                                <div class="input-group-addon">行</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">默认值</label>
+                    <div id="listSelValue" class="form-control input-sm"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">下拉选项 <span class="text-danger">*</span></label>
+                     <select id="cmbText" class="form-control input-sm" multiple="multiple"></select>
+                </div>
+
+                <div class="form-group">
+                    <a onclick="fnAdd();" title="新增" class="btn btn-sm btn-default">新增</a>
+                    <a onclick="fnModify();" title="修改" class="btn btn-sm btn-default">修改</a>
+                    <input class="form-control input-inline input-sm" type="text" placeholder="输入列表值" size="16" id="listText">
+                    <a onclick="fnMove(-1);" title="上移" class="btn btn-sm btn-default">上移</a>
+                    <a onclick="fnMove(1);" title="下移" class="btn btn-sm btn-default">下移</a>
+                    <a onclick="fnSetSelectedValue();" title="设为初始化时选定值" class="btn btn-sm btn-default">默认</a>
+                    <a onclick="fnDelete();" title="删除" class="btn btn-sm btn-default">删除</a>
+                </div>
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var oNode = null;
+            var oListText;
+            window.onload = function()
+            {
+                oListText = $G('cmbText');
+                oListText.style.width = oListText.offsetWidth;
+                //弹出窗口初始化函数，这里主要是判断是编辑下拉列表还是新增
+                if(UE.plugins['listmenu'].editdom) 
+                {
+                    oNode = UE.plugins['listmenu'].editdom;
+                    $G('listName').value = oNode.getAttribute('title');
+                    $G('listSelValue').innerHTML = oNode.value;
+                    $G('listLines').value = oNode.getAttribute('size');
+
+                    /*
+                    if (oNode.getAttribute('child') == null) {
+                        $G('listChild').value = '';
+                    } else {
+                        $G('listChild').value = oNode.getAttribute('child');
+                    }
+                    */
+
+                    var sWidthFull = oNode.style.width;
+                    $G('listWidth').value = sWidthFull.substr(0, sWidthFull.length - 2);//这里的substr是为了去掉末尾的'px'
+                    for(var i = 0 ; i < oNode.options.length; i++) {
+                        var sText = oNode.options[i].value;
+                        fnAddComboOption(oListText, sText, sText);
+                    }
+                }
+            }
+            dialog.oncancel = function() {
+                if(UE.plugins['listmenu'].editdom) {
+                    delete UE.plugins['listmenu'].editdom;
+                }
+            };
+            dialog.onok = function() {
+                if($G('listName').value == '') {
+                    alert('控件名称不能为空');
+                    $('#listName').focus();
+                    return false;
+                }
+                if(oListText.options.length == 0) {
+                    alert('请添加下拉菜单选项！');
+                    $('#listText').focus();
+                    return false;
+                }
+                var sSize = $G('listLines').value;
+                if (sSize == null || isNaN(sSize) || sSize <= 1) {
+                    sSize = '';
+                }
+                if(!oNode) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {async:false, timeout:60000, onsuccess:function(xhr) {
+                        try {
+
+                            nItemId = xhr.responseText;
+                            oNode = document.createElement("select");
+                            oNode.setAttribute('title',$G('listName').value);
+                            oNode.setAttribute('name','data_' + nItemId);
+                            oNode.setAttribute('class','select');
+                            //oNode.setAttribute('child', $G('listChild').value);
+                            oNode.setAttribute('size',sSize);
+
+                            if ($G('listWidth').value != '')
+                            {
+                                oNode.style.width = $G('listWidth').value+ 'px';
+                                //oNode.setAttribute('style','width:'+ $G('listWidth').value + 'px;');
+                            }
+                            var selectField = [];
+                            // Add all available options.
+                            for (var i = 0 ; i < oListText.options.length; i++) {
+                                var sText = oListText.options[i].value;
+                                if (sText.length == 0) {
+                                    sText = sText;
+                                }
+                                var oOption = fnAddComboOption(oNode, sText, sText);
+                                if (sText == $G('listSelValue').innerHTML) {
+                                    fnSetAttribute(oOption, 'selected', 'selected');
+                                    oOption.selected = true;
+                                }
+                                selectField.push(sText);
+                            }
+                            oNode.setAttribute('radio_field',selectField.join('`'));
+                            editor.execCommand('insertHtml',oNode.outerHTML);
+                            return true;
+                        } catch (e) {
+                            alert('插入控件出错，请联系管理员。');
+                            return false;
+                        }
+                    },onerror:function() {
+                        alert('Request TimeOut');
+                    }});
+
+                } else {
+                    oNode.setAttribute('title', $G('listName').value);
+                    //oNode.setAttribute('child', $G('listChild').value);
+                    oNode.setAttribute('size',sSize);
+                    if ($G('listWidth').value != '') {
+                        oNode.style.width =  $G('listWidth').value+ 'px';
+                    }
+                    // Remove all options.
+                    while (oNode.options.length > 0) {
+                        oNode.remove(0);
+                    }
+                    var selectField = [];
+                    for (var i = 0; i < $G('cmbText').options.length; i++) {
+                        var sText = $G('cmbText').options[i].value;
+                        if (sText.length == 0) {
+                            sText = sText ;
+                        }
+                        var oOption = fnAddComboOption(oNode, sText, sText);
+                        if (sText == $G('listSelValue').innerHTML) {
+                            fnSetAttribute(oOption, 'selected', 'selected');
+                            oOption.selected = true;
+                        }
+                        selectField.push(sText);
+                    }
+                    oNode.setAttribute('radio_field',selectField.join('`'));
+                    delete UE.plugins['listmenu'].editdom; //使用后清空这个对象，变回新增模式
+                }
+            };
+        </script>
+    </body>
+</html>

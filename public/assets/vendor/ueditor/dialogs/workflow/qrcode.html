@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="bg-white">
+    <head>
+        <meta charset="utf-8">
+        <title>二维码控件</title>
+
+        <link rel="stylesheet" href="../../../../css/app.css">
+        <script type="text/javascript" src="../../../../js/app.js"></script>
+        <script type="text/javascript" src="../../../../vendor/jquery.qrcode.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+
+    </head>
+    <body>
+
+        <div class="container">
+
+        <div class="m-t">
+
+                <div class="form-group">
+                    <label for="control-label">控件名称</label>
+                    <input class="form-control input-sm" type="text" id="qrcode_title">
+                </div>
+
+                <div class="form-group">
+
+                    <div role="tabpanel">
+
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#qrcode_type_text" aria-controls="qrcode_type_text" role="tab" data-toggle="tab">文本</a></li>
+                            <li role="presentation"><a href="#qrcode_type_tel" aria-controls="qrcode_type_tel" role="tab" data-toggle="tab">电话</a></li>
+                            <li role="presentation"><a href="#qrcode_type_sms" aria-controls="qrcode_type_sms" role="tab" data-toggle="tab">短信</a></li>
+                            <li role="presentation"><a href="#qrcode_type_mecard" aria-controls="qrcode_type_mecard" role="tab" data-toggle="tab">名片</a></li>
+                            <li role="presentation"><a href="#qrcode_type_wifi" aria-controls="qrcode_type_wifi" role="tab" data-toggle="tab">WIFI</a></li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+
+                            <div role="tabpanel" id="qrcode_type_text" class="tab-pane active">
+
+                                <div class="wrapper">
+                                    <textarea class="form-control" id="qrcode_text" rows="5" data-type="text"></textarea>
+                                    <p class="qrcode-tip">推荐140字以内，手机摄像头更容易辨识。</p>
+                                </div>
+                            </div>
+
+                            <div role="tabpanel" id="qrcode_type_tel" class="tab-pane">
+                                <label for="qrcode_tel">电话号码</label>
+                                <input type="text" data-type="tel" id="qrcode_tel">
+                            </div>
+
+                            <div role="tabpanel" id="qrcode_type_sms" class="tab-pane">
+                                <label for="qrcode_sms_tel">电话号码</label>
+                                <div><input type="text" id="qrcode_sms_tel" data-type="sms"></div>
+                                <label for="qrcode_sms_content">短信内容</label>
+                                <div><textarea id="qrcode_sms_content" data-type="sms" rows="3"></textarea></div>
+                            </div>
+
+                            <div role="tabpanel" id="qrcode_type_mecard" class="tab-pane mecard">
+                                <div class="row">
+                                    <div class="span6 mbs">
+                                        <label>姓名</label>
+                                        <input type="text" data-type="mecard" id="qrcode_mecard_n">
+                                    </div>
+                                    <div class="span6 mbs">
+                                        <label>电话</label>
+                                        <input type="text" data-type="mecard" id="qrcode_mecard_tel">
+                                    </div>
+                                    <div class="span6 mbs">
+                                        <label>公司</label>
+                                        <input type="text" data-type="mecard" id="qrcode_mecard_org">
+                                    </div>
+                                    <div class="span6 mbs">
+                                        <label>职位</label>
+                                        <input type="text" data-type="mecard" id="qrcode_mecard_til">
+                                    </div>
+                                </div>
+                                <div class="mbs">
+                                    <label>邮箱</label>
+                                    <input type="text" data-type="mecard" id="qrcode_mecard_email">
+                                </div>
+                                <div>                       
+                                    <label>地址</label>
+                                    <input type="text" data-type="mecard" id="qrcode_mecard_adr">
+                                </div>
+                            </div>
+
+                            <div role="tabpanel" id="qrcode_type_wifi" class="tab-pane">
+                                <div class="mbs">
+                                    <label>SSID</label>
+                                    <input type="text" data-type="wifi" id="qrcode_wifi_s">
+                                </div>
+                                <div class="mbs">
+                                    <label>密码</label>
+                                    <input type="text" data-type="wifi" id="qrcode_wifi_p">
+                                </div>
+                                <div class="mbs">
+                                    <label>加密类型</label>
+                                    <select data-type="wifi" id="qrcode_wifi_t">
+                                        <option value="WPA">WPA/WPA2</option>
+                                        <option value="WEP">WEP</option>
+                                        <option value="nopass">无密码</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <div class="qrcode-preview">
+                        <div>                       
+                            <img src="qrcode.png">
+                            <p>二维码尺寸</p>
+                        </div>
+                        <div id="qrcode_preview">
+                    </div>
+                    </div>
+                    <div class="qrcode-size">
+                        <div class="qrcode-size-title">二维码尺寸</div>
+                        <label class="radio"><input type="radio" name="size" value="0"><var id="lang_small"></var></label>
+                        <label class="radio"><input type="radio" name="size" value="1" checked><var id="lang_medium"></var></label>
+                        <label class="radio"><input type="radio" name="size" value="2"><var id="lang_large"></var></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!--
+        <table class="table table-striped table-bordered" style="margin-top:18px;margin-bottom: 0;">
+            <tr>
+                <th><span>控件名称</span><span class="label label-important">*</span></th>
+                <th><span>保存字段(用,号分隔)</span></th>
+            </tr>
+            <tr>
+                <td>
+                    <input id="itemName" placeholder="必填项" type="text" size="20" />
+                </td>
+                <td>
+                    <input id="itemList" type="text" size="20" title="二维码只支持少量中文，不要加入大量文本控件及图片控件" />
+                </td>
+            </tr>
+        </table>
+        -->
+
+        <script>
+            /*
+            var G = parent.G;
+            (function() {
+                var Qr = {
+                    // 获取二维码尺寸
+                    getSize: function(){
+                        var radios = document.getElementsByName("size");
+                        for(var i = 0, len = radios.length; i < len; i++) {
+                            if(radios[i].checked) {
+                                return radios[i].value;
+                            }
+                        }
+                    },
+                    // 设置二维码尺寸
+                    setSize: function(value){
+                        var radios = document.getElementsByName("size");
+                        for(var i = 0, len = radios.length; i < len; i++) {
+                            if(radios[i].value === value){
+                                radios[i].checked = true;
+                                break;
+                            }
+                        }
+                    },
+                    // 获取类型
+                    getType: function(){
+                        return $("#qrcode_type").find(".active").attr("data-value");
+                    },
+                    setType: function(type){
+                        $("#qrcode_type").find("a").each(function(){
+                            if($.attr(this, "data-value") === type) {
+                                $(this).button("toggle").tab("show");
+                                return false;
+                            }
+                        })
+                    },
+                    getValue: function() {
+                        var value = "",
+                            type = this.getType(),
+                            objToStr = function(obj) {
+                                var str = "";
+                                for(var i in obj) {
+                                    if(obj.hasOwnProperty(i) && obj[i] !== "") {
+                                        str += i + ":" + obj[i] + ";"
+                                    }
+                                }
+                                return str;
+                            }
+                        switch (type) {
+                            case 'text':
+                                value = $G('qrcode_text').value;
+                                break;
+                            case 'tel':
+                                var tel = $.trim($G('qrcode_tel').value);
+                                value = tel ? "tel:" + tel : tel;
+                                break;
+                            case 'sms':
+                                var smsTel = $.trim($G('qrcode_sms_tel').value),
+                                    smsContent = $.trim($G('qrcode_sms_content').value);
+                                value = (smsTel && smsContent) ? ( "smsto:" + smsTel + ":" + smsContent) : "";
+                                break;
+                            case 'mecard':
+                                var data = {
+                                    N: $.trim($G('qrcode_mecard_n').value),
+                                    ORG: $.trim($G('qrcode_mecard_org').value),
+                                    TIL: $.trim($G('qrcode_mecard_til').value),
+                                    TEL: $.trim($G('qrcode_mecard_tel').value),
+                                    EMAIL: $.trim($G('qrcode_mecard_email').value),
+                                    ADR: $.trim($G('qrcode_mecard_adr').value)
+                                }
+                                if(data.N && data.TEL) {
+                                    value = "MECARD:" + objToStr(data);
+                                }
+                                break;
+                            case 'wifi':
+                                var t = $G('qrcode_wifi_t').value;
+                                    p = t === "nopass" ? "" : $G('qrcode_wifi_p').value;
+                                var data = {
+                                    S: $.trim($G('qrcode_wifi_s').value),
+                                    T: $.trim(t),
+                                    P: p
+                                }
+                                if(data.S) {
+                                    value = "WIFI:" + objToStr(data);
+                                }
+                                break;
+                        }
+                        return value
+                    },
+                    setValue: function(type, value){
+                        var reg, result;
+                        if(!value){ 
+                            return false;
+                        }
+                        switch (type) {
+                            case 'text':
+                                $G('qrcode_text').value = value;
+                                break;
+                            case 'tel':
+                                reg = /tel:(.*)/
+                                $G('qrcode_tel').value = reg.exec(value)[1];
+                                break;
+                            case 'sms':
+                                reg = /smsto:(.*):(.*)/;
+                                result = reg.exec(value);
+                                $G('qrcode_sms_tel').value = result[1];
+                                $G('qrcode_sms_content').value = result[2];
+                                break;
+                            case 'mecard':
+                                reg = /MECARD:(.*);/;
+                                result = reg.exec(value)[1].split(";");
+                                var data = {};
+                                for(var i = 0; i < result.length; i++) {
+                                    if(result[i]){
+                                        var kv = result[i].split(":");
+                                        data[kv[0]] = kv[1];
+                                    }
+                                }
+                                $G('qrcode_mecard_n').value = data.N;
+                                $G('qrcode_mecard_tel').value = data.TEL;
+                                $G('qrcode_mecard_org').value = data.ORG || "";
+                                $G('qrcode_mecard_til').value = data.TIL || "";
+                                $G('qrcode_mecard_email').value = data.EMAIL || "";
+                                $G('qrcode_mecard_adr').value = data.ADR || "";
+
+                                break;
+                            case 'wifi':
+                                reg = /WIFI:(.*)/
+                                result = reg.exec(value)[1].split(";");
+                                var data = {};
+                                for(var i = 0; i < result.length; i++) {
+                                    if(result[i]){
+                                        var kv = result[i].split(":");
+                                        data[kv[0]] = kv[1];
+                                    }
+                                }
+                                $G('qrcode_wifi_s').value = data.S;
+                                $G('qrcode_wifi_t').value = data.T;
+                                $G('qrcode_wifi_p').value = data.P || "";
+                                break;
+                        }
+                        return value
+                    },
+                    createPreview: function(text) {
+                        var $container = $("#qrcode_preview");
+                        text = Ibos.string.utf16to8(text);
+                        if($.trim(text) !== ""){
+                            $container.empty().qrcode({
+                                text: text,
+                                width: 148,
+                                height: 148,
+                                render: ($.browser.msie && +$.browser.version < 9) ? 'table': 'canvas'
+                            }).prev().hide();
+                        } else {
+                            $container.empty().prev().show();
+                        }
+                    }
+                }
+
+
+                var tpl = '<ic data-id="<%=id%>" data-title="<%=title%>" data-type="qrcode" data-qrcode-type="<%=qrcodeType%>" data-value="<%=value%>" data-qrcode-size="<%=qrcodeSize%>" contenteditable="false">' +
+                        '<span class="fake-qrcode"><input type="hidden" /></span></ic>',
+                    fc = new Fc(editor, tpl),
+                    editing = UE.plugins['formcontrols'].editing,
+                    oldData;
+
+                if (editing) {
+                    oldData = fc.getControlData(editing);
+                    $G("qrcode_title").value = oldData.title;
+                    Qr.setType(oldData.qrcodeType + "");
+                    Qr.setSize(oldData.qrcodeSize + "");
+                    Qr.setValue(oldData.qrcodeType, oldData.value);
+                }
+
+
+                dialog.onok = function() {
+                    var data,
+                        title = $G("qrcode_title").value,
+                        value = Qr.getValue();
+
+                    if ($.trim(title) === "") {
+                        alert(editor.getLang("fc.noNameTip"));
+                        return false;
+                    }
+                    if ($.trim(value) === "") {
+                        alert(editor.getLang("icqrcode.noValueTip"));
+                        return false;
+                    }
+
+                    data = {
+                        title: title,
+                        value: value,
+                        qrcodeType: Qr.getType(),
+                        qrcodeSize: Qr.getSize()
+                    };
+                    // 标签名不能为空且不能重复，提示或自动改名
+                    if (editing) {
+                        data.id = oldData.id;
+                        fc.updateContorl(editing, data);
+                        delete UE.plugins['formcontrols'].editing
+                        dialog.close();
+                    } else {
+                        $('body').waitingC();
+                        $.get(Ibos.app.url('workflow/api/getNextItemID', {id: parent.Ibos.app.g('formid')}), function(res) {
+                            $('body').stopWaiting();
+                            if (res.isSuccess) {
+                                data.id = res.id;
+                                fc.addControl(data);
+                                dialog.close();
+                            } else {
+                                alert(editor.getLang("fc.addError"));
+                            }
+                        }, 'json');
+                    }
+                    return false;
+                };
+
+
+                var timer,
+                    delayQrcodeCreate = function(){
+                        clearTimeout(timer);
+                        timer = setTimeout(function() {
+                            Qr.createPreview(Qr.getValue());
+                        }, 500);
+                    }
+                $("#qrcode_field").on("keyup", "input[type='text'], textarea", delayQrcodeCreate)
+                .on("change", "select", delayQrcodeCreate);
+                $("#qrcode_type").on("click", ">a", delayQrcodeCreate);
+
+                Qr.createPreview(Qr.getValue());
+            })();
+            */
+        </script>
+
+
+        <script type="text/javascript">
+            var oNode = null;
+            window.onload = function() {
+                //弹出窗口初始化函数，这里主要是判断是编辑下拉列表还是新增
+                if( UE.plugins['qrcode'].editdom ){
+                    oNode = UE.plugins['qrcode'].editdom;
+                    $G('itemName').value = oNode.getAttribute('value');
+                    $G('itemList').value = oNode.getAttribute('datafld');
+                }
+            }
+            dialog.oncancel = function () {
+                if( UE.plugins['qrcode'].editdom ) {
+                    delete UE.plugins['qrcode'].editdom;
+                }
+            };
+            dialog.onok = function (){
+                if( $G('itemName').value == '') {
+                    alert('控件名称不能为空');
+                    $G('itemName').focus();
+                    return false;
+                }
+                if( !oNode ) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {timeout:60000,onsuccess:function (xhr) {
+                            try {
+                                nItemId = xhr.responseText;
+                                oNode = document.createElement("img");
+                                oNode.setAttribute('title','二维码控件:' + $G('itemName').value.replace("\"","&quot;"));
+                                oNode.setAttribute('name','data_' + nItemId);
+                                oNode.setAttribute('value',$G('itemName').value.replace("\"","&quot;"));
+                                oNode.setAttribute('class','qrcode');
+                                oNode.setAttribute('datafld',$G('itemList').value);
+                                oNode.setAttribute('className','qrcode');
+                                oNode.setAttribute('src','./static/image/form/qrcode.gif');
+                                editor.execCommand('insertHtml',oNode.outerHTML);
+                                return true ;
+                            } catch ( e ) {
+                                alert ( '插入控件出错，请联系OA管理员解决 ');
+                                return false;
+                            }
+                        },onerror:function() {
+                            alert('Request TimeOut');
+                        }});
+                } else {
+                    oNode.setAttribute('value',$G('itemName').value.replace("\"","&quot;"));
+                    oNode.setAttribute('title','二维码控件:' + $G('itemName').value.replace("\"","&quot;"));
+                    oNode.setAttribute('datafld',$G('itemList').value);
+                    delete UE.plugins['qrcode'].editdom; //使用后清空这个对象，变回新增模式
+                    return true;
+                }
+            };
+        </script>
+    </body>
+</html>

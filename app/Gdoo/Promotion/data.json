@@ -1,0 +1,31 @@
+{
+    "indexes": {
+        "idx_object_id": {
+            "columns": [
+                "source_id"
+            ]
+        }
+    },
+    "columns": {
+        "id": {
+            "name": "",
+            "type": "",
+            "default": "",
+            "notnull": "",
+            "length": "",
+            "unsigned": "",
+            "autoincrement": "",
+            "comment": ""
+        },
+        "name": {
+            "name": "",
+            "type": "",
+            "default": "",
+            "notnull": "",
+            "length": "",
+            "unsigned": "",
+            "autoincrement": "",
+            "comment": ""
+        }
+    }
+}

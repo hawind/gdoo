@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html class="bg-white">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>插入多行文本框</title>
+        <link rel="stylesheet" href="../../../../dist/app.min.css">
+        <script type="text/javascript" src="../../../../dist/app.min.js"></script>
+        <script type="text/javascript" src="../internal.js"></script>
+    </head>
+
+    <body>
+
+        <div class="container">
+
+        <div class="m-t">
+
+            <div class="form-group">
+                <label class="control-label">控件名称 <span class="text-danger">*</span></label>
+                <input type="text" id="areaName" placeholder="必填项" name="name" class="form-control input-sm">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">控件样式</label>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <div class="input-group">
+                            <div class="input-group-addon">宽</div>
+                            <input id="areaWidth" name="width" class="form-control input-sm" type="text" value="400">
+                            <div class="input-group-addon">px</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="input-group">
+                            <div class="input-group-addon">高</div>
+                            <input id="areaHeight" name="height" class="form-control input-sm" type="text" value="60">
+                            <div class="input-group-addon">行</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="input-group">
+                            <div class="input-group-addon">字体</div>
+                            <input id="areaFontSize" name="font-size" class="form-control input-sm" type="text">
+                            <div class="input-group-addon">px</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">默认值</label>
+                <textarea class="form-control" id="areaContent" placeholder="输入框默认值"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label><input id="richText" name="richText" type="checkbox"> 富文本形式</label>
+            </div>
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var oNode = null;
+            window.onload = function()
+            {
+                //弹出窗口初始化函数，这里主要是判断是编辑多行文本框还是新增
+                //以下这个对象定义在editor.all.js第13325行。
+                if(UE.plugins['textarea'].editdom) 
+                {
+                    oNode = UE.plugins['textarea'].editdom;
+                    $G('areaName').value = oNode.getAttribute('title');
+                    $G('areaContent').value = oNode.getAttribute('value');
+                    var nRich = oNode.getAttribute('rich');
+                    if (nRich == '1') {
+                        $G('richText').checked = true;
+                    } else {
+                        nRich = '0';
+                    }
+                    var sFontSize = oNode.style.fontSize;
+                    $G('areaFontSize').value = sFontSize.substr(0, sFontSize.length - 2);//这里的substr是为了去掉末尾的'px'
+                    var sSizeWidth = oNode.style.width;
+                    $G('areaWidth').value = sSizeWidth.substr(0, sSizeWidth.length - 2);
+                    var sSizeHeight = oNode.style.height;
+                    $G('areaHeight').value = sSizeHeight.substr(0, sSizeHeight.length - 2);
+                }
+            }
+            dialog.oncancel = function() 
+            {
+                if(UE.plugins['textarea'].editdom) 
+                {
+                    delete UE.plugins['textarea'].editdom;
+                }
+            };
+            dialog.onok = function() {
+                if($G('areaName').value == '') {
+                    alert('请输入控件名称');
+                    return false;
+                }
+                if(!oNode) {
+                    var sUrl = parent.myform.count_item.value;
+                    var nItemId = null;
+                    ajax.request(sUrl, {async:false,timeout:60000,onsuccess:function (xhr) {
+                            try {
+                                nItemId = xhr.responseText;
+                                var html = '<textarea class="textarea" ';
+                                html += ' title = "' + $G('areaName').value + '"';
+                                html += ' name = "data_' + nItemId + '"';
+                                html += ' value = "' + $G('areaContent').value + '"';
+                                if ( $G('richText').checked ) {
+                                    html += ' rich = "1"';
+                                    if( $G('areaWidth').value != '' ) {
+                                        html += ' rich_width = "' + $G('areaWidth').value + '"';
+                                    } else {
+                                        html += ' rich_width = ""';
+                                    }
+                                    if( $G('areaHeight').value != '' ) {
+                                        html += ' rich_height = "' + $G('areaHeight').value + '"';
+                                    } else {
+                                        html += ' rich_height = ""';
+                                    }
+                                } else {
+                                    html += ' rich = "0"';
+                                }
+                                html += ' style = "';
+                                if( $G('areaFontSize').value != '' ) {
+                                    html += 'font-size:' + $G('areaFontSize').value + 'px;';
+                                }
+                                if( $G('areaWidth').value != '' ) {
+                                    html += 'width:' + $G('areaWidth').value + 'px;';
+                                }
+                                if( $G('areaHeight').value != '' ) {
+                                    html += 'height:' + $G('areaHeight').value + 'px;';
+                                }
+                                html += '">';
+                                html += $G('areaContent').value + '</textarea>';
+                                editor.execCommand('insertHtml',html);
+                            } catch (e) {
+                                return;
+                            }
+                        },
+                        error:function () {
+                            alert('Request TimeOut');
+                        }
+                    })
+                } else {
+                    oNode.setAttribute('title', $G('areaName').value);
+                    oNode.setAttribute('value',$G('areaContent').value);
+                    oNode.innerHTML = $G('areaContent').value;
+                    if( $G('richText').checked ) {
+                        oNode.setAttribute('rich', 1);
+                    } else {
+                        oNode.setAttribute('rich', 0);
+                    }
+                    var style = '';
+                    if( $G('areaFontSize').value != '' ) {
+                        style += 'font-size:' + $G('areaFontSize').value + 'px;';
+                    }
+                    if( $G('areaWidth').value != '' ) {
+                        style += 'width:' + $G('areaWidth').value + 'px;';
+                        if( $G('richText').checked ) {
+                            oNode.setAttribute('rich_width', $G('areaWidth').value);
+                        }
+                    } else {
+                        if( $G('richText').checked ) {
+                            oNode.setAttribute('rich_width', '');
+                        }
+                    }
+                    if( $G('areaHeight').value != '' ) {
+                        style += 'height:' + $G('areaHeight').value + 'px;';
+                        if( $G('richText').checked ) {
+                            oNode.setAttribute('rich_height', $G('areaHeight').value);
+                        }
+                    } else {
+                        if($G('richText').checked) {
+                            oNode.setAttribute('rich_height','');
+                        }
+                    }
+                    oNode.setAttribute('style',style);
+                    delete UE.plugins['textarea'].editdom; //使用后清空这个对象，变回新增模式
+                }
+            };
+        </script>
+    </body>
+</html>
