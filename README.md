@@ -4,10 +4,12 @@
 [![release][release-badge]][release-link]
 
 ## 介绍
-本系统是给企业定制开发的，基于laravel 8.x框架开发。因为是企业定制的原因，目前很多模块还需要完善。
+本系统是给企业定制开发的，基于laravel 8.x框架开发。基本进销存功能、营销管理功能、业务员销售团队分级管理、支持客户自主下单。
 
-## 特色
-基本进销存功能、营销管理功能、业务员销售团队分级管理、支持客户自主下单。
+
+## 申明
+本项目包含部分企业版(未授权)的前端组件如aggrid、dhtmlxgantt。如果你使用请获得相关的授权。开源此项目主要是学习和交流，由于是给企业定制的原因，大部分功能单一不完善，请不要直接投入使用。如果项目中有侵权问题请及时联系我，我会在第一时间调整。
+
 
 ## 模块
 - [x] 基本功能
@@ -41,8 +43,9 @@
 - [ ] 对话框页面管理
 
 ## 演示
-    1. 地址: http://demo.gdoo.net 帐号：admin, 密码：123456
-    2. 交流QQ群: 79446405
+演示地址: http://demo.gdoo.net 帐号：admin, 密码：123456
+
+QQ交流群: 79446405
 
 ## 截图
 ![首页](http://demo.gdoo.net/uploads/demo/1.png)
@@ -73,13 +76,12 @@
 基于PHP框架Laravel 8.x + MySQL 8.x
 
 ## 安装
-    1. 上传压缩包到目录，这里推荐使用宝塔面板，安装php-8.x、mysql-8.x、redis、nginx
+    1. 上传压缩包到目录，这里推荐使用宝塔面板，安装php-8.x、mysql-8.x、nginx
     2. 然后使用 composer install --no-dev 安装依赖
     3. 如果要修改前端文件请执行 yarn install 安装依赖
     4. 最后导入 database/gdoo-2.2.sql
     5. 然后执行 php artisan key:generate
     6. 修改.env相关配置
-
 
 [license-badge]: https://img.shields.io/badge/license-apache2-blue.svg
 [license-link]: LICENSE
