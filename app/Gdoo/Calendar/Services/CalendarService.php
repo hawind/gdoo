@@ -54,7 +54,7 @@ class CalendarService
 
         // 如果用户没有日历则添加一个默认的
         if ($model->count() == 0) {
-            Calendar::addDefaultCalendar($userId);
+            static::addDefaultCalendar($userId);
         }
 
         $rows = $model->get();

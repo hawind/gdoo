@@ -44,6 +44,31 @@
     1. 地址: http://demo.gdoo.net 帐号：admin, 密码：123456
     2. 交流QQ群: 79446405
 
+## 截图
+![首页](http://demo.gdoo.net/uploads/demo/1.png)
+
+![日程](http://demo.gdoo.net/uploads/demo/2.png)
+
+![项目](http://demo.gdoo.net/uploads/demo/3.png)
+
+![销售订单](http://demo.gdoo.net/uploads/demo/4.png)
+
+![销售订单](http://demo.gdoo.net/uploads/demo/11.png)
+
+![表单视图](http://demo.gdoo.net/uploads/demo/5.png)
+
+![列表视图](http://demo.gdoo.net/uploads/demo/6.png)
+
+![流程设计](http://demo.gdoo.net/uploads/demo/7.png)
+
+![模型字段](http://demo.gdoo.net/uploads/demo/8.png)
+
+![单据管理](http://demo.gdoo.net/uploads/demo/9.png)
+
+![表单权限](http://demo.gdoo.net/uploads/demo/10.png)
+
+![h5兼容](http://demo.gdoo.net/uploads/demo/12.png)
+
 ## 架构
 基于PHP框架Laravel 8.x + MySQL 8.x
 
@@ -55,8 +80,6 @@
     5. 然后执行 php artisan key:generate
     6. 修改.env相关配置
 
-## 其他
-1. 等待添加
 
 [license-badge]: https://img.shields.io/badge/license-apache2-blue.svg
 [license-link]: LICENSE
