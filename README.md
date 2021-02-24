@@ -45,7 +45,10 @@
 ## 演示
 演示地址: http://demo.gdoo.net 帐号：admin, 密码：123456
 
+联系方式：15182223008(手机/微信)
+
 QQ交流群: 79446405
+
 
 ## 截图
 ![首页](http://demo.gdoo.net/uploads/demo/1.png)

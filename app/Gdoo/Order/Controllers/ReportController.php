@@ -53,6 +53,7 @@ class ReportController extends DefaultController
         // 获取品类
         $_categorys = ProductCategory::orderBy('lft', 'asc')
         ->where('status', 1)
+        ->where('type', 1)
         ->get()->toNested();
 
         if ($category_id) {
@@ -251,9 +252,6 @@ class ReportController extends DefaultController
                 }
             }
         }
-        $one[0] = 0;
-
-        $product_categorys[0] = ['name' => '无品类', 'code' => 'NULL'];
         $percentData = $pieData = array();
 
         /** 品类累计到今天 **/
@@ -272,6 +270,7 @@ class ReportController extends DefaultController
             '.sql_year('m.invoice_dt').' as [year], 
             '.sql_month('m.invoice_dt').' as [month]
         ');
+
         $cancel = DB::table('stock_cancel_data as d')
         ->leftJoin('stock_cancel as m', 'm.id', '=', 'd.cancel_id')
         ->leftJoin('product', 'product.id', '=', 'd.product_id')
@@ -430,11 +429,11 @@ class ReportController extends DefaultController
             }
         }
 
-        if (count($json['pie'])) {
+        if ($json['pie']) {
             asort($json['pie']);
         }
 
-        if (count($columnData)) {
+        if ($columnData) {
             asort($columnData);
         }
 
@@ -457,7 +456,7 @@ class ReportController extends DefaultController
             }
         }
         $query = url().'?'.http_build_query($selects['query']);
-        
+
         $startTime = date('Y', strtotime($this->setting['setup_dt']));
         $years = range($startTime, date('Y'));
         $months = range(1, 12);
@@ -676,10 +675,10 @@ class ReportController extends DefaultController
         $selects = regionCustomer('customer');
 
         // 获得GET数据
-        $category_id = Request::get('category_id', 227);
+        $category_id = Request::get('category_id', 226);
         $now_year = Request::get('year', date("Y", time()));
-        $selects['select']['category_id'] = $category_id;
-        $selects['select']['year'] = $now_year;
+        $selects['query']['category_id'] = $category_id;
+        $selects['query']['year'] = $now_year;
 
         $categorys = ProductCategory::orderBy('lft', 'asc')
         ->where('status', 1)
@@ -687,10 +686,10 @@ class ReportController extends DefaultController
         ->get()->toNested();
 
         if ($category_id) {
-            $category = $categorys[$category_id];
+            $_category = $categorys[$category_id];
             $category = DB::table('product_category')
-            ->where('lft', '>=', $category['lft'])
-            ->where('rgt', '<=', $category['rgt'])
+            ->where('lft', '>=', $_category['lft'])
+            ->where('rgt', '<=', $_category['rgt'])
             ->pluck('id');
         }
         

@@ -11,7 +11,7 @@
  Target Server Version : 100508
  File Encoding         : 65001
 
- Date: 25/02/2021 02:13:03
+ Date: 25/02/2021 03:19:17
 */
 
 SET NAMES utf8mb4;
@@ -1460,10 +1460,8 @@ CREATE TABLE `customer_order`  (
 -- Records of customer_order
 -- ----------------------------
 INSERT INTO `customer_order` VALUES (1, 1, 1, 'XSDD202007080001', NULL, '系统管理员', 1611703414, 1594147800, '系统管理员', NULL, 1, 1, 1, 1, '11', '15182223008', '1', '121212', '1', '15182223008', NULL, 1, '2020-09-18', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `customer_order` VALUES (2, 1, 2, 'XSDD202009170001', NULL, '系统管理员', 1613521650, 1600299360, '系统管理员', NULL, 1, 1, 1, 1, '212', '12345678900', '1', '112', '1', '1', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `customer_order` VALUES (1002, 1, 0, 'XSDD202010120001', NULL, '系统管理员', 1613921094, 1602515220, '系统管理员', NULL, 1, 1, 1, 1, '张三', '15182222223', '028-3816223', '眉山市', '李飞', '13547652328', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `customer_order` VALUES (1003, 1, 0, 'XSDD202010120002', NULL, '系统管理员', 1613845850, 1602515340, '系统管理员', NULL, 2, 1, 1, 1, '广发', '13569789635', '3816235', '眉山', '各人工费', '13141516175', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `customer_order` VALUES (1004, 1, 0, 'XSDD202010120003', NULL, '系统管理员', 1614190165, 1602515520, '系统管理员', NULL, 2, 2, 1, 1, '777', '12345678901', '028381564', '眉山', '辉丰股份', '12121515465', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `customer_order` VALUES (2, 1, 2, 'XSDD202009170001', NULL, '系统管理员', 1614194273, 1610840160, '系统管理员', NULL, 1, 1, 1, 1, '212', '12345678900', '1', '112', '1', '1', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `customer_order` VALUES (1004, 1, 0, 'XSDD202010120003', NULL, '系统管理员', 1614194257, 1613142720, '系统管理员', NULL, 2, 2, 1, 1, '777', '12345678901', '028381564', '眉山', '辉丰股份', '12121515465', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_order_data
@@ -1529,14 +1527,11 @@ INSERT INTO `customer_order_data` VALUES (4, 1, 2166, 0.50, 1, NULL, NULL, '系�
 INSERT INTO `customer_order_data` VALUES (5, 1, 1433, 108.00, 1, NULL, NULL, '系统管理员', 1611703414, 1600286490, '系统管理员', 5.00, NULL, 540.00, NULL, NULL, NULL, NULL, 1, 1, 10.10, NULL, 0.00, 0, 5.00, 50.50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `customer_order_data` VALUES (6, 1, 1436, 150.00, 1, NULL, NULL, '系统管理员', 1611703414, 1600286490, '系统管理员', 5.00, NULL, 750.00, NULL, NULL, NULL, NULL, 1, 1, 11.70, NULL, 0.00, 0, 5.00, 58.50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `customer_order_data` VALUES (7, 1, 1437, 150.00, 1, NULL, NULL, '系统管理员', 1611703414, 1600286490, '系统管理员', 5.00, NULL, 750.00, NULL, NULL, NULL, NULL, 1, 1, 11.70, NULL, 0.00, 0, 5.00, 58.50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (8, 2, 1433, 108.00, 1, NULL, NULL, '系统管理员', 1613521650, 1600299444, '系统管理员', 10.00, NULL, 1080.00, 0, 0, NULL, 0, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (9, 2, 1436, 150.00, 1, NULL, NULL, '系统管理员', 1613521650, 1600299444, '系统管理员', 10.00, NULL, 1500.00, 0, 0, NULL, 0, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (10, 2, 1437, 150.00, 1, NULL, NULL, '系统管理员', 1613521650, 1600299444, '系统管理员', 10.00, NULL, 1500.00, 0, 0, NULL, 0, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (1005, 1002, 20158, 0.00, 1, NULL, NULL, '系统管理员', 1602515309, 1602515309, '系统管理员', 12.00, NULL, 0.00, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, 0, 12.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (1006, 1003, 1437, 150.00, 1, NULL, NULL, '系统管理员', 1613845850, 1602515410, '系统管理员', 10.00, NULL, 1500.00, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (1007, 1004, 2166, 0.50, 1, NULL, NULL, '系统管理员', 1614190165, 1602515605, '系统管理员', 10.00, NULL, 5.00, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
-INSERT INTO `customer_order_data` VALUES (1008, 1003, 2159, 1.80, 1, NULL, NULL, '系统管理员', 1613845850, 1611527142, '系统管理员', 10.00, NULL, 18.00, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, NULL, 10.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (1009, 1004, 2164, 19.00, 1, NULL, NULL, '系统管理员', 1614190165, 1611531575, '系统管理员', 100.00, NULL, 190.00, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, NULL, 10.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `customer_order_data` VALUES (8, 2, 20409, 92.00, 1, NULL, NULL, '系统管理员', 1614194273, 1600299444, '系统管理员', 10.00, NULL, 920.00, 0, 0, NULL, 0, 1, 1, 7.20, NULL, 0.00, 0, 10.00, 72.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
+INSERT INTO `customer_order_data` VALUES (9, 2, 20410, 92.00, 1, NULL, NULL, '系统管理员', 1614194273, 1600299444, '系统管理员', 10.00, NULL, 920.00, 0, 0, NULL, 0, 1, 1, 7.20, NULL, 0.00, 0, 10.00, 72.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
+INSERT INTO `customer_order_data` VALUES (10, 2, 2164, 19.00, 1, NULL, NULL, '系统管理员', 1614194273, 1600299444, '系统管理员', 10.00, NULL, 190.00, 0, 0, NULL, 0, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
+INSERT INTO `customer_order_data` VALUES (1007, 1004, 20410, 20.00, 1, NULL, NULL, '系统管理员', 1614194257, 1602515605, '系统管理员', 5.00, NULL, 100.00, NULL, NULL, NULL, NULL, 1, 1, 7.20, NULL, 0.00, 0, 5.00, 36.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `customer_order_data` VALUES (1009, 1004, 20409, 10.00, 1, NULL, NULL, '系统管理员', 1614194257, 1611531575, '系统管理员', 10.00, NULL, 100.00, NULL, NULL, NULL, NULL, 1, 1, 7.20, NULL, 0.00, NULL, 10.00, 72.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for customer_order_type
@@ -1592,7 +1587,7 @@ CREATE TABLE `customer_price`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_customer_price_customer_id`(`customer_id`) USING BTREE,
   INDEX `idx_customer_price_product_id`(`product_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公告表名' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公告表名' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_price
@@ -1600,6 +1595,15 @@ CREATE TABLE `customer_price`  (
 INSERT INTO `customer_price` VALUES (1, 1, 1433, 0.00, NULL, '0', 1600286418, '系统管理员', 1, 1603204174, '系统管理员', 1);
 INSERT INTO `customer_price` VALUES (2, 1, 1436, 0.00, NULL, '0', 1600286418, '系统管理员', 1, 1603204174, '系统管理员', 1);
 INSERT INTO `customer_price` VALUES (3, 1, 1437, 0.00, NULL, '0', 1600286418, '系统管理员', 1, 1603204174, '系统管理员', 1);
+INSERT INTO `customer_price` VALUES (4, 1, 20409, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (5, 1, 20410, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (6, 1, 20411, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (7, 1, 1600, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (8, 1, 20425, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (9, 1, 20426, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (10, 1, 2164, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (11, 1, 2166, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
+INSERT INTO `customer_price` VALUES (12, 1, 20226, NULL, NULL, NULL, 1614191986, '系统管理员', 1, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_region
@@ -2626,7 +2630,6 @@ CREATE TABLE `model_bill`  (
   `code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `audit_type` tinyint(4) NULL DEFAULT NULL COMMENT '审核类型',
   `is_sort` tinyint(4) NULL DEFAULT NULL COMMENT '数据排序',
-  `sn_data` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '单据当前流水号',
   `status` tinyint(4) NULL DEFAULT NULL COMMENT '1',
   `is_trash` tinyint(4) NULL DEFAULT NULL COMMENT '回收站',
   `created_by` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建者名称',
@@ -2650,65 +2653,65 @@ CREATE TABLE `model_bill`  (
 -- ----------------------------
 -- Records of model_bill
 -- ----------------------------
-INSERT INTO `model_bill` VALUES (16, '物流供应商', 'logistics', 0, 0, '27', 0, 0, NULL, 0, 1602260232, '系统管理员', 0, 1, NULL, NULL, 0, 16, 'order/logistics', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (17, '促销申请', 'promotion', 1, 0, '2020:1', 0, 0, NULL, 0, 1611703656, '系统管理员', 0, 1, 'CXSQ', '{Y}', 4, 17, 'promotion/promotion', 0, 0, 1);
-INSERT INTO `model_bill` VALUES (18, '用户消息', 'user_message', 0, 0, NULL, 0, 0, NULL, 0, 1602198778, '系统管理员', 0, 1, NULL, NULL, 0, 18, 'user/message', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (23, '销售订单', 'customer_order', 1, 0, '20200404:3', 0, 0, NULL, 0, 1602198810, '系统管理员', 0, 1, 'XSDD', '{Y}{M}{D}', 4, 23, 'order/order', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (25, '客户销售价格', 'customer_price', 0, 0, NULL, 0, 0, NULL, 0, 1602198820, '系统管理员', 0, 1, NULL, NULL, 0, 25, 'customer/price', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (26, '产品档案', 'product', 0, 0, NULL, 0, 0, NULL, 0, 1602198842, '系统管理员', 0, 1, NULL, NULL, 0, 26, 'product/product', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (27, '客户档案', 'customer', 0, 1, NULL, 0, 0, NULL, 0, 1609716821, '系统管理员', 0, 1, NULL, NULL, 0, 27, 'customer/customer', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (28, '用户', 'user', 0, 0, NULL, 0, 0, NULL, 0, 1602198864, '系统管理员', 0, 1, NULL, NULL, 0, 28, 'user/user', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (29, '计量单位', 'product_unit', 0, 0, NULL, 0, 0, NULL, 0, 1602198872, '系统管理员', 0, 1, NULL, NULL, 0, 29, 'product/unit', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (31, '部门', 'department', 0, 0, NULL, 0, 0, NULL, 0, 1602198881, '系统管理员', 0, 1, NULL, NULL, 0, 31, 'user/department', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (32, '角色', 'role', 0, 0, NULL, 0, 0, NULL, 0, 1602198891, '系统管理员', 0, 1, NULL, NULL, 0, 32, 'user/role', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (33, '用户职位', 'user_position', 0, 0, NULL, 0, 0, NULL, 0, 1602198899, '系统管理员', 0, 1, NULL, NULL, 0, 33, 'user/position', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (34, '用户组', 'user_group', 0, 0, NULL, 0, 0, NULL, 0, 1602198912, '系统管理员', 0, 1, NULL, NULL, 0, 34, 'user/group', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (35, '仓库档案', 'warehouse', 0, 0, NULL, 0, 0, NULL, 0, 1602198954, '系统管理员', 0, 1, NULL, NULL, 0, 35, 'stock/warehouse', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (36, '产品类别', 'product_category', 0, 0, NULL, 0, 0, NULL, 0, 1602198962, '系统管理员', 0, 1, NULL, NULL, 0, 36, 'product/category', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (37, '销售区域', 'customer_region', 0, 1, ':', 0, 0, NULL, 0, 1602198980, '系统管理员', 0, 1, NULL, NULL, 0, 37, 'customer/region', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (38, '客户任务', 'customer_task', 3, 1, '20200205:1', 0, 0, NULL, 0, 1602198992, '系统管理员', 0, 1, NULL, NULL, 0, 38, 'customer/task', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (39, '客户联系人', 'customer_contact', 0, 0, NULL, 0, 0, NULL, 0, 1602199001, '系统管理员', 0, 1, NULL, NULL, 0, 39, 'customer/contact', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (40, '客户订单类型', 'customer_order_type', 0, 0, NULL, 0, 0, NULL, 0, 1602199035, '系统管理员', 0, 1, NULL, NULL, 0, 40, 'order/type', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (41, '客户类型', 'customer_type', 0, 0, NULL, 0, 0, NULL, 0, 1602199043, '系统管理员', 0, 1, NULL, NULL, 0, 41, 'customer/type', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (42, '新闻公告', 'article', 0, 0, '20191020:1', 0, 0, NULL, 0, 1602199050, '系统管理员', 0, 1, NULL, NULL, 0, 42, 'article/article', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (43, '发货单', 'stock_delivery', 1, 1, '20200403:1', 0, 0, NULL, 0, 1602199059, '系统管理员', 0, 1, 'FHDJ', '{Y}{M}{D}', 4, 43, 'stock/delivery', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (45, '开票单位', 'customer_tax', 3, 1, ':', 0, 0, NULL, 0, 1602199067, '系统管理员', 0, 1, NULL, NULL, 0, 45, 'customer/tax', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (46, '客户费用', 'customer_cost', 3, 1, '20200310:2', 0, 0, NULL, 0, 1602199098, '系统管理员', 0, 1, 'QTFY', '{Y}{M}{D}', 4, 46, 'customerCost/cost', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (47, '退货申请', 'stock_cancel', 1, 0, '20200309:1', 0, 0, NULL, 0, 1602199107, '系统管理员', 0, 1, 'THSQ', '{Y}{M}{D}', 4, 47, 'stock/cancel', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (50, '客户费用类别', 'customer_cost_category', 0, 0, NULL, 0, 0, NULL, 0, 1602199117, '系统管理员', 0, 1, NULL, NULL, 0, 50, 'customerCost/category', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (51, '城市档案', 'region', 0, 0, NULL, 0, 0, '系统管理员', 1572906133, 1602199144, '系统管理员', 1, 1, NULL, NULL, 0, 51, 'system/region', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (52, '进店申请', 'approach', 1, 0, '2020:3', 0, 0, '系统管理员', 1574636758, 1602199154, '系统管理员', 1, 1, 'JCSQ', '{Y}', 4, 52, 'approach/approach', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (54, '进店超市', 'approach_market', 0, 0, NULL, 0, 0, '系统管理员', 1574967068, 1602199170, '系统管理员', 1, 1, NULL, NULL, 0, 54, 'approach/market', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (55, '促销核销', 'promotion_review', 1, 1, '2020:5', 0, 0, '系统管理员', 1575226534, 1602199179, '系统管理员', 1, 1, 'CXBX', '{Y}', 4, 55, 'promotion/review', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (57, '进店核销', 'approach_review', 1, 1, '2020:3', 0, 0, '系统管理员', 1575231491, 1602199188, '系统管理员', 1, 1, 'KABX', '{Y}', 4, 57, 'approach/review', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (59, '产成品入库单', 'stock_record10', 1, 0, '20200403:3', 0, 0, '系统管理员', 1575322076, 1602199196, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 59, 'stock/record10', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (61, '其他入库单', 'stock_record08', 3, 0, '20200205:1', 0, 0, '系统管理员', 1575322783, 1602199204, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 61, 'stock/record08', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (63, '其他出库单', 'stock_record09', 1, 1, '20200310:1', 0, 0, '系统管理员', 1575325733, 1602199212, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 63, 'stock/record09', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (65, '发货单(直营)', 'stock_direct', 1, 1, '20200401:4', 0, 0, '系统管理员', 1575842585, 1602199219, '系统管理员', 1, 1, 'ZYFH', '{Y}{M}{D}', 4, 65, 'stock/direct', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (67, '产成品调拨单', 'stock_allocation', 1, 1, '20200301:1', 0, 0, '系统管理员', 1575843944, 1602199227, '系统管理员', 1, 1, 'CPDB', '{Y}{M}{D}', 4, 67, 'stock/allocation', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (68, '库存类别', 'stock_type', 0, 0, NULL, 0, 0, '系统管理员', 1576749864, 1602199296, '系统管理员', 1, 1, NULL, NULL, 0, 68, 'stock/category', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (69, '销售类型', 'sale_type', 0, 0, NULL, 0, 0, '系统管理员', 1576751811, 1602199318, '系统管理员', 1, 1, NULL, NULL, 0, 69, 'stock/type', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (70, '样品申请', 'sample_apply', 1, 1, '20200205:1', 0, 0, '系统管理员', 1576810469, 1602199351, '系统管理员', 1, 1, 'YPCQ', '{Y}{M}{D}', 4, 70, 'order/sampleApply', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (73, '区域任务', 'customer_region_task', 3, 1, '20200205:1', 0, 0, '系统管理员', 1578686729, 1602199365, '系统管理员', 1, 1, NULL, NULL, 0, 73, 'customer/regionTask', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (75, '仓库货位', 'warehouse_location', 0, 1, NULL, 0, 0, '系统管理员', 1578699982, 1602199409, '系统管理员', 1, 1, NULL, NULL, 0, 75, 'stock/location', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (77, '原辅料档案', 'product_material', 0, 1, NULL, 0, 0, '系统管理员', 1579280898, 1602199449, '系统管理员', 1, 1, NULL, NULL, 0, 77, 'produce/material', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (78, '生产计划单', 'produce_plan', 1, 1, '20200205:1', 0, 0, '系统管理员', 1579480744, 1602199463, '系统管理员', 1, 1, 'SCDD', '{Y}{M}{D}', 4, 78, 'produce/plan', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (80, '证照文件', 'file_certificate', 0, 0, NULL, 1, 0, '系统管理员', 1580795308, 1602199472, '系统管理员', 1, 1, NULL, NULL, 0, 80, 'file/certificate', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (81, '供应商档案', 'supplier', 0, 1, NULL, 1, 0, '系统管理员', 1582041257, 1602199479, '系统管理员', 1, 1, NULL, NULL, 0, 81, 'supplier/supplier', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (82, '采购订单', 'purchase_order', 1, 1, '20200311:5', 1, 0, '系统管理员', 1582044307, 1602199487, '系统管理员', 1, 1, 'CGDD', '{Y}{M}{D}', 4, 82, 'purchase/order', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (84, '采购入库单', 'stock_record01', 3, 0, '20200222:1', 1, 0, '系统管理员', 1582291562, 1602199496, '系统管理员', 1, 1, 'CGRK', '{Y}{M}{D}', 4, 84, 'stock/record01', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (86, '费用调整单', 'customer_cost_adjust', 3, NULL, '20200310:1', 1, 0, '系统管理员', 1582455200, 1602199526, '系统管理员', 1, 1, 'FYTZ', '{Y}{M}{D}', 4, 46, 'customerCost/adjust', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (87, '合同补损', 'customer_cost_compen', 3, NULL, '20200310:1', 1, 0, '系统管理员', 1582572555, 1602199536, '系统管理员', 1, 1, 'HTBS', '{Y}{M}{D}', 4, 46, 'customerCost/compen', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (88, '合同返利', 'customer_cost_rebate', 3, NULL, '20200310:1', 1, 0, '系统管理员', 1582572660, 1602199552, '系统管理员', 1, 1, 'HTFL', '{Y}{M}{D}', 4, 46, 'customerCost/rebate', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (89, '客户收货地址', 'customer_delivery_address', 0, NULL, NULL, 1, 0, '系统管理员', 1584631815, 1602199573, '系统管理员', 1, 1, NULL, NULL, 0, 89, 'customer/deliveryAddress', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (90, '期初余额', 'customer_cost_begin', 3, NULL, NULL, 1, 0, '系统管理员', 1585005187, 1602199586, '系统管理员', 1, 1, 'QCYE', '{Y}{M}{D}', 4, 46, 'customerCost/begin', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (91, '客户分类', 'customer_class', 0, NULL, NULL, 1, 0, '系统管理员', 1586801899, 1602199620, '系统管理员', 1, 1, NULL, NULL, 0, 90, 'customer/customerClass', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (92, '投诉中心', 'customer_complaint', 1, NULL, NULL, 1, 0, '系统管理员', 1586802277, 1602199636, '系统管理员', 1, 1, 'KHTS', '{Y}{M}{D}', 4, 91, 'customer/complaint', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (93, '原材料出库单', 'stock_record11', 3, NULL, NULL, 1, 0, '系统管理员', 1587585907, 1602199648, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 96, 'stock/record11', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (94, '客户开户申请', 'customer_apply', 1, NULL, NULL, 1, 0, '系统管理员', 1587832022, 1602199667, '系统管理员', 1, 1, 'KHSQ', '{Y}{M}{D}', 4, 92, 'customer/customerApply', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (95, '出厂检验报告', 'file_inspect_report', 0, NULL, NULL, 1, 0, '系统管理员', 1590605974, 1602199694, '系统管理员', 1, 1, NULL, NULL, 0, 98, 'file/inspectReport', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (96, '促销核销资料', 'promotion_material', 0, NULL, NULL, 1, 0, '系统管理员', 1592665494, 1602376714, '系统管理员', 1, 1, NULL, NULL, 0, 99, 'promotion/material', 0, 0, NULL);
-INSERT INTO `model_bill` VALUES (98, '请假申请', 'qingjia', 1, NULL, NULL, 1, 0, '系统管理员', 1602455610, 1602463250, '系统管理员', 1, 1, 'QJSQ', '{Y}{M}{D}', 4, NULL, NULL, 1, 380, NULL);
+INSERT INTO `model_bill` VALUES (16, '物流供应商', 'logistics', 0, 0, 0, 0, NULL, 0, 1602260232, '系统管理员', 0, 1, NULL, NULL, 0, 16, 'order/logistics', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (17, '促销申请', 'promotion', 1, 0, 0, 0, NULL, 0, 1611703656, '系统管理员', 0, 1, 'CXSQ', '{Y}', 4, 17, 'promotion/promotion', 0, 0, 1);
+INSERT INTO `model_bill` VALUES (18, '用户消息', 'user_message', 0, 0, 0, 0, NULL, 0, 1602198778, '系统管理员', 0, 1, NULL, NULL, 0, 18, 'user/message', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (23, '销售订单', 'customer_order', 1, 0, 0, 0, NULL, 0, 1602198810, '系统管理员', 0, 1, 'XSDD', '{Y}{M}{D}', 4, 23, 'order/order', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (25, '客户销售价格', 'customer_price', 0, 0, 0, 0, NULL, 0, 1602198820, '系统管理员', 0, 1, NULL, NULL, 0, 25, 'customer/price', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (26, '产品档案', 'product', 0, 0, 0, 0, NULL, 0, 1602198842, '系统管理员', 0, 1, NULL, NULL, 0, 26, 'product/product', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (27, '客户档案', 'customer', 0, 1, 0, 0, NULL, 0, 1609716821, '系统管理员', 0, 1, NULL, NULL, 0, 27, 'customer/customer', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (28, '用户', 'user', 0, 0, 0, 0, NULL, 0, 1602198864, '系统管理员', 0, 1, NULL, NULL, 0, 28, 'user/user', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (29, '计量单位', 'product_unit', 0, 0, 0, 0, NULL, 0, 1602198872, '系统管理员', 0, 1, NULL, NULL, 0, 29, 'product/unit', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (31, '部门', 'department', 0, 0, 0, 0, NULL, 0, 1602198881, '系统管理员', 0, 1, NULL, NULL, 0, 31, 'user/department', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (32, '角色', 'role', 0, 0, 0, 0, NULL, 0, 1602198891, '系统管理员', 0, 1, NULL, NULL, 0, 32, 'user/role', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (33, '用户职位', 'user_position', 0, 0, 0, 0, NULL, 0, 1602198899, '系统管理员', 0, 1, NULL, NULL, 0, 33, 'user/position', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (34, '用户组', 'user_group', 0, 0, 0, 0, NULL, 0, 1602198912, '系统管理员', 0, 1, NULL, NULL, 0, 34, 'user/group', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (35, '仓库档案', 'warehouse', 0, 0, 0, 0, NULL, 0, 1602198954, '系统管理员', 0, 1, NULL, NULL, 0, 35, 'stock/warehouse', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (36, '产品类别', 'product_category', 0, 0, 0, 0, NULL, 0, 1602198962, '系统管理员', 0, 1, NULL, NULL, 0, 36, 'product/category', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (37, '销售区域', 'customer_region', 0, 1, 0, 0, NULL, 0, 1602198980, '系统管理员', 0, 1, NULL, NULL, 0, 37, 'customer/region', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (38, '客户任务', 'customer_task', 3, 1, 0, 0, NULL, 0, 1602198992, '系统管理员', 0, 1, NULL, NULL, 0, 38, 'customer/task', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (39, '客户联系人', 'customer_contact', 0, 0, 0, 0, NULL, 0, 1602199001, '系统管理员', 0, 1, NULL, NULL, 0, 39, 'customer/contact', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (40, '客户订单类型', 'customer_order_type', 0, 0, 0, 0, NULL, 0, 1602199035, '系统管理员', 0, 1, NULL, NULL, 0, 40, 'order/type', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (41, '客户类型', 'customer_type', 0, 0, 0, 0, NULL, 0, 1602199043, '系统管理员', 0, 1, NULL, NULL, 0, 41, 'customer/type', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (42, '新闻公告', 'article', 0, 0, 0, 0, NULL, 0, 1602199050, '系统管理员', 0, 1, NULL, NULL, 0, 42, 'article/article', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (43, '发货单', 'stock_delivery', 1, 1, 0, 0, NULL, 0, 1602199059, '系统管理员', 0, 1, 'FHDJ', '{Y}{M}{D}', 4, 43, 'stock/delivery', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (45, '开票单位', 'customer_tax', 3, 1, 0, 0, NULL, 0, 1602199067, '系统管理员', 0, 1, NULL, NULL, 0, 45, 'customer/tax', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (46, '客户费用', 'customer_cost', 3, 1, 0, 0, NULL, 0, 1602199098, '系统管理员', 0, 1, 'QTFY', '{Y}{M}{D}', 4, 46, 'customerCost/cost', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (47, '退货申请', 'stock_cancel', 1, 0, 0, 0, NULL, 0, 1602199107, '系统管理员', 0, 1, 'THSQ', '{Y}{M}{D}', 4, 47, 'stock/cancel', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (50, '客户费用类别', 'customer_cost_category', 0, 0, 0, 0, NULL, 0, 1602199117, '系统管理员', 0, 1, NULL, NULL, 0, 50, 'customerCost/category', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (51, '城市档案', 'region', 0, 0, 0, 0, '系统管理员', 1572906133, 1602199144, '系统管理员', 1, 1, NULL, NULL, 0, 51, 'system/region', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (52, '进店申请', 'approach', 1, 0, 0, 0, '系统管理员', 1574636758, 1602199154, '系统管理员', 1, 1, 'JCSQ', '{Y}', 4, 52, 'approach/approach', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (54, '进店超市', 'approach_market', 0, 0, 0, 0, '系统管理员', 1574967068, 1602199170, '系统管理员', 1, 1, NULL, NULL, 0, 54, 'approach/market', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (55, '促销核销', 'promotion_review', 1, 1, 0, 0, '系统管理员', 1575226534, 1602199179, '系统管理员', 1, 1, 'CXBX', '{Y}', 4, 55, 'promotion/review', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (57, '进店核销', 'approach_review', 1, 1, 0, 0, '系统管理员', 1575231491, 1602199188, '系统管理员', 1, 1, 'KABX', '{Y}', 4, 57, 'approach/review', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (59, '产成品入库单', 'stock_record10', 1, 0, 0, 0, '系统管理员', 1575322076, 1602199196, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 59, 'stock/record10', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (61, '其他入库单', 'stock_record08', 3, 0, 0, 0, '系统管理员', 1575322783, 1602199204, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 61, 'stock/record08', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (63, '其他出库单', 'stock_record09', 1, 1, 0, 0, '系统管理员', 1575325733, 1602199212, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 63, 'stock/record09', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (65, '发货单(直营)', 'stock_direct', 1, 1, 0, 0, '系统管理员', 1575842585, 1602199219, '系统管理员', 1, 1, 'ZYFH', '{Y}{M}{D}', 4, 65, 'stock/direct', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (67, '产成品调拨单', 'stock_allocation', 1, 1, 0, 0, '系统管理员', 1575843944, 1602199227, '系统管理员', 1, 1, 'CPDB', '{Y}{M}{D}', 4, 67, 'stock/allocation', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (68, '库存类别', 'stock_type', 0, 0, 0, 0, '系统管理员', 1576749864, 1602199296, '系统管理员', 1, 1, NULL, NULL, 0, 68, 'stock/category', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (69, '销售类型', 'sale_type', 0, 0, 0, 0, '系统管理员', 1576751811, 1602199318, '系统管理员', 1, 1, NULL, NULL, 0, 69, 'stock/type', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (70, '样品申请', 'sample_apply', 1, 1, 0, 0, '系统管理员', 1576810469, 1602199351, '系统管理员', 1, 1, 'YPCQ', '{Y}{M}{D}', 4, 70, 'order/sampleApply', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (73, '区域任务', 'customer_region_task', 3, 1, 0, 0, '系统管理员', 1578686729, 1602199365, '系统管理员', 1, 1, NULL, NULL, 0, 73, 'customer/regionTask', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (75, '仓库货位', 'warehouse_location', 0, 1, 0, 0, '系统管理员', 1578699982, 1602199409, '系统管理员', 1, 1, NULL, NULL, 0, 75, 'stock/location', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (77, '原辅料档案', 'product_material', 0, 1, 0, 0, '系统管理员', 1579280898, 1602199449, '系统管理员', 1, 1, NULL, NULL, 0, 77, 'produce/material', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (78, '生产计划单', 'produce_plan', 1, 1, 0, 0, '系统管理员', 1579480744, 1602199463, '系统管理员', 1, 1, 'SCDD', '{Y}{M}{D}', 4, 78, 'produce/plan', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (80, '证照文件', 'file_certificate', 0, 0, 1, 0, '系统管理员', 1580795308, 1602199472, '系统管理员', 1, 1, NULL, NULL, 0, 80, 'file/certificate', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (81, '供应商档案', 'supplier', 0, 1, 1, 0, '系统管理员', 1582041257, 1602199479, '系统管理员', 1, 1, NULL, NULL, 0, 81, 'supplier/supplier', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (82, '采购订单', 'purchase_order', 1, 1, 1, 0, '系统管理员', 1582044307, 1602199487, '系统管理员', 1, 1, 'CGDD', '{Y}{M}{D}', 4, 82, 'purchase/order', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (84, '采购入库单', 'stock_record01', 3, 0, 1, 0, '系统管理员', 1582291562, 1602199496, '系统管理员', 1, 1, 'CGRK', '{Y}{M}{D}', 4, 84, 'stock/record01', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (86, '费用调整单', 'customer_cost_adjust', 3, NULL, 1, 0, '系统管理员', 1582455200, 1602199526, '系统管理员', 1, 1, 'FYTZ', '{Y}{M}{D}', 4, 46, 'customerCost/adjust', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (87, '合同补损', 'customer_cost_compen', 3, NULL, 1, 0, '系统管理员', 1582572555, 1602199536, '系统管理员', 1, 1, 'HTBS', '{Y}{M}{D}', 4, 46, 'customerCost/compen', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (88, '合同返利', 'customer_cost_rebate', 3, NULL, 1, 0, '系统管理员', 1582572660, 1602199552, '系统管理员', 1, 1, 'HTFL', '{Y}{M}{D}', 4, 46, 'customerCost/rebate', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (89, '客户收货地址', 'customer_delivery_address', 0, NULL, 1, 0, '系统管理员', 1584631815, 1602199573, '系统管理员', 1, 1, NULL, NULL, 0, 89, 'customer/deliveryAddress', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (90, '期初余额', 'customer_cost_begin', 3, NULL, 1, 0, '系统管理员', 1585005187, 1602199586, '系统管理员', 1, 1, 'QCYE', '{Y}{M}{D}', 4, 46, 'customerCost/begin', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (91, '客户分类', 'customer_class', 0, NULL, 1, 0, '系统管理员', 1586801899, 1602199620, '系统管理员', 1, 1, NULL, NULL, 0, 90, 'customer/customerClass', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (92, '投诉中心', 'customer_complaint', 1, NULL, 1, 0, '系统管理员', 1586802277, 1602199636, '系统管理员', 1, 1, 'KHTS', '{Y}{M}{D}', 4, 91, 'customer/complaint', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (93, '原材料出库单', 'stock_record11', 3, NULL, 1, 0, '系统管理员', 1587585907, 1602199648, '系统管理员', 1, 1, NULL, '{Y}{M}{D}', 4, 96, 'stock/record11', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (94, '客户开户申请', 'customer_apply', 1, NULL, 1, 0, '系统管理员', 1587832022, 1602199667, '系统管理员', 1, 1, 'KHSQ', '{Y}{M}{D}', 4, 92, 'customer/customerApply', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (95, '出厂检验报告', 'file_inspect_report', 0, NULL, 1, 0, '系统管理员', 1590605974, 1602199694, '系统管理员', 1, 1, NULL, NULL, 0, 98, 'file/inspectReport', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (96, '促销核销资料', 'promotion_material', 0, NULL, 1, 0, '系统管理员', 1592665494, 1602376714, '系统管理员', 1, 1, NULL, NULL, 0, 99, 'promotion/material', 0, 0, NULL);
+INSERT INTO `model_bill` VALUES (98, '请假申请', 'qingjia', 1, NULL, 1, 0, '系统管理员', 1602455610, 1602463250, '系统管理员', 1, 1, 'QJSQ', '{Y}{M}{D}', 4, NULL, NULL, 1, 380, NULL);
 
 -- ----------------------------
 -- Table structure for model_bill_category
@@ -4286,6 +4289,7 @@ INSERT INTO `model_seq_no` VALUES (65, '20210224', 1);
 INSERT INTO `model_seq_no` VALUES (67, '20201023', 1);
 INSERT INTO `model_seq_no` VALUES (70, '20201012', 1);
 INSERT INTO `model_seq_no` VALUES (82, '20201020', 1);
+INSERT INTO `model_seq_no` VALUES (82, '20210224', 1);
 INSERT INTO `model_seq_no` VALUES (84, '20201020', 3);
 INSERT INTO `model_seq_no` VALUES (86, '20201023', 1);
 INSERT INTO `model_seq_no` VALUES (87, '20201023', 1);
@@ -6459,12 +6463,13 @@ CREATE TABLE `purchase_order`  (
   INDEX `idx_purchase_order_sn`(`sn`) USING BTREE,
   INDEX `idx_purchase_order_supplier_id`(`supplier_id`) USING BTREE,
   INDEX `idx_purchase_order_invoice_dt`(`invoice_dt`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品分类表名' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品分类表名' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of purchase_order
 -- ----------------------------
 INSERT INTO `purchase_order` VALUES (1, NULL, NULL, NULL, NULL, 1603204793, '系统管理员', '系统管理员', 1603204793, NULL, 1, 1, 'CGDD202010200001', NULL, '2020-10-20', NULL, 1, 1, 0, NULL);
+INSERT INTO `purchase_order` VALUES (2, NULL, NULL, '测试', NULL, 1614191674, '系统管理员', '系统管理员', 1614191719, 0, 1, 1, 'CGDD202102240001', NULL, '2021-02-24', NULL, 1, 1, 3, NULL);
 
 -- ----------------------------
 -- Table structure for purchase_order_data
@@ -6499,12 +6504,14 @@ CREATE TABLE `purchase_order_data`  (
   INDEX `idx_purchase_order_data_order_id`(`order_id`) USING BTREE,
   INDEX `idx_purchase_order_data_product_id`(`product_id`) USING BTREE,
   INDEX `idx_purchase_order_data_supplier_id`(`supplier_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品分类表名' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品分类表名' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of purchase_order_data
 -- ----------------------------
 INSERT INTO `purchase_order_data` VALUES (1, 1, NULL, NULL, NULL, NULL, 1603204793, '系统管理员', '系统管理员', 1603204793, NULL, 1, 1, 1437, 2.00, 2.00, NULL, 0.00, NULL, 0.00, NULL, NULL);
+INSERT INTO `purchase_order_data` VALUES (2, 2, NULL, NULL, NULL, NULL, 1614191674, '系统管理员', '系统管理员', 1614191719, NULL, 1, 1, 20409, 100.00, 100.00, 0.00000, 0.00, NULL, 0.00, NULL, NULL);
+INSERT INTO `purchase_order_data` VALUES (3, 2, NULL, NULL, NULL, NULL, 1614191719, '系统管理员', NULL, NULL, NULL, 1, NULL, 1600, 200.00, 200.00, NULL, 0.00, NULL, 0.00, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for region
@@ -10106,7 +10113,7 @@ CREATE TABLE `stock_allocation`  (
 -- ----------------------------
 -- Records of stock_allocation
 -- ----------------------------
-INSERT INTO `stock_allocation` VALUES (1, 0, '系统管理员', 1603463854, 'CPDB202010230001', 1603463854, '系统管理员', NULL, NULL, '2020-10-20', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2020-10-23', 1, 1, 153, 18, 0, 139, 64, 20, NULL, NULL);
+INSERT INTO `stock_allocation` VALUES (1, 0, '系统管理员', 1614191067, 'CPDB202010230001', 1603463854, '系统管理员', NULL, NULL, '2020-10-20', 2.00, 0.00, 0.00, 0.00, NULL, NULL, 0.00, 0.00, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '系统管理员', '2021-02-24 18:24:27', '2020-10-23', 1, 1, 153, 18, 0, 139, 64, 20, '眉山', '成都');
 
 -- ----------------------------
 -- Table structure for stock_allocation_data
@@ -10342,7 +10349,7 @@ CREATE TABLE `stock_delivery`  (
 -- ----------------------------
 -- Records of stock_delivery
 -- ----------------------------
-INSERT INTO `stock_delivery` VALUES (1, 1, 0, '系统管理员', 1614190203, 'FHDJ202010230001', 1603464188, '系统管理员', NULL, NULL, '2020-10-23', 1, 1, '111', '11', '11', '111', '回单付，送货', 1, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, NULL);
+INSERT INTO `stock_delivery` VALUES (1, 1, 1, '系统管理员', 1614192380, 'FHDJ202010230001', 1603464188, '系统管理员', NULL, NULL, '2021-02-25', 1, 1, '111', '11', '11', '111', '回单付，送货', 1, 1, 2.00, 0.00, 0.0, 0.0, 0, NULL, 0.00, 0.00, NULL, 2, NULL, 0.00, NULL, NULL, NULL, NULL, NULL, '系统管理员', '2021-02-24 18:18:27', 1, 1, NULL);
 
 -- ----------------------------
 -- Table structure for stock_delivery_data
@@ -10400,12 +10407,13 @@ CREATE TABLE `stock_delivery_data`  (
   INDEX `idx_stock_delivery_data_sample_data_id`(`sample_data_id`) USING BTREE,
   INDEX `idx_stock_delivery_data_fee_src_type_id`(`fee_src_type_id`) USING BTREE,
   INDEX `idx_stock_delivery_data_promotion_data_id`(`promotion_data_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of stock_delivery_data
 -- ----------------------------
-INSERT INTO `stock_delivery_data` VALUES (1, 1, 1436, 150.00, NULL, NULL, '系统管理员', 1614190203, 1603464188, '系统管理员', 2.00, 300.00, 1, 0.00, NULL, NULL, NULL, NULL, '2', '2001-11-30', 0.00, 0.00, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `stock_delivery_data` VALUES (1, 1, 20409, 92.00, NULL, NULL, '系统管理员', 1614192380, 1603464188, '系统管理员', 2.00, 184.00, 1, 7.20, NULL, NULL, NULL, NULL, '210225123', '2021-02-25', 0.00, 14.40, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `stock_delivery_data` VALUES (2, 1, 20410, 50.00, NULL, NULL, '系统管理员', 1614192380, 1614192227, '系统管理员', 10.00, 500.00, 1, 7.20, NULL, NULL, NULL, NULL, '210225123', '2021-02-25', 0.00, 72.00, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for stock_direct
@@ -10548,9 +10556,9 @@ CREATE TABLE `stock_record01`  (
 -- ----------------------------
 -- Records of stock_record01
 -- ----------------------------
-INSERT INTO `stock_record01` VALUES (1, 'CGRK202010200001', 0, 136, 17, NULL, 1603204816, '系统管理员', 1, 1603204816, '系统管理员', 1, '2020-10-20', 63, 17);
-INSERT INTO `stock_record01` VALUES (2, 'CGRK202010200002', 0, 136, 8, NULL, 1603204842, '系统管理员', 1, 1603204842, '系统管理员', 1, '2020-10-20', 63, 17);
-INSERT INTO `stock_record01` VALUES (3, 'CGRK202010200003', 0, 136, 1, NULL, 1603204866, '系统管理员', 1, 1612837247, '系统管理员', 1, '2020-10-20', 63, 14);
+INSERT INTO `stock_record01` VALUES (1, 'CGRK202010200001', 0, 136, 17, NULL, 1603204816, '系统管理员', 1, 1614191891, '系统管理员', 1, '2021-02-25', 63, 17);
+INSERT INTO `stock_record01` VALUES (2, 'CGRK202010200002', 0, 140, 8, NULL, 1603204842, '系统管理员', 1, 1614191883, '系统管理员', 1, '2021-02-25', 63, 17);
+INSERT INTO `stock_record01` VALUES (3, 'CGRK202010200003', 0, 140, 1, NULL, 1603204866, '系统管理员', 1, 1614191868, '系统管理员', 1, '2021-02-25', 63, 14);
 
 -- ----------------------------
 -- Table structure for stock_record01_data
@@ -10590,9 +10598,9 @@ CREATE TABLE `stock_record01_data`  (
 -- ----------------------------
 -- Records of stock_record01_data
 -- ----------------------------
-INSERT INTO `stock_record01_data` VALUES (1, 1, NULL, 2150, NULL, 2.00, 1603204816, '系统管理员', 1, 1603204816, '系统管理员', 1, NULL, NULL, NULL, 0.00, NULL, 0.00, NULL, NULL, NULL, NULL);
-INSERT INTO `stock_record01_data` VALUES (2, 2, NULL, 1437, NULL, 2.00, 1603204842, '系统管理员', 1, 1603204842, '系统管理员', 1, NULL, NULL, NULL, 0.00, NULL, 0.00, NULL, NULL, NULL, NULL);
-INSERT INTO `stock_record01_data` VALUES (3, 3, NULL, 20374, NULL, 5.00, 1603204866, '系统管理员', 1, 1612837247, '系统管理员', 1, NULL, NULL, 0.00000, 0.00, 0.00, 0.00, '123', NULL, NULL, NULL);
+INSERT INTO `stock_record01_data` VALUES (1, 1, NULL, 20409, NULL, 200.00, 1603204816, '系统管理员', 1, 1614191891, '系统管理员', 1, NULL, NULL, 12.00000, 2400.00, 13.00, 312.00, NULL, NULL, NULL, NULL);
+INSERT INTO `stock_record01_data` VALUES (2, 2, NULL, 20426, NULL, 2.00, 1603204842, '系统管理员', 1, 1614191883, '系统管理员', 1, NULL, NULL, 12.00000, 24.00, 13.00, 3.12, NULL, NULL, NULL, NULL);
+INSERT INTO `stock_record01_data` VALUES (3, 3, NULL, 20409, NULL, 5.00, 1603204866, '系统管理员', 1, 1614191868, '系统管理员', 1, NULL, NULL, 10.00000, 50.00, 13.00, 6.50, '123', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for stock_record08
@@ -10756,8 +10764,8 @@ CREATE TABLE `stock_record10`  (
 -- ----------------------------
 -- Records of stock_record10
 -- ----------------------------
-INSERT INTO `stock_record10` VALUES (1, '20201023100001', 0, 139, NULL, NULL, 1603462920, '系统管理员', 1, 1603462972, '系统管理员', 1, '一车间', 33, '2020-10-23');
-INSERT INTO `stock_record10` VALUES (2, '20201023100002', 0, 139, NULL, NULL, 1603463280, '系统管理员', 1, 1603463323, '系统管理员', 1, '一车间', 33, '2020-10-23');
+INSERT INTO `stock_record10` VALUES (1, '20201023100001', 0, 139, NULL, NULL, 1603462920, '系统管理员', 1, 1614191943, '系统管理员', 1, '一车间', 33, '2021-02-25');
+INSERT INTO `stock_record10` VALUES (2, '20201023100002', 0, 139, NULL, NULL, 1603463280, '系统管理员', 1, 1614192215, '系统管理员', 1, '一车间', 33, '2021-02-25');
 
 -- ----------------------------
 -- Table structure for stock_record10_data
@@ -10789,8 +10797,8 @@ CREATE TABLE `stock_record10_data`  (
 -- ----------------------------
 -- Records of stock_record10_data
 -- ----------------------------
-INSERT INTO `stock_record10_data` VALUES (1, 1, '121234', 1433, '2013-01-03', 3.00, 1603462972, '系统管理员', 1, 1603462972, '系统管理员', 1, '99', '小菜');
-INSERT INTO `stock_record10_data` VALUES (2, 2, '2', 1436, '2001-11-30', 3.00, 1603463323, '系统管理员', 1, 1603463323, '系统管理员', 1, '99', '小菜');
+INSERT INTO `stock_record10_data` VALUES (1, 1, '210225123', 20410, '2021-02-25', 30.00, 1603462972, '系统管理员', 1, 1614191943, '系统管理员', 1, '99', '小菜');
+INSERT INTO `stock_record10_data` VALUES (2, 2, '210225123', 20409, '2021-02-25', 100.00, 1603463323, '系统管理员', 1, 1614192215, '系统管理员', 1, '99', '小菜');
 
 -- ----------------------------
 -- Table structure for stock_record11
@@ -10967,7 +10975,7 @@ CREATE TABLE `system_log`  (
   `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '日志类型',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_action_log_created_id`(`created_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of system_log
@@ -10982,6 +10990,11 @@ INSERT INTO `system_log` VALUES (19, '保存:发货单(直营)', '存货编码�
 INSERT INTO `system_log` VALUES (20, '保存:发货单(直营)', '存货编码为：710012<br>仓库名称为：成品库酱库<br>批次为：<br>货位为：<br>发货数量：10<br>可用量为：', 1, '系统管理员', '2021-02-24 17:01:17', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
 INSERT INTO `system_log` VALUES (21, '保存:发货单(直营)', '存货编码为：710012<br>仓库名称为：成品库酱库<br>批次为：<br>货位为：<br>发货数量：10<br>可用量为：', 1, '系统管理员', '2021-02-24 17:14:26', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
 INSERT INTO `system_log` VALUES (22, '保存:发货单(直营)', '存货编码为：710012<br>仓库名称为：成品库酱库<br>批次为：<br>货位为：<br>发货数量：10<br>可用量为：', 1, '系统管理员', '2021-02-24 17:14:45', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
+INSERT INTO `system_log` VALUES (23, '保存:发货单', '存货编码为：158001<br>仓库名称为：成品库小菜库<br>批次为：210225123<br>货位为：99<br>发货数量：2<br>可用量为：', 1, '系统管理员', '2021-02-24 18:40:57', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
+INSERT INTO `system_log` VALUES (24, '保存:发货单', '存货编码为：158001<br>仓库名称为：成品库小菜库<br>批次为：210225123<br>货位为：99<br>发货数量：2<br>可用量为：', 1, '系统管理员', '2021-02-24 18:41:45', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
+INSERT INTO `system_log` VALUES (25, '保存:发货单', '存货编码为：158001<br>仓库名称为：成品库小菜库<br>批次为：210225123<br>货位为：99<br>发货数量：2<br>可用量为：', 1, '系统管理员', '2021-02-24 18:42:21', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
+INSERT INTO `system_log` VALUES (26, '保存:发货单', '存货编码为：158001<br>仓库名称为：成品库小菜库<br>批次为：210225123<br>货位为：99<br>发货数量：2<br>可用量为：', 1, '系统管理员', '2021-02-24 18:43:01', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
+INSERT INTO `system_log` VALUES (27, '保存:发货单', '存货编码为：158002<br>仓库名称为：成品库小菜库<br>批次为：210225123<br>货位为：99<br>发货数量：50<br>可用量为：30.0000', 1, '系统管理员', '2021-02-24 18:43:39', '127.0.0.1', 0, 'Chrome', NULL, 'error', 'bill.store');
 
 -- ----------------------------
 -- Table structure for user

@@ -17,11 +17,9 @@
                 &nbsp;
             @endif
 
-            <select class="form-control input-sm" id='category_id' name='category_id' data-toggle="redirect" rel="{{$query}}">
+            <select class="form-control input-sm" id='category_id' name='category_id' data-toggle="redirect" data-url="{{$query}}">
                 @foreach($categorys as $k => $v)
-                    @if($v['layer_level'] == 1)
-                    <option value="{{$v['id']}}" @if($select['select']['category_id'] == $v['id']) selected @endif>{{$v['name']}}</option>
-                    @endif
+                    <option value="{{$v['id']}}" @if($select['query']['category_id'] == $v['id']) selected @endif>{{$v['layer_space']}}{{$v['name']}}</option>
                 @endforeach
             </select>
 

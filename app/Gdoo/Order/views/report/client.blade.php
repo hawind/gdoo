@@ -23,11 +23,8 @@
             </select>
             &nbsp;
             <select class="form-control input-sm" id='category_id' name='category_id' data-toggle="redirect" data-url="{{$query}}">
-                <option value="0">全部品类</option>
                 @foreach($categorys as $k => $v)
-                    @if($v['layer_level'] == 1)
-                    <option value="{{$v['id']}}" @if($select['query']['category_id'] == $v['id']) selected @endif>{{$v['name']}}</option>
-                    @endif
+                    <option value="{{$v['id']}}" @if($select['query']['category_id'] == $v['id']) selected @endif>{{$v['layer_space']}}{{$v['name']}}</option>
                 @endforeach
             </select>
 
@@ -53,8 +50,8 @@
             <td align="right">{{sizeof($single['all'][$k])}}</td>
             @foreach($months as $v2)
             <td align="right">
-                {{:$sum = sizeof($v[$v2])}}
-                @if($sum>0) {{$sum}} @else <span style="color:#ccc;">0</span> @endif
+                {{:$sum = count((array)$v[$v2])}}
+                @if($sum > 0) {{$sum}} @else <span style="color:#ccc;">0</span> @endif
             </td>
            @endforeach
         </tr>
