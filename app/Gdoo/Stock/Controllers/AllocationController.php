@@ -192,7 +192,7 @@ class AllocationController extends WorkflowController
             DB::table('stock_allocation')->where('id', $id)->update($gets);
             return $this->json('物流信息提交成功。', true);
         }
-        $file = base_path().'/addons/'.ucfirst(Request::module()).'/views/'.Request::controller().'/'.Request::action().'.html';
+        $file = base_path().'/app/Gdoo/'.ucfirst(Request::module()).'/views/'.Request::controller().'/'.Request::action().'.html';
         $id = Request::get('id');
         $row = Allocation::find($id);
         $freight_quantity = floatval($row['freight_quantity']);
@@ -205,7 +205,7 @@ class AllocationController extends WorkflowController
             $row['freight_quantity'] = $quantity;
             $row['freight_weight'] = $weight;
         }
-        $form = Form::make1(['table' => 'stock_allocation', 'file' => $file, 'row' => $row]);
+        $form = Form::make2(['table' => 'stock_allocation', 'file' => $file, 'row' => $row]);
         return $form;
     }
 

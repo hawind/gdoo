@@ -1,105 +1,109 @@
-<style>
-#allocation_logistics {
-    padding: 0;
-}
-@media (max-width: 767px) {
-    #allocation_logistics .form-group:first-child > div {
-        border: 0;
+<gdoo>
+    <view id="logistics">
+    <style>
+    #allocation_logistics {
+        padding: 0;
     }
-    #allocation_logistics .control-label {
-        padding: 5px;
-        padding-top: 11px;
-        display: block;
-        font-weight: 400;
-    }
-    #allocation_logistics .control-text {
-        padding: 5px;
-        border-top: 1px solid #ddd;
-    }
-}
-</style>
-
-<form class="form-horizontal form-controller" method="post" id="allocation_logistics" name="allocation_logistics">
-    
-    <group>
-        <field name="freight_quantity" options="{'col_name':4}" label="1" col_name=4 col_label=2 col_type=xs />
-        <field name=freight_weight label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_part_quantity label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_part_weight label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_short_logistics_id label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_short_car label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_short_start label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_short_end label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_price label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_short_money label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_logistics_id label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_logistics_phone label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_type label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_sn label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_money label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_customer_money label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_self_money read=1 label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_pay_type label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_arrival_date label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_remark label=1 col_name=10 col_label=2 col_type=xs />
-    </group>
-
-    <group>
-        <field name=freight_created_by read=1 label=1 col_name=4 col_label=2 col_type=xs />
-        <field name=freight_created_dt read=1 label=1 col_name=4 col_label=2 col_type=xs />
-    </group>
-
-    <field name=id hidden=1 />
-
-</form>
-
-<script>
-$(function($) {
-    $('#stock_allocation_freight_weight,#stock_allocation_freight_part_weight,#stock_allocation_freight_price').on('change', function(e) {
-        var a = toNumber($('#stock_allocation_freight_weight').val());
-        var b = toNumber($('#stock_allocation_freight_part_weight').val());
-        var c = toNumber($('#stock_allocation_freight_price').val());
-        var d = (a + b) * c;
-        $('#stock_allocation_freight_short_money').val(d);
-    });
-    $('#stock_allocation_freight_money,#stock_allocation_freight_customer_money').on('change', function(e) {
-        var a = toNumber($('#stock_allocation_freight_money').val());
-        var b = toNumber($('#stock_allocation_freight_customer_money').val());
-        var c = a - b;
-        if (b > a) {
-            c = 0;
+    @media (max-width: 767px) {
+        #allocation_logistics .form-group:first-child > div {
+            border: 0;
         }
-        $('#stock_allocation_freight_self_money').val(c);
+        #allocation_logistics .control-label {
+            padding: 5px;
+            padding-top: 11px;
+            display: block;
+            font-weight: 400;
+        }
+        #allocation_logistics .control-text {
+            padding: 5px;
+            border-top: 1px solid #ddd;
+        }
+    }
+    </style>
+
+    <form class="form-horizontal form-controller" method="post" id="allocation_logistics" name="allocation_logistics">
+        
+        <group>
+            <field name="freight_quantity" options="" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_weight" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_part_quantity" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_part_weight" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_short_logistics_id" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_short_car" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_short_start" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_short_end" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_price" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_short_money" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_logistics_id" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_logistics_phone" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_type" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_sn" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_money" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_customer_money" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_self_money" read="1" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_pay_type" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_arrival_date" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_remark" label="1" col_name="10" col_label="2" col_type="xs" />
+        </group>
+
+        <group>
+            <field name="freight_created_by" read="1" label="1" col_name="4" col_label="2" col_type="xs" />
+            <field name="freight_created_dt" read="1" label="1" col_name="4" col_label="2" col_type="xs" />
+        </group>
+
+        <field name="id" hidden="1" />
+
+    </form>
+
+    <script>
+    $(function($) {
+        $('#stock_allocation_freight_weight,#stock_allocation_freight_part_weight,#stock_allocation_freight_price').on('change', function(e) {
+            var a = toNumber($('#stock_allocation_freight_weight').val());
+            var b = toNumber($('#stock_allocation_freight_part_weight').val());
+            var c = toNumber($('#stock_allocation_freight_price').val());
+            var d = (a + b) * c;
+            $('#stock_allocation_freight_short_money').val(d);
+        });
+        $('#stock_allocation_freight_money,#stock_allocation_freight_customer_money').on('change', function(e) {
+            var a = toNumber($('#stock_allocation_freight_money').val());
+            var b = toNumber($('#stock_allocation_freight_customer_money').val());
+            var c = a - b;
+            if (b > a) {
+                c = 0;
+            }
+            $('#stock_allocation_freight_self_money').val(c);
+        });
     });
-});
-</script>
+    </script>
+    </view>
+</gdoo>

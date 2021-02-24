@@ -145,7 +145,6 @@ var form_action = '{{$action}}';
             params.resultCache = false;
         },
         query(query) {
-            query.field_0 = 'customer_delivery_address.address';
             query.customer_id = get_customer_id();
         },
         onSelect(row) {

@@ -22,12 +22,10 @@ var select2List = {};
                 cache: false,
                 data: function (params) {
                     var query = options.ajaxParams || {};
-                    query.field_0 = options.search_key + '.name';
-                    query.condition_0 = 'like';
-                    query.search_0 = (params.term || '');
+                    query.q = (params.term || '');
                     query.page = (params.page || 1);
                     query.resultCache = true;
-                    event.trigger('query', select2, query);
+                    event.trigger('query', query);
                     return query;
                 },
                 processResults: function (res, params) {

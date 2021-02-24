@@ -283,11 +283,11 @@ class CustomerController extends DefaultController
 
             $model->addSelect(DB::raw('cda.*'));
 
+            if ($query['q']) {
+                $model->whereRaw("(customer.code like '%{$query['q']}%' or customer.name like '%{$query['q']}%')");
+            }
+
             if ($query['suggest']) {
-                if ($query['q']) {
-                    $q = $query['q'];
-                    $model->whereRaw("(customer.code like '%$q%' or customer.name like '%$q%')");
-                }
                 $rows = $model->limit(15)->get();
                 $data = Grid::dataFilters($rows, $header, function($item) {
                     return $item;

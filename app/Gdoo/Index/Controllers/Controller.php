@@ -15,12 +15,12 @@ class Controller extends BaseController
     /**
      * @var 程序版本
      */
-    public $version = '<a target="_blank" href="http://www.gdoo.net">Gdoo</a> 2.2.1';
+    public $version = '<a target="_blank" href="http://www.gdoo.net">Gdoo</a> 2.2.2';
 
     /**
      * @var 资源版本
      */
-    public $resVersion = '20210221';
+    public $resVersion = '20210225';
 
     /**
      * @var 开发商名称

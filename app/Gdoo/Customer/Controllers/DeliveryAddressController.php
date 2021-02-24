@@ -131,15 +131,8 @@ class DeliveryAddressController extends DefaultController
                 }
             }
 
-            if (isset($query['select2']) && $query['q']) {
+            if ($query['q']) {
                 $model->where('customer_delivery_address.address', 'like', '%'. $query['q'] .'%');
-            }
-
-            // 搜索条件
-            foreach ($search['where'] as $where) {
-                if ($where['active']) {
-                    $model->search($where);
-                }
             }
 
             $model->whereRaw('customer_delivery_address.customer_id > 0 and customer_delivery_address.customer_id = ?', [$query['customer_id']]);

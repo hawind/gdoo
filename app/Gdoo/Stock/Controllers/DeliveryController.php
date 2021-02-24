@@ -390,7 +390,7 @@ class DeliveryController extends WorkflowController
             DB::table('stock_delivery')->where('id', $id)->update($gets);
             return $this->json('物流信息提交成功。', true);
         }
-        $file = base_path().'/addons/'.ucfirst(Request::module()).'/views/'.Request::controller().'/'.Request::action().'.xml';
+        $file = base_path().'/app/Gdoo/'.ucfirst(Request::module()).'/views/'.Request::controller().'/'.Request::action().'.xml';
         $id = Request::get('id');
         $row = Delivery::find($id);
         $freight_quantity = floatval($row['freight_quantity']);
@@ -404,7 +404,7 @@ class DeliveryController extends WorkflowController
             $row['freight_quantity'] = $quantity;
             $row['freight_weight'] = $weight;
         }
-        $form = Form::make1(['table' => 'stock_delivery', 'file' => $file, 'row' => $row]);
+        $form = Form::make2(['table' => 'stock_delivery', 'file' => $file, 'row' => $row]);
         return $form;
     }
 

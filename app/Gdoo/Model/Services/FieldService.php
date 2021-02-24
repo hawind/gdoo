@@ -19,11 +19,10 @@ class FieldService
             'text' => 'text(单行文本)',
             'textarea' => 'textarea(多行文本)',
             'password' => 'password(密码文本)',
-            'option' => 'option(选项菜单)',
+            'option' => 'enum(枚举)',
             'radio' => 'radio(单选按钮)',
             'select' => 'select(下拉菜单)',
             'select2' => 'select2(下拉菜单)',
-            'autocomplete' => 'autocomplete(自动完成)',
             'checkbox' => 'checkbox(复选框)',
             'dialog' => 'dialog(对话框)',
             'urd' => 'urd(权限对话框)',
@@ -41,8 +40,6 @@ class FieldService
             'notification' => 'notification(通知)',
             'sn' => 'sn(单据编号)',
             'audit' => 'audit(审核状态)',
-            'auditsign' => '审批(单人)',
-            'auditsign2' => '审批(多人)',
             'custom' => 'custom(自定义)',
         ];
     }
@@ -431,25 +428,26 @@ class FieldService
         } else {
             $setting = $field['setting'];
         }
-        
+
+        $attribute = $field['attribute'];
+
         if ($field['data_type']) {
             if ($field['type']) {
-                $field['data'] = $field['table'].'['.$field['field'].']';
-                $field['key'] = $field['table'].'_'.$field['field'];
+                $name = $field['table'].'['.$field['field'].']';
+                $id = $field['table'].'_'.$field['field'];
             } else {
-                $field['data'] = $field['data_type'].'['.$field['data_field'].']';
-                $field['key'] = $field['data_type'].'_'.$field['data_field'];
+                $id = $field['table'].'_'.$field['field'];
             }
         } else {
             if ($field['type']) {
-                $field['data'] = $field['table'].'['.$field['field'].']';
-                $field['key'] = $field['table'].'_'.$field['field'];
+                $name = $field['table'].'['.$field['field'].']';
+                $id = $field['table'].'_'.$field['field'];
             } else {
-                $field['key'] = $field['table'].'_'.$field['field'];
+                $id = $field['table'].'_'.$field['field'];
             }
         }
 
-        $attribute = $field['attribute'];
+        $attribute['key'] = $field['table'].'.'.$field['field'];
 
         $attribute['class'][] = 'form-control';
         $attribute['class'][] = 'input-sm';
@@ -474,11 +472,12 @@ class FieldService
 
         $attribute['autocomplete'] = 'off';
 
-        $attribute['id'] = $field['key'];
-        $attribute['name'] = $field['data'];
+        $attribute['id'] = $id;
+        $attribute['name'] = $name;
 
         $field['attribute'] = $attribute;
         $field['setting'] = $setting;
+        $field['auth_id'] = auth()->id();
 
         return $field;
     }
@@ -649,27 +648,26 @@ class FieldService
 
         $_content = explode("\n", $content);
 
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
+        $name = $attribute['name'];
+
         $class = ['form-control','input-sm'];
-
-        $attribute[] = 'class="'. join(' ', $class).'"';
-
-        $attr = join(' ', $attribute);
-
-        $field['attribute']['placeholder'] = '街道';
+        $attr = 'class="'. join(' ', $class).'"';
 
         $readonly = '';
         if ($field['is_read']) {
             $readonly = 'readonly="readonly"';
         }
 
-        $str = '<div class="form-inline"><select '.$attr.' id="'.$field['key'].'_0" name="'.$field['data'].'[0]" '.$readonly.'></select>';
-        $str .= '&nbsp;<select '.$attr.' id="'.$field['key'].'_1" name="'.$field['data'].'[1]" '.$readonly.'></select>';
-        $str .= '&nbsp;<select '.$attr.' id="'.$field['key'].'_2" name="'.$field['data'].'[2]" '.$readonly.'></select>';
-        $str .= '&nbsp;<input '.$attr.' type="text" id="'.$field['key'].'_3" name="'.$field['data'].'[3]" placeholder="街道" value="' . $_content[3] . '" '.$readonly.' />';
+        $str = '<div class="form-inline"><select '.$attr.' id="'.$id.'_0" name="'.$name.'[0]" '.$readonly.'></select>';
+        $str .= '&nbsp;<select '.$attr.' id="'.$id.'_1" name="'.$name.'[1]" '.$readonly.'></select>';
+        $str .= '&nbsp;<select '.$attr.' id="'.$id.'_2" name="'.$name.'[2]" '.$readonly.'></select>';
+        $str .= '&nbsp;<input '.$attr.' type="text" id="'.$id.'_3" name="'.$name.'[3]" placeholder="街道" value="' . $_content[3] . '" '.$readonly.' />';
         $str .= '</div>';
         
         if ($readonly == '') {
-            $pcas = 'new pcas("'.$field['key'].'_0", "'.$field['key'].'_1", "'.$field['key'].'_2", "'.$_content[0].'", "'.$_content[1].'", "'.$_content[2].'");';
+            $pcas = 'new pcas("'.$id.'_0", "'.$id.'_1", "'.$id.'_2", "'.$_content[0].'", "'.$_content[1].'", "'.$_content[2].'");';
             $str .= '<script type="text/javascript">'.$pcas.'</script>';
         }
         return $str;
@@ -678,6 +676,8 @@ class FieldService
     public static function content_region($field, $content = '', $row)
     {
         $field = static::content_field($field);
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
 
         if ($field['is_show']) {
             $ids = [$row['province_id'], $row['city_id'], $row['county_id']];
@@ -685,19 +685,19 @@ class FieldService
             return join(' ', $content);
         }
 
-        $attr = 'class="'. join(' ', $field['attribute']['class']).'"';
+        $attr = 'class="'. join(' ', $attribute['class']).'"';
         $readonly = '';
         if ($field['is_read']) {
             $readonly = 'readonly="readonly"';
         }
 
-        $str = '<div class="form-inline"><select '.$attr.' id="'.$field['key'].'_0" name="'.$field['table'].'[province_id]" '.$readonly.'></select>';
-        $str .= '&nbsp;<select '.$attr.' id="'.$field['key'].'_1" name="'.$field['table'].'[city_id]" '.$readonly.'></select>';
-        $str .= '&nbsp;<select '.$attr.' id="'.$field['key'].'_2" name="'.$field['table'].'[county_id]" '.$readonly.'></select>';
+        $str = '<div class="form-inline"><select '.$attr.' id="'.$id.'_0" name="'.$field['table'].'[province_id]" '.$readonly.'></select>';
+        $str .= '&nbsp;<select '.$attr.' id="'.$id.'_1" name="'.$field['table'].'[city_id]" '.$readonly.'></select>';
+        $str .= '&nbsp;<select '.$attr.' id="'.$id.'_2" name="'.$field['table'].'[county_id]" '.$readonly.'></select>';
         $str .= '</div>';
         
         if ($readonly == '') {
-            $pcas = 'new regionSelect("'.$field['key'].'_0", "'.$field['key'].'_1", "'.$field['key'].'_2", "'.$row['province_id'].'", "'.$row['city_id'].'", "'.$row['county_id'].'");';
+            $pcas = 'new regionSelect("'.$id.'_0", "'.$id.'_1", "'.$id.'_2", "'.$row['province_id'].'", "'.$row['city_id'].'", "'.$row['county_id'].'");';
             $str .= '<script type="text/javascript">'.$pcas.'</script>';
         }
         return $str;
@@ -731,12 +731,13 @@ class FieldService
     public static function content_editor($field, $content = '')
     {
         $field = static::content_field($field);
-
+        $attribute = $field['attribute'];
+        
         if ($field['is_show']) {
             return $content;
         }
 
-        return ueditor($field['data'], $content);
+        return ueditor($attribute['name'], $content);
     }
 
     public static function content_notification($field, $content = '')
@@ -769,7 +770,11 @@ class FieldService
             list($k, $v) = explode('=', $setting['query']);
             if (strpos($v, '$') === 0) {
                 $v = substr($v, 1);
-                $query[$k] = $row[$v];
+                if ($v == 'auth_id') {
+                    $query[$k] = $row[$v];
+                } else {
+                    $query[$k] = $row[$v];
+                }
             } else {
                 $query[$k] = explode(',', $v);
             }
@@ -865,7 +870,7 @@ class FieldService
         return $str . '</select>';
     }
 
-    public static function content_autocomplete($field, $content = '', $row = [])
+    public static function content_select2($field, $content = '', $row = [])
     {
         $field = static::content_field($field);
         $setting = $field['setting'];
@@ -920,22 +925,11 @@ class FieldService
 
         $multi = (int)!$setting['single'];
 
-        if ($related) {
-            $id = $related['table'].'_'.$related['field'];
-            $key = $related['table'].'.'.$related['field'];
-            $id_name = $related['table'].'['.$related['field'].']';
-        } else {
-            $id = $field['table'].'_'.$field['field'];
-            $key = $field['table'].'.'.$field['field'];
-            $id_name = $field['table'].'['.$field['field'].']';
-        }
-        
-        $attribute['id'] = $id;
-        $attribute['key'] = $key;
-        $attribute['name'] = $id_name;
+        $id = $attribute['id'];
+        $name = $attribute['name'];
 
         if ($field['is_read']) {
-            $html[] = '<select name="'.$id_name.'" class="form-control input-sm" disabled="disabled" id="'.$id.'">'.join('', $options).'</select>';
+            $html[] = '<select name="'.$name.'" class="form-control input-sm" disabled="disabled" id="'.$id.'">'.join('', $options).'</select>';
             return join("\n", $html);
         } else {
             $html[] = '<select ' . static::content_attribute($attribute) . '>'.join('', $options).'</select>';
@@ -946,82 +940,6 @@ class FieldService
                 'search_key' => $field['data_type'],
                 'containerCssClass' => $css,
                 'tags' => true,
-                'multiple' => $multi,
-                'ajaxParams' => $query,
-                'ajax' => [
-                    'url' => url($dialog['url']),
-                ],
-            ];
-            $html[] = '<script type="text/javascript">$(function($) { $("#'.$id.'").select2Field('.json_encode($select2_options, JSON_UNESCAPED_UNICODE).'); });</script>';
-            return join("\n", $html);
-        }
-    }
-
-    public static function content_select2($field, $content = '', $row = [])
-    {
-        $field = static::content_field($field);
-        $setting = $field['setting'];
-        $related = $field['related'];
-
-        $value = $content == 0 ? '' : $content;
-
-        $dialog = ModuleService::dialogs($field['data_type']);
-
-        $rows = [];
-        $ids = explode(',', $value);
-        if ($value) {
-            $rows = $dialog['model']($ids)->pluck('name', 'id')->toArray();
-        }
-
-        if ($field['is_show']) {
-            return join(',', $rows);
-        }
-
-        $options = [];
-        foreach ($rows as $k => $v) {
-            $options[] = '<option value="'.$k.'" selected>'.$v.'</option>';
-        }
-
-        $relations = explode(',', $setting['query']);
-        $query = ['select2' => 'true'];
-        if ($relations) {
-            foreach ($relations as $relation) {
-                if ($relation) {
-                    list($k, $v) = explode('=', $relation);
-                    $query[$v] = $row[$k];
-                }
-            }
-        }
-
-        $attribute = $field['attribute'];
-
-        $css = '';
-        if($attribute['required']) {
-            $css = 'input-select2-required';
-        }
-
-        $attribute['class'][] = 'input-select2-custom';
-
-        $multi = (int)!$setting['single'];
-        $id = $related['table'].'_'.$related['field'];
-        $id_key = $related['table'].'.'.$related['field'];
-        $id_name = $related['table'].'['.$related['field'].']';
-
-        $attribute['id'] = $id;
-        $attribute['name'] = $id_name;
-        $attribute['key'] = $id_key;
-
-        if ($field['is_read']) {
-            $html[] = '<select name="'.$id_name.'" class="form-control input-sm" disabled="disabled" id="'.$id.'">'.join('', $options).'</select>';
-            return join("\n", $html);
-        } else {
-            $html[] = '<select ' . static::content_attribute($attribute) . '>'.join('', $options).'</select>';
-            $select2_options = [
-                'placeholder' => '请选择'.$field['name'],
-                'width' => '100%',
-                'allowClear' => true,
-                'search_key' => $field['data_type'],
-                'containerCssClass' => $css,
                 'multiple' => $multi,
                 'ajaxParams' => $query,
                 'ajax' => [
@@ -1050,22 +968,25 @@ class FieldService
         }
 
         $dialog = ModuleService::dialogs($setting['type']);
-
         $multi = (int)!$setting['single'];
         if ($related) {
-            $id_key = $related['table'].'_'.$related['field'];
-            $id_name = $related['table'].'['.$related['field'].']';
         } else {
-            $id_key = $field['table'].'_'.$field['field'];
-            $id_name = $field['table'].'['.$field['field'].']';
             $related['field'] = $field['field'];
             $related['table'] = $field['table'];
         }
 
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
+        $name = $attribute['name'];
+
         $rows = '';
         if ($value) {
-            $ids = explode(',', $value);
-            $rows = $dialog['model']($ids)->implode(',');
+            if ($field['type']) {
+                $ids = explode(',', $value);
+                $rows = $dialog['model']($ids)->implode(',');
+            } else {
+                $rows = $value;
+            }
         }
 
         if ($field['is_print']) {
@@ -1073,7 +994,7 @@ class FieldService
         }
 
         if ($field['is_show']) {
-            return '<input type="hidden" id="'.$id_key.'" value="'.$content.'">'.$rows;
+            return '<input type="hidden" id="'.$id.'" value="'.$content.'">'.$rows;
         }
 
         if ($field['is_hide'] == 1) {
@@ -1086,15 +1007,15 @@ class FieldService
                     $width = '153px';
                 }
                 if ($setting['width']) {
-                    //$width = $setting['width'].'px';
+                    // $width = $setting['width'].'px';
                 }
-                $html[] = '<div class="select-group" style="width:'.$width.';"><input class="form-control input-sm select-readonly" readonly="readonly" value="'.$rows.'" id="'.$id_key.'_text">';
+                $html[] = '<div class="select-group" style="width:'.$width.';"><input class="form-control input-sm select-readonly" readonly="readonly" value="'.$rows.'" id="'.$id.'_text">';
             } else {
                 if ($setting['css'] == 'input-inline') {
                     $width = '225px';
                 }
                 if ($setting['width']) {
-                    //$width = $setting['width'].'px';
+                    // $width = $setting['width'].'px';
                 }
 
                 $attribute = $field['attribute'];
@@ -1124,10 +1045,10 @@ class FieldService
                 foreach ($query as $k => $v) {
                     $jq .= ' data-'.$k.'="'. $v.'"';
                 }
-                $html[] = '<div class="select-group input-group" style="width:'.$width.';"><input autocomplete="off" class="gdoo-dialog-input form-control input-inline input-sm'.$css.'" '.$jq.' value="'.$rows.'" id="'.$id_key.'_text" />';
-                $html[] = '<input type="hidden" id="'.$id_key.'" name="'.$id_name.'" value="'.$value.'">';
+                $html[] = '<div class="select-group input-group" style="width:'.$width.';"><input autocomplete="off" class="gdoo-dialog-input form-control input-inline input-sm'.$css.'" '.$jq.' value="'.$rows.'" id="'.$id.'_text" />';
+                $html[] = '<input type="hidden" id="'.$id.'" name="'.$name.'" value="'.$value.'">';
                 $html[] = '<div class="input-search">';
-                $html[] = '<a class="input-search-btn'.$css2.'" data-toggle="dialog-view" '.$jq.' data-id="'.$id_key.'"><i class="fa fa-search"></i></a>';
+                $html[] = '<a class="input-search-btn'.$css2.'" data-toggle="dialog-view" '.$jq.' data-id="'.$id.'"><i class="fa fa-search"></i></a>';
                 $html[] = '</div>';
             }
             $html[] = '</div>';
@@ -1139,11 +1060,12 @@ class FieldService
     {
         $field = static::content_field($field);
         $setting = $field['setting'];
+        $attribute = $field['attribute'];
 
-        $id = $field['data'];
-        $name = str_replace('_id', '_name', $id);
-        $key_id = $field['key'];
-        $key_name = str_replace('_id', '_name', $key_id);
+        $attr_id = $attribute['id'];
+        $attr_name = $attribute['name'];
+        $name = str_replace('_id', '_name', $attr_name);
+        $key_name = str_replace('_id', '_name', $attr_id);
         $v_id = $field['field'];
         $v_name = str_replace('_id', '_name', $v_id);
 
@@ -1154,7 +1076,7 @@ class FieldService
             'name' => $key_name, 
             'title' => '',
             'url' => 'index/api/dialog',
-            'id' => $key_id,
+            'id' => $attr_id,
             'toggle' => 'dialog-view'
         ];
 
@@ -1177,7 +1099,7 @@ class FieldService
                     if ($setting['width']) {
                         $width = $setting['width'].'px';
                     }
-                    $html[] = '<div class="select-group" style="width:'.$width.';"><input class="form-control input-sm select-readonly" readonly="readonly" id="'.$key_id.'_text" value="'.$row[$v_name].'" />';
+                    $html[] = '<div class="select-group" style="width:'.$width.';"><input class="form-control input-sm select-readonly" readonly="readonly" id="'.$attr_id.'_text" value="'.$row[$v_name].'" />';
                 } else {
                     if ($setting['css'] == 'input-inline') {
                         $width = '225px';
@@ -1185,12 +1107,12 @@ class FieldService
                     if ($setting['width']) {
                         $width = $setting['width'].'px';
                     }
-                    $html[] = '<div class="select-group input-group" style="width:'.$width.';"><input class="form-control input-inline input-sm" name="'.$name.'" style="cursor:pointer;" '.$jq.' readonly="readonly" value="'.$row[$v_name].'" id="'.$key_id.'_text" />';
+                    $html[] = '<div class="select-group input-group" style="width:'.$width.';"><input class="form-control input-inline input-sm" name="'.$name.'" style="cursor:pointer;" '.$jq.' readonly="readonly" value="'.$row[$v_name].'" id="'.$attr_id.'_text" />';
                     $html[] = '<div class="input-group-btn">';
-                    $html[] = '<a data-toggle="dialog-clear" data-id="'.$key_id.'" class="btn btn-sm btn-default"><i class="fa fa-times"></i></a>';
+                    $html[] = '<a data-toggle="dialog-clear" data-id="'.$attr_id.'" class="btn btn-sm btn-default"><i class="fa fa-times"></i></a>';
                     $html[] = '</div>';
                 }
-                $html[] = '<input type="hidden" id="'.$key_id.'" name="'.$id.'" value="'.$row[$v_id].'">';
+                $html[] = '<input type="hidden" id="'.$attr_id.'" name="'.$attr_name.'" value="'.$row[$v_id].'">';
                 $html[] = '</div>';
 
                 return join("\n", $html);
@@ -1222,8 +1144,6 @@ class FieldService
             $field['attribute']['onfocus'] = 'this.defaultIndex=this.selectedIndex;';
             $field['attribute']['onchange'] = 'this.selectedIndex=this.defaultIndex;';
         }
-
-        $id = $field['attribute']['id'];
 
         $width = '100%';
         if ($setting['css'] == 'input-inline') {
@@ -1315,6 +1235,7 @@ class FieldService
     {
         $field = static::content_field($field);
         $setting = $field['setting'];
+
         $select = explode("\n", $setting['content']);
         $str = [];
         $w = $permission[$field['field']]['w'] == 1 ? '' : 'disabled="disabled"';
@@ -1336,6 +1257,7 @@ class FieldService
         $attribute = $field['attribute'];
         unset($attribute['class']);
         $id = $attribute['id'];
+        $name = $attribute['name'];
         
         foreach ($select as $i => $t) {
             
@@ -1345,9 +1267,9 @@ class FieldService
             $checked = $content == $v ? 'checked="checked"' : '';
             $attribute['id'] = $id.'_'.$i;
             if ($field['is_show']) {
-                $str[] = '<div class="radio radio-inline" style="padding-left:0;"><label class="i-checks i-checks-sm"><input type="radio" disabled="disabled" name="'. $field['data'] . '" '.$w.' value="' . $v . '" '.$checked.'"><i></i>'. $n. '</label></div>';
+                $str[] = '<div class="radio radio-inline" style="padding-left:0;"><label class="i-checks i-checks-sm"><input type="radio" disabled="disabled" name="'. $name . '" '.$w.' value="' . $v . '" '.$checked.'"><i></i>'. $n. '</label></div>';
             } else {
-                $str[] = '<div class="radio radio-inline" style="padding-left:0;"><label class="i-checks i-checks-sm '.$disabled.'"><input type="radio" name="'. $field['data'] . '" '.$w.' value="' . $v . '"' . static::content_attribute($attribute).' '.$checked.'><i></i>'. $n. '</label></div>';
+                $str[] = '<div class="radio radio-inline" style="padding-left:0;"><label class="i-checks i-checks-sm '.$disabled.'"><input type="radio" name="'. $name . '" '.$w.' value="' . $v . '"' . static::content_attribute($attribute).' '.$checked.'><i></i>'. $n. '</label></div>';
             }
         }
         return join('', $str);
@@ -1356,11 +1278,14 @@ class FieldService
     public static function content_checkbox($field, $content = '', $row = [], $permission = [])
     {
         $field = static::content_field($field);
-        // 配置
         $setting = $field['setting'];
         $default = $setting['default'];
         $content = is_null($content) ? $default : $content;
         $str = [];
+
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
+        $name = $attribute['name'];
 
         $_select = explode("\n", $setting['content']);
         if ($field['is_print']) {
@@ -1383,7 +1308,7 @@ class FieldService
             if ($field['is_show']) {
                 $str[] = '<label class="i-checks i-checks-sm m-b-none" style="font-weight:normal;"><input type="checkbox" disabled="disabled" '.$checked.'><i></i>'.$field['name'].'</label>';
             } else {
-                $str[] = '<label class="i-checks i-checks-sm m-t-xs m-b-none" style="font-weight:normal;"><input type="checkbox" id="'. $field['table'] . '_'.$v.'" name="'. $field['data'] . '" value="1" '.$checked.'><i></i>'.$field['name'].'</label>';
+                $str[] = '<label class="i-checks i-checks-sm m-t-xs m-b-none" style="font-weight:normal;"><input type="checkbox" id="'. $id .'" name="'. $name . '" value="1" '.$checked.'><i></i>'.$field['name'].'</label>';
             }
         } else {
             foreach ($_select as $t) {
@@ -1407,10 +1332,13 @@ class FieldService
     public static function content_image($field, $content = '')
     {
         $field = static::content_field($field);
-        $attribute = $field['attribute'];
         $setting = $field['setting'];
 
+        $attribute = $field['attribute'];
         $attribute['readonly'] = 'readonly';
+
+        $id = $attribute['id'];
+        $name = $attribute['name'];
 
         if ($field['is_show']) {
             if (empty($content)) {
@@ -1419,7 +1347,7 @@ class FieldService
                 $src = 'uploads/'.$content;
             }
             return '
-            <div id="'.$field['key'].'-media" class="media-controller">
+            <div id="'.$id.'-media" class="media-controller">
                 <div class="media-item">
                     <img class="img-responsive img-thumbnail" src="'.url($src).'" />
                 </div>
@@ -1432,16 +1360,16 @@ class FieldService
                 $src = 'uploads/'.$content;
                 $close = '<a class="close" title="删除这张图片" data-toggle="media-delete">×</a>';
             }
-            $dialog = "mediaDialog('system/media/dialog', '".$field['data']."', '".$field['key']."', 0)";
+            $dialog = "mediaDialog('system/media/dialog', '".$name."', '".$id."', 0)";
             $str = '
             <div class="input-group">
                 <div class="input-group-btn">
                     <button type="button" onclick="'.$dialog.'" class="btn btn-sm btn-info"><i class="fa fa-image"></i> 选择图片</button>
                 </div>
             </div>
-            <div id="'.$field['key'].'-media" class="media-controller media-input">
+            <div id="'.$id.'-media" class="media-controller media-input">
                 <div class="media-item">
-                    <input type="hidden" value="' .$content. '" name="' .$field['data']. '" />
+                    <input type="hidden" value="' .$content. '" name="' .$name. '" />
                     <img class="img-responsive img-thumbnail" src="'.url($src).'" />
                     '.$close.'
                 </div>
@@ -1453,13 +1381,16 @@ class FieldService
     public static function content_images($field, $content = '')
     {
         $field = static::content_field($field);
-        $attribute = $field['attribute'];
         $setting = $field['setting'];
+
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
+        $name = $attribute['name'];
 
         $attribute['readonly'] = 'readonly';
 
         if ($field['is_show']) {
-            $html = '<div id="'.$field['key'].'-media" class="media-controller">';
+            $html = '<div id="'.$id.'-media" class="media-controller">';
             if (empty($content)) {
                 $src = 'assets/images/nopic.jpg';
                 $html .= '<div class="media-item">
@@ -1481,19 +1412,19 @@ class FieldService
                 $src = 'assets/images/nopic.jpg';
                 $items .= '<div class="media-item">
                     <img class="img-responsive img-thumbnail" src="'.url($src).'" />
-                    <input type="hidden" value="" name="' .$field['data']. '[]" />
+                    <input type="hidden" value="" name="' .$name. '[]" />
                     </div>';
             } else {
                 $srcs = explode("\n", $content);
                 foreach($srcs as $src) {
                     $items .= '<div class="media-item">
                     <img class="img-responsive img-thumbnail" src="'.url('uploads/'.$src).'" />
-                    <input type="hidden" value="' .$src. '" name="' .$field['data']. '[]" />
+                    <input type="hidden" value="' .$src. '" name="' .$name. '[]" />
                     <a class="close" title="删除这张图片" data-toggle="media-delete">×</a>
                     </div>';
                 }
             }
-            $dialog = "mediaDialog('system/media/dialog', '".$field['data']."', '".$field['key']."', 1)";
+            $dialog = "mediaDialog('system/media/dialog', '".$name."', '".$id."', 1)";
             $html = '
             <div class="input-group">
                 <div class="input-group-btn">
@@ -1501,7 +1432,7 @@ class FieldService
                 </div>
             </div>';
 
-            $html .= '<div id="'.$field['key'].'-media" class="media-controller media-input">';
+            $html .= '<div id="'.$id.'-media" class="media-controller media-input">';
             $html .= $items;
             $html .= '</div>';
         }
@@ -1511,27 +1442,30 @@ class FieldService
     public static function content_location($field, $content = '', $row)
     {
         $field = static::content_field($field);
-        $attribute = $field['attribute'];
         $setting = $field['setting'];
+
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
+        $name = $attribute['name'];
+
         $attribute['readonly'] = 'readonly';
 
         if ($field['is_show']) {
             return '
-            <div id="'.$field['key'].'-media" class="media-controller">
+            <div id="'.$id.'-media" class="media-controller">
                 <i class="icon icon-map-marker text-info text-sm"></i><a href="javascript:;" data-location="'.$row['location'].'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-show">'.$content.'</a>
             </div>';
         } else {
-            $dialog = "locationDialog('system/map/dialog', '".$field['data']."', '".$field['key']."', 0)";
             $str = '
             <div class="input-group">
                 <div class="input-group-btn">
-                    <a href="javascript:;" data-location="'.$row['location'].'" data-name="'.$field['data'].'" data-id="'.$field['key'].'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-select" class="btn btn-sm btn-info"><i class="fa fa-map"></i> 选择位置</a>
+                    <a href="javascript:;" data-location="'.$row['location'].'" data-name="'.$name.'" data-id="'.$id.'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-select" class="btn btn-sm btn-info"><i class="fa fa-map"></i> 选择位置</a>
                 </div>
             </div>
-            <div id="'.$field['key'].'-media" class="media-controller media-input">
-                <input type="text" class="form-control input-sm" autocomplete="off" id="'.$field['key'].'" value="' .$content. '" name="' .$field['data']. '">
-                <input type="hidden" id="'.$field['key'].'_longitude" value="'.$row['longitude'].'" name="' .$field['table']. '[longitude]" />
-                <input type="hidden" id="'.$field['key'].'_latitude" value="'.$row['latitude'].'" name="' .$field['table']. '[latitude]" />
+            <div id="'.$id.'-media" class="media-controller media-input">
+                <input type="text" class="form-control input-sm" autocomplete="off" id="'.$id.'" value="' .$content. '" name="' .$name. '">
+                <input type="hidden" id="'.$id.'_longitude" value="'.$row['longitude'].'" name="' .$field['table']. '[longitude]" />
+                <input type="hidden" id="'.$id.'_latitude" value="'.$row['latitude'].'" name="' .$field['table']. '[latitude]" />
             </div>';
         }
         return $str;
@@ -1555,10 +1489,13 @@ class FieldService
         $field = static::content_field($field);
         $setting = $field['setting'];
 
-        $_setting = Setting::where('type', 'system')->pluck('value', 'key');
+        $attribute = $field['attribute'];
+        $name = $attribute['name'];
+        $key = $attribute['key'];
 
-        $key = str_replace(['[',']'], ['.',''], $field['data']);
-        $input_id = str_replace('.', '_', $key);
+        $config = Setting::where('type', 'system')->pluck('value', 'key');
+
+        $input_id = $attribute['id'];
 
         $attachment = AttachmentService::edit($content, $key);
 
@@ -1605,7 +1542,7 @@ class FieldService
                     <span class="file-name"><span class="text-danger hinted" title="草稿状态">!</span> <a class="option" href="javascript:uploader.file(\'file_draft_<%=id%>\', \''.URL::to('uploads').'/<%=path%>\');"><%=name%></a></span>
                     <span class="file-size">(<%=size%>)</span>
                     <span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'file_draft_<%=id%>\');"><i class="fa fa-times-circle"></i></a></span>
-                    <input type="hidden" class="'.$input_id.' id" name="'. $field['data'] . '[]" value="<%=id%>" />
+                    <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="<%=id%>" />
                 </div>
                 <div class="clear"></div>
             </script>
@@ -1622,7 +1559,7 @@ class FieldService
             }
             </style>
             */
-            $str .= '<a class="btn btn-sm btn-info hinted" title="文件大小限制: '.$_setting['upload_max'].'MB" href="javascript:viewBox(\'attachment\', \'上传\', \''.url('index/attachment/uploader', ['path' => Request::module(), 'key' => $key]).'\');"><i class="fa fa-cloud-upload"></i> 文件上传</a>';
+            $str .= '<a class="btn btn-sm btn-info hinted" title="文件大小限制: '.$config['upload_max'].'MB" href="javascript:viewBox(\'attachment\', \'上传\', \''.url('index/attachment/uploader', ['path' => Request::module(), 'key' => $key]).'\');"><i class="fa fa-cloud-upload"></i> 文件上传</a>';
             /*
             <a class="btn btn-sm btn-info" id="qrcode_'.$input_id.'_btn" href="javascript:;"><i class="fa fa-qrcode"></i> 扫码上传</a>
             <div id="qrcode_'.$input_id.'" style="display:none;"></div>
@@ -1636,7 +1573,7 @@ class FieldService
                         <span class="file-name"><span class="icon icon-paperclip"></span> <a class="option" href="javascript:uploader.file(\'file_queue_'.$file['id'].'\', \''.URL::to('uploads').'/'.$file['path'].'\');">'.$file['name'].'</a></span>
                         <span class="file-size">('.human_filesize($file['size']).')</span>
                         <span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'file_queue_'.$file['id'].'\');"><i class="fa fa-times-circle"></i></a></span>
-                        <input type="hidden" class="'.$input_id.' id" name="'. $field['data'] . '[]" value="'.$file['id'].'">
+                        <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="'.$file['id'].'">
                     </div>
                     <div class="clear"></div>';
                 }
@@ -1650,7 +1587,7 @@ class FieldService
                         <span class="file-name"><span class="text-danger hinted" title="草稿附件">!</span> <a class="option" href="javascript:uploader.file(\'queue_draft_'.$file['id'].'\', \''.URL::to('uploads').'/'.$file['path'].'\');">'.$file['name'].'</a></span>
                         <span class="file-size">('.human_filesize($file['size']).')</span>
                         <span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'queue_draft_'.$file['id'].'\');"><i class="fa fa-times-circle"></i></a></span>
-                        <input type="hidden" class="'.$input_id.' id" name="'. $field['data'] . '[]" value="'.$file['id'].'">
+                        <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="'.$file['id'].'">
                     </div>
                     <div class="clear"></div>';
                 }

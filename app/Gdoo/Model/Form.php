@@ -41,85 +41,10 @@ use Illuminate\Support\Arr;
 
 class Form
 {
-    public static function dataFilter($options)
-    {
-        $table = $options['table'];
-        $gets = $options['gets'];
-        $master = $gets['master'];
-        $tables = is_string($table) ? [$table] : $table;
-
-        $permission = DB::table('model_permission')
-        ->where('id', $master['permission_id'])
-        ->first();
-
-        $permissions = json_decode($permission['data'], true);
-        $dataFiles = [];
-        foreach ($tables as $table) {
-
-            $flow = DB::table('model')
-            ->where('table', $table)
-            ->first();
-
-            $fields = DB::table('model_field')
-            ->where('model_id', $flow['id'])
-            ->orderBy('sort', 'asc')
-            ->get()->keyBy('field');
-
-            $rows = $permissions[$table];
-
-            foreach ($rows as $field => $permission) {
-                $value = $gets[$table][$field];
-                $column = $fields[$field];
-                $setting = json_decode($column['setting'], true);
-
-                if ($permission['w'] == 1) {
-                    switch ($column['form_type']) {
-                        case 'address':
-                            $value = join("\n", (array)$value);
-                            break;
-                        case 'files':
-                            $value = (array)$value;
-                            $dataFiles = array_merge($dataFiles, $value);
-                            $value = join("\n", $value);
-                            break;
-                        case 'images':
-                            $value = join("\n", (array)$value);
-                            break;
-                        case 'date':
-                            if ($setting['save'] == 'u') {
-                                $value = empty($value) ? '' : strtotime($value);
-                            }
-                            break;
-                        case 'checkbox':
-                            $value = intval($value);
-                            break;
-                    }
-                }
-                $gets[$table][$field] = $value;
-            }
-        }
-        $gets['dataFiles'] = $dataFiles;
-        return $gets;
-    }
-
-    public static function getSelect($setting) {
-        $_select = explode("\n", $setting['content']);
-        $values = [];
-        $a1 = false;
-        foreach ($_select as $t) {
-            $n = $v = '';
-            list($n, $v) = explode('|', $t);
-            if (is_null($v)) {
-                
-            } else {
-                $a1 = true;
-            }
-            $v = is_null($v) ? trim($n) : trim($v);
-            $values[] = ['id' => $v, 'name' => $n];
-        }
-    }
-
-    public static function columnFormat($table, &$field, &$join, &$select, &$links)
+    /**
+     * 关联字段处理
+     */
+    public static function fieldRelated($table, &$field, &$join, &$select, &$links)
     {
         if ($field['data_type']) {
             $data_type = $field['data_type'];
@@ -136,31 +61,62 @@ class Form
                 $column = $field['field'];
             }
 
-            if (strpos($data_field, ':')) {
-                list($var1, $var2) = explode(':', $data_field);
-                list($_v1, $_v2) = explode('.', $var1);
-                list($_t1, $_t2) = explode('.', $var2);
-                $_table = $data_link.'_'.$_t1;
-                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
-                $index = $_table.'.'.$_t2;
-                if ($field['field'] == $data_link) {
-                    $column = $field['field'].'_'.$_v1;
-                    // 这里本地字段和右表字段一样时，直接取右表名称
-                    $links[$data_link][$column] = $_v1;
-                } else {
-                    // $_v2 右表关联字段，$_t2 右表映射字段
-                    if ($field['type']) {
-                        $links[$data_link][$column] = $_v2;
-                        // 右表 id_name
-                        $links[$data_link][$column.'_'.$_t2] = $_v2.'_'.$_t2;
+            $field_count = mb_substr_count($data_field, ':');
+            if ($field_count > 0) {
+                $var1 = explode(':', $data_field);
+                list($_v1, $_v2) = explode('.', $var1[0]);
+                if ($field_count == 2) {
+                    // 分割对应的多表联合查询
+                    list($_t1, $_t2, $_t3) = explode('.', $var1[1]);
+                    list($_c1, $_c2) = explode('.', $var1[2]);
 
-                        $field['dest_column'] = $column.'_'.$_t2;
-                        $column = $column.'_'.$_t2;
+                    // 获取左表名
+                    $_left_table = $data_link.'_'.$_v2.'_'.$_t1;
+
+                    $join[$_left_table] = [$_t1.' as '.$_left_table, $_left_table.'.id', '=', $_table.'.'.$_v2];
+                    
+                    $_table = $data_link.'_'.$_v2.'_'.$_t1.'_'.$_t3;
+                    $join[$_table] = [$_c1.' as '.$_table, $_table.'.id', '=', $_left_table.'.'.$_t3];
+
+                    $index = $_table.'.'.$_c2;
+
+                    // 远程字段和本地字段名称一样重命名
+                    if ($data_link == $field['field']) {
+                        $column = $column.'_'.$_v1;
+                        $links[$data_link][$column] = $_v1;
                     } else {
-                        $links[$data_link][$column] = $_v2.'_'.$_t2;
+                        if ($field['type']) {
+                            // 右表 id_name
+                            // 二层关联后无法获取远程字段是否有本地字段(这里暂时没有想到好的解决办法)
+                            // $links[$data_link][$column.'_'.$_t2] = $_v2.'_'.$_t2;
+                            $column = $column.'_'.$_c2;
+                        }
+                        $links[$data_link][$column] = $_v1;
+                    }
+
+                } else {
+                    list($_t1, $_t2) = explode('.', $var1[1]);
+                    $_table = $data_link.'_'.$_t1;
+                    $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
+                    $index = $_table.'.'.$_t2;
+                    if ($field['field'] == $data_link) {
+                        $column = $field['field'].'_'.$_v1;
+                        // 这里本地字段和右表字段一样时，直接取右表名称
+                        $links[$data_link][$column] = $_v1;
+                    } else {
+                        // $_v2 右表关联字段，$_t2 右表映射字段
+                        if ($field['type']) {
+                            $links[$data_link][$column] = $_v2;
+                            // 右表 id_name
+                            $links[$data_link][$column.'_'.$_t2] = $_v2.'_'.$_t2;
+
+                            $field['dest_column'] = $column.'_'.$_t2;
+                            $column = $column.'_'.$_t2;
+                        } else {
+                            $links[$data_link][$column] = $_v2.'_'.$_t2;
+                        }
                     }
                 }
-
             } else {
                 if ($field['type']) {
                     if ($field['field'] == $data_link) {
@@ -179,6 +135,856 @@ class Form
         }
     }
 
+    public static function make($options)
+    {
+        $assets = UserAssetService::getNowRoleAssets();
+
+        // 权限查询类型
+        $code = $options['code'];
+        $bill = Bill::where('code', $code)->first();
+
+        // 表数据
+        $flow = DB::table('model')
+        ->where('id', $bill['model_id'])
+        ->first();
+
+        // 主表字段
+        $fields = DB::table('model_field')
+        ->where('model_id', $bill['model_id'])
+        ->orderBy('sort', 'asc')
+        ->get()->keyBy('field');
+
+        $table = $flow['table'];
+
+        // 查询主表数据
+        $join = $select = $links = [];
+        $select[] = $table.'.*';
+        foreach($fields as $field) {
+            static::fieldRelated($table, $field, $join, $select, $links);
+        }
+
+        $q = DB::table($table)
+        ->where($table.'.id', (int)$options['id']);
+        foreach($join as $j) {
+            $q->leftJoin($j[0], $j[1], $j[2], $j[3]);
+        }
+        $row = $q->select($select)->first();
+
+        $auth = auth()->user();
+
+        $action = $options['action'];
+        if ($action == 'show') {
+            $tpl = 'show';
+            $type_sql = '(' . join(' or ', [db_instr('type', $tpl)]) . ')';
+        } else {
+            $tpl = $row['id'] > 0 ? 'edit' : 'create';
+            $type_sql = '(' . join(' or ', [db_instr('type', $tpl)]) . ')';
+        }
+
+        if ($action == 'print') {
+            $type_sql = '(' . join(' or ', [db_instr('type', 'print')]) . ')';
+        }
+
+        $key = AES::encrypt($bill['id'].'.'.(int)$row['id'], config('app.key'));
+
+        $run_id = 0;
+        $step_id = 0;
+        $run_log_id = 0;
+        $run_step_id = 0;
+        $recall_log_id = 0;
+        $recall_btn = $audit_btn = $abort_btn = $read_btn = false;
+
+        if ($bill['audit_type'] == 1) {
+
+            $run = DB::table('model_run')
+            ->where('bill_id', $bill['id'])
+            ->where('data_id', $row['id'])
+            ->first();
+
+            // 流程是新建的
+            if (empty($run)) {
+                $step = DB::table('model_step')
+                ->where('bill_id', $bill['id'])
+                ->where('type', 'start')
+                ->first();
+                $step_id = $step['id'];
+            } else {
+                $step = DB::table('model_run_log')
+                ->leftJoin('model_run_step', 'model_run_step.id', '=', 'model_run_log.run_step_id')
+                ->where('model_run_log.run_id', $run['id'])
+                ->where('model_run_log.user_id', $auth['id'])
+                ->where('model_run_log.status', 0)
+                ->orderBy('model_run_log.id', 'asc')
+                ->first([
+                    'model_run_log.*',
+                    'model_run_step.type as step_type', 
+                    'model_run_step.step_id',
+                    'model_run_step.permission_id'
+                ]);
+
+                $run_id = $run['id'];
+                $step_id = $step['step_id'];
+                $run_step_id = $step['run_step_id'];
+                $run_log_id = $step['id'];
+                $option = $step['option'];
+
+                // 判断是有审核权限
+                $audit_status = $step['user_id'] == auth()->id();
+                if ($option == 1) {
+                    $audit_btn = $audit_status;
+                } else {
+                    $read_btn = $audit_status;
+                }
+            }
+
+            if ($row['status'] == '0') {
+                $audit_btn = 1;
+            }
+
+            if ($row['status'] == '1') {
+                $abort_btn = 1;
+            }
+            
+            // 获取表单操作权限
+            $_permission = DB::table('model_permission')
+            ->permission('receive_id')
+            ->where('id', $step['permission_id'])
+            ->first();
+
+            // 获取最后已转交节点
+            $passed = DB::table('model_run_log')
+            ->where('run_id', $run['id'])
+            ->where('user_id', $auth['id'])
+            ->where('status', '>', 0)
+            ->orderBy('id', 'desc')
+            ->first();
+
+            if ($passed) {
+                $recall_log_id = $passed['id'];
+                $nodes = DB::table('model_run_log')
+                ->where('parent_id', $passed['id'])
+                ->get();
+
+                $node_count = $nodes->count();
+                $todo_count = $nodes->where('status', 0)->count();
+                // 全部未办理才能撤回
+                if ($node_count > 0) {
+                    if ($node_count == $todo_count) {
+                        $recall_btn = true;
+                    }
+                }
+            }
+
+            /*
+            if ($audit_btn == true && $run_id > 0) {
+                // 更新待办接收时间
+                if ($step['received_id'] == 0) {
+                    DB::table('model_run_log')->where('id', $step['id'])->update([
+                        'updated_id' => 0,
+                        'updated_by' => '',
+                        'updated_at' => 0,
+                        'received_id' => $auth['id'],
+                        'received_by' => $auth['name'],
+                        'received_at' => time(),
+                    ]);
+                }
+            }
+            */
+
+        } else {
+            $_permission = DB::table('model_permission')
+            ->permission('receive_id')
+            ->whereRaw($type_sql)
+            ->where('bill_id', $bill['id'])
+            ->first();
+        }
+
+        $permission = json_decode($_permission['data'], true);
+
+        $model = DB::table('model_template')
+        ->permission('receive_id', null, false, false)
+        ->whereRaw($type_sql)
+        ->where('bill_id', $bill['id']);
+        if ($options['template_id'] > 0) {
+            $model->where('id', $options['template_id']);
+        }
+        $template = $model->first();
+
+        if (empty($template)) {
+            $model = DB::table('model_template')
+            ->where('receive_id', 'all')
+            ->whereRaw($type_sql)
+            ->where('bill_id', $bill['id']);
+            if ($options['template_id'] > 0) {
+                $model->where('id', $options['template_id']);
+            }
+            $template = $model->first();
+        }
+
+        $prints_btn = '';
+        if (isset($assets['print']) && $row['id'] > 0) {
+            // 获取打印模板
+            $prints = DB::table('model_template')
+            ->permission('receive_id')
+            ->where('type', 'print')
+            ->where('bill_id', $bill['id'])
+            ->orderBy('sort', 'asc')
+            ->get();
+
+            if ($prints) {
+                $prints_btn .= '<div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-print"></span> 打印
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">';
+                foreach($prints as $print) {
+                    $prints_btn .= '<li><a href="'.url('print', ['id' => $row['id'], 'template_id' => $print['id']]).'" target="_blank"> '.$print['name'].'</a></li>';
+                }
+                $prints_btn .= '</ul></div> ';
+            }
+        }
+
+        $views = json_decode($template['tpl'], true);
+
+        $js = '<script type="text/javascript">formGridList.' . $flow['table'] . ' = [];';
+        $js .= '$(function() {';
+
+        $html = '';
+        $sublist_status = false;
+        $tabs = [];
+
+        $_master_data = Hook::fire($table . '.onBeforeForm', ['options' => $options, 'permission' => $permission, 'model' => $flow, 'fields' => $fields, 'views' => $views, 'row' => $row]);
+        extract($_master_data);
+        
+        $tpls = [];
+        $sublist = [];
+        $print_row = [];
+
+        foreach ($views as $group) {
+
+            $_replace = [];
+            $tpl = '';
+            $_sub_view = [];
+            $col = 0;
+
+            if ($group['border'] == '') {
+                $group['border'] = 1;
+            } 
+
+            foreach ($group['fields'] as $view) {
+                if ($view['role_id']) {
+                    $role_ids = explode(',', $view['role_id']);
+                    if (in_array($auth->role_id, $role_ids)) {
+                        continue;
+                    }
+                }
+
+                // 显示流程记录
+                if ($view['field'] == '{flowlog}') {
+                    if ($action == 'print') {
+                        $tpl = StepService::getFlowLogTpl($run_id, $row, $flow, $tpl);
+                    } else {
+                        $flowlog = StepService::getFlowLogTpl($run_id, $row, $flow, $flowlog);
+                    }
+                    continue;
+                }
+
+                // 处理流程意见字段
+                list($view_type, $view_step_id) = explode('.', $view['field']);
+                if ($view_type == 'flow_step') {
+                    $view_step = StepService::getFlowField($run_id, $row, $flow, $steps, $step, $view, $view_step_id, $action, $permission);
+                    if ($view_step) {
+                        $view['title'] = $steps[$view_step_id]['name'].'意见';
+                        $_replace['{' . $view['field'] . '}'] = $view_step;
+                    } else {
+                        continue;
+                    }
+                }
+
+                $field = $fields[$view['field']];
+                // 是多行子表
+                if ($view['type'] == 0) {
+                    if ($view['hidden']) {
+                        $tpl .= '<div style="display:none;">{' . $view['field'] . '}</div>';
+                    } else {
+                        if ($col == 0) {
+                            if ($action == 'print') {
+                                $tpl .= '<div class="row '.($group['border'] == 0 ? 'no-border' : '').'">';
+                            } else {
+                                $tpl .= $action == 'show' ? '<div class="row">' : '<div class="form-group">';
+                            }
+                        }
+
+                        // 补全错位
+                        if ($col > 0 && $view['col'] == 12) {
+                            $line = 12 - $col;
+                            if ($action == 'print') {
+                                $tpl .= '</div><div class="row">';
+                            } else {
+                                $tpl .= '<div class="col-xs-8 col-sm-' . ($line) . ' control-text"></div>';
+                                $tpl .= ($action == 'show' || $action == 'print') ? '</div><div class="row">' : '</div><div class="form-group">';
+                            }
+                            $col = 0;
+                        }
+
+                        if ($col + $view['col'] > 12) {
+                            $line = $col + $view['col'] - 12;
+                            if ($action == 'print') {
+                                $tpl .= '</div><div class="row '.($group['border'] == 0 ? 'no-border' : '').'">';
+                            } else {
+                                $tpl .= '<div class="col-xs-8 col-sm-' . ($line) . ' control-text"></div>';
+                                $tpl .= ($action == 'show' || $action == 'print') ? '</div><div class="row">' : '</div><div class="form-group">';
+                            }
+                            $col = 0;
+                        }
+                        
+                        $col += $view['col'];
+
+                        $field['name'] = empty($view['title']) ? $field['name'] : $view['title'];
+
+                        $label = '{' . $field['name'] . '}';
+                        if ($view['hide_title'] == 1) {
+                            $label = '';
+                        }
+
+                        if ($view['type'] == 1) {
+                            $right_col = $view['col'];
+                        } else {
+                            $right_col = $view['col'] - 1;
+                        }
+
+                        if ($action == 'print') {
+                            $right_col += 1;
+                        } else {
+                            if ($label) {
+                                $tpl .= '<div class="col-xs-4 col-sm-1 control-label">' . $label . '</div>';
+                            } else {
+                                $right_col += 1;
+                            }
+                        }
+
+                        if ($action == 'print') {
+                            if ($view['custom'] == 1) {
+                                $tpl .= '<div id="'.$view['field'].'" class="col-sm-' . $right_col . ' control-text">' . ($label == '' ? '' : $label . ': ') . $view['content'] . '</div>';
+                            } else {
+                                $tpl .= '<div id="'.$view['field'].'" class="col-sm-' . $right_col . ' control-text">' . ($label == '' ? '' : $label . ': ').'{' . $view['field'] . '}</div>';
+                            }
+                        } else {
+                            if ($view['custom'] == 1) {
+                                $tpl .= '<div id="'.$view['field'].'" class="col-xs-8 col-sm-' . $right_col . ' control-text" '.($action == 'show' ? '' : 'style="padding-top:10px;"' ).'>' . $view['content'] . '</div>';
+                            } else {
+                                $tpl .= '<div id="'.$view['field'].'" class="col-xs-8 col-sm-' . $right_col . ' control-text">{' . $view['field'] . '}</div>';
+                            }
+                        }
+
+                        if ($col == 12) {
+                            $col = 0;
+                            $tpl .= '</div>';
+                        }
+                    }
+
+                    $field['model'] = $flow;
+
+                    $attribute = [];
+
+                    if ($action == 'show') {
+                        $field['is_show'] = true;
+                    }
+
+                    $permission_table = $permission[$flow['table']];
+                    $p = $permission_table[$field['field']];
+                    $field['is_print'] = $action == 'print';
+                    $field['is_write'] = $p['w'] == 1 ? 1 : 0;
+                    $field['is_read'] = $p['w'] == 1 ? 0 : 1;
+                    $field['is_auto'] = $p['m'] == 1 ? 1 : 0;
+                    $field['is_hide'] = $p['s'] == 1 ? 1 : $field['is_hide'];
+
+                    $validate = (array) $p['v'];
+
+                    if ($action == 'print') {
+                        $field['is_show'] = true;
+                    }
+
+                    if ($action == 'print') {
+                    } else {
+                        $required = '';
+                        if (in_array('required', $validate)) {
+                            $required = '<span class="red">*</span> ';
+                            if ($field['is_write']) {
+                                $attribute['required'] = 'required';
+                                if ($field['is_auto'] == 0) {
+                                    $attribute['class'][] = 'input-required';
+                                } else {
+                                    $attribute['class'][] = 'input-auto';
+                                }
+                            }
+                        }
+                    }
+
+                    $field['verify'] = $validate;
+                    $field['attribute'] = $attribute;
+                    $field['table'] = $table;
+
+                    $tooltip = $field['tips'] ? ' <a class="hinted" href="javascript:;" title="' . $field['tips'] . '"><i class="fa fa-question-circle"></i></a>' : '';
+
+                    if ($action == 'show' || $action == 'print') {
+                        $tooltip = '';
+                        $required = '';
+                    }
+
+                    $_replace['{' . $field['name'] . '}'] = $required . $field['name'] . $tooltip;
+                    
+                    $data_type = $field['data_type'];
+                    $data_field = $field['data_field'];
+                    $data_link = $field['data_link'];
+                    if ($data_type) {
+                        $related = [];
+                        if (strpos($data_field, ':')) {
+                            list($var1, $var2) = explode(':', $data_field);
+                            list($_v1, $_v2) = explode('.', $var1);
+                            list($_t1, $_t2) = explode('.', $var2);
+                            if ($field['type']) {
+                                $related['table'] = $table;
+                                $related['field'] = $field['field'];
+                            } else {
+                                $related['table'] = $_t1;
+                                $related['field'] = $_v2;
+                            }
+                        } else {
+                            if ($field['type']) {
+                                $related['table'] = $table;
+                                $related['field'] = $field['field'];
+                            } else {
+                                $related['table'] = $data_type;
+                                $related['field'] = $data_field;
+                            }
+                        }
+                        $field['related'] = $related;
+                    }
+
+                    $value = $row[$field['field']];
+
+                    if ($field['form_type']) {
+                        $field['view'] = $view;
+                        $field['bill'] = $bill->toArray();
+                        $vv = FieldService::{'content_' . $field['form_type']}($field, $value, $row, $permission_table);
+                        $print_row[$field['field']] = $vv;
+                        $_replace['{'.$field['field'].'}'] = $vv;
+                    }
+                } else {
+                    $sublist[] = $view;
+                    $_sub_view = $view;
+                }
+            }
+
+            $_field_data = Hook::fire($table.'.onFormFieldFilter', ['table' => $table, 'tpl' => $tpl, 'master' => $master, 'field' => $field, '_replace' => $_replace]);
+            extract($_field_data);
+            
+            $tpls[] = ['title' => $group['title'], 'tpl' => strtr($tpl, $_replace)];
+
+            // 插入子表位置
+            if ($action == 'print') {
+                if ($_sub_view) {
+                    $tpls[] = ['title' => '', 'table' => 1, 'tpl' => '{'.$_sub_view['field'].'}'];
+                }
+            } else {
+                if ($sublist && $sublist_status == false) {
+                    $tpls[] = ['title' => '', 'tpl' => '{__sublist__}'];
+                    $sublist_status = true;
+                }
+            }
+        }
+
+        $tabs = static::sublist(['select' => $options['select'], 'sublist' => $sublist, 'permission' => $permission, 'action' => $action, 'table' => $table, 'row' => $row, 'bill' => $bill]);
+
+        if ($action == 'print') {
+
+            $prints = [[
+                'name' => 'master',
+                'fields' => $fields->toArray(),
+                'data' => [$print_row],
+            ]];
+
+            $_prints['master'] = [$print_row];
+            $_prints['flowlog'] = $flowlog;
+
+            foreach($tpls as $index => $tpl) {
+                foreach($tabs as $tab) {
+                    if ('{'.$tab['id'].'}' == $tpl['tpl']) {
+                        $tpls[$index]['table'] = true;
+                        $tpls[$index]['tpl'] = $tab['print'];
+                        $prints[] = [
+                            'name' => $tab['id'],
+                            'fields' => $tab['fields'],
+                            'data' => $tab['rows'],
+                        ];
+                        $_prints[$tab['id']] = $tab['rows'];
+                    }
+                }
+            }
+
+        } else {
+            if ($tabs) {
+                $_tabs = '
+                <div class="panel-heading tabs-box">
+                    <ul class="nav nav-tabs">';
+                        foreach($tabs as $tab_index => $tab):
+                            $js .= $tab['js'];
+                            $active = $tab_index == 0 ? 'active' : '';
+                            $_tabs .= '<li class="'.$active.'">
+                            <a data-toggle="tab" class="text-sm" href="#'.$tab['id'].'">'.$tab['name'].'</a>
+                        </li>';
+                        endforeach;
+                        $_tabs .= '</ul>
+                </div>
+                <div id="tab-content-'.$table.'" class="tab-content">';
+                    foreach($tabs as $tab_index => $tab):
+                        $active = $tab_index == 0 ? ' in active ' : '';
+
+                        $tool = $tab['tool'];
+
+                        if ($tool) {
+                            $tool .= ' <span id="'.$tab['id'].'_tool"></span> ';
+                        }
+
+                        if (isset($row['id'])) {
+                            $tool .= ' <a href="javascript:;" onclick="flow.exportDataAsExcel(\''.$tab['id'].'\');" class="btn btn-sm btn-default">导出</a> ';
+                        }
+ 
+                        // 操作按钮
+                        if (isset($assets['closeRow'])) {
+                            $tool .= ' <a href="javascript:;" onclick="flow.closeRow(\''.$tab['id'].'\');" class="btn btn-sm btn-default">关闭行(恢复)</a> ';
+                        }
+                        if (isset($assets['closeAllRow'])) {
+                            $tool .= ' <a href="javascript:;" onclick="flow.closeAllRow(\''.$tab['id'].'\');" class="btn btn-sm btn-default">关闭所有行(恢复)</a> ';
+                        }
+
+                        $tool = $tool == '' ? $tool : '<div class="system_btn m-b-sm">'.$tool.'</div>';
+
+                        $_tabs .= '<div class="tab-pane fade '.$active.'" id="'.$tab['id'].'">
+                        <div class="wrapper-sm">
+                            <div class="grid-tool" id="'.$table.'-tool">
+                                '.$tool.'
+                            </div>
+                            '.$tab['tpl'].'
+                        </div>
+                    </div>';
+                    endforeach;
+                $_tabs .= '</div>';
+            }   
+        }
+
+        // 重新构建
+        $_tpls = [];
+
+        foreach($tpls as $index => $tpl) {
+            if ($tpl['tpl']) {
+                if ($tpl['tpl'] == '{__sublist__}') {
+                    $tpl['tpl'] = $_tabs;
+                }
+                $_tpls[] = $tpl;
+            }
+        }
+        $tpls = $_tpls;
+
+        $_master_data = Hook::fire($table . '.onAfterForm', ['options' => $options, 'tpls' => $tpls, 'model' => $flow, 'row' => $row]);
+        extract($_master_data);
+
+        $html = '';
+        $tpls_count = count($tpls) - 1;
+        $a = 0;
+        foreach($tpls as $index => $tpl) {
+
+            if(empty($tpl['tpl'])) {
+                continue;
+            }
+
+            $end = ($tpls_count == $index) ? ' m-b-none' : '';
+            $heading = $tpl['title'] == '' ? '' : '<div class="panel-heading"><i class="fa fa-clone"></i> '.$tpl['title'].'</div>';
+
+            if ($action == 'print') {
+                if ($tpl['table']) {
+                    $html .= '<div id="print_'.$index.'" class="print">'.$tpl['tpl'].'</div>';
+                    $a = 1;
+                } else {
+                    if ($a == 1) {
+                        $html .= '<div id="print_'.$index.'" class="print">'.$tpl['tpl'].'</div>';
+                        $a = 0;
+                    } else {
+                        $html .= '<div id="print_'.$index.'" class="print">'.$tpl['tpl'].'</div>';
+                    }
+                }
+                
+            } else {
+                $html .= '<div class="panel no-border'.$end.'">'.$heading.''.$tpl['tpl'].'</div>';
+            }
+
+        }
+
+        if ($action == 'print') {
+
+        } else {
+
+        if ($row['id']) {
+            $html .= '<input type="hidden" name="' . $table . '[id]" id="' . $table . '_id" value="' . $row['id'] . '">';
+        }
+
+        // 子表关联逻辑
+        foreach($tabs as $tab) {
+            $html .= $tab['buttons'];
+        }
+        $html .= '<input type="hidden" name="_token" value="' . csrf_token() . '">';
+        $html .= '<input type="hidden" name="master[key]" id="master_key" value="'.$key.'">';
+        $html .= '<input type="hidden" name="master[uri]" id="master_uri" value="' . Request::module() . '/' . Request::controller() . '">';
+        $html .= '<input type="hidden" name="master[permission_id]" value="' . $_permission['id'] . '">';
+        $html .= '<input type="hidden" name="master[model_id]" value="' . $flow['id'] . '">';
+        $html .= '<input type="hidden" name="master[bill_id]" value="' . $bill['id'] . '">';
+        $html .= '<input type="hidden" name="master[created_id]" value="' . $row['created_id'] . '">';
+        $html .= '<input type="hidden" name="master[id]" value="' . $row['id'] . '">';
+
+        if (!is_weixin()) {
+
+            $page = static::getPage([
+                'table' => $table, 
+                'id' => $row['id'], 
+                'region' => $options['region'],
+                'authorise' => $options['authorise'],
+            ]);
+
+            $btn = '<div class="btn-group hidden-xs"><a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['start']]).'">首张</a> ';
+            if ($row['id'] > 0) {
+                if ($page['prev'] > 0) {
+                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['prev']]).'">上一张</a> ';
+                } else {
+                    $btn .= '<a class="btn btn-sm btn-default disabled" href="javascript:;">上一张</a> ';
+                }
+                if ($page['next'] > 0) {
+                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['next']]).'">下一张</a> ';
+                } else {
+                    $btn .= '<a class="btn btn-sm btn-default disabled" href="javascript:;">下一张</a> ';
+                }
+            }
+            $btn .= '<a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['end']]).'">末张</a> ';
+            $btn .= ' <a class="btn btn-sm btn-default" href="javascript:location.reload();">刷新</a> ';
+            $btn .= '</div> ';
+        }
+
+        // 流程审核
+        if ($bill['audit_type'] == 1) {
+            $html .= '<input type="hidden" name="master[run_id]" id="master_run_id" value="' . $run_id . '">';
+            $html .= '<input type="hidden" name="master[step_id]" id="master_step_id" value="' . $step_id . '">';
+            $html .= '<input type="hidden" name="master[run_step_id]" id="master_run_step_id" value="' . $run_step_id . '">';
+            $html .= '<input type="hidden" name="master[run_log_id]" id="master_run_log_id" value="' . $run_log_id . '">';
+            $html .= '<input type="hidden" name="master[recall_log_id]" id="master_recall_log_id" value="' . $recall_log_id . '">';
+            
+            if (isset($assets['create'])) {
+                $btn .= ' <a class="btn btn-sm btn-default" href="'.url('create').'">添加</a> ';
+            }
+
+            // 流程单据删除
+            if (isset($assets['delete']) && $row['id'] > 0) {
+                // 已经审核的单据不能删除
+                if ($row['status'] <= 0) {
+                    $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.remove(\''.url('delete', ['id' => $row['id']]).'\');"><i class="fa fa-times"></i> 删除</a> ';
+                } else {
+                    $btn .= '<a class="btn btn-sm btn-default disabled"><i class="fa fa-times"></i> 删除</a> ';
+                }
+            }
+
+            $op_btn = '';
+
+            if (isset($assets['abort']) && $abort_btn == true) {
+                $op_btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.abort(\''.$table.'\');"><i class="fa fa-ban"></i> 弃审</a> ';
+            }
+
+            if (isset($assets['recall']) && $recall_btn == true) {
+                $op_btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.recall(\''.$table.'\');"><i class="fa fa-reply"></i> 撤回</a> ';
+            }
+
+            if ($action == 'show') {
+
+                if (isset($assets['audit']) && $audit_btn == true) {
+
+                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('audit', ['id' => $row['id']]).'"><i class="fa fa-pencil"></i> 修改</a> ';
+                    
+                    if (intval($bill['form_type']) == 0) {
+                        if (intval($row['status']) == 0) {
+                            $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 提交</a> ';
+                        } else {
+                            $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 审核</a> ';
+                        }
+                    }
+                }
+                
+                if ($read_btn == true) {
+                    $op_btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.read(\''.$table.'\', \''.$run_log_id.'\');"><i class="fa fa-eye"></i> 已阅</a> ';
+                }
+
+            } else {
+
+                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.draft(\''.$table.'\');"><i class="icon icon-coffee-cup"></i> 保存</a> ';
+
+                if (isset($assets['audit']) && $audit_btn == true && intval($bill['form_type']) == 1) {
+                    
+                    if (intval($row['status']) == 0) {
+                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 提交</a> ';
+                    } else {
+                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 审核</a> ';
+                    }
+                }
+            }
+
+            if ($op_btn) {
+                $btn .= '<div class="btn-group">'.$op_btn.'</div> ';
+            }
+
+            if ($run_id > 0) {
+                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.auditLog(\''.$key.'\');"><i class="fa fa-file-text-o"></i> 审核记录</a> ';
+            }
+
+            if ($run_id > 0 && $auth['id'] == 1) {
+
+                $btn .= '<div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="fa fa-wrench"></span> 工具
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="javascript:;" onclick="flow.revise(\''.$key.'\');">流程修正</a></li>
+                    <li><a href="javascript:;" onclick="flow.reset(\''.$table.'\');">流程重置</a></li>
+                </ul>
+                </div>';
+            }
+
+        // 普通审核
+        } else if($bill['audit_type'] == 3) {
+
+            if ($action == 'show') {
+                
+                if (isset($assets['create'])) {
+                    $btn .= ' <a class="btn btn-sm btn-default" href="'.url('create').'">添加</a> ';
+                }
+
+                // 审核单据删除
+                if (isset($assets['delete']) && $row['id'] > 0) {
+                    // 已经审核的单据不能删除
+                    if ($row['status'] == 1) {
+                        $btn .= '<a class="btn btn-sm btn-default disabled"><i class="fa fa-times"></i> 删除</a> ';
+                    } else {
+                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.remove(\''.url('delete', ['id' => $row['id']]).'\');"><i class="fa fa-times"></i> 删除</a> ';
+                    }
+                }
+
+                $btn .= '<div class="btn-group">';
+
+                if ($row['status'] == 1) {
+                    if (isset($assets['abort'])) {
+                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.abort2(\''.$table.'\');"><i class="fa fa-ban"></i> 弃审</a> ';
+                    }
+                } else {
+                    if (isset($assets['audit'])) {
+                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit2(\''.$table.'\');"><i class="fa fa-check"></i> 审核</a> ';
+                    }
+                    if (isset($assets['edit'])) {
+                        $btn .= '<a class="btn btn-sm btn-default" href="'.url('edit', ['id' => $row['id']]).'"><i class="fa fa-pencil"></i> 编辑</a> ';
+                    }
+                }
+
+                $btn .= '</div> ';
+
+            } else {
+                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.store(\''.$table.'\');"><i class="fa fa-check"></i> 保存</a> ';
+            }
+
+        } else {
+
+            if ($action == 'show') {
+
+                if (isset($assets['create'])) {
+                    $btn .= ' <a class="btn btn-sm btn-default" href="'.url('create').'">添加</a> ';
+                }
+
+                // 普通单据删除
+                if (isset($assets['delete']) && $row['id'] > 0) {
+                    $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.remove(\''.url('delete', ['id' => $row['id']]).'\');"><i class="fa fa-times"></i> 删除</a> ';
+                }
+
+                $btn .= '<div class="btn-group">';
+                if (isset($assets['edit'])) {
+                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('edit', ['id' => $row['id']]).'"><i class="fa fa-pencil"></i> 修改</a> ';
+                }
+                $btn .= '</div> ';
+            } else {
+                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.store(\''.$table.'\');"><i class="fa fa-check"></i> 保存</a> ';
+            }
+
+        }
+
+        if (!is_weixin()) {
+            $btn .= ' <a class="btn btn-sm btn-default" data-toggle="closetab" data-id="'.Request::module().'_'.Request::controller().'_show"><i class="fa fa-sign-out"></i> 退出</a> ';
+        }
+
+        if (isset($assets['print']) && $row['id'] > 0 && $prints_btn) {
+            $btn .= $prints_btn;
+        }
+
+        if (!is_weixin()) {
+            $joint = $options['joint'];
+            if ($joint) {
+                $btn .= '<div class="btn-group">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    联查 <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu text-xs" role="menu">';
+                foreach($joint as $v) {
+                    $btn .= '<li><a data-toggle="joint" data-action="'.$v['action'].'" data-id="'.$row[$v['field']].'" href="javascript:;">'.$v['name'].'</a></li>';
+                }
+                $btn .= '</ul></div>';
+            }
+        }
+
+        $js .= '
+        $.each(select2List, function(k, v) {
+            select2List[k].el = $("#" + k).select2Field(v.options);
+        });';
+
+        $js .= '});
+        flow.bill_url = "' . Request::module() . '/' . Request::controller() . '";</script>';
+        $html .= $js;
+
+        }
+
+        View::share([
+            'model_view' => 1,
+        ]);
+
+        return [
+            'table' => $table,
+            'model_id' => $flow['id'],
+            'run_id' => $run_id,
+            'row' => $row, 
+            'action' => $action, 
+            'actions' => $permission['actions'],
+            'permission' => $permission,
+            'btn' => $btn, 
+            'key' => $key, 
+            'tpl' => $html, 
+            'tabs' => $tabs, 
+            'access' => $assets,
+            'template' => $template,
+            'prints' => $prints,
+            'print_data' => $_prints,
+            'print_type' => $template['print_type'],
+            'width' => $template['width'],
+            'bill_code' => $options['code'],
+        ];
+    }
+
+    /**
+     * 多行子表构建
+     */
     public static function sublist($options) 
     {
         $sublist = $options['sublist'];
@@ -291,7 +1097,7 @@ class Form
                     $select[] = $model['table'].'.'.$field['field'];
                 }
 
-                static::columnFormat($model['table'], $field, $join, $select, $links);
+                static::fieldRelated($model['table'], $field, $join, $select, $links);
 
                 $column = [];
 
@@ -689,977 +1495,9 @@ class Form
         return $tabs;
     }
 
-    public static function make($options)
-    {
-        $assets = UserAssetService::getNowRoleAssets();
-
-        // 权限查询类型
-        $code = $options['code'];
-        $bill = Bill::where('code', $code)->first();
-
-        // 表数据
-        $flow = DB::table('model')
-        ->where('id', $bill['model_id'])
-        ->first();
-
-        $table = $flow['table'];
-
-        $row = DB::table($table)
-        ->where('id', (int)$options['id'])
-        ->first();
-
-        $auth = auth()->user();
-
-        $action = $options['action'];
-        if ($action == 'show') {
-            $tpl = 'show';
-            $type_sql = '(' . join(' or ', [db_instr('type', $tpl)]) . ')';
-        } else {
-            $tpl = $row['id'] > 0 ? 'edit' : 'create';
-            $type_sql = '(' . join(' or ', [db_instr('type', $tpl)]) . ')';
-        }
-
-        if ($action == 'print') {
-            $type_sql = '(' . join(' or ', [db_instr('type', 'print')]) . ')';
-        }
-
-        $key = AES::encrypt($bill['id'].'.'.(int)$row['id'], config('app.key'));
-
-        $run_id = 0;
-        $step_id = 0;
-        $run_log_id = 0;
-        $run_step_id = 0;
-        $recall_log_id = 0;
-        $recall_btn = $audit_btn = $abort_btn = $read_btn = false;
-
-        if ($bill['audit_type'] == 1) {
-
-            $run = DB::table('model_run')
-            ->where('bill_id', $bill['id'])
-            ->where('data_id', $row['id'])
-            ->first();
-
-            // 流程是新建的
-            if (empty($run)) {
-                $step = DB::table('model_step')
-                ->where('bill_id', $bill['id'])
-                ->where('type', 'start')
-                ->first();
-                $step_id = $step['id'];
-            } else {
-                $step = DB::table('model_run_log')
-                ->leftJoin('model_run_step', 'model_run_step.id', '=', 'model_run_log.run_step_id')
-                ->where('model_run_log.run_id', $run['id'])
-                ->where('model_run_log.user_id', $auth['id'])
-                ->where('model_run_log.status', 0)
-                ->orderBy('model_run_log.id', 'asc')
-                ->first([
-                    'model_run_log.*',
-                    'model_run_step.type as step_type', 
-                    'model_run_step.step_id',
-                    'model_run_step.permission_id'
-                ]);
-
-                $run_id = $run['id'];
-                $step_id = $step['step_id'];
-                $run_step_id = $step['run_step_id'];
-                $run_log_id = $step['id'];
-                $option = $step['option'];
-
-                // 判断是有审核权限
-                $audit_status = $step['user_id'] == auth()->id();
-                if ($option == 1) {
-                    $audit_btn = $audit_status;
-                } else {
-                    $read_btn = $audit_status;
-                }
-            }
-
-            if ($row['status'] == '0') {
-                $audit_btn = 1;
-            }
-
-            if ($row['status'] == '1') {
-                $abort_btn = 1;
-            }
-            
-            // 获取表单操作权限
-            $_permission = DB::table('model_permission')
-            ->permission('receive_id')
-            ->where('id', $step['permission_id'])
-            ->first();
-
-            // 获取最后已转交节点
-            $passed = DB::table('model_run_log')
-            ->where('run_id', $run['id'])
-            ->where('user_id', $auth['id'])
-            ->where('status', '>', 0)
-            ->orderBy('id', 'desc')
-            ->first();
-
-            if ($passed) {
-                $recall_log_id = $passed['id'];
-                $nodes = DB::table('model_run_log')
-                ->where('parent_id', $passed['id'])
-                ->get();
-
-                $node_count = $nodes->count();
-                $todo_count = $nodes->where('status', 0)->count();
-                // 全部未办理才能撤回
-                if ($node_count > 0) {
-                    if ($node_count == $todo_count) {
-                        $recall_btn = true;
-                    }
-                }
-            }
-
-            /*
-            if ($audit_btn == true && $run_id > 0) {
-                // 更新待办接收时间
-                if ($step['received_id'] == 0) {
-                    DB::table('model_run_log')->where('id', $step['id'])->update([
-                        'updated_id' => 0,
-                        'updated_by' => '',
-                        'updated_at' => 0,
-                        'received_id' => $auth['id'],
-                        'received_by' => $auth['name'],
-                        'received_at' => time(),
-                    ]);
-                }
-            }
-            */
-
-        } else {
-            $_permission = DB::table('model_permission')
-            ->permission('receive_id')
-            ->whereRaw($type_sql)
-            ->where('bill_id', $bill['id'])
-            ->first();
-        }
-
-        $permission = json_decode($_permission['data'], true);
-
-        $fields = DB::table('model_field')
-        ->where('model_id', $bill['model_id'])
-        ->orderBy('sort', 'asc')
-        ->get()->keyBy('field');
-
-        $model = DB::table('model_template')
-        ->permission('receive_id', null, false, false)
-        ->whereRaw($type_sql)
-        ->where('bill_id', $bill['id']);
-        if ($options['template_id'] > 0) {
-            $model->where('id', $options['template_id']);
-        }
-        $template = $model->first();
-
-        if (empty($template)) {
-            $model = DB::table('model_template')
-            ->where('receive_id', 'all')
-            ->whereRaw($type_sql)
-            ->where('bill_id', $bill['id']);
-            if ($options['template_id'] > 0) {
-                $model->where('id', $options['template_id']);
-            }
-            $template = $model->first();
-        }
-
-        $prints_btn = '';
-        if (isset($assets['print']) && $row['id'] > 0) {
-            // 获取打印模板
-            $prints = DB::table('model_template')
-            ->permission('receive_id')
-            ->where('type', 'print')
-            ->where('bill_id', $bill['id'])
-            ->orderBy('sort', 'asc')
-            ->get();
-
-            if ($prints) {
-                $prints_btn .= '<div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                    <span class="fa fa-print"></span> 打印
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">';
-                foreach($prints as $print) {
-                    $prints_btn .= '<li><a href="'.url('print', ['id' => $row['id'], 'template_id' => $print['id']]).'" target="_blank"> '.$print['name'].'</a></li>';
-                }
-                $prints_btn .= '</ul></div> ';
-            }
-        }
-
-        $views = json_decode($template['tpl'], true);
-
-        $js = '<script type="text/javascript">formGridList.' . $flow['table'] . ' = [];';
-        $js .= '$(function() {';
-
-        $html = '';
-        $data_links = [];
-        $sublist_status = false;
-        $tabs = [];
-
-        $_master_data = Hook::fire($table . '.onBeforeForm', ['options' => $options, 'permission' => $permission, 'model' => $flow, 'fields' => $fields, 'views' => $views, 'row' => $row]);
-        extract($_master_data);
-        
-        // 处理关系查询
-        $relateds = [];
-        foreach ($fields as $field) {
-            $data_type = $field['data_type'];
-            $data_link = $field['data_link'];
-            if ($data_type) {
-                $relateds[$data_link.'.'.$data_type]['id'] = $row[$data_link];
-                $relateds[$data_link.'.'.$data_type]['table'] = $data_type;
-                if (empty($field['type'])) {
-                    $data_links[$data_type] = [
-                        'field' => $data_link,
-                        'data' => $row[$data_link],
-                    ];
-                }
-            }
-        }
-        // 查询本表和其他表的关联表数据
-        foreach($relateds as $related) {
-            $row[$related['table']] = DB::table($related['table'])->where('id', $related['id'])->first();
-        }
-
-        $tpls = [];
-        $sublist = [];
-        $print_row = [];
-
-        foreach ($views as $group) {
-
-            $_replace = [];
-            $tpl = '';
-            $_sub_view = [];
-            $col = 0;
-
-            if ($group['border'] == '') {
-                $group['border'] = 1;
-            } 
-
-            foreach ($group['fields'] as $view) {
-                if ($view['role_id']) {
-                    $role_ids = explode(',', $view['role_id']);
-                    if (in_array($auth->role_id, $role_ids)) {
-                        continue;
-                    }
-                }
-
-                // 显示流程记录
-                if ($view['field'] == '{flowlog}') {
-                    if ($action == 'print') {
-                        $tpl = StepService::getFlowLogTpl($run_id, $row, $flow, $tpl);
-                    } else {
-                        $flowlog = StepService::getFlowLogTpl($run_id, $row, $flow, $flowlog);
-                    }
-                    continue;
-                }
-
-                // 处理流程意见字段
-                list($view_type, $view_step_id) = explode('.', $view['field']);
-                if ($view_type == 'flow_step') {
-                    $view_step = StepService::getFlowField($run_id, $row, $flow, $steps, $step, $view, $view_step_id, $action, $permission);
-                    if ($view_step) {
-                        $view['title'] = $steps[$view_step_id]['name'].'意见';
-                        $_replace['{' . $view['field'] . '}'] = $view_step;
-                    } else {
-                        continue;
-                    }
-                }
-
-                $field = $fields[$view['field']];
-                // 是多行子表
-                if ($view['type'] == 0) {
-                    if ($view['hidden']) {
-                        $tpl .= '<div style="display:none;">{' . $view['field'] . '}</div>';
-                    } else {
-                        if ($col == 0) {
-                            if ($action == 'print') {
-                                $tpl .= '<div class="row '.($group['border'] == 0 ? 'no-border' : '').'">';
-                            } else {
-                                $tpl .= $action == 'show' ? '<div class="row">' : '<div class="form-group">';
-                            }
-                        }
-
-                        // 补全错位
-                        if ($col > 0 && $view['col'] == 12) {
-                            $line = 12 - $col;
-                            if ($action == 'print') {
-                                $tpl .= '</div><div class="row">';
-                            } else {
-                                $tpl .= '<div class="col-xs-8 col-sm-' . ($line) . ' control-text"></div>';
-                                $tpl .= ($action == 'show' || $action == 'print') ? '</div><div class="row">' : '</div><div class="form-group">';
-                            }
-                            $col = 0;
-                        }
-
-                        if ($col + $view['col'] > 12) {
-                            $line = $col + $view['col'] - 12;
-                            if ($action == 'print') {
-                                $tpl .= '</div><div class="row '.($group['border'] == 0 ? 'no-border' : '').'">';
-                            } else {
-                                $tpl .= '<div class="col-xs-8 col-sm-' . ($line) . ' control-text"></div>';
-                                $tpl .= ($action == 'show' || $action == 'print') ? '</div><div class="row">' : '</div><div class="form-group">';
-                            }
-                            $col = 0;
-                        }
-                        
-                        $col += $view['col'];
-
-                        $field['name'] = empty($view['title']) ? $field['name'] : $view['title'];
-
-                        $label = '{' . $field['name'] . '}';
-                        if ($view['hide_title'] == 1) {
-                            $label = '';
-                        }
-
-                        if ($view['type'] == 1) {
-                            $right_col = $view['col'];
-                        } else {
-                            $right_col = $view['col'] - 1;
-                        }
-
-                        if ($action == 'print') {
-                            $right_col += 1;
-                        } else {
-                            if ($label) {
-                                $tpl .= '<div class="col-xs-4 col-sm-1 control-label">' . $label . '</div>';
-                            } else {
-                                $right_col += 1;
-                            }
-                        }
-
-                        if ($action == 'print') {
-                            if ($view['custom'] == 1) {
-                                $tpl .= '<div id="'.$view['field'].'" class="col-sm-' . $right_col . ' control-text">' . ($label == '' ? '' : $label . ': ') . $view['content'] . '</div>';
-                            } else {
-                                $tpl .= '<div id="'.$view['field'].'" class="col-sm-' . $right_col . ' control-text">' . ($label == '' ? '' : $label . ': ').'{' . $view['field'] . '}</div>';
-                            }
-                        } else {
-                            if ($view['custom'] == 1) {
-                                $tpl .= '<div id="'.$view['field'].'" class="col-xs-8 col-sm-' . $right_col . ' control-text" '.($action == 'show' ? '' : 'style="padding-top:10px;"' ).'>' . $view['content'] . '</div>';
-                            } else {
-                                $tpl .= '<div id="'.$view['field'].'" class="col-xs-8 col-sm-' . $right_col . ' control-text">{' . $view['field'] . '}</div>';
-                            }
-                        }
-
-                        if ($col == 12) {
-                            $col = 0;
-                            $tpl .= '</div>';
-                        }
-                    }
-
-                    $field['model'] = $flow;
-
-                    $attribute = [];
-
-                    if ($action == 'show') {
-                        $field['is_show'] = true;
-                    }
-
-                    $permission_table = $permission[$flow['table']];
-                    $p = $permission_table[$field['field']];
-                    $field['is_print'] = $action == 'print';
-                    $field['is_write'] = $p['w'] == 1 ? 1 : 0;
-                    $field['is_read'] = $p['w'] == 1 ? 0 : 1;
-                    $field['is_auto'] = $p['m'] == 1 ? 1 : 0;
-                    $field['is_hide'] = $p['s'] == 1 ? 1 : $field['is_hide'];
-
-                    // 单据编码规则
-                    $field['data_sn'] = $flow['data_sn'];
-
-                    $validate = (array) $p['v'];
-
-                    if ($action == 'print') {
-                        $field['is_show'] = true;
-                    }
-
-                    if ($action == 'print') {
-                    } else {
-                        $required = '';
-                        if (in_array('required', $validate)) {
-                            $required = '<span class="red">*</span> ';
-                            if ($field['is_write']) {
-                                $attribute['required'] = 'required';
-                                if ($field['is_auto'] == 0) {
-                                    $attribute['class'][] = 'input-required';
-                                } else {
-                                    $attribute['class'][] = 'input-auto';
-                                }
-                            }
-                        }
-                    }
-
-                    $field['verify'] = $validate;
-                    $field['attribute'] = $attribute;
-                    $field['table'] = $table;
-
-                    $tooltip = $field['tips'] ? ' <a class="hinted" href="javascript:;" title="' . $field['tips'] . '"><i class="fa fa-question-circle"></i></a>' : '';
-
-                    if ($action == 'show' || $action == 'print') {
-                        $tooltip = '';
-                        $required = '';
-                    }
-
-                    $_replace['{' . $field['name'] . '}'] = $required . $field['name'] . $tooltip;
-                    
-                    $data_type = $field['data_type'];
-                    $data_field = $field['data_field'];
-                    $data_link = $field['data_link'];
-                    if ($data_type) {
-                        $related = [];
-                        if (strpos($data_field, ':')) {
-                            list($var1, $var2) = explode(':', $data_field);
-                            list($_v1, $_v2) = explode('.', $var1);
-                            list($_t1, $_t2) = explode('.', $var2);
-                            if ($field['type']) {
-                                $related['table'] = $table;
-                                $related['field'] = $field['field'];
-                                $value = $row[$field['field']];
-                            } else {
-                                $related['table'] = $_t1;
-                                $related['field'] = $_v2;
-                                $value = $row[$data_type][$_v2];
-                            }
-                        } else {
-                            if ($field['type']) {
-                                $related['table'] = $table;
-                                $related['field'] = $field['field'];
-                                $value = $row[$field['field']];
-                            } else {
-                                $related['table'] = $data_type;
-                                $related['field'] = $data_field;
-                                $value = $row[$data_type][$data_field];
-                            }
-                        }
-                        $field['related'] = $related;
-                    } else {
-                        $value = $row[$field['field']];
-                    }
-                    if ($field['form_type']) {
-                        $field['view'] = $view;
-                        $field['bill'] = $bill->toArray();
-                        $vv = FieldService::{'content_' . $field['form_type']}($field, $value, $row, $permission_table);
-                        $print_row[$field['field']] = $vv;
-                        $_replace['{'.$field['field'].'}'] = $vv;
-                    }
-                } else {
-                    $sublist[] = $view;
-                    $_sub_view = $view;
-                }
-            }
-
-            $_field_data = Hook::fire($table.'.onFormFieldFilter', ['table' => $table, 'tpl' => $tpl, 'master' => $master, 'field' => $field, '_replace' => $_replace]);
-            extract($_field_data);
-            
-            $tpls[] = ['title' => $group['title'], 'tpl' => strtr($tpl, $_replace)];
-
-            // 插入子表位置
-            if ($action == 'print') {
-                if ($_sub_view) {
-                    $tpls[] = ['title' => '', 'table' => 1, 'tpl' => '{'.$_sub_view['field'].'}'];
-                }
-            } else {
-                if ($sublist && $sublist_status == false) {
-                    $tpls[] = ['title' => '', 'tpl' => '{__sublist__}'];
-                    $sublist_status = true;
-                }
-            }
-        }
-
-        $tabs = static::sublist(['select' => $options['select'], 'sublist' => $sublist, 'permission' => $permission, 'action' => $action, 'table' => $table, 'row' => $row, 'bill' => $bill]);
-
-        if ($action == 'print') {
-
-            $prints = [[
-                'name' => 'master',
-                'fields' => $fields->toArray(),
-                'data' => [$print_row],
-            ]];
-
-            $_prints['master'] = [$print_row];
-            $_prints['flowlog'] = $flowlog;
-
-            foreach($tpls as $index => $tpl) {
-                foreach($tabs as $tab) {
-                    if ('{'.$tab['id'].'}' == $tpl['tpl']) {
-                        $tpls[$index]['table'] = true;
-                        $tpls[$index]['tpl'] = $tab['print'];
-                        $prints[] = [
-                            'name' => $tab['id'],
-                            'fields' => $tab['fields'],
-                            'data' => $tab['rows'],
-                        ];
-                        $_prints[$tab['id']] = $tab['rows'];
-                    }
-                }
-            }
-
-        } else {
-            if ($tabs) {
-                $_tabs = '
-                <div class="panel-heading tabs-box">
-                    <ul class="nav nav-tabs">';
-                        foreach($tabs as $tab_index => $tab):
-                            $js .= $tab['js'];
-                            $active = $tab_index == 0 ? 'active' : '';
-                            $_tabs .= '<li class="'.$active.'">
-                            <a data-toggle="tab" class="text-sm" href="#'.$tab['id'].'">'.$tab['name'].'</a>
-                        </li>';
-                        endforeach;
-                        $_tabs .= '</ul>
-                </div>
-                <div id="tab-content-'.$table.'" class="tab-content">';
-                    foreach($tabs as $tab_index => $tab):
-                        $active = $tab_index == 0 ? ' in active ' : '';
-
-                        $tool = $tab['tool'];
-
-                        if ($tool) {
-                            $tool .= ' <span id="'.$tab['id'].'_tool"></span> ';
-                        }
-
-                        if (isset($row['id'])) {
-                            $tool .= ' <a href="javascript:;" onclick="flow.exportDataAsExcel(\''.$tab['id'].'\');" class="btn btn-sm btn-default">导出</a> ';
-                        }
- 
-                        // 操作按钮
-                        if (isset($assets['closeRow'])) {
-                            $tool .= ' <a href="javascript:;" onclick="flow.closeRow(\''.$tab['id'].'\');" class="btn btn-sm btn-default">关闭行(恢复)</a> ';
-                        }
-                        if (isset($assets['closeAllRow'])) {
-                            $tool .= ' <a href="javascript:;" onclick="flow.closeAllRow(\''.$tab['id'].'\');" class="btn btn-sm btn-default">关闭所有行(恢复)</a> ';
-                        }
-
-                        $tool = $tool == '' ? $tool : '<div class="system_btn m-b-sm">'.$tool.'</div>';
-
-                        $_tabs .= '<div class="tab-pane fade '.$active.'" id="'.$tab['id'].'">
-                        <div class="wrapper-sm">
-                            <div class="grid-tool" id="'.$table.'-tool">
-                                '.$tool.'
-                            </div>
-                            '.$tab['tpl'].'
-                        </div>
-                    </div>';
-                    endforeach;
-                $_tabs .= '</div>';
-            }   
-        }
-
-        // 重新构建
-        $_tpls = [];
-
-        foreach($tpls as $index => $tpl) {
-            if ($tpl['tpl']) {
-                if ($tpl['tpl'] == '{__sublist__}') {
-                    $tpl['tpl'] = $_tabs;
-                }
-                $_tpls[] = $tpl;
-            }
-        }
-        $tpls = $_tpls;
-
-        $_master_data = Hook::fire($table . '.onAfterForm', ['options' => $options, 'tpls' => $tpls, 'model' => $flow, 'row' => $row]);
-        extract($_master_data);
-
-        $html = '';
-        $tpls_count = count($tpls) - 1;
-        $a = 0;
-        foreach($tpls as $index => $tpl) {
-
-            if(empty($tpl['tpl'])) {
-                continue;
-            }
-
-            $end = ($tpls_count == $index) ? ' m-b-none' : '';
-            $heading = $tpl['title'] == '' ? '' : '<div class="panel-heading"><i class="fa fa-clone"></i> '.$tpl['title'].'</div>';
-
-            if ($action == 'print') {
-                if ($tpl['table']) {
-                    $html .= '<div id="print_'.$index.'" class="print">'.$tpl['tpl'].'</div>';
-                    $a = 1;
-                } else {
-                    if ($a == 1) {
-                        $html .= '<div id="print_'.$index.'" class="print">'.$tpl['tpl'].'</div>';
-                        $a = 0;
-                    } else {
-                        $html .= '<div id="print_'.$index.'" class="print">'.$tpl['tpl'].'</div>';
-                    }
-                }
-                
-            } else {
-                $html .= '<div class="panel no-border'.$end.'">'.$heading.''.$tpl['tpl'].'</div>';
-            }
-
-        }
-
-        if ($action == 'print') {
-
-        } else {
-
-        if ($row['id']) {
-            $html .= '<input type="hidden" name="' . $table . '[id]" id="' . $table . '_id" value="' . $row['id'] . '">';
-        }
-
-        // 多主表编辑
-        foreach($data_links as $data_table => $data_link) {
-            $html .= '<input type="hidden" name="' . $data_table . '['.$data_link['field'].']" id="' . $data_table . '_'. $data_link['field'].'" value="' . $data_link['data'] . '">';
-        }
-
-        // 子表关联逻辑
-        foreach($tabs as $tab) {
-            $html .= $tab['buttons'];
-        }
-        $html .= '<input type="hidden" name="_token" value="' . csrf_token() . '">';
-        $html .= '<input type="hidden" name="master[key]" id="master_key" value="'.$key.'">';
-        $html .= '<input type="hidden" name="master[uri]" id="master_uri" value="' . Request::module() . '/' . Request::controller() . '">';
-        $html .= '<input type="hidden" name="master[permission_id]" value="' . $_permission['id'] . '">';
-        $html .= '<input type="hidden" name="master[model_id]" value="' . $flow['id'] . '">';
-        $html .= '<input type="hidden" name="master[bill_id]" value="' . $bill['id'] . '">';
-        $html .= '<input type="hidden" name="master[created_id]" value="' . $row['created_id'] . '">';
-        $html .= '<input type="hidden" name="master[id]" value="' . $row['id'] . '">';
-
-        if (!is_weixin()) {
-
-            $page = static::getPage([
-                'table' => $table, 
-                'id' => $row['id'], 
-                'region' => $options['region'],
-                'authorise' => $options['authorise'],
-            ]);
-
-            $btn = '<div class="btn-group hidden-xs"><a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['start']]).'">首张</a> ';
-            if ($row['id'] > 0) {
-                if ($page['prev'] > 0) {
-                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['prev']]).'">上一张</a> ';
-                } else {
-                    $btn .= '<a class="btn btn-sm btn-default disabled" href="javascript:;">上一张</a> ';
-                }
-                if ($page['next'] > 0) {
-                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['next']]).'">下一张</a> ';
-                } else {
-                    $btn .= '<a class="btn btn-sm btn-default disabled" href="javascript:;">下一张</a> ';
-                }
-            }
-            $btn .= '<a class="btn btn-sm btn-default" href="'.url('show', ['id' => $page['end']]).'">末张</a> ';
-            $btn .= ' <a class="btn btn-sm btn-default" href="javascript:location.reload();">刷新</a> ';
-            $btn .= '</div> ';
-        }
-
-        // 流程审核
-        if ($bill['audit_type'] == 1) {
-            $html .= '<input type="hidden" name="master[run_id]" id="master_run_id" value="' . $run_id . '">';
-            $html .= '<input type="hidden" name="master[step_id]" id="master_step_id" value="' . $step_id . '">';
-            $html .= '<input type="hidden" name="master[run_step_id]" id="master_run_step_id" value="' . $run_step_id . '">';
-            $html .= '<input type="hidden" name="master[run_log_id]" id="master_run_log_id" value="' . $run_log_id . '">';
-            $html .= '<input type="hidden" name="master[recall_log_id]" id="master_recall_log_id" value="' . $recall_log_id . '">';
-            
-            if (isset($assets['create'])) {
-                $btn .= ' <a class="btn btn-sm btn-default" href="'.url('create').'">添加</a> ';
-            }
-
-            // 流程单据删除
-            if (isset($assets['delete']) && $row['id'] > 0) {
-                // 已经审核的单据不能删除
-                if ($row['status'] <= 0) {
-                    $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.remove(\''.url('delete', ['id' => $row['id']]).'\');"><i class="fa fa-times"></i> 删除</a> ';
-                } else {
-                    $btn .= '<a class="btn btn-sm btn-default disabled"><i class="fa fa-times"></i> 删除</a> ';
-                }
-            }
-
-            $op_btn = '';
-
-            if (isset($assets['abort']) && $abort_btn == true) {
-                $op_btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.abort(\''.$table.'\');"><i class="fa fa-ban"></i> 弃审</a> ';
-            }
-
-            if (isset($assets['recall']) && $recall_btn == true) {
-                $op_btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.recall(\''.$table.'\');"><i class="fa fa-reply"></i> 撤回</a> ';
-            }
-
-            if ($action == 'show') {
-
-                if (isset($assets['audit']) && $audit_btn == true) {
-
-                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('audit', ['id' => $row['id']]).'"><i class="fa fa-pencil"></i> 修改</a> ';
-                    
-                    if (intval($bill['form_type']) == 0) {
-                        if (intval($row['status']) == 0) {
-                            $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 提交</a> ';
-                        } else {
-                            $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 审核</a> ';
-                        }
-                    }
-                }
-                
-                if ($read_btn == true) {
-                    $op_btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.read(\''.$table.'\', \''.$run_log_id.'\');"><i class="fa fa-eye"></i> 已阅</a> ';
-                }
-
-            } else {
-
-                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.draft(\''.$table.'\');"><i class="icon icon-coffee-cup"></i> 保存</a> ';
-
-                if (isset($assets['audit']) && $audit_btn == true && intval($bill['form_type']) == 1) {
-                    
-                    if (intval($row['status']) == 0) {
-                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 提交</a> ';
-                    } else {
-                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit(\''.$table.'\');"><i class="fa fa-check"></i> 审核</a> ';
-                    }
-                }
-            }
-
-            if ($op_btn) {
-                $btn .= '<div class="btn-group">'.$op_btn.'</div> ';
-            }
-
-            if ($run_id > 0) {
-                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.auditLog(\''.$key.'\');"><i class="fa fa-file-text-o"></i> 审核记录</a> ';
-            }
-
-            if ($run_id > 0 && $auth['id'] == 1) {
-
-                $btn .= '<div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <span class="fa fa-wrench"></span> 工具
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="javascript:;" onclick="flow.revise(\''.$key.'\');">流程修正</a></li>
-                    <li><a href="javascript:;" onclick="flow.reset(\''.$table.'\');">流程重置</a></li>
-                </ul>
-                </div>';
-            }
-
-        // 普通审核
-        } else if($bill['audit_type'] == 3) {
-
-            if ($action == 'show') {
-                
-                if (isset($assets['create'])) {
-                    $btn .= ' <a class="btn btn-sm btn-default" href="'.url('create').'">添加</a> ';
-                }
-
-                // 审核单据删除
-                if (isset($assets['delete']) && $row['id'] > 0) {
-                    // 已经审核的单据不能删除
-                    if ($row['status'] == 1) {
-                        $btn .= '<a class="btn btn-sm btn-default disabled"><i class="fa fa-times"></i> 删除</a> ';
-                    } else {
-                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.remove(\''.url('delete', ['id' => $row['id']]).'\');"><i class="fa fa-times"></i> 删除</a> ';
-                    }
-                }
-
-                $btn .= '<div class="btn-group">';
-
-                if ($row['status'] == 1) {
-                    if (isset($assets['abort'])) {
-                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.abort2(\''.$table.'\');"><i class="fa fa-ban"></i> 弃审</a> ';
-                    }
-                } else {
-                    if (isset($assets['audit'])) {
-                        $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.audit2(\''.$table.'\');"><i class="fa fa-check"></i> 审核</a> ';
-                    }
-                    if (isset($assets['edit'])) {
-                        $btn .= '<a class="btn btn-sm btn-default" href="'.url('edit', ['id' => $row['id']]).'"><i class="fa fa-pencil"></i> 编辑</a> ';
-                    }
-                }
-
-                $btn .= '</div> ';
-
-            } else {
-                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.store(\''.$table.'\');"><i class="fa fa-check"></i> 保存</a> ';
-            }
-
-        } else {
-
-            if ($action == 'show') {
-
-                if (isset($assets['create'])) {
-                    $btn .= ' <a class="btn btn-sm btn-default" href="'.url('create').'">添加</a> ';
-                }
-
-                // 普通单据删除
-                if (isset($assets['delete']) && $row['id'] > 0) {
-                    $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.remove(\''.url('delete', ['id' => $row['id']]).'\');"><i class="fa fa-times"></i> 删除</a> ';
-                }
-
-                $btn .= '<div class="btn-group">';
-                if (isset($assets['edit'])) {
-                    $btn .= '<a class="btn btn-sm btn-default" href="'.url('edit', ['id' => $row['id']]).'"><i class="fa fa-pencil"></i> 修改</a> ';
-                }
-                $btn .= '</div> ';
-            } else {
-                $btn .= '<a class="btn btn-sm btn-default" href="javascript:;" onclick="flow.store(\''.$table.'\');"><i class="fa fa-check"></i> 保存</a> ';
-            }
-
-        }
-
-        if (!is_weixin()) {
-            $btn .= ' <a class="btn btn-sm btn-default" data-toggle="closetab" data-id="'.Request::module().'_'.Request::controller().'_show"><i class="fa fa-sign-out"></i> 退出</a> ';
-        }
-
-        if (isset($assets['print']) && $row['id'] > 0 && $prints_btn) {
-            $btn .= $prints_btn;
-        }
-
-        if (!is_weixin()) {
-            $joint = $options['joint'];
-            if ($joint) {
-                $btn .= '<div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    联查 <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu text-xs" role="menu">';
-                foreach($joint as $v) {
-                    $btn .= '<li><a data-toggle="joint" data-action="'.$v['action'].'" data-id="'.$row[$v['field']].'" href="javascript:;">'.$v['name'].'</a></li>';
-                }
-                $btn .= '</ul></div>';
-            }
-        }
-
-        $js .= '
-        $.each(select2List, function(k, v) {
-            select2List[k].el = $("#" + k).select2Field(v.options);
-        });';
-
-        $js .= '});
-        flow.bill_url = "' . Request::module() . '/' . Request::controller() . '";</script>';
-        $html .= $js;
-
-        }
-
-        View::share([
-            'model_view' => 1,
-        ]);
-
-        return [
-            'table' => $table,
-            'model_id' => $flow['id'],
-            'run_id' => $run_id,
-            'row' => $row, 
-            'action' => $action, 
-            'actions' => $permission['actions'],
-            'permission' => $permission,
-            'btn' => $btn, 
-            'key' => $key, 
-            'tpl' => $html, 
-            'tabs' => $tabs, 
-            'access' => $assets,
-            'template' => $template,
-            'prints' => $prints,
-            'print_data' => $_prints,
-            'print_type' => $template['print_type'],
-            'width' => $template['width'],
-            'bill_code' => $options['code'],
-        ];
-    }
-
-    public static function getField($flow, $table, $action, $row, $attr, $field) {
-        $field['model'] = $flow;
-        $attribute = [];
-        if ($action == 'show') {
-            $field['is_show'] = true;
-        }
-
-        $p = [];
-
-        $p['w'] = $attr['read'] == 1 ? 0 : 1;
-
-        $p['s'] = $attr['hidden'] == 1 ? 1 : 0;
-
-        $field['is_print'] = $action == 'print';
-        $field['is_write'] = $p['w'] == 1 ? 1 : 0;
-        $field['is_read'] = $p['w'] == 1 ? 0 : 1;
-        $field['is_auto'] = $p['m'] == 1 ? 1 : 0;
-        $field['is_hide'] = $p['s'] == 1 ? 1 : $field['is_hide'];
-
-        // 单据编码规则
-        $field['data_sn'] = $flow['data_sn'];
-
-        $validate = (array) $p['v'];
-
-        if ($action == 'print') {
-            $field['is_show'] = true;
-        }
-
-        if ($action == 'print') {
-        } else {
-            $required = '';
-            if (in_array('required', $validate)) {
-                $required = '<span class="red">*</span> ';
-                if ($field['is_write']) {
-                    $attribute['required'] = 'required';
-                    if ($field['is_auto'] == 0) {
-                        $attribute['class'][] = 'input-required';
-                    } else {
-                        $attribute['class'][] = 'input-auto';
-                    }
-                }
-            }
-        }
-
-        $field['verify'] = $validate;
-        $field['attribute'] = $attribute;
-        $field['table'] = $table;
-
-        $tooltip = $field['tips'] ? ' <a class="hinted" href="javascript:;" title="' . $field['tips'] . '"><i class="fa fa-question-circle"></i></a>' : '';
-
-        if ($action == 'show' || $action == 'print') {
-            $tooltip = '';
-            $required = '';
-        }
-
-        $_replace['{' . $field['name'] . '}'] = $required . $field['name'] . $tooltip;
-        
-        $data_type = $field['data_type'];
-        $data_field = $field['data_field'];
-        $data_link = $field['data_link'];
-        if ($data_type) {
-            $related = [];
-            if (strpos($data_field, ':')) {
-                list($var1, $var2) = explode(':', $data_field);
-                list($_v1, $_v2) = explode('.', $var1);
-                list($_t1, $_t2) = explode('.', $var2);
-                if ($field['type']) {
-                    $related['table'] = $table;
-                    $related['field'] = $field['field'];
-                    $value = $row[$field['field']];
-                } else {
-                    $related['table'] = $_t1;
-                    $related['field'] = $_v2;
-                    $value = $row[$data_type][$_v2];
-                }
-            } else {
-                if ($field['type']) {
-                    $related['table'] = $table;
-                    $related['field'] = $field['field'];
-                    $value = $row[$field['field']];
-                } else {
-                    $related['table'] = $data_type;
-                    $related['field'] = $data_field;
-                    $value = $row[$data_type][$data_field];
-                }
-            }
-            $field['related'] = $related;
-        } else {
-            $value = $row[$field['field']];
-        }
-
-        $field['view'] = $attr;
-        if ($field['form_type']) {
-            return FieldService::{'content_' . $field['form_type']}($field, $value, $row, $permission = []);
-        } else {
-            return FieldService::{'content_text'}($field, $value, $row, $permission = []);
-        }
-    }
-
     public static function make2($options)
     {
-        $assets = UserAsset::getNowRoleAssets();
+        $assets = UserAssetService::getNowRoleAssets();
 
         // 权限查询类型
         $table = $options['table'];
@@ -1668,11 +1506,11 @@ class Form
         $auth = auth()->user();
 
         // 表数据
-        $flow = DB::table('flow')
+        $flow = DB::table('model')
         ->where('table', $table)
         ->first();
 
-        $fields = DB::table('flow_field')
+        $fields = DB::table('model_field')
         ->where('model_id', $flow['id'])
         ->orderBy('sort', 'asc')
         ->get()->keyBy('field');
@@ -1684,7 +1522,6 @@ class Form
         $js .= '$(function() {';
 
         $html = '';
-        $data_links = [];
         $col = 0;
         $sublist_status = false;
         $tabs = [];
@@ -1693,27 +1530,6 @@ class Form
         $_master_data = Hook::fire($table . '.onBeforeForm', ['options' => $options, 'permission' => $permission, 'model' => $flow, 'fields' => $fields, 'views' => $views, 'row' => $row]);
         extract($_master_data);
         
-        // 处理关系查询
-        $relateds = [];
-        foreach ($fields as $field) {
-            $data_type = $field['data_type'];
-            $data_link = $field['data_link'];
-            if ($data_type) {
-                $relateds[$data_link.'.'.$data_type]['id'] = $row[$data_link];
-                $relateds[$data_link.'.'.$data_type]['table'] = $data_type;
-                if (empty($field['type'])) {
-                    $data_links[$data_type] = [
-                        'field' => $data_link,
-                        'data' => $row[$data_link],
-                    ];
-                }
-            }
-        }
-        // 查询本表和其他表的关联表数据
-        foreach($relateds as $related) {
-            $row[$related['table']] = DB::table($related['table'])->where('id', $related['id'])->first();
-        }
-
         $tpls = [];
         $sublist = [];
 
@@ -1798,6 +1614,97 @@ class Form
             }
         }
         return $tpl;
+    }
+
+    public static function getField($flow, $table, $action, $row, $attr, $field) {
+        $field['model'] = $flow;
+        $attribute = [];
+        if ($action == 'show') {
+            $field['is_show'] = true;
+        }
+
+        $p = [];
+
+        $p['w'] = $attr['read'] == 1 ? 0 : 1;
+
+        $p['s'] = $attr['hidden'] == 1 ? 1 : 0;
+
+        $field['is_print'] = $action == 'print';
+        $field['is_write'] = $p['w'] == 1 ? 1 : 0;
+        $field['is_read'] = $p['w'] == 1 ? 0 : 1;
+        $field['is_auto'] = $p['m'] == 1 ? 1 : 0;
+        $field['is_hide'] = $p['s'] == 1 ? 1 : $field['is_hide'];
+
+        $validate = (array) $p['v'];
+
+        if ($action == 'print') {
+            $field['is_show'] = true;
+        }
+
+        if ($action == 'print') {
+        } else {
+            $required = '';
+            if (in_array('required', $validate)) {
+                $required = '<span class="red">*</span> ';
+                if ($field['is_write']) {
+                    $attribute['required'] = 'required';
+                    if ($field['is_auto'] == 0) {
+                        $attribute['class'][] = 'input-required';
+                    } else {
+                        $attribute['class'][] = 'input-auto';
+                    }
+                }
+            }
+        }
+
+        $field['verify'] = $validate;
+        $field['attribute'] = $attribute;
+        $field['table'] = $table;
+
+        $tooltip = $field['tips'] ? ' <a class="hinted" href="javascript:;" title="' . $field['tips'] . '"><i class="fa fa-question-circle"></i></a>' : '';
+
+        if ($action == 'show' || $action == 'print') {
+            $tooltip = '';
+            $required = '';
+        }
+
+        $_replace['{' . $field['name'] . '}'] = $required . $field['name'] . $tooltip;
+        
+        $data_type = $field['data_type'];
+        $data_field = $field['data_field'];
+        $data_link = $field['data_link'];
+        if ($data_type) {
+            $related = [];
+            if (strpos($data_field, ':')) {
+                list($var1, $var2) = explode(':', $data_field);
+                list($_v1, $_v2) = explode('.', $var1);
+                list($_t1, $_t2) = explode('.', $var2);
+                if ($field['type']) {
+                    $related['table'] = $table;
+                    $related['field'] = $field['field'];
+                } else {
+                    $related['table'] = $_t1;
+                    $related['field'] = $_v2;
+                }
+            } else {
+                if ($field['type']) {
+                    $related['table'] = $table;
+                    $related['field'] = $field['field'];
+                } else {
+                    $related['table'] = $data_type;
+                    $related['field'] = $data_field;
+                }
+            }
+            $field['related'] = $related;
+        }
+        $value = $row[$field['field']];
+
+        $field['view'] = $attr;
+        if ($field['form_type']) {
+            return FieldService::{'content_' . $field['form_type']}($field, $value, $row, $permission = []);
+        } else {
+            return FieldService::{'content_text'}($field, $value, $row, $permission = []);
+        }
     }
 
     public static function flowRules($models, $gets)
@@ -2085,7 +1992,7 @@ class Form
         return hash_equals($sessionToken, $token);
     }
 
-    public static function dataFilter2($table, $fields, $permissions, $master, $values)
+    public static function dataFilter($table, $fields, $permissions, $master, $values)
     {
         $permission = $permissions[$table];
 
@@ -2202,7 +2109,7 @@ class Form
 
                 // 格式化子表数据格式
                 foreach ($rows as $i => $row) {
-                    $rows[$i] = static::dataFilter2($table, $fields, $permissions, $master, $row);
+                    $rows[$i] = static::dataFilter($table, $fields, $permissions, $master, $row);
                 }
 
                 $datas[] = [
@@ -2214,7 +2121,7 @@ class Form
                 ];
             } else {
                 // 处理主表的字段格式
-                $gets[$t] = static::dataFilter2($table, $fields, $permissions, $master, $gets[$t]);
+                $gets[$t] = static::dataFilter($table, $fields, $permissions, $master, $gets[$t]);
             }
         }
 

@@ -163,11 +163,12 @@ class ProductController extends DefaultController
             $header['select'][] = 'product.weight';
             $model->select($header['select']);
 
+            $q = $query['q'];
+            if ($q) {
+                $model->whereRaw("(product.code like '%$q%' or product.name like '%$q%' or product.spec like '%$q%' or product.barcode like '%$q%')");
+            }
+
             if ($query['suggest']) {
-                if ($query['q']) {
-                    $q = $query['q'];
-                    $model->whereRaw("(product.code like '%$q%' or product.name like '%$q%' or product.spec like '%$q%' or product.barcode like '%$q%')");
-                }
                 $rows = $model->limit(15)->get();
                 $data = Grid::dataFilters($rows, $header, function($item) {
                     return $item;
@@ -245,11 +246,12 @@ class ProductController extends DefaultController
             
             $model->select($header['select']);
 
+            $q = $query['q'];
+            if ($q) {
+                $model->whereRaw("(product.code like '%$q%' or product.name like '%$q%' or product.spec like '%$q%' or product.barcode like '%$q%')");
+            }
+
             if ($query['suggest']) {
-                if ($query['q']) {
-                    $q = $query['q'];
-                    $model->whereRaw("(product.code like '%$q%' or product.name like '%$q%' or product.spec like '%$q%' or product.barcode like '%$q%')");
-                }
                 $rows = $model->limit(15)->get();
                 $data = Grid::dataFilters($rows, $header, function($item) {
                     return $item;

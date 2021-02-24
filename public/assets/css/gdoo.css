@@ -1645,7 +1645,7 @@ select.input-sm, select.form-group-sm .form-control {
 }
 
 .panel-form-show .form-controller .control-label {
-    padding-top: 9px;
+    padding-top: 8px;
 }
 
 .panel-form-show .form-controller .radio-inline {

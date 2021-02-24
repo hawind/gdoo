@@ -289,7 +289,7 @@ class Grid
         return $rows;
     }
 
-    public static function columnFormat($table, $row, &$join, &$select, &$index, &$column, &$search, $setting)
+    public static function fieldRelated($table, $row, &$join, &$select, &$index, &$column, &$search, $setting)
     {
         if ($row['data_type']) {
             $data_type = $row['data_type'];
@@ -325,8 +325,9 @@ class Grid
                     } else {
                         if ($row['type']) {
                             $column = $column.'_'.$_c2;
+                        } else {
+                            $column = $column;
                         }
-                        $column = $column;
                     }
                     
                 } else {
@@ -532,7 +533,7 @@ class Grid
                     }
                 }
 
-                static::columnFormat($_table, $row, $join, $select, $index, $column, $_search, $setting);
+                static::fieldRelated($_table, $row, $join, $select, $index, $column, $_search, $setting);
                 $_search['field2'] = $index;
 
                 if ($row['form_type'] == 'urd') {
@@ -872,7 +873,7 @@ class Grid
             $index = $field;
             $_search = ['field' => $index];
 
-            static::columnFormat($_table, $row, $join, $select, $index, $column, $_search, $setting);
+            static::fieldRelated($_table, $row, $join, $select, $index, $column, $_search, $setting);
 
             if ($row['form_type'] == 'urd') {
                 $field = str_replace('_id', '_text', $field);
