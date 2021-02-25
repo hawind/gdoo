@@ -5,11 +5,11 @@
     <title>{{$setting['title']}} - Powered By {{$setting['powered']}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="stylesheet" href="{{$asset_url}}/dist/index.min.css?v={{$resVersion}}" type="text/css" />
-    <script src="{{$public_url}}/common?v={{$resVersion}}"></script>
-    <script src="{{$asset_url}}/dist/index.min.js?v={{$resVersion}}"></script>
+    <link rel="stylesheet" href="{{mix('/assets/dist/index.min.css')}}" type="text/css" />
+    <script src="{{$public_url}}/common?v={{time()}}"></script>
+    <script src="{{mix('/assets/dist/index.min.js')}}"></script>
+    <script src="{{mix('/assets/dist/bundle.min.js')}}"></script>
     <script src="{{$asset_url}}/vendor/layer/layer.js"></script>
-    <script src="{{$asset_url}}/dist/bundle.min.js"></script>
 
     <style type="text/css">
     @foreach($menus['children'] as $menu_id => $menu)

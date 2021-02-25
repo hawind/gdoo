@@ -14,6 +14,7 @@ use Gdoo\Model\Form;
 use Gdoo\Order\Services\OrderService;
 
 use Gdoo\Index\Controllers\WorkflowController;
+use Gdoo\User\Services\UserService;
 
 class SampleApplyController extends WorkflowController
 {
@@ -79,9 +80,8 @@ class SampleApplyController extends WorkflowController
             }
 
             if ($this->access['index'] <> 4) {
-                // 这里需要包括创建者权限
-                $authorise = User::authoriseAccess();
-                $model->whereIn('sample_apply.created_id', $authorise);
+                $region = regionCustomer('customer');
+                $model->whereIn('sample_apply.region_id', $region['regionIn']);
             }
             
             $model->select($header['select']);
@@ -153,9 +153,8 @@ class SampleApplyController extends WorkflowController
             }
 
             if ($this->access['index'] <> 4) {
-                // 这里需要包括创建者权限
-                $authorise = User::authoriseAccess();
-                $model->whereIn('sample_apply.created_id', $authorise);
+                $region = regionCustomer('customer');
+                $model->whereIn('sample_apply.region_id', $region['regionIn']);
             }
             
             $model->select($header['select']);

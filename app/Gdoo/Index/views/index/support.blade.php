@@ -10,14 +10,6 @@
     </tr>
     <tr>
         <td align="right">
-            资源版本
-        </td>
-        <td align="left">
-            {{$resVersion}}
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
             开发商
         </td>
         <td align="left">

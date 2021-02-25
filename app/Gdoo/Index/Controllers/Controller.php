@@ -18,11 +18,6 @@ class Controller extends BaseController
     public $version = '<a target="_blank" href="http://www.gdoo.net">Gdoo</a> 2.2.2';
 
     /**
-     * @var 资源版本
-     */
-    public $resVersion = '20210225';
-
-    /**
      * @var 开发商名称
      */
     public $powered = 'Gdoo';
