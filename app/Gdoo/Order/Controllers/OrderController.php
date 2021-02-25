@@ -773,50 +773,40 @@ class OrderController extends WorkflowController
     // 显示促销
     public function printAction()
     {
-        $this->layout = 'layouts.print2';
-        
         $id = Request::get('id');
         $template_id = Request::get('template_id');
-        if ($template_id == 121) {
+        $template = DB::table('model_template')->where('id', $template_id)->first();
+        $print_type = $template['print_type'];
+        $this->layout = 'layouts.print_'.$print_type;
+        $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
 
-            $master = DB::table('customer_order as co')->where('co.id', $id)
-            ->leftJoin('customer as c', 'c.id', '=', 'co.customer_id')
-            ->leftJoin('customer_tax as ct', 'ct.id', '=', 'co.tax_id')
-            ->leftJoin('sale_type as st', 'st.id', '=', 'co.type_id')
-            ->selectRaw('co.*, ct.name as tax_name, c.name as customer_name, st.name as type_name')
-            ->first();
+        $form = [
+            'template' => $template,
+        ];
 
-            $rows = DB::table('customer_order_data as cod')
-            ->leftJoin('customer_order as co', 'co.id', '=', 'cod.order_id')
-            ->leftJoin('product as p', 'p.id', '=', 'cod.product_id')
-            ->leftJoin('product_unit as pu', 'pu.id', '=', 'p.unit_id')
-            ->leftJoin('customer_order_type as cot', 'cot.id', '=', 'cod.type_id')
-            ->where('co.id', $id)
-            ->selectRaw('
-                cod.*,
-                cod.delivery_quantity * p.weight as total_weight,
-                p.name as product_name,
-                p.spec as product_spec,
-                cot.name as type_name,
-                pu.name as product_unit,
-                p.material_type,
-                p.product_type
-            ')
-            ->get();
-
-            $form = [
-                'template' => DB::table('model_template')->where('id', $template_id)->first()
-            ];
-
-            $tpl = $this->display([
-                'master' => $master,
-                'rows' => $rows,
-                'form' => $form,
-            ], 'print/'.$template_id);
-        } else {
-            $tpl = $this->createAction('print');
+        if ($print_tpl) {
+            $data = OrderService::getPrintData($id);
+            $data['form'] = $form;
+            $data['template'] = $template;
+            $tpl = $this->display($data, 'print/'.$template_id);
+            return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
         }
-        print_prince($tpl);
+
+        if ($print_type == 'stiReport') {
+            $data = OrderService::getPrintData($id);
+            $print_data = [
+                'master' => [$data['master']],
+                'money' => $data['money'],
+                'customer_order_data' => $data['rows'],
+            ];
+            return $this->display([
+                'template' => $template,
+                'print_data' => $print_data,
+            ]);
+        }
+
+        $tpl = $this->createAction('print');
+        return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
     /**

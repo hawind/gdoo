@@ -143,7 +143,7 @@ body {
 
                 <div class="panel-body" style="padding:20px 30px 0 30px;">
                     <div class="form-group">
-                        <input type="text" placeholder="账号" class="form-control" name="username" required>
+                        <input type="text" placeholder="账号" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="form-group">
                         <input type="password" placeholder="密码" class="form-control" name="password" required>
@@ -192,6 +192,17 @@ body {
 
 <script>
 (function($) {
+
+    // 初始化获取的用户名
+    let username = localStorage.getItem('remember_username');
+    if (username) {
+        $('#username').val(username);
+    }
+    // 记住用户名
+    $("#username").on("input propertychange", function() {
+        localStorage.setItem('remember_username', this.value);
+    });
+
     // ajax 登录
     $('#myform').on('submit', function () {
         var url = $(this).attr('action');
@@ -213,13 +224,15 @@ body {
         }, 'json');
         return false;
     });
-    // 刷新验证码方法
-    function refresh_captcha() {
-        $('#captcha_image').attr('src', settings.public_url + '/user/auth/captcha?_=' + Math.random());
-    }
+
     // 刷新验证码
     $(document).on('click', '#refresh_captcha', function () {
         refresh_captcha();
     });
+
+    // 刷新验证码方法
+    function refresh_captcha() {
+        $('#captcha_image').attr('src', settings.public_url + '/user/auth/captcha?_=' + Math.random());
+    }
 })(jQuery);
 </script>

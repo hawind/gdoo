@@ -45,14 +45,14 @@ var auth_id = '{{auth()->id()}}';
 
 function progressRenderer(params) {
     var data = params.data;
-	if (data.type == 'task' || data.type == 'subtask') {
-		if (params.value == 1) {
-			return '<span class="label label-success">已完成</span>';
-		} else {
-			return '<span class="label label-' + (auth_id == data.user_id ? 'danger' : 'info') + '">进行中</span>';
-		}
-	}
-	return '';
+    if (data.type == 'task' || data.type == 'subtask') {
+        if (params.value == 1) {
+            return '<div class="label label-success">已完成</div>';
+        } else {
+            return '<div class="label label-' + (auth_id == data.user_id ? 'danger' : 'info') + '">进行中</div>';
+        }
+    }
+    return '';
 }
 
 function durationRenderer(params) {
@@ -94,23 +94,23 @@ function durationRenderer(params) {
         {cellClass:'text-center', sortable: false, field: 'user_name', headerName: '执行者', width: 140},
         {cellClass:'text-center', sortable: false, field: 'users', headerName: '参与者', minWidth: 200},
         {cellClass:'text-center', cellRenderer: progressRenderer, sortable: false, field: 'progress', headerName: '状态', width: 100},
-        {cellClass:'text-center', sortable: false, field: 'start_at', headerName: '开始时间', width: 120},
-        {cellClass:'text-center', sortable: false, field: 'end_at', headerName: '结束时间', width: 120},
+        {cellClass:'text-center', sortable: false, field: 'start_dt', headerName: '开始时间', width: 120},
+        {cellClass:'text-center', sortable: false, field: 'end_dt', headerName: '结束时间', width: 120},
         {cellClass:'text-center', cellRenderer: durationRenderer, sortable: false, field: 'duration_date', headerName: '持续时间', width: 100},
-        {cellClass:'text-center', sortable: false, field: 'created_at', headerName: '创建时间', width: 140},
-        {cellClass:'text-center', field: 'id', headerName: 'ID', width: 80}
+        {cellClass:'text-center', sortable: false, field: 'created_dt', headerName: '创建时间', width: 140},
+        //{cellClass:'text-center', field: 'id', headerName: 'ID', width: 80}
     );
 
     grid.onRowDoubleClicked = function (row) {
         var data = row.data;
         if(data.type == 'item') {
-            editItem(data.id);
+            editItem(data);
         }
         if(data.type == 'task') {
-            editTask(data.id);
+            editTask(data);
         }
         if(data.type == 'subtask') {
-            editSubTask(data.id);
+            editSubTask(data);
         }
     };
 
@@ -142,9 +142,9 @@ function dataReload() {
 }
 
 function getTask(id) {
+    console.log(grid.api.getRowNode(id));
 	return grid.api.getRowNode(id);
 }
-
 </script>
 
 @include('task/index/js')

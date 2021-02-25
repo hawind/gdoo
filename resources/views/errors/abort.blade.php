@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>信息提示</title>
-<link href="<?php echo URL::to('assets'); ?>/dist/app.min.css" rel="stylesheet">
+<link href="<?php echo mix('/assets/dist/app.min.css'); ?>" rel="stylesheet">
 <style type="text/css">
 .window {
 	font: 12px 'Lucida Grande', Verdana, sans-serif;

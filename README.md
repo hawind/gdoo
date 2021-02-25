@@ -4,7 +4,13 @@
 [![release][release-badge]][release-link]
 
 ## 介绍
-本系统是给企业定制开发的，基于laravel 8.x框架开发。基本进销存功能、营销管理功能、业务员销售团队分级管理、支持客户自主下单。
+1. 进销存功能、营销管理功能、简单生产计划、业务员销售团队分级管理、支持客户任务和业务员任务进度统计、支持客户自主下单。特别注重销售管理、业绩分析。
+2. 主要为食品行业生产型和贸易企业定制开发。
+3. 包括强大的自定义功能，模型字段(自定义跨表映射功能、视图管理、流程管理、字段权限管理)
+
+
+## 架构
+基于PHP框架Laravel 8.x + MySQL 8.x
 
 
 ## 申明
@@ -75,16 +81,25 @@ QQ交流群: 79446405
 
 ![h5兼容](http://demo.gdoo.net/uploads/demo/12.png)
 
-## 架构
-基于PHP框架Laravel 8.x + MySQL 8.x
-
 ## 安装
-    1. 上传压缩包到目录，这里推荐使用宝塔面板，安装php-8.x、mysql-8.x、nginx
-    2. 然后使用 composer install --no-dev 安装依赖
-    3. 如果要修改前端文件请执行 yarn install 安装依赖
-    4. 最后导入 database/gdoo-2.2.sql
-    5. 然后执行 php artisan key:generate
-    6. 修改.env相关配置
+1. 推荐使用宝塔面板，安装nginx 1.18.x、php-8.x(需要扩展：fileinfo)、mysql-8.x(mariaDB 10.4.x)，如果你使用win请自行安装相关环境
+2. 创建网站和数据库, 数据库字符utf8mb4, 在网站目录中设置PHP命令行版本为php-80
+3. 下载gdoo: https://gitee.com/hawind/gdoo 上传至宝塔网站根目录并解压
+4. 打开Xshell并登录, 执行 <code>composer -v</code> 查看composer版本, 执行 <code>composer self-update</code> 升级composer至最新版本
+5. 切换命令行到网站根目录 <code>cd /www/wwwroot/yousite</code>
+6. 执行 <code>composer install --no-dev</code> 安装依赖
+7. 执行 <code>cp .env.example .env</code> 并修改相关配置
+8. 执行 <code>php artisan key:generate</code>
+9. 打开宝塔数据库管理：
+    1. 将项目database目录中的 gdoo-2.2.sql 文件上传并导入到数据库
+10. 打开宝塔网站管理：
+    1. 设置运行目录为public
+    2. 设置伪静态为laravel5
+11. 打开网站并用 <code>admin/123456</code> 登录
+
+## 开发
+1. 请在项目根目录执行 <code>yarn install</code> 安装前端依赖
+2. 待续
 
 [license-badge]: https://img.shields.io/badge/license-apache2-blue.svg
 [license-link]: LICENSE

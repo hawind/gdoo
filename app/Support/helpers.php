@@ -1559,10 +1559,6 @@ function encodeURIComponent($str)
 
 function plugin_sync_api($uri, $data = [])
 {
-    if (env('PLUGIN_SYNC_API_STATUS') === false) {
-        return ['success' => true];
-    }
-
     $base_url = env('PLUGIN_SYNC_API_URL');
     if (empty($base_url)) {
         return ['success' => true];
@@ -1624,15 +1620,13 @@ function plugin_sync_api($uri, $data = [])
 function print_prince($view)
 {
     $viewData = $view->getData();
-    $prince = new App\Support\Prince(env('PRINCE_DIR'));
-    $file = storage_path() . '/print/' . auth()->id() . '.pdf';
-    $ret = $prince->convert_string_to_file($view, $file);
-    if ($ret) {
+    try {
+        $prince = new App\Support\Prince(env('PRINCE_DIR'));
         header('Content-Type:application/pdf');
         header('Content-Disposition:inline;filename="' . $viewData['form']['template']['name'] . '.pdf"');
-        echo file_get_contents($file);
-    } else {
-        echo $ret;
+        $prince->convert_string_to_passthru($view);
+    } catch (Exception $e) {
+        echo $e->getMessage();
     }
 }
 

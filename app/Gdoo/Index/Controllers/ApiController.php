@@ -30,8 +30,8 @@ class ApiController extends Controller
         $settings['public_url'] = URL::to('/');
         $settings['upload_file_type'] = $this->setting['upload_type'];
         $settings['upload_max_size'] = $this->setting['upload_max'];
-        $settings['openSource'] = $this->openSource;
-
+        $settings['realtime'] = not_empty(env('REALTIME_KEY'));
+        
         header('Content-type: text/javascript');
         echo 'var settings = '. json_encode($settings, JSON_UNESCAPED_UNICODE);
         exit;

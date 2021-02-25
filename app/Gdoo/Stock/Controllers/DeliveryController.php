@@ -20,6 +20,7 @@ use Gdoo\Model\Services\StepService;
 use Gdoo\Stock\Services\StockService;
 
 use Gdoo\Index\Controllers\WorkflowController;
+use Gdoo\Stock\Services\DeliveryService;
 
 class DeliveryController extends WorkflowController
 {
@@ -312,71 +313,41 @@ class DeliveryController extends WorkflowController
     {
         $id = Request::get('id'); 
         $template_id = Request::get('template_id');
-        
-        $master = DB::table('stock_delivery as sd')
-        ->leftJoin('customer as c', 'c.id', '=', 'sd.customer_id')
-        ->leftJoin('customer_tax as ct', 'ct.id', '=', 'sd.tax_id')
-        ->leftJoin('sale_type as st', 'st.id', '=', 'sd.type_id')
-        ->selectRaw('sd.*, ct.name as tax_name, c.name as customer_name, st.name as type_name')
-        ->where('sd.id', $id)
-        ->first();
-
-        $model = DB::table('stock_delivery_data as sdd')
-        ->leftJoin('stock_delivery as sd', 'sd.id', '=', 'sdd.delivery_id')
-        ->leftJoin('product as p', 'p.id', '=', 'sdd.product_id')
-        ->leftJoin('product_unit as pu', 'pu.id', '=', 'p.unit_id')
-        ->leftJoin('customer_order_type as cot', 'cot.id', '=', 'sdd.type_id')
-        ->leftJoin('warehouse as w', 'w.id', '=', 'sdd.warehouse_id');
-
-        if ($template_id == 112) {
-            $model->where('sd.print_master_id', $master['print_master_id']);
-        } else {
-            $model->where('sdd.delivery_id', $id);
-        }
-
-        $model->whereRaw("p.code <> '99001'");
-        
-        $rows = $model->selectRaw("
-            sdd.*,
-            p.name as product_name,
-            p.spec as product_spec,
-            cot.name as type_name,
-            pu.name as product_unit,
-            p.material_type,
-            p.product_type,
-            SUBSTRING(batch_sn, 3, 4) as batch_sn,
-            case when right(w.name, 4) = '不满件库' then 'B' else '' end warehouse_type
-        ")
-        ->orderBy('p.code', 'asc')
-        ->get();
-
-        $money = DB::table('stock_delivery_data as sdd')
-        ->leftJoin('product as p', 'p.id', '=', 'sdd.product_id')
-        ->where('sdd.delivery_id', $id)
-        ->whereRaw("p.code = '99001'")
-        ->sum("money");
-
+        $template = DB::table('model_template')->where('id', $template_id)->first();
+        $print_type = $template['print_type'];
+        // 存在打印模板
+        $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
+        $this->layout = 'layouts.print_'.$print_type;
         $form = [
-            'template' => DB::table('model_template')->where('id', $template_id)->first()
+            'template' => $template,
         ];
 
-        if ($template_id == 87) {
-            $this->layout = 'layouts.print_stiReport';
-            return $this->display([
-                'master' => $master,
-                'money' => $money,
-                'rows' => $rows,
-                'form' => $form,
-            ], 'print/'.$template_id);
-        } else {
-            $this->layout = 'layouts.print2';
-            print_prince($this->display([
-                'master' => $master,
-                'money' => $money,
-                'rows' => $rows,
-                'form' => $form,
-            ], 'print/'.$template_id));
+        // 自定义模板
+        if ($print_tpl) {
+            $data = DeliveryService::getPrintData($id);
+            $data['form'] = $form;
+            $data['template'] = $template;
+            $tpl = $this->display($data, 'print/'.$template_id);
+            return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
         }
+
+        // 打印插件
+        if ($print_type == 'stiReport') {
+            $data = DeliveryService::getPrintData($id);
+            $print_data = [
+                'master' => [$data['master']],
+                'money' => $data['money'],
+                'stock_delivery_data' => $data['rows'],
+            ];
+            return $this->display([
+                'template' => $template,
+                'print_data' => $print_data,
+            ]);
+        }
+
+        // 默认模板
+        $tpl = $this->createAction('print');
+        return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
     // 物流信息

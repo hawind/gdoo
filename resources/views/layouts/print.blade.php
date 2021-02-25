@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{$setting['title']}}</title>
-<link rel="stylesheet" href="{{$asset_url}}/dist/app.min.css" type="text/css" />
-<script src="{{$public_url}}/common"></script>
-<script src="{{$asset_url}}/dist/app.min.js"></script>
+<link rel="stylesheet" href="{{mix('/assets/dist/app.min.css')}}" type="text/css" />
+<script src="{{$public_url}}/common?v={{time()}}"></script>
+<script src="{{mix('/assets/dist/app.min.js')}}"></script>
 <script src="{{$asset_url}}/vendor/datepicker/datepicker.js"></script>
 <style type="text/css">
 body {
@@ -219,33 +219,6 @@ body {
     margin: 10mm;
     size: 210mm 297mm;
 }
-/*
-@page:right {
-    @top-right { content: "手写单号#21212"; }
-    @bottom-right {content: "手写单号#21212"; }
-}
-@page:left {
-    @top-left { content: "手写单号#21212"; }
-    @bottom-left { content: "手写单号#21212"; }
-}
-*/
-
-.header {
-    position: absolute;
-    top: 0;
-    display:table-header-group;
-    content: "手写单号#21212";
-    font-size: 10px;
-}
-
-footer {
-    bottom: 0;
-    position: absolute;
-    display:table-footer-group;
-    content: "手写单号#21212";
-    font-size: 10px;
-}
-
 </style>
 </head>
 

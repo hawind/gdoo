@@ -3,9 +3,6 @@
 <script src="{{$asset_url}}/vendor/dhtmlxgantt/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
 <script src="{{$asset_url}}/vendor/dhtmlxgantt/locale_cn.js" type="text/javascript"></script>  
 <link rel="stylesheet" href="{{$asset_url}}/vendor/dhtmlxgantt/dhtmlxgantt.css" type="text/css">
-<!--
-<script src="https://export.dhtmlx.com/gantt/api.js"></script>
--->
 <style type="text/css">
 /* 新样式 */
 html, body { 
@@ -126,9 +123,6 @@ html, body {
 				<a href="{{url('index', ['project_id' => $project['id'], 'tpl' => 'board'])}}" class="btn btn-sm btn-default @if($query['tpl'] == 'board') active @endif">看板</a>
 				-->
 			</div>
-			<!--
-			<input value="导出PDF" class="btn btn-sm btn-default" type="button" onclick='exportToPDF()'>
-			-->
 		</div>
 
 		<a href="{{url($referer)}}" class="btn btn-sm btn-default"><i class="fa fa-reply"></i> 返回</a>
@@ -158,9 +152,7 @@ html, body {
 		</script>
 		</form>
 	</div>
-
 	<div id="gantt-view"></div>
-
 </div>
 
 <script type="text/javascript">
@@ -189,7 +181,6 @@ gantt.config.show_links = false;
 gantt.config.order_branch = true;
 
 // gantt.config.order_branch_free = true;
-
 /*
 var date_to_str = gantt.date.date_to_str(gantt.config.api_date);
 var today = new Date();
@@ -244,13 +235,13 @@ gantt.templates.tooltip_text = function(start, end, task) {
 gantt.attachEvent('onTaskDblClick', function (task_id) {
 	var task = gantt.getTask(task_id);
 	if(task.type == 'item') {
-		editItem(task_id);
+		editItem(task);
 	}
 	if(task.type == 'task') {
-		editTask(task_id);
+		editTask(task);
 	}
 	if(task.type == 'subtask') {
-		editSubTask(task_id);
+		editSubTask(task);
 	}
 });
 
@@ -279,22 +270,17 @@ gantt.attachEvent('onBeforeTaskDrag', function(task_id, mode, e) {
 });
 
 gantt.attachEvent('onAfterTaskDrag', function(task_id, mode, e) {
-
 	var task = gantt.getTask(task_id);
-
 	var data = {id: task.id,progress: task.progress};
-	
 	var date_to_str = gantt.date.date_to_str(gantt.config.api_date);
 	data.start_date = date_to_str(task.start_date);
-	data.end_date   = date_to_str(task.end_date);
-
+	data.end_date = date_to_str(task.end_date);
 	$.post('{{url("drag")}}', data, function(res) {
 		gantt.render();
 	}, 'json');
 });
 
 gantt._do_autosize = function() {
-
 	// 设置高度
 	var height = $('#gantt-wrapper').outerHeight();
 	var iframeHeight = $(window).height();
@@ -327,27 +313,13 @@ $('#search-submit').on('click', function() {
 	$.map(query, function(row) {
 		params[row.name] = row.value;
 	});
-
 	dataReload();
-
 	return false;
 });
-
-function exportToPDF() 
-{
-	gantt.exportToPDF({
-		locale:"cn",
-		skin:'terrace',
-	});
-}
 
 function dataReload() {
 	gantt.clearAll();
 	gantt.load(app.url('project/task/index', params));
-}
-
-function getTask(id) {
-	return gantt.getTask(id);
 }
 
 </script>

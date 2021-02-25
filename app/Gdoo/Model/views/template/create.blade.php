@@ -224,10 +224,10 @@
                         <div class="form-group">
                             <label for="set_col">打印方式</label>
                             <div class="form-text">
-                                <select class="input-select2 form-control input-sm" id="print_type" name="print_type" data-width="100%">
-                                    <option value="">&nbsp;</option>    
+                                <select class="input-select2 form-control input-sm" id="print_type" name="print_type" data-width="100%">   
                                     <option value="html" @if($template['print_type'] == 'html') selected @endif>html</option>
-                                    <option value="stiReport" @if($template['print_type'] == 'stiReport') selected @endif>StiReport</option>
+                                    <option value="pdf" @if($template['print_type'] == 'pdf') selected @endif>pdf</option>
+                                    <option value="stiReport" @if($template['print_type'] == 'stiReport') selected @endif>stiReport</option>
                                 </select>
                             </div>
                         </div>

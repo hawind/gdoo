@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>{{$setting['title']}}</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link href="{{$asset_url}}/dist/app.min.css" rel="stylesheet" type="text/css">
-    <script src="{{$asset_url}}/vendor/jquery.min.js"></script>
+    <link href="{{mix('/assets/dist/app.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="{{$asset_url}}/vendor/jquery.js"></script>
 </head>
 <style>
 li { list-style: none; }

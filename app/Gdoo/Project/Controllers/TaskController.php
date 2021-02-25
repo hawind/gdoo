@@ -123,7 +123,7 @@ class TaskController extends DefaultController
                 'name' => $_item['name'],
                 'type' => $_item['type'],
                 'created_at' => '',
-                'user_id' => '',
+                'user_id' => 0,
                 'user_name' => '',
                 'open' => true,
                 'option_edit' => $project_user_id,
@@ -154,7 +154,9 @@ class TaskController extends DefaultController
             $_task['open'] = true;
             $_task['loaded'] = true;
             $_task['expanded'] = true;
-            $_task['created_at'] = format_datetime($_item['created_at']);
+            $_task['created_dt'] = format_datetime($_task['created_at']);
+            $_task['start_dt'] = format_datetime($_task['start_at']);
+            $_task['end_dt'] = format_datetime($_task['end_at']);
 
             if ($_task['start_at'] && $_task['end_at']) {
                 $remain = remain_time($_task['start_at'], $_task['end_at'], '');

@@ -1,16 +1,7 @@
 <template>
     <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
-
-        <!--
-        <li class="dropdown">
-            <a data-toggle="addtab" data-url="index/index/dashboard" data-id="dashboard" data-name="个人空间" class="dropdown-toggle hidden-xs">
-                <i class="fa fa-bar-chart-o"></i>
-                <span>个人空间</span>
-            </a>
-        </li>
-        -->
-
-        <li class="dropdown">
+        
+        <li class="dropdown" v-if="realtime">
             <a href="javascript:;" @click="chatToggle()" title="即时消息" class="dropdown-toggle hidden-xs">
                 <i class="fa fa-comments pulse-box">
                     <span class='pulse green'></span>
@@ -20,16 +11,6 @@
         </li>
 
         <li class="dropdown hidden-xs">
-
-            <!--
-            <a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle">
-                <i class="fa fa-bell-o notify-box">
-                    <span class="pulse" v-if="count.total > 0"></span>
-                </i>
-                <span class="visible-xs-inline">通知</span>
-            </a>
-            -->
-
             <a href="#" data-toggle="dropdown" title="通知" class="dropdown-toggle">
                 <i class="fa fa-bell-o pulse-box">
                     <span :class="[countTotal > 0 ? 'pulse' : 'hidden']"></span>
@@ -94,29 +75,13 @@
                     <a href="javascript:;" data-toggle="addtab" data-url="user/profile/index" data-id="02" data-name="个人资料">个人资料</a>
                 </li>
                 <li>
-                    <a href="javascript:;" @click="support">技术支持</a>
+                    <a href="javascript:;" @click="support">关于</a>
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <a :href="url('user/auth/logout')">注销</a>
+                    <a :href="url('user/auth/logout')">退出</a>
                 </li>
             </ul>
-
-            <!-- animated fadeInUp -->
-            <!--
-            <ul class="dropdown-menu">
-                <li>
-                    <a href="javascript:;" data-toggle="addtab" data-url="user/profile/index" data-id="02" data-name="个人资料">个人资料</a>
-                </li>
-                <li>
-                    <a href="javascript:;" @click="support">技术支持</a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a :href="url('user/auth/logout')">注销</a>
-                </li>
-            </ul>
-            -->
         </li>
     </ul>
 </template>
@@ -132,6 +97,7 @@ export default defineComponent({
             countTotal: 0,
             countArticle: 0,
             countMail: 0,
+            realtime: settings.realtime
         };
     },
     mounted() {
@@ -151,7 +117,7 @@ export default defineComponent({
         },
         support() {
             viewDialog({
-                title: '技术支持',
+                title: '关于',
                 dialogClass: 'modal-md',
                 url: app.url('index/index/support'),
                 close: function() {

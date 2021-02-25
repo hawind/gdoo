@@ -28,11 +28,6 @@ class Controller extends BaseController
     public $powered = 'Gdoo';
 
     /**
-     * @var 是否开源版
-     */
-    public $openSource = false;
-
-    /**
      * @var 配置参数
      */
     public $setting = [];
@@ -79,14 +74,14 @@ class Controller extends BaseController
         $this->ret = RetService::make();
 
         View::share([
-            'title' => 'GdooOA',
+            'title' => 'Gdoo',
             'setting' => $this->setting,
             'public_url' => URL::to('/'),
             'upload_url' => URL::to('/uploads'),
             'static_url' => URL::to('/static'),
             'asset_url' => URL::to('/assets'),
             'version' => $this->version,
-            'openSource' => $this->openSource,
+            'licenseType' => env('LICENSE_TYPE'),
             'resVersion' => $this->resVersion,
         ]);
     }

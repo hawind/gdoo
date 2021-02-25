@@ -1,5 +1,4 @@
 <script>
-
 function formsBox(title, url, id, success, remove, error)
 {
 	var options = {
@@ -67,11 +66,9 @@ function addItem() {
 	});
 }
 
-function editItem(id) {
+function editItem(task) {
 
 	var fun_edit = null, fun_delete = null;
-
-	var task = getTask(id);
 
 	if(task.option_edit == 1) {
 		fun_edit = function(res) {
@@ -84,14 +81,14 @@ function editItem(id) {
 			var me = this;
 			$.messager.confirm('操作警告', '确定要删除任务列表吗？', function(btn) {
                 if (btn == true) {
-                    $.post(app.url('project/task/delete'), {id: id}, function(res) {
+                    $.post(app.url('project/task/delete'), {id: task.id}, function(res) {
                         saveResult.call(me, res);
                     },'json');
                 }
 			});
 		}
 	}
-	formsBox('编辑任务列表', app.url('project/task/edit', {type:'item',id:id}), 'item-form-'+ id, fun_edit, fun_delete);
+	formsBox('编辑任务列表', app.url('project/task/edit', {type:'item',id:task.id}), 'item-form-'+ task.id, fun_edit, fun_delete);
 }
 
 function addTask() {
@@ -100,11 +97,9 @@ function addTask() {
 	});
 }
 
-function editTask(id) {
+function editTask(task) {
 
 	var fun_edit = null, fun_delete = null;
-
-	var task = getTask(id);
 
 	if(task.option_edit == 1) {
 		fun_edit = function(res) {
@@ -117,14 +112,14 @@ function editTask(id) {
 			var me = this;
 			$.messager.confirm('操作警告', '确定要删除任务吗？', function(btn) {
                 if (btn == true) {
-                    $.post(app.url('project/task/delete'), {id: id}, function(res) {
+                    $.post(app.url('project/task/delete'), {id: task.id}, function(res) {
                         saveResult.call(me, res);
                     }, 'json');
                 }
 			});
 		}
 	}
-	formsBox('编辑任务', app.url('project/task/edit', {type:'task',id:id}), 'task-form-'+ id, fun_edit, fun_delete);
+	formsBox('编辑任务', app.url('project/task/edit', {type:'task', id:task.id}), 'task-form-'+ task.id, fun_edit, fun_delete);
 }
 
 function addSubTask(id) {
@@ -140,11 +135,9 @@ function addSubTask(id) {
 	});
 }
 
-function editSubTask(id) {
-
+function editSubTask(task) {
+	
 	var fun_edit = null, fun_delete = null;
-
-	var task = getTask(id);
 
 	if(task.option_edit == 1) {
 		fun_edit = function(res) {
@@ -157,14 +150,14 @@ function editSubTask(id) {
 			var me = this;
 			$.messager.confirm('操作警告', '确定要删除任务吗？', function(btn) {
                 if (btn == true) {
-                    $.post(app.url('project/task/delete'), {id: id}, function(res) {
+                    $.post(app.url('project/task/delete'), {id: task.id}, function(res) {
                         saveResult.call(me, res);
                     }, 'json');
                 }
 			});
 		}
 	}
-	formsBox('编辑子任务', app.url('project/task/edit', {type:'subtask',id:id}), 'task-form-'+ id, fun_edit, fun_delete);
+	formsBox('编辑子任务', app.url('project/task/edit', {type:'subtask',id:task.id}), 'task-form-'+ task.id, fun_edit, fun_delete);
 }
 
 function addComment(task_id) {
@@ -190,9 +183,7 @@ function editComment(id) {
                     saveResult.call(me, res);
                 }, 'json');
             }
-			
 		});
 	});
 }
-
 </script>

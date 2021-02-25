@@ -16,7 +16,7 @@ class NotificationService
      */
     public static function wechatTemplate($users, $content)
     {
-        if (env('WECHAT_MESSAGE_PUSH_STATUS') === false) {
+        if (env('WECHAT_MESSAGE_PUSH') === false) {
             return false;
         }
 

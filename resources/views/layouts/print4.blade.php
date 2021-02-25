@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{$setting['print_title']}}{{$form['template']['name']}}</title>
-<link rel="stylesheet" href="{{$asset_url}}/dist/app.min.css" type="text/css" />
+<link type="text/css" rel="stylesheet" href="{{mix('/assets/dist/app.min.css')}}" />
 <style type="text/css">
 .table {
     border: 1px solid #000;

@@ -5,7 +5,7 @@
             软件版本
         </td>
         <td align="left" style="border-top:0;">
-            {{$version}} {{$openSource ? '开源版' : '企业版'}}
+            {{$version}} {{$licenseType ? $licenseType : '开源版'}}
         </td>
     </tr>
     <tr>
@@ -26,10 +26,18 @@
     </tr>
     <tr>
         <td align="right">
-            支持方式
+            联系方式
         </td>
         <td align="left">
             15182223008(电话/微信)
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            QQ交流群
+        </td>
+        <td align="left">
+            79446405
         </td>
     </tr>
 </table>

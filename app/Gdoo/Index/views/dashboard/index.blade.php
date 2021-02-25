@@ -291,7 +291,7 @@ a { outline: none; }
 
 <div class="dashboard-footer">
     <div class="box">
-    {{$version}} {{$openSource ? '开源版' : '企业版'}}
+    {{$version}} {{$licenseType ? $licenseType : '开源版'}}
     </div>
 </div>
 

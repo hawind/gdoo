@@ -119,7 +119,7 @@ class UserService
      */
     public static function wantsTotp()
     {
-        if (env('AUTH_TOTP_STATUS', true) == false) {
+        if (env('AUTH_TOTP', true) == false) {
             return 0;
         }
 
