@@ -11,7 +11,6 @@ use Gdoo\Index\Models\Notification;
 
 class DemoController extends Controller
 {
-
     #[Attribute(Attribute::TARGET_FUNCTION)]
     public function vouchAction()
     {

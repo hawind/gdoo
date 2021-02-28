@@ -12,17 +12,6 @@ use Gdoo\Index\Models\Notification;
 class ApiController extends Controller
 {
     /**
-     * jq导出xls
-     */
-    public function jqexportAction()
-    {
-        $gets = Request::all();
-        $data = urldecode($gets['data']);
-        $rows = json_decode($data, true);
-        return writeExcel($rows['thead'], $rows['tbody'], 'jqexport');
-    }
-    
-    /**
      * 初始化JS输出
      */
     public function commonAction()
@@ -117,7 +106,7 @@ class ApiController extends Controller
      */
     public function dictAction()
     {
-        $key  = Request::get('key');
+        $key = Request::get('key');
         $rows = option($key);
         return response()->json($rows)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
@@ -127,7 +116,7 @@ class ApiController extends Controller
      */
     public function optionAction()
     {
-        $key  = Request::get('key');
+        $key = Request::get('key');
         $rows = option($key);
         return response()->json($rows)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }

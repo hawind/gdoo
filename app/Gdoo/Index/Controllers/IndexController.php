@@ -13,7 +13,6 @@ class IndexController extends DefaultController
         'info', 
         'badge',
         'badges',
-        'help', 
         'index',
         'unsupportedBrowser',
         'support',
@@ -25,17 +24,6 @@ class IndexController extends DefaultController
         return $this->render([
             'user' => $user,
         ]);
-    }
-
-    public function infoAction()
-    {
-        return InfoService::getInfo("abv");
-    }
-    
-    // 首页登录指南页面
-    public function helpAction()
-    {
-        return $this->render();
     }
 
     // 技术支持
