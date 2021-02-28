@@ -1156,7 +1156,7 @@ class OrderController extends WorkflowController
         $avaMoney = 0;
 
         if ($tax) {
-            // 获取接口数据
+            // 获取外部接口数据
             $a = plugin_sync_api('getAccInfo/code/'.$tax['code']);
             $b = CustomerService::getLockMoney($tax['id']);
 

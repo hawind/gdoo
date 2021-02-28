@@ -773,7 +773,7 @@ $(function() {
 
         var type  = form_group.type;
         var size  = form_group.column;
-        var title = form_group.title;
+        var title = form_group.title || '';
         var border = form_group.border;
         var _fields = Array();
 

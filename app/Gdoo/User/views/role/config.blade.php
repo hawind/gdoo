@@ -106,7 +106,7 @@
                                              <div class="panel-body">
                                                 @if(count($groupValue['actions']))
                                                 @foreach($groupValue['actions'] as $childKey => $childValue)
-                                                <div class="col-md-3 col-sm-6 wrapper-xs">
+                                                <div class="col-md-2 col-sm-4 wrapper-xs">
                                                     {{'';$selected = $assets[$menuKey][$groupKey.'.'.$childKey]}}
                                                     <label title="{{$childKey}}" class="checkbox-inline">
                                                         <input type="checkbox" class="action-check" name="assets[{{$menuKey}}][{{$groupKey}}.{{$childKey}}][action]" value="1" @if(isset($selected)) checked @endif>

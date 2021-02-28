@@ -76,7 +76,7 @@ class Record09Hook
         } else {
             $post_type = 'postRecord09';
         }
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api($post_type, ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -88,7 +88,7 @@ class Record09Hook
         $id = $params['id'];
 
         $master = DB::table('stock_record09')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         if ($master['type_id'] == 2) {
             $ret = plugin_sync_api('getVouchExist', ['table' => 'DispatchList', 'field' => 'cDLCode', 'value' => $master['sn']]);
             if ($ret['msg'] > 0) {

@@ -296,59 +296,40 @@ class Grid
             $data_field = $row['data_field'];
             $data_link = $row['data_link'];
             $_table = $data_link.'_'.$data_type;
-            // 连接右表
-            $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link];
+
+            if ($row['type']) {
+                $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link];
+            }
 
             $field_count = mb_substr_count($data_field, ':');
             if ($field_count > 0) {
                 $var1 = explode(':', $data_field);
                 list($_v1, $_v2) = explode('.', $var1[0]);
-                if ($field_count == 2) {
-                    // 分割对应的多表联合查询
-                    list($_t1, $_t2, $_t3) = explode('.', $var1[1]);
-                    list($_c1, $_c2) = explode('.', $var1[2]);
+                list($_t1, $_t2) = explode('.', $var1[1]);
 
-                    // 获取左表名
-                    $_left_table = $data_link.'_'.$_v2.'_'.$_t1;
-                    $_table = $data_link.'_'.$_v2.'_'.$_t1.'_'.$_t3;
-
-                    $join[$_table] = [$_c1.' as '.$_table, $_table.'.id', '=', $_left_table.'.'.$_t3];
-                    $index = $_table.'.'.$_c2;
-
-                    $search['table'] = $_c1;
-                    $search['field'] = $_left_table.'.'.$_t3;
-                    $search['name'] = $_c2;
-
-                    // 远程字段和本地字段名称一样重命名
-                    if ($data_link == $row['field']) {
-                        $column = $column.'_'.$_v1;
-                    } else {
-                        if ($row['type']) {
-                            $column = $column.'_'.$_c2;
-                        } else {
-                            $column = $column;
-                        }
-                    }
-                    
-                } else {
-                    list($_t1, $_t2) = explode('.', $var1[1]);
+                // 判断是否存在左表字段
+                if ($row['type']) {
                     $_table = $data_link.'_'.$_v2.'_'.$_t1;
-                    $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
-                    $index = $_table.'.'.$_t2;
+                } else {
+                    $_table = $row['field'].'_'.$_t1;
+                }
+                
+                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
 
-                    $search['table'] = $_t1;
-                    $search['field'] = $data_link.'_'.$data_type.'.'.$_v2;
-                    $search['name'] = $_t2;
+                $index = $_table.'.'.$_t2;
 
-                    // 远程字段和本地字段名称一样重命名
-                    if ($data_link == $row['field']) {
-                        $column = $column.'_'.$_v1;
-                    } else {
-                        if ($row['type']) {
-                            $column = $column.'_'.$_t2;
-                        }
-                        $column = $column;
+                $search['table'] = $_t1;
+                $search['field'] = $data_link.'_'.$data_type.'.'.$_v2;
+                $search['name'] = $_t2;
+
+                // 远程字段和本地字段名称一样重命名
+                if ($data_link == $row['field']) {
+                    $column = $column.'_'.$_v1;
+                } else {
+                    if ($row['type']) {
+                        $column = $column.'_'.$_t2;
                     }
+                    $column = $column;
                 }
 
             } else {
@@ -424,14 +405,28 @@ class Grid
         // 获取全部模型
         $models = ModelService::getModelAllFields($bill['model_id']);
         $_models = [];
+        $left_fields = [];
+        $fields = [];
+
         if ($template) {
             $views = (array)json_decode($template['tpl'], true);
-            $fields = [];
             foreach($views as $view) {
                 $_model = $models[$view['table']];
                 $_field = $_model['fields'][$view['field']];
                 $_field['table'] = $_model['table'];
                 $_field['is_index'] = 1;
+
+                // 关联字段是左表字段
+                $data_link = $_field['data_link'];
+                if ($data_link) {
+                    $_field['is_link'] = true;
+                    $left_field = $_model['fields'][$data_link];
+                    if ($left_field['type']) {
+                        $left_field['is_link'] = true;
+                        $left_field['table'] = $_model['table'];
+                        $left_fields[$data_link] = $left_field;
+                    }
+                }
 
                 // 按角色隐藏字段
                 if ($view['role_id']) {
@@ -471,21 +466,40 @@ class Grid
         } else {
             $_fields = Field::where('model_id', $master['id'])
             ->orderBy('sort', 'asc')
-            ->get()
-            ->toArray();
+            ->get()->keyBy('field')->toArray();
 
-            $fields = [];
-            foreach($_fields as $field) {
-                $field['table'] = $table;
-                $field['column'] = $field['field'];
-                $field['is_master'] = 1;
-                $fields[] = $field;
+            foreach($_fields as $_field) {
+                $_field['table'] = $table;
+                $_field['column'] = $_field['field'];
+                $_field['is_master'] = 1;
+
+                // 关联字段是左表字段
+                $data_link = $_field['data_link'];
+                if ($data_link) {
+                    $_field['is_link'] = true;
+                    $left_field = $_fields[$data_link];
+                    if ($left_field['type']) {
+                        $left_field['is_link'] = true;
+                        $left_field['table'] = $table;
+                        $left_fields[$data_link] = $left_field;
+                    }
+                }
+
+                $fields[] = $_field;
             }
             $select = [$table.'.created_by' => [], $table.'.created_at' => []];
             if ($master_prefix) {
                 $select[$table.'.id'][] = $master_prefix.'id';
             }
         }
+
+        foreach($fields as $index => $field) {
+            if (isset($left_fields[$field['field']])) {
+                unset($left_fields[$field['field']]);
+            }
+        }
+
+        $fields = array_merge(array_values($left_fields), $fields);
 
         $res['cols']['checkbox'] = [
             'width' => 40,
@@ -515,7 +529,7 @@ class Grid
 
         foreach ($fields as $row) {
 
-            if ($row['is_index'] == 1 || $row['is_search'] == 1) {
+            if ($row['is_index'] == 1 || $row['is_search'] == 1 || $row['is_link']) {
                 $setting = json_decode($row['setting'], true);
 
                 $is_master = $row['is_master'];
@@ -534,6 +548,10 @@ class Grid
                 }
 
                 static::fieldRelated($_table, $row, $join, $select, $index, $column, $_search, $setting);
+                if ($row['is_link']) {
+                    continue;
+                }
+
                 $_search['field2'] = $index;
 
                 if ($row['form_type'] == 'urd') {
@@ -823,6 +841,9 @@ class Grid
 
         $res['select'] = $src_select;
         $res['raw_select'] = $raw_select;
+
+        //print_r($join);
+        //print_r($select);
 
         $res['join'] = $join;
         $res['search'] = $search;

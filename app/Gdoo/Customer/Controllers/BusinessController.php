@@ -148,8 +148,6 @@ class BusinessController extends DefaultController
 
         $user = User::find($gets['user_id']);
 
-        NotificationService::sms([$gets['contacts_phone']], '感谢您对川南公司的关注', '负责您的业务人员是'.$user['name'].'，电话'.$user['phone'].'。您可与其沟通或登陆www.cnnzfood.com');
-
         return $this->json('恭喜你，操作成功。', true);
     }
 

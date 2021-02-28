@@ -10,17 +10,19 @@ class Record10Hook
     }
 
     public function onBillSeqNo($params) {
-        // 川南库管独立编号
+
+        // 外部库管独立编号
         if (auth()->id() == 2177) {
             $params['rule'] = $params['rule'].'11';
         } else {
             $params['rule'] = $params['rule'].'10';
         }
+
         return $params;
     }
 
     public function onBeforePage($params) {
-        // 川南库管登录
+        // 外部库管登录
         if (auth()->id() == 2177) {
             $params['q']->whereIn('stock_record10.warehouse_id', [20001, 20047]);
         } else {
@@ -63,7 +65,7 @@ class Record10Hook
         ->leftJoin('product', 'product.id', '=', 'stock_record10_data.product_id')
         ->where('stock_record10_data.record10_id', $id)
         ->get(['stock_record10_data.*', 'product.code as product_code']);
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postRecord10', ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -75,7 +77,7 @@ class Record10Hook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_record10')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'Rdrecord10', 'field' => 'cCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在产成品入库单['.$master['sn'].']无法弃审。');

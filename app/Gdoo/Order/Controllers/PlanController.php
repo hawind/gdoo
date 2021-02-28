@@ -40,8 +40,8 @@ class PlanController extends DefaultController
             ],[
                 'form_type' =>'select', 
                 'field' => 'type', 
-                'name' => '内销/外贸',
-                'options' => [['id'=>1, 'name'=> '内销'], ['id'=>2, 'name'=> '外贸']]
+                'name' => '内销/外销',
+                'options' => [['id'=>1, 'name'=> '内销'], ['id'=>2, 'name'=> '外销']]
             ],[
                 'form_type' =>'dialog', 
                 'field' => 'warehouse_id',
@@ -92,7 +92,7 @@ class PlanController extends DefaultController
     }
 
     /**
-     * 外销进度表
+     * 外销销售进度表
      */
     public function export_saleAction()
     {
@@ -232,8 +232,8 @@ class PlanController extends DefaultController
             ],[
                 'form_type' =>'select', 
                 'field' => 'type', 
-                'name' => '内销/外贸',
-                'options' => [['id'=>1, 'name'=> '内销'], ['id'=>2, 'name'=> '外贸']]
+                'name' => '内销/外销',
+                'options' => [['id'=>1, 'name'=> '内销'], ['id'=>2, 'name'=> '外销']]
             ],[
                 'form_type' =>'dialog', 
                 'field' => 'category_id',

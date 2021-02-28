@@ -27,10 +27,10 @@ class PromotionCash extends BaseModel
 
         $total_num = DB::table('order')->count('id');
 
-        $master['customer_id']    = $cash->promotion->customer_id;
+        $master['customer_id'] = $cash->promotion->customer_id;
         $master['flow_step_id'] = 1;
-        $master['number']       = 'CXDX-'.date('Y-m').'-'.($total_num + 1);
-        $master['add_time']     = time();
+        $master['number'] = 'CXDX-'.date('Y-m').'-'.($total_num + 1);
+        $master['add_time'] = time();
         $orderId = DB::table('order')->insertGetId($master);
         
         foreach ($cash->datas as $data) {

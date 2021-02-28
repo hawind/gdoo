@@ -67,7 +67,7 @@ class UserController extends DefaultController
                 }
             }
 
-            $header['select'][] = 'password_text';
+            $header['select'][] = 'user.password_text';
             $model->select($header['select']);
 
             $rows = $model->paginate($query['limit'])->appends($query);

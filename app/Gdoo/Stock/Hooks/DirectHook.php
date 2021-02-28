@@ -120,7 +120,7 @@ class DirectHook
             }
         }
 
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postDeliveryZY', ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -131,7 +131,7 @@ class DirectHook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_direct')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'DispatchList', 'field' => 'cDLCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在发货单(直营)['.$master['sn'].']无法弃审。');

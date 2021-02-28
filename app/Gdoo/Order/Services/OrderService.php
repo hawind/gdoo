@@ -89,7 +89,7 @@ class OrderService
         cot.name AS type_id_name,
         sd.customer_stock,
         sd.other_money,
-        p.is_special,
+        p.is_produce_plan,
         pc.code AS category_code,
         p.barcode,
         isnull(sd.money, 0) + isnull(sd.other_money, 0) AS hj_money,

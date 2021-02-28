@@ -423,7 +423,7 @@ class StepService
      */
     public static function getFlowLog($run_id, $data, $model)
     {
-        $steps = DB::table('flow_run_step')
+        $steps = DB::table('model_run_step')
         ->whereNotIn('type', ['end'])
         ->where('run_id', $run_id)
         ->orderBy('sort', 'asc')
@@ -450,13 +450,16 @@ class StepService
         foreach($steps as $log) {
             if ($log['option'] == 1) {
                 $remark = $log['remark'];
-                if ($remark == '') {
-                    if ($log['run_status'] == 'next' || $log['run_status'] == 'end') {
-                        $remark = '同意';
+                if ($log['run_updated_at'] > 0) {
+                    if ($remark == '') {
+                        if ($log['run_status'] == 'next' || $log['run_status'] == 'end') {
+                            $remark = '同意';
+                        }
                     }
+                    $updated_by = get_user($log['updated_id'], 'name', false);
+                    $remark.'&nbsp;&nbsp;'.$updated_by.' '.format_datetime($log['updated_at']);
                 }
-                $updated_by = get_user($log['updated_id'], 'name', false);
-                $html .= '<div class="row"><div class="col-sm-12 control-text">'.$log['name'].': '.$remark.'&nbsp;&nbsp;'.$updated_by.' '.format_datetime($log['updated_at']).'</div></div>';
+                $html .= '<div class="row"><div class="col-sm-12 control-text">'.$log['name'].': '.$remark.'</div></div>';
             }
         }
         return $html;
@@ -566,7 +569,7 @@ class StepService
                     $user_ids = [$data[$step['type_value']]];
                 }
                 break;
-                // 销售团队(1级)
+                // 销售组(1级)
             case 'region1':
                 $customer_id = $data['customer_id'];
                 if ($customer_id > 0) {
@@ -577,7 +580,7 @@ class StepService
                     $user_ids = [$region1['owner_user_id']];
                 }
                 break;
-                // 销售团队(2级)
+                // 销售组(2级)
             case 'region2':
                 $customer_id = $data['customer_id'];
                 if ($customer_id > 0) {
@@ -593,7 +596,7 @@ class StepService
                     $user_ids = [$region2['owner_user_id']];
                 }
                 break;
-                // 销售团队(3级)
+                // 销售组(3级)
             case 'region3':
                 $customer_id = $data['customer_id'];
                 if ($customer_id > 0) {

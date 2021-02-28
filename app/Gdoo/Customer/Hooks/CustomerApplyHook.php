@@ -60,16 +60,6 @@ class CustomerApplyHook
             bank_address
         ')->first();
 
-        // 自动处理区域
-        if ($apply['region_id']) {
-            $regions = DB::table('customer_region')->get()->keyBy('id');
-            $region1 = $regions[$apply['region_id']];
-            $region2 = $regions[$region1['parent_id']];
-            $region3 = $regions[$region2['parent_id']];
-            $apply['region2_id'] = $region2['id'];
-            $apply['region3_id'] = $region3['id'];
-        }
-
         // 新建客户
         $customer = new Customer;
         $customer->fill($apply);
@@ -113,7 +103,7 @@ class CustomerApplyHook
         $_apply->code = $customer['code'];
         $_apply->save();
 
-        // 客户档案写入用友
+        // 客户档案写入外部接口
         $department = DB::table('department')->where('id', $customer['department_id'])->first();
         $class = DB::table('customer_class')->where('id', $customer['class_id'])->first();
         $customer['class_code'] = $class['code'];

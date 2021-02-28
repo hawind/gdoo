@@ -404,11 +404,13 @@ class FieldController extends DefaultController
         $fields = DB::table('model_field')->where('model_id', $flow['id'])->get();
         $rows = [];
         foreach($fields as $field) {
-            if ($field['data_type'] && $field['data_field']) {
-                $f = $field['data_type'].'.'.$field['data_field'];
-                $rows[] = ['field' => $f, 'key' => $field['field'].'.'.$field['data_link'].':'.$f, 'name' => $field['name']];
-            } else {
-                $rows[] = ['field' => $field['field'], 'key' => $field['field'], 'name' => $field['name']];
+            if ($field['type']) {
+                if ($field['data_type'] && $field['data_field']) {
+                    $f = $field['data_type'].'.'.$field['data_field'];
+                    $rows[] = ['field' => $f, 'key' => $field['field'].'.'.$field['data_link'].':'.$f, 'name' => $field['name']];
+                } else {
+                    $rows[] = ['field' => $field['field'], 'key' => $field['field'], 'name' => $field['name']];
+                }
             }
         }
         return $this->json($rows, true);

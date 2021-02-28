@@ -7,12 +7,16 @@ use Request;
 use Gdoo\Index\Services\NotificationService;
 
 use Gdoo\Product\Models\ProductCategory;
-use Gdoo\Customer\Models\CustomerType;
 
 use Gdoo\Index\Controllers\DefaultController;
 
 class ReportController extends DefaultController
 {
+    public $permission = [
+        'citydata',
+        'clientdata'
+    ];
+
     public $promotion = [
         'promotions_category' => [
             1 => '消费促销',
@@ -1393,46 +1397,6 @@ class ReportController extends DefaultController
             'clients' => $clients,
             'notpurchase'=> $notpurchase,
             'assess' => $assess,
-        ));
-    }
-
-    // 促销分类查询
-    public function promotionAction()
-    {
-        // 获得销售员登录名
-        $id = (int)Request::get('id');
-        $tag = Request::get('tag');
-        $category = Request::get('category');
-
-        if ($id <= 0 and empty($tag) and empty($category)) {
-            return $this->alert('很抱歉，参数不正确。');
-        }
-
-        $category_name = $this->promotion['promotions_category'][$category];
-        $category_name = str_replace('促销', '', $category_name);
-
-        //查询类型
-        if ($tag == 'salesman_id') {
-            $where = 'c.salesman_id='.$id;
-        } elseif ($tag == 'city_id') {
-            $where = 'c.city_id='.$id;
-        } elseif ($tag == 'user_id') {
-            $where = 'p.user_id='.$id;
-        }
-
-        // 促销计算
-        $_promotions = DB::table('promotion as p')
-        ->leftJoin('user as c', 'c.id', '=', 'p.customer_id')
-        ->where('p.deleted_by', 0)
-        ->whereRaw($where)
-        ->where('p.type_id', $category)
-        ->groupBy('p.id')
-        ->orderBy('p.id', 'DESC')
-        ->selectRaw('p.step_number,p.start_at,p.end_at,p.data_4,p.data_3,p.type_id,p.product_remark,p.data_5,p.data_18,p.data_19,p.data_amount,p.data_amount1')
-        ->get();
-
-        return $this->display(array(
-            'promotions'=> $_promotions,
         ));
     }
 

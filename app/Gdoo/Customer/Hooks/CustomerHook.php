@@ -40,16 +40,6 @@ class CustomerHook
         }
         $user->fill($_user)->save();
         $master['user_id'] = $user->id;
-        
-        // 自动处理区域
-        if ($master['region_id']) {
-            $regions = DB::table('customer_region')->get()->keyBy('id');
-            $region1 = $regions[$master['region_id']];
-            $region2 = $regions[$region1['parent_id']];
-            $region3 = $regions[$region2['parent_id']];
-            $master['region2_id'] = $region2['id'];
-            $master['region3_id'] = $region3['id'];
-        }
         $params['master'] = $master;
 
         return $params;
@@ -78,7 +68,7 @@ class CustomerHook
                 'status' => 1,
             ]);
 
-            // 客户档案写入用友
+            // 客户档案写入外部接口
             $department = DB::table('department')->where('id', $master['department_id'])->first();
             $class = DB::table('customer_class')->where('id', $customer['class_id'])->first();
             $customer['class_code'] = $class['code'];
@@ -105,13 +95,5 @@ class CustomerHook
         $row = $params['row'];
         $ret = $params['ret'];
         abort_error('客户档案暂时无法导入');
-        // $row['password']
-        if ($ret['id']) {
-             //DB::table($table)->where('id', $ret['id'])->update($row);
-        } else {
-            //$row['id'] = DB::table($table)->insertGetId($row);
-        }
-        //print_r($row);
-        // exit;
     }
 }

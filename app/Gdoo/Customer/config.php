@@ -2,7 +2,7 @@
 return [
     "name" => "客户管理",
     "version" => "1.0",
-    "description" => "潜在客户资料上传，通过手机客户端收集客户资料。",
+    "description" => "客户管理。",
     'dialogs' => [
         'customer_price' => [
             'name' => '客户销售价格',
@@ -10,7 +10,7 @@ return [
             'url' => 'customer/price/dialog',
         ],
         'customer_region' => [
-            'name' => '销售团队',
+            'name' => '销售组',
             'model' => 'Gdoo\Customer\Models\Region::Dialog',
             'url' => 'customer/region/dialog',
         ],
@@ -128,7 +128,7 @@ return [
             ]
         ],
         "region" => [
-            "name" => "销售团队",
+            "name" => "销售组",
             "actions" => [
                 "index" => [
                     "name" => "列表"
@@ -226,7 +226,7 @@ return [
             ]
         ],
         "regionTask" => [
-            "name" => "区域任务",
+            "name" => "销售任务",
             "actions" => [
                 "index" => [
                     "name" => "列表"
@@ -254,6 +254,7 @@ return [
                 ],
             ]
         ],
+        /*
         "business" => [
             "name" => "客户商机",
             "actions" => [
@@ -274,6 +275,7 @@ return [
                 ]
             ]
         ],
+        */
         "price" => [
             "name" => "客户销售价格",
             "actions" => [
@@ -378,10 +380,10 @@ return [
                 ]
             ]
         ],
-        "accountReport" => [
-            "name" => "客户对账单",
+        "report" => [
+            "name" => "客户报表",
             "actions" => [
-                "index" => [
+                "accountStatement" => [
                     "name" => "客户对账单"
                 ],
             ]

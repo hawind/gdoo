@@ -59,7 +59,7 @@ class DepartmentController extends DefaultController
             }
 
             $model->select($header['select'])
-            ->addSelect(DB::raw('parent_id,(select count(id) from [user] where department_id = department.id) as user_count'));
+            ->addSelect(DB::raw('(select count(id) from [user] where department_id = department.id) as user_count'));
 
             $items = $model->get()->toNested('name');
             $items = Grid::dataFilters($items, $header, function($item) {

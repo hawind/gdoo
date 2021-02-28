@@ -24,6 +24,18 @@
                 <input class="form-control input-sm" type="text" id="value" name="value" value="{{$row['value']}}">
             </td>
         </tr>
+
+        <tr>
+            <td align="right">状态</td>
+            <td align="left">
+                <select class="form-control input-sm" name="status" id="status">
+                    @foreach(option('common.status') as $status)
+                        <option value="{{$status['id']}}" @if($row['status'] == $status['id']) selected @endif>{{$status['name']}}</option>
+                    @endforeach
+                </select>
+            </td>
+        </tr>
+
         <tr>
             <td align="right">排序</td>
             <td align="left">

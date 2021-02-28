@@ -5,7 +5,7 @@ use DB;
 class StockService
 {
     /**
-     * 商品批次选择(可筛选是否取不满件)
+     * 商品批次选择
      * 
      * @warehouse_id 仓库ID
      * @product_ids 存货档案ID
@@ -14,14 +14,6 @@ class StockService
      */
     public static function getBatchSelect($warehouse_id = 0, $product_ids = '', $value = '', $customer_id = 0) 
     {
-        $count = 0;
-        if ($customer_id > 0) {
-            $count = DB::table('customer')
-            ->where('id', $customer_id)
-            ->whereRaw("RIGHT(name, 1) = 'A'")
-            ->count();
-        }
-
         $model = DB::query()->selectRaw('* FROM('.static::getStockSelectSql().') ss')
         ->whereRaw("ISNULL(ky_num, 0) > 0");
 
@@ -48,14 +40,6 @@ class StockService
         // 取仓库
         if ($warehouse_id > 0) {
             $model->where("warehouse_id", $warehouse_id);
-        }
-        
-        // 是否取不满件
-        if ($count > 0) {
-            $model->whereRaw("
-                warehouse_code <> '28' -- 味聚特辣酱不满件库
-                and warehouse_code <> '23' -- 成品泡菜不满件库
-            ");
         }
         
         $model->orderByRaw('warehouse_code asc, product_code ASC, batch_sn ASC');
@@ -138,39 +122,26 @@ class StockService
      *
      * @warehouse_id 仓库ID
      * @product_code 存货编码
-     * @NY 内销1 外贸2
+     * @NY 内销1 外销2
      * @made_start_dt 生产日期起始日期
      * @made_end_dt 生产日期截至日期
      * @user_id 用户id
      * @SFPH 是否显示批号
      * @HBBMJ 是否合并不满件
      */
-    public static function reportOrderStockTotal($warehouse_id = 0, $product_code = '', $ny = '', $made_start_dt = '', $made_end_dt = '', $user_id = 0, $SFPH = 0, $HBBMJ = 0) 
+    public static function reportOrderStockTotal($warehouse_id = 0, $product_code = '', $ny = '', $made_start_dt = '', $made_end_dt = '', $user_id = 0, $SFPH = 0) 
     {
         $warehouse_id = (int)$warehouse_id;
         $SFPH = (int)$SFPH;
-        $HBBMJ = (int)$HBBMJ;
+		$HBBMJ = 1;
 
         $sql = [];
         $sql[] = "select warehouse_code,product_code,batch_sn,batch_date,poscode,posname,warehouse_name,
         product_name,product_spec,unit_name,product_id,warehouse_id,SUM(Num) num,SUM(ky_Num) kynum,SUM(fh_Num) fhnum,SUM(Ck_Num) cknum,SUM(Rk_Num) rknum,SUM(Max_Num) maxnum 
         from (
-            SELECT case when {$HBBMJ}=1 AND warehouse_code='23' THEN '10'
-                when {$HBBMJ}=1 AND warehouse_code='27' THEN '21'
-                when {$HBBMJ}=1 AND warehouse_code='28' THEN '11' ELSE warehouse_code end AS warehouse_code,
-                    rd.product_code,batch_sn,batch_date,
-            case when {$HBBMJ}=1 and poscode='91' THEN '99'
-                when {$HBBMJ}=1 and poscode='92' THEN '98'
-                when {$HBBMJ}=1 and poscode='93' THEN '98' ELSE poscode end AS poscode,
-            case when {$HBBMJ}=1 and posname='不满件' THEN '小菜'
-                when {$HBBMJ}=1 and posname='川南辣酱不满件' THEN '辣酱'
-                when {$HBBMJ}=1 and posname='味聚特辣酱不满件' THEN '辣酱' ELSE posname end as posname,
-            case when {$HBBMJ}=1 and warehouse_name='成品不满件库' THEN '成品库小菜'
-                when {$HBBMJ}=1 and warehouse_name='川南辣酱不满件库' THEN '川南酱库'
-                when {$HBBMJ}=1 and warehouse_name='味聚特辣酱不满件库' THEN '成品库酱' ELSE warehouse_name end AS warehouse_name, rd.product_name,rd.product_spec,rd.unit_name,rd.product_id,
-            CASE WHEN {$HBBMJ}=1 AND warehouse_id=20005 THEN 139
-                WHEN {$HBBMJ}=1 AND warehouse_id=20047 THEN 20001
-                WHEN {$HBBMJ}=1 AND warehouse_id=20048 THEN 140 ELSE warehouse_id end AS warehouse_id,Num,ky_Num,fh_Num,Ck_Num,Rk_Num,Max_Num 
+            SELECT warehouse_code,
+                    rd.product_code,batch_sn,batch_date,poscode,posname,warehouse_name,
+					rd.product_name,rd.product_spec,rd.unit_name,rd.product_id,warehouse_id,Num,ky_Num,fh_Num,Ck_Num,Rk_Num,Max_Num 
             FROM (".StockService::getStockSelectSql().") rd
             left join (
                 select i.product_id, i.product_name,i.product_spec,i.unit_name,invc.NY, i.product_code from (
@@ -190,8 +161,7 @@ class StockService
                     $sql[] = "and (batch_date >= '$made_start_dt') and (batch_date <= '$made_end_dt')";
                 }
             
-                $sql[] = "AND (({$warehouse_id} = 0 OR warehouse_id = {$warehouse_id} OR (
-                    ({$HBBMJ}=1 and warehouse_id = 20005 AND {$warehouse_id} = 139) OR ({$HBBMJ} = 1 and warehouse_id = 20047 AND {$warehouse_id} = 20001) OR ({$HBBMJ} = 1 and warehouse_id = 20048 AND {$warehouse_id} = 140))
+                $sql[] = "AND (({$warehouse_id} = 0 OR warehouse_id = {$warehouse_id}
                 ) and warehouse_id in (
                     SELECT uwh.warehouse_id FROM user_warehouse uwh LEFT JOIN warehouse wh ON uwh.warehouse_id = wh.id where uwh.user_id = {$user_id})
                 )";
@@ -204,7 +174,6 @@ class StockService
             GROUP BY warehouse_code,product_code,batch_sn,batch_date,poscode,posname,warehouse_name,
             product_name,product_spec,unit_name,product_id,warehouse_id 
             order by warehouse_code desc,product_code,batch_sn";
-
         return DB::select(join(" ", $sql));
     }
 
@@ -219,14 +188,12 @@ class StockService
      * @end_dt 截至日期
      * @user_id 用户ID
      * @SFPH 是否显示批号
-     * @HBBMJ 是否合并不满件
      */
-    public static function reportOrderStockInOut($warehouse_id = 0, $product_id = 0, $batch_sn = '', $ny = '', $start_dt = '', $end_dt = '', $user_id = 0, $SFPH = 0, $HBBMJ = 0) 
+    public static function reportOrderStockInOut($warehouse_id = 0, $product_id = 0, $batch_sn = '', $ny = '', $start_dt = '', $end_dt = '', $user_id = 0, $SFPH = 0) 
     {
         $warehouse_id = (int)$warehouse_id;
         $product_id = (int)$product_id;
         $SFPH = (int)$SFPH;
-        $HBBMJ = (int)$HBBMJ;
 
         $invoice_dt = sql_year_month_day('m.invoice_dt');
 
@@ -260,13 +227,9 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-			and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -281,13 +244,9 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-			($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -304,14 +263,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-                OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -327,14 +282,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-                OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' ='' OR d.batch_sn = '$batch_sn')
-			and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -349,14 +300,9 @@ class StockService
 			WHERE d.product_id IS NOT NULL
 			AND ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." < '$start_dt'
             
-            and ($warehouse_id = 0 OR m.out_warehouse_id = $warehouse_id OR (
-                ($HBBMJ=1 AND m.out_warehouse_id=20005 AND $warehouse_id=139)
-                OR ($HBBMJ=1 AND m.out_warehouse_id=20047 AND $warehouse_id=20001)
-                OR ($HBBMJ=1 AND m.out_warehouse_id=20048 AND $warehouse_id=140)
-            ))
-
+            and ($warehouse_id = 0 OR m.out_warehouse_id = $warehouse_id)
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.out_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.out_warehouse_id,d.product_id,d.batch_sn,d.out_poscode,d.out_posname,batch_date
@@ -371,14 +317,9 @@ class StockService
 			WHERE d.product_id IS NOT NULL
 			AND ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." < '$start_dt' 
             
-            and ($warehouse_id = 0 OR m.in_warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND m.in_warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND m.in_warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND m.in_warehouse_id=20048 AND $warehouse_id=140)
-            ))
-
+            and ($warehouse_id = 0 OR m.in_warehouse_id = $warehouse_id)
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.in_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.in_warehouse_id,d.product_id,d.batch_sn,d.in_poscode,d.in_posname,batch_date
@@ -396,14 +337,9 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-            and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
-
+            and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id)
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date
@@ -419,14 +355,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-            and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id OR (
-                ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139)
-                OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date
@@ -442,13 +374,9 @@ class StockService
 			WHERE d.product_id IS NOT NULL and m.status = 1
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-            and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139)
-                OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id)
             and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-            and ('$ny' ='' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+            and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date
@@ -499,14 +427,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
             AND ".$invoice_dt." <= '$end_dt'
             
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -535,14 +459,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
             AND ".$invoice_dt." <= '$end_dt'
             
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139)
-                OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-                OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn'='' OR d.batch_sn = '$batch_sn')
-			and ('$ny'='' OR (pc.name like '%外销%' AND '$ny'='外销') OR  (pc.name not like '%内销%' AND '$ny'='内销') )
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export,0)=0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -573,14 +493,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
             AND ".$invoice_dt." <= '$end_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139)
-                OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-                OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -608,14 +524,10 @@ class StockService
             WHERE ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." >= '$start_dt'
             AND ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." <= '$end_dt'
             
-            and ($warehouse_id = 0 OR m.out_warehouse_id=$warehouse_id OR (                                        
-                ($HBBMJ=1 AND m.out_warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND m.out_warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND m.out_warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.out_warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.out_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.out_warehouse_id,d.product_id,d.batch_sn,d.out_poscode,d.out_posname,batch_date
@@ -644,14 +556,10 @@ class StockService
 			--WHERE CONVERT(varchar(10), case when isnull(m.delivery_dt, '') <> '' then m.delivery_dt else m.invoice_dt end, 121)>=@SdDate
 			--AND CONVERT(varchar(10), case when isnull(m.delivery_dt, '') <> '' then m.delivery_dt else m.invoice_dt end, 121)<=@EdDate
             
-            and ($warehouse_id = 0 OR m.in_warehouse_id=$warehouse_id OR (                                        
-                ($HBBMJ=1 AND m.in_warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND m.in_warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND m.in_warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.in_warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.in_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.in_warehouse_id,d.product_id,d.batch_sn,d.in_poscode,d.in_posname,batch_date
@@ -680,14 +588,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
             AND ".$invoice_dt." <= '$end_dt'
             
-			and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR d.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销') )
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -715,14 +619,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
             AND ".$invoice_dt." <= '$end_dt'
             
-			and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (                                        
-                ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-                OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-                OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -751,14 +651,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
             AND ".$invoice_dt." <= '$end_dt'
             
-			and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (
-                ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139)
-                OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)
-                OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR d.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,batch_date
@@ -827,13 +723,11 @@ class StockService
      * @start_dt 起始日期
      * @end_dt 截至日期
      * @user_id 用户ID
-     * @HBBMJ 是否合并不满件库
      */
-    public static function reportOrderStockDetail($warehouse_id = 0, $product_id = 0, $batch_sn = '', $ny = '', $start_dt = '', $end_dt = '', $user_id = 0, $HBBMJ = 0) 
+    public static function reportOrderStockDetail($warehouse_id = 0, $product_id = 0, $batch_sn = '', $ny = '', $start_dt = '', $end_dt = '', $user_id = 0) 
     {
         $warehouse_id = (int)$warehouse_id;
         $product_id = (int)$product_id;
-        $HBBMJ = (int)$HBBMJ;
         $user_id = (int)$user_id;
 
         // 期初
@@ -847,14 +741,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
 			AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date
@@ -870,14 +760,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
 			AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 																				
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date
@@ -893,14 +779,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
 			AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
 
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date
@@ -916,14 +798,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-			and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139)
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date																	
@@ -940,14 +818,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
             
-			and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (                                        
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id= $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			GROUP BY m.warehouse_id,d.product_id,d.batch_sn,d.poscode,d.posname,d.batch_date																	
@@ -963,14 +837,10 @@ class StockService
 			LEFT JOIN product_category pc on p.category_id = pc.id
 			WHERE ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." < '$start_dt'
             
-            and ($warehouse_id = 0 OR m.out_warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.out_warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.out_warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.out_warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.out_warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.out_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.product_id,m.out_warehouse_id,d.batch_sn,d.out_poscode,d.out_posname,d.batch_date
@@ -985,14 +855,10 @@ class StockService
             LEFT JOIN product_category pc on p.category_id = pc.id
             WHERE ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." < '$start_dt'
 			
-            and ($warehouse_id = 0 OR m.in_warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.in_warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.in_warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.in_warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.in_warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销')OR  (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.in_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.product_id,m.in_warehouse_id,d.batch_sn,d.in_poscode,d.in_posname,d.batch_date
@@ -1010,14 +876,10 @@ class StockService
             WHERE d.product_id IS NOT NULL 
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
 			
-            and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (                                        
-            ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR d.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)     
 			GROUP BY d.product_id,d.batch_sn,d.warehouse_id,d.poscode,d.posname,d.batch_date 
@@ -1034,14 +896,10 @@ class StockService
 			WHERE d.product_id IS NOT NULL 
 			AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
 				
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			GROUP BY d.product_id,d.batch_sn,m.warehouse_id,d.poscode,d.posname,d.batch_date
@@ -1057,14 +915,10 @@ class StockService
             WHERE d.product_id IS NOT NULL and m.status = 1
             AND ".sql_year_month_day('m.invoice_dt')." < '$start_dt'
 			
-            and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (                                        
-            ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR d.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			GROUP BY d.product_id,d.batch_sn,d.warehouse_id,d.poscode,d.posname,d.batch_date
@@ -1108,14 +962,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (                                        
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			
@@ -1133,14 +983,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139)
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny'='外销') OR (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id=$product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id=$user_id)
 			
@@ -1158,14 +1004,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id OR (                                        
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			
@@ -1182,14 +1024,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-			and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id OR (                                        
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id = 139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id = 20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id = 140)
-            ))
+			and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销')OR  (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id) 
 			
@@ -1206,14 +1044,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-			and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id OR (
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id = 139)
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id = 20001)
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id = 140)
-            ))
+			and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id) 
 			
@@ -1231,14 +1065,10 @@ class StockService
 			where ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." >= '$start_dt'
 			AND ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." <= '$end_dt'
 				 
-            and ($warehouse_id = 0 OR m.out_warehouse_id = $warehouse_id OR (                                        
-            ($HBBMJ=1 AND m.out_warehouse_id=20005 AND $warehouse_id = 139) 
-            OR ($HBBMJ=1 AND m.out_warehouse_id=20047 AND $warehouse_id = 20001)
-            OR ($HBBMJ=1 AND m.out_warehouse_id=20048 AND $warehouse_id = 140)
-            ))
+            and ($warehouse_id = 0 OR m.out_warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.out_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			
@@ -1257,16 +1087,9 @@ class StockService
 			where ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." >= '$start_dt'
 			AND ".sql_year_month_day("case when m.delivery_dt <> null then m.delivery_dt else m.invoice_dt end")." <= '$end_dt'
 				 
-		 	--and (ISNULL(@cWhID,'')='' OR m.in_warehouse_id = @cWhID OR ($HBBMJ=1 AND m.in_warehouse_id=20005))
-			
-            and ($warehouse_id = 0 OR m.in_warehouse_id = $warehouse_id OR (
-            ($HBBMJ=1 AND m.in_warehouse_id = 20005 AND $warehouse_id = 139)
-            OR ($HBBMJ=1 AND m.in_warehouse_id = 20047 AND $warehouse_id = 20001)
-            OR ($HBBMJ=1 AND m.in_warehouse_id = 20048 AND $warehouse_id = 140)
-            ))
+            and ($warehouse_id = 0 OR m.in_warehouse_id = $warehouse_id)
 
-			--and ('$batch_sn' = '' OR d.cBatch = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.in_warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)
 			
@@ -1287,14 +1110,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-            and ($warehouse_id = 0 OR d.warehouse_id = $warehouse_id OR (                                        
-            ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR d.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销')OR  (pc.name not like '%内销%' AND '$ny'='内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0  OR d.product_id = $product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)   
 			
@@ -1313,14 +1132,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-            and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id OR (                                        
-            ($HBBMJ=1 AND m.warehouse_id=20005 AND $warehouse_id=139) 
-            OR ($HBBMJ=1 AND m.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND m.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+            and ($warehouse_id = 0 OR m.warehouse_id = $warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and m.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id)  
 			
@@ -1340,14 +1155,10 @@ class StockService
 			AND ".$invoice_dt." >= '$start_dt'
 			AND ".$invoice_dt." <= '$end_dt'
 			
-			and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id OR (
-            ($HBBMJ=1 AND d.warehouse_id=20005 AND $warehouse_id=139)
-            OR ($HBBMJ=1 AND d.warehouse_id=20047 AND $warehouse_id=20001)  
-            OR ($HBBMJ=1 AND d.warehouse_id=20048 AND $warehouse_id=140)
-            ))
+			and ($warehouse_id = 0 OR d.warehouse_id=$warehouse_id)
 
 			and ('$batch_sn' = '' OR d.batch_sn = '$batch_sn')
-			and ('$ny' = '' OR (pc.name like '%外销%' AND '$ny' = '外销') OR (pc.name not like '%内销%' AND '$ny' = '内销'))
+			and ('$ny' = '' OR (p.is_export = 1 AND '$ny' = '外销') OR (isnull(p.is_export, 0) = 0 AND '$ny' = '内销'))
 			and ($product_id = 0 OR d.product_id = $product_id)
 			and d.warehouse_id in (SELECT uwh.warehouse_id FROM user_warehouse uwh where user_id = $user_id) 
         ) as c, product p, product_unit g, warehouse w
@@ -1484,7 +1295,7 @@ class StockService
         SELECT w.code AS warehouse_code, p.code AS product_code, a.batch_sn AS batch_sn, a.batch_date, 
         a.poscode AS poscode, a.posname AS posname, w.type as warehouse_type, w.name AS warehouse_name, p.name AS product_name, p.product_type, 
         p.spec AS product_spec, u.id AS unit_id, u.name AS product_unit, u.name AS unit_name, p.category_id, p.id AS product_id, w.id AS warehouse_id, 
-        round(a.Num, 4) AS num, 
+        round(a.Num, 4) AS num, p.is_export,
         round(isnull(a.Num, 0) - isnull(a.FhNum, 0) - isnull(a.Cknum, 0) + isnull(a.Rknum, 0), 4) AS ky_num,
         round(isnull(a.FhNum, 0), 4) AS fh_num, 
         round(isnull(a.Cknum, 0), 4) AS ck_num, 

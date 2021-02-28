@@ -43,12 +43,14 @@ class Record10Controller extends WorkflowController
             }
             $model->orderBy($header['sort'], $header['order']);
 
-            // 川南库管登录
+            /*
+            // 外部库管登录
             if (auth()->id() == 2177) {
                 $model->whereIn('stock_record10.warehouse_id', [20001, 20047]);
             } else {
                 $model->whereNotIn('stock_record10.warehouse_id', [20001, 20047]);
             }
+            */
 
             foreach ($search['where'] as $where) {
                 if ($where['active']) {

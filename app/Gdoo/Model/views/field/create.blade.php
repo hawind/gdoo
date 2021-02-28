@@ -96,6 +96,7 @@
                 </div>
             </div>
 
+            <!--
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="data_relation">关联关系</label>
                 <div class="col-sm-9 control-text">
@@ -105,6 +106,7 @@
                     </select>
                 </div>
             </div>
+            -->
         </div>
         @endverbatim
 

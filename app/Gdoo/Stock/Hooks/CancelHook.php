@@ -113,7 +113,7 @@ class CancelHook
         ) t where t.row_index = 1";
         $rows = DB::select($sql);
 
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postCancelOrder', ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -124,7 +124,7 @@ class CancelHook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_cancel')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'DispatchList', 'field' => 'cDLCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在退货申请['.$master['sn'].']无法弃审。');

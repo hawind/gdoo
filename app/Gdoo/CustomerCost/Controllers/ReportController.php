@@ -28,7 +28,7 @@ class ReportController extends DefaultController
             ]/*,[
                 'form_type' =>'dialog', 
                 'field' => 'region_id',
-                'name' => '销售团队', 
+                'name' => '销售组', 
                 'options' => ['url' => 'customer/region/dialog', 'query' => ['layer' => 3]]
             ],*/
         ], 'model');

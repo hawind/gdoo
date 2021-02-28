@@ -63,7 +63,7 @@ class Dialog
             'url'   => 'promotion/promotion/dialog',
         ],
         'region' => [
-            'title' => '销售团队',
+            'title' => '销售组',
             'table' => 'customer_region',
             'field' => 'name',
             'url'   => 'customer/region/dialog',

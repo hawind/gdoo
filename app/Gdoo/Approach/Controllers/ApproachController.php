@@ -203,7 +203,7 @@ class ApproachController extends WorkflowController
                     approach.customer_id,
                     customer_id_customer.region_id,
                     approach_market.name as market_name,
-                    customer_id_region_id_customer_region.name as region_name,
+                    region_id_customer_region.name as region_name,
                     customer_id_customer.code as customer_code,
                     customer_id_customer.name as customer_name,
                     customer_id_customer.warehouse_contact,

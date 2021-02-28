@@ -226,52 +226,28 @@ return [
             ]
         ],
         "report" => [
-            "name" => "客户订单报表",
+            "name" => "客户销售报表",
             "actions" => [
                 "index" => [
-                    "name" => "总订单报表"
+                    "name" => "销售曲线表"
                 ],
                 "category" => [
-                    "name" => "品类报表"
+                    "name" => "销售品类汇总表"
                 ],
                 "single" => [
-                    "name" => "单品报表"
-                ],
-                "increase" => [
-                    "name" => "单品涨跌报表"
-                ],
-                "clientsort" => [
-                    "name" => "客户涨跌报表"
+                    "name" => "销售单品汇总表"
                 ],
                 "city" => [
-                    "name" => "城市报表"
-                ],
-                "citydata" => [
-                    "name" => "城市数据报表"
+                    "name" => "区域销售品类表"
                 ],
                 "client" => [
-                    "name" => "单品客户报表"
-                ],
-                "clientdata" => [
-                    "name" => "单品数据客户报表"
+                    "name" => "销售单品客户表"
                 ],
                 "ranking" => [
-                    "name" => "客户销售排行报表"
-                ],
-                "promotion" => [
-                    "name" => "促销分类报表"
-                ],
-                "clienttype" => [
-                    "name" => "客户销售类型报表"
+                    "name" => "销售排名表"
                 ],
                 "newclient" => [
-                    "name" => "新客户报表"
-                ],
-                "receivable" => [
-                    "name" => "客户回款报表"
-                ],
-                "billingtype" => [
-                    "name" => "开票类型订单分析"
+                    "name" => "年度新客户表"
                 ],
                 "stockmonth" => [
                     "name" => "三个月未进货客户报表"

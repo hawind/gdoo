@@ -51,7 +51,10 @@ class Form
             $data_field = $field['data_field'];
             $data_link = $field['data_link'];
             $_table = $data_link.'_'.$data_type;
-            $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link];
+
+            if ($field['type']) {
+                $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link];
+            }
 
             $links[$data_link][$data_link] = 'id';
 
@@ -65,56 +68,32 @@ class Form
             if ($field_count > 0) {
                 $var1 = explode(':', $data_field);
                 list($_v1, $_v2) = explode('.', $var1[0]);
-                if ($field_count == 2) {
-                    // 分割对应的多表联合查询
-                    list($_t1, $_t2, $_t3) = explode('.', $var1[1]);
-                    list($_c1, $_c2) = explode('.', $var1[2]);
+                list($_t1, $_t2) = explode('.', $var1[1]);
 
-                    // 获取左表名
-                    $_left_table = $data_link.'_'.$_v2.'_'.$_t1;
-
-                    $join[$_left_table] = [$_t1.' as '.$_left_table, $_left_table.'.id', '=', $_table.'.'.$_v2];
-                    
-                    $_table = $data_link.'_'.$_v2.'_'.$_t1.'_'.$_t3;
-                    $join[$_table] = [$_c1.' as '.$_table, $_table.'.id', '=', $_left_table.'.'.$_t3];
-
-                    $index = $_table.'.'.$_c2;
-
-                    // 远程字段和本地字段名称一样重命名
-                    if ($data_link == $field['field']) {
-                        $column = $column.'_'.$_v1;
-                        $links[$data_link][$column] = $_v1;
-                    } else {
-                        if ($field['type']) {
-                            // 右表 id_name
-                            // 二层关联后无法获取远程字段是否有本地字段(这里暂时没有想到好的解决办法)
-                            // $links[$data_link][$column.'_'.$_t2] = $_v2.'_'.$_t2;
-                            $column = $column.'_'.$_c2;
-                        }
-                        $links[$data_link][$column] = $_v1;
-                    }
-
-                } else {
-                    list($_t1, $_t2) = explode('.', $var1[1]);
+                if ($field['type']) {
                     $_table = $data_link.'_'.$_t1;
-                    $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
-                    $index = $_table.'.'.$_t2;
-                    if ($field['field'] == $data_link) {
-                        $column = $field['field'].'_'.$_v1;
-                        // 这里本地字段和右表字段一样时，直接取右表名称
-                        $links[$data_link][$column] = $_v1;
-                    } else {
-                        // $_v2 右表关联字段，$_t2 右表映射字段
-                        if ($field['type']) {
-                            $links[$data_link][$column] = $_v2;
-                            // 右表 id_name
-                            $links[$data_link][$column.'_'.$_t2] = $_v2.'_'.$_t2;
+                } else {
+                    $_table = $field['field'].'_'.$_t1;
+                }
+                
+                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
 
-                            $field['dest_column'] = $column.'_'.$_t2;
-                            $column = $column.'_'.$_t2;
-                        } else {
-                            $links[$data_link][$column] = $_v2.'_'.$_t2;
-                        }
+                $index = $_table.'.'.$_t2;
+                if ($field['field'] == $data_link) {
+                    $column = $field['field'].'_'.$_v1;
+                    // 这里本地字段和右表字段一样时，直接取右表名称
+                    $links[$data_link][$column] = $_v1;
+                } else {
+                    // $_v2 右表关联字段，$_t2 右表映射字段
+                    if ($field['type']) {
+                        $links[$data_link][$column] = $_v2;
+                        // 右表 id_name
+                        $links[$data_link][$column.'_'.$_t2] = $_v2.'_'.$_t2;
+
+                        $field['dest_column'] = $column.'_'.$_t2;
+                        $column = $column.'_'.$_t2;
+                    } else {
+                        $links[$data_link][$column] = $_v2.'_'.$_t2;
                     }
                 }
             } else {
@@ -373,6 +352,7 @@ class Form
             } 
 
             foreach ($group['fields'] as $view) {
+
                 if ($view['role_id']) {
                     $role_ids = explode(',', $view['role_id']);
                     if (in_array($auth->role_id, $role_ids)) {
@@ -598,6 +578,15 @@ class Form
 
         $tabs = static::sublist(['select' => $options['select'], 'sublist' => $sublist, 'permission' => $permission, 'action' => $action, 'table' => $table, 'row' => $row, 'bill' => $bill]);
 
+        if ($flowlog) {
+            $tabs[] = [
+                'tpl' => '<div class="b-a">'.$flowlog.'</div>',
+                'id' => 'flowlog',
+                'tool' => '',
+                'name' => '审核记录',
+            ];
+        }
+
         if ($action == 'print') {
 
             $prints = [[
@@ -661,6 +650,11 @@ class Form
                         }
 
                         $tool = $tool == '' ? $tool : '<div class="system_btn m-b-sm">'.$tool.'</div>';
+
+                        // 审核记录不显示工具栏
+                        if ($tab['id'] == 'flowlog') {
+                            $tool = '';
+                        }
 
                         $_tabs .= '<div class="tab-pane fade '.$active.'" id="'.$tab['id'].'">
                         <div class="wrapper-sm">
@@ -1756,7 +1750,7 @@ class Form
         // 获取表单上的审核意见
         if ($master['run_id'] && $gets['step_remark']) {
 
-            $run_steps = DB::table('flow_run_step')
+            $run_steps = DB::table('model_run_step')
             ->where('run_id', $master['run_id'])
             ->get()->keyBy('step_id');
 

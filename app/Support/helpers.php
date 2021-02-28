@@ -39,29 +39,29 @@ function make_sn($config, $update = false)
     }
 
     $no = DB::table('model_seq_no')
-        ->where('bill_id', $bill_id)
-        ->where('rule_code', $new_rule)
-        ->first();
+    ->where('bill_id', $bill_id)
+    ->where('rule_code', $new_rule)
+    ->first();
 
     if (empty($no)) {
         $new_sn = 1;
         if ($update == true) {
             DB::table('model_seq_no')
-                ->insert([
-                    'bill_id' => $bill_id,
-                    'rule_code' => $new_rule,
-                    'seq_no' => $new_sn,
-                ]);
+            ->insert([
+                'bill_id' => $bill_id,
+                'rule_code' => $new_rule,
+                'seq_no' => $new_sn,
+            ]);
         }
     } else {
         $new_sn = (int) $no['seq_no'] + 1;
         if ($update == true) {
             DB::table('model_seq_no')
-                ->where('bill_id', $bill_id)
-                ->where('rule_code', $new_rule)
-                ->update([
-                    'seq_no' => $new_sn,
-                ]);
+            ->where('bill_id', $bill_id)
+            ->where('rule_code', $new_rule)
+            ->update([
+                'seq_no' => $new_sn,
+            ]);
         }
     }
     $new_value = $config['prefix'] . $new_rule . str_pad($new_sn, $length, '0', STR_PAD_LEFT);
@@ -102,7 +102,6 @@ function search_condition($query)
         case 'not_empty':
             $condition = array('!=', '');
             break;
-
         case 'gt':
             $condition = array('>', $search);
             break;
@@ -121,34 +120,27 @@ function search_condition($query)
         case 'neq':
             $condition = array('!=', $search);
             break;
-
         case 'birthday':
             $condition = array('birthday', $search);
             break;
-
         case 'birthbetween':
             $condition = array('birthbetween', $search);
             break;
-
         case 'pacs':
             $condition = array('pacs', $search);
             break;
         case 'region':
             $condition = array('region', $search);
             break;
-
         case 'in':
             $condition = array('in', explode(',', $search));
             break;
-
         case 'dialog':
             $condition = array('in', explode(',', $search));
             break;
-
         case 'address':
             $condition = array('!=', '');
             break;
-
         case 'second2':
             $condition = array('second2', [strtotime($search[0]), strtotime($search[1])]);
             break;
@@ -314,7 +306,7 @@ function regionCustomer($table = 'customer')
         $role_type = 'region';
     }  
 
-    // 销售团队
+    // 销售组
     if ($level == 5) {
         $role_type = 'region';
     }
@@ -1220,7 +1212,7 @@ function array_nest(&$items, $text = 'name')
 /**
  * 百度编辑器
  */
-function ueditor($name = 'content', $value = '', $config = array())
+function ueditor($name = 'content', $value = '', $config = [])
 {
     static $loaded;
     if (empty($loaded)) {
@@ -1247,7 +1239,7 @@ function option($key, $value = '')
         if ($parent === null) {
             return [];
         }
-        $items[$key]  = DB::table('option')->where('parent_id', $parent['id'])->orderBy('sort', 'asc')->get(['name', 'value as id']);
+        $items[$key] = DB::table('option')->where('parent_id', $parent['id'])->orderBy('sort', 'asc')->get(['name', 'value as id']);
         $values[$key] = array_by($items[$key], 'id');
     }
 
@@ -1523,18 +1515,18 @@ function response_json($data, $status = false)
     return response()->json($json);
 }
 
-// 判断登录是客户
+// 登录是客户
 function is_customer()
 {
-    return auth()->user()->role_id == 2;
+    return auth()->user()->group_id == 2;
 }
 
 /**
- * 检查账户是否超级管理员
+ * 登录是管理员
  */
 function is_admin()
 {
-    return Auth::user()->admin == 1 ? true : false;
+    return auth()->user()->admin == 1;
 }
 
 // 获取生产日期

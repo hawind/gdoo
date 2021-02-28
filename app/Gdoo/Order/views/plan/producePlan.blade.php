@@ -18,7 +18,7 @@
         {cellClass:'text-center', field: 'sn', headerName: '订单号', width: 140},
         {cellClass:'text-right', type: 'number', field: 'fhjh_num', headerName: '数量', width: 80},
         {cellClass:'text-center', field: 'pay_dt', headerName: '打款日期', width: 100},
-        {cellClass:'text-left',  field: 'export_country', headerName: '出口国家', width: 100},
+        {cellClass:'text-left',  field: 'export_country', headerName: '外销国家', width: 100},
     ];
 
     grid.defaultColDef.cellStyle1 = function(params) {

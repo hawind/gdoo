@@ -46,7 +46,7 @@ class Record11Hook
         ->leftJoin('product', 'product.id', '=', 'stock_record11_data.product_id')
         ->where('stock_record11_data.record11_id', $id)
         ->get(['stock_record11_data.*', 'product.code as product_code']);
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postRecord11', ['master' => $master, 'rows' => $rows]);
 
         if ($ret['success'] == true) {
@@ -58,7 +58,7 @@ class Record11Hook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_record11')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'Rdrecord11', 'field' => 'cCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在原材料出库单['.$master['sn'].']无法弃审。');

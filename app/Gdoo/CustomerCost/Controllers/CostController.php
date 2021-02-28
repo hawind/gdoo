@@ -183,8 +183,6 @@ class CostController extends AuditController
             $rows = $model->get();
 
             $rows->transform(function($row) {
-                $unit = option('product.unit', $row['unit_id']);
-                $row['unit_name'] = $unit;
                 return $row;
             });
             return response()->json(['data' => $rows]);

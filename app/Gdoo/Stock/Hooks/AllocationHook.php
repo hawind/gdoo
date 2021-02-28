@@ -42,7 +42,7 @@ class AllocationHook
         ->leftJoin('product', 'product.id', '=', 'stock_allocation_data.product_id')
         ->where('stock_allocation_data.allocation_id', $id)
         ->get(['stock_allocation_data.*', 'product.code as product_code']);
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postTransVouch', ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -53,7 +53,7 @@ class AllocationHook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_allocation')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'TransVouch', 'field' => 'cTVCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在其他入库单['.$master['sn'].']无法弃审。');

@@ -37,7 +37,7 @@ class Record01Hook
         ->leftJoin('product', 'product.id', '=', 'stock_record01_data.product_id')
         ->where('stock_record01_data.record01_id', $id)
         ->get(['stock_record01_data.*', 'product.code as product_code']);
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postRecord01', ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -48,7 +48,7 @@ class Record01Hook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_record01')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'Rdrecord01', 'field' => 'cCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在采购单['.$master['sn'].']无法弃审。');

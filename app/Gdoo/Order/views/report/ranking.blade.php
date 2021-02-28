@@ -37,7 +37,7 @@
     	<tr>
     	<th width="80">排行</th>
     	@if($select['query']['tag'] == 'customer_id')
-            <th style="white-space:nowrap;">销售团队</th>
+            <th style="white-space:nowrap;">销售组</th>
     		<th style="white-space:nowrap;">负责人</th>
     	@endif
         @if($select['query']['tag']=='city_id')

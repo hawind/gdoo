@@ -402,7 +402,7 @@ return [
             ]
         ],
         "report" => [
-            "name" => "报表",
+            "name" => "库存报表",
             "actions" => [
                 "stockDetail" => [
                     "name" => "库存明细表"

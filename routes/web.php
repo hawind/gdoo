@@ -20,10 +20,6 @@ Gdoo\Model\Services\ModuleService::allWithDetails();
 
 $path = Request::path();
 
-if (strpos($path, 'caldav') === 0) {
-    App\Support\DAV::caldav('caldav');
-}
-
 if (strpos($path, 'calendar/caldav') === 0) {
     App\Support\DAV::caldav('calendar/caldav');
 }

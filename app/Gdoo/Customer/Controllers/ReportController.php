@@ -13,12 +13,12 @@ use Gdoo\Customer\Services\CustomerService;
 
 use Gdoo\Index\Controllers\DefaultController;
 
-class AccountReportController extends DefaultController
+class ReportController extends DefaultController
 {
     public $permission = [];
 
     // 客户对账单
-    public function indexAction()
+    public function accountStatementAction()
     {
         $sdate = date('Y-01-01');
         $edate = date('Y-m-d');
@@ -67,7 +67,7 @@ class AccountReportController extends DefaultController
                 $json = collect();
                 $one = [];
 
-                // 获取用友数据
+                // 获取外部接口数据
                 $res = plugin_sync_api('acclist/code/'.$taxs->implode('code', ',').'/start_dt/'.$start_dt.'/end_dt/'.$end_dt);
                 if (count($res['data'])) {
                     // 获取初期余额

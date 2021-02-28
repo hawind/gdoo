@@ -9,7 +9,7 @@ class CustomerRegion extends BaseModel
     public static $tabs = [
         'name'  => 'tab',
         'items' => [
-            ['value' => 'region.index', 'url' => 'customer/region/index', 'name' => '销售团队'],
+            ['value' => 'region.index', 'url' => 'customer/region/index', 'name' => '销售组'],
         ]
     ];
 

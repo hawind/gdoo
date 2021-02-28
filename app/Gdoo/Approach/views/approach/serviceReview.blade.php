@@ -38,7 +38,7 @@ var params = JSON.parse('{{json_encode($query)}}');
         {cellClass:'text-center', field: 'status', cellRenderer: 'htmlCellRenderer', headerName: '状态', width: 160},
         {cellClass:'text-center', field: 'customer_code', headerName: '客户编码', width: 120},
         {field:'customer_name', headerName: '客户名称', width: 160},
-        {cellClass:'text-center',field:'region_name', headerName: '销售团队', width: 120},
+        {cellClass:'text-center',field:'region_name', headerName: '销售组', width: 120},
         {cellClass:'text-right',field:'barcode_cast', headerName: '申请费用', width: 100},
         {cellClass:'text-right',field:'apply2_money', headerName: '批复费用', width: 100},
         {cellClass:'text-center', field: 'id', headerName: 'ID', width: 60}

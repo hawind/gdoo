@@ -77,7 +77,7 @@ class UserService
             return User::whereIn('department_id', $departments)->pluck('id')->toArray();
         }
 
-        // 销售团队
+        // 销售组
         if ($level == 5) {
             $regions = DB::table('customer_region')->get()->toNested();
             // 审批权限
@@ -112,6 +112,187 @@ class UserService
         }
 
         return [];
+    }
+
+    /**
+     * 获取角色权限
+     */
+    public static function getRolesAccess()
+    {
+        $user = auth()->user();
+
+        $query = [
+            'team_id' => 0,
+            'customer_id' => 0,
+        ];
+
+        foreach ($query as $k => $v) {
+            $query[$k] = Request::get($k, $v);
+        }
+
+        $teams = DB::table('customer_region')->get()->toNested()->toArray();
+
+        $roles = DB::table('role')
+        ->leftJoin('user_role', 'user_role.role_id', '=', 'role.id')
+        ->where('user_role.user_id', $user['id'])
+        ->get();
+
+        // 支持销售组
+        $isTeam = false;
+
+        $res = [];
+
+        // 自己
+        $res['userId'] = $user->id;
+
+        foreach($roles as $role) {
+
+            // 全部数据权限
+            if ($role['access'] == 'all') {
+                $isTeam = true;
+                continue;
+            }
+
+            if ($role['access'] == 'team' || $role['access'] == 'team2') {
+                $isTeam = true;
+            }
+
+            // 获取单个角色权限
+            $access = static::getRoleAccess($user, $role, $teams);
+
+            // 筛选了销售组重置过滤条件
+            if ($isTeam && $query['team_id'] > 0) {
+                $access['whereIn']['team'] = [$query['team_id']];
+            }
+            $res['roles'][] = $access;
+        }
+
+        if ($isTeam) {
+            $res['team'] = $teams;
+        }
+
+        // 没有筛选销售组
+        if ($query['team_id'] == 0) {
+            $query['customer_id'] = 0;
+        }
+        
+        $res['query'] = $query;
+
+        print_r($res);
+
+        return $res;
+    }
+
+    /**
+     * 获取角色权限
+     */
+    public static function getRoleAccess($user, $role, $teams)
+    {
+        $res = [];
+
+        $res['whereIn'] = [];
+        $res['authorise'] = false;
+
+        // 用户组
+        $group_id = $user['group_id'];
+        switch ($group_id) {
+            // 用户
+            case 1:
+                // 角色数据权限
+                switch ($role['access']) {
+                    // 本人
+                    case 'me':
+                        $res['userIds'] = [$user->id];
+                        $res['customerIds'] = [];
+                        $res['teamIds'] = [];
+                        $res['whereIn']['user'] = $res['userIds'];
+                        $res['authorise'] = true;
+                        break;
+                    // 本人和下属
+                    case 'me2':
+                        $users = DB::table('user')->whereRaw('(id = '.$user->id.' or leader_id = '.$user->id.')')->pluck('id')->toArray();
+                        $res['userIds'] = $users;
+                        $res['customerIds'] = [];
+                        $res['teamIds'] = [];
+                        $res['whereIn']['user'] = $users;
+                        $res['authorise'] = true;
+                        break;
+                    // 本部门
+                    case 'dept':
+                        $users = DB::table('user')->where('department_id', $user->department_id)->pluck('id')->toArray();
+                        $res['userIds'] = $users;
+                        $res['customerIds'] = [];
+                        $res['teamIds'] = [];
+                        $res['whereIn']['user'] = $users;
+                        $res['authorise'] = true;
+                        break;
+                    // 本部门和下级部门
+                    case 'dept2':
+                        $departmentIds = DB::table('user')->treeById($user->department_id)->toArray();
+                        $users = DB::table('user')->whereIn('department_id', $departmentIds)->pluck('id')->toArray();
+                        $res['userIds'] = $users;
+                        $res['customerIds'] = [];
+                        $res['teamIds'] = [];
+                        $res['whereIn']['user'] = $users;
+                        $res['authorise'] = true;
+                        break;
+                    // 本销售组
+                    case 'team':
+                        // 审批权限,查询权限
+                        $teamIds = DB::table('customer_region')
+                        ->whereRaw('(owner_user_id = '.$user->id.' or '.db_instr('owner_assist', $user->id).')')->pluck('id')->toArray();
+                        $res['userIds'] = [];
+                        $res['customerIds'] = [];
+                        $res['teamIds'] = $teamIds;
+                        $res['whereIn']['team'] = $teamIds;
+                        $res['authorise'] = true;
+                        break;
+                    // 本销售组和下级销售组
+                    case 'team2':
+                        // 审批权限,查询权限
+                        $_teamIds = DB::table('customer_region')
+                        ->whereRaw('(owner_user_id = '.$user->id.' or '.db_instr('owner_assist', $user->id).')')->pluck('id')->toArray();
+                        $teamIds = [];
+                        foreach($_teamIds as $_teamId) {
+                            foreach($teams[$_teamId]['child'] as $id) {
+                                $teamIds[] = $id;
+                            }
+                        }
+                        $res['userIds'] = [];
+                        $res['customerIds'] = [];
+                        $res['teamIds'] = $teamIds;
+                        $res['whereIn']['team'] = $teamIds;
+                        $res['authorise'] = true;
+                        break;
+                    case 'all':
+                        break;
+                }
+            // 客户
+            case 2:
+                $customerIds = DB::table('customer')->where('user_id', $user->id)->pluck('id')->toArray();
+                $res['userIds'] = [];
+                $res['customerIds'] = $customerIds;
+                $res['whereIn']['customer'] = $customerIds;
+                $res['teamIds'] = [];
+                $res['authorise'] = true;
+                break;
+            // 客户联系人
+            case 3:
+                $customerIds = DB::table('customer_contact')->where('user_id', $user->id)->pluck('customer_id')->toArray();
+                $res['userIds'] = [];
+                $res['customerIds'] = $customerIds;
+                $res['whereIn']['customer'] = $customerIds;
+                $res['teamIds'] = [];
+                $res['authorise'] = true;
+                break;
+            // 供应商
+            case 4:
+                break;
+            // 供应商联系人
+            case 5:
+                break;
+        }
+        return $res;
     }
 
     /**

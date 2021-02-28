@@ -36,7 +36,7 @@ class TaxHook
             $customer->tax_max_id = $max_id;
             $customer->save();
 
-            // 客户档案写入用友
+            // 客户档案写入外部接口
             $department = DB::table('department')->where('id', $tax['department_id'])->first();
             $class = DB::table('customer_class')->where('id', $tax['class_id'])->first();
             $tax['class_code'] = $class['code'];

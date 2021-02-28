@@ -187,7 +187,7 @@ Builder::macro('search', function ($search) {
     } elseif ($condition == 'in') {
         $this->whereIn($search['field'], $value);
     
-    // 销售团队
+    // 销售组
     } elseif ($search['field'] == 'customer.region_id') {
         if ($value[0]) {
             $this->where($search['field'], $value[0]);
@@ -299,6 +299,7 @@ Builder::macro('permission', function ($field, $user = null, $null = false, $all
             $where[] = db_instr($fids, 'd'.$_deps);
         }
     }
+    
     $sql = join(' or ', $where);
     if ($sql) {
         $sql = '('.$sql.')';

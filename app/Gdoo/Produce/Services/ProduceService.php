@@ -232,10 +232,7 @@ class ProduceService
             LEFT JOIN product_category pc on pc.id = p.category_id
             where ISNULL(d.use_close, 0) = 0
             and m.status > 0
-            AND LEFT(pc.name, 2) <> '外销'
-
-            and m.created_at > 1585065600
-
+            AND isnull(p.is_export, 0) = 0
             GROUP BY d.product_id, ISNULL(m.pay_dt, null), m.status
             HAVING SUM(d.delivery_quantity) - ISNULL(SUM(sd.quantity), 0) - ISNULL(SUM(sa.quantity),0) <> 0
         ) as a
@@ -261,7 +258,7 @@ class ProduceService
         null as batch_sn
         from (".StockService::getStockSelectSql().") kc
         LEFT JOIN product_category pc on pc.id = category_id
-        WHERE product_type = 1 and warehouse_name LIKE '%成品%' and left(pc.name, 2) <> '外销' and warehouse_code <> '25'
+        WHERE product_type = 1 and warehouse_name LIKE '%成品%' and is_export <> 1 and warehouse_code <> '25'
         GROUP by product_id
         HAVING sum(ky_num) <> 0";
 
@@ -283,7 +280,7 @@ class ProduceService
         batch_sn
         from (".StockService::getStockSelectSql().") ss
         LEFT JOIN product_category pc on pc.id = category_id
-        WHERE product_type = 1 and warehouse_name LIKE '%成品%' and left(pc.name, 2) = '外销' and warehouse_code <> '25'
+        WHERE product_type = 1 and warehouse_name LIKE '%成品%' and is_export = 1 and warehouse_code <> '25'
         GROUP by product_id, batch_sn
         HAVING sum(ky_num) <> 0";
 
@@ -339,9 +336,7 @@ class ProduceService
             LEFT JOIN product_category pc on pc.id = p.category_id
             where ISNULL(d.use_close,0) = 0
             AND m.status > 0
-            and LEFT(pc.name, 2) = '外销'
-
-            and m.created_at > 1585065600
+            and p.is_export = 1
 
             GROUP BY d.product_id, d.batch_sn, ISNULL(m.pay_dt, null), m.status
             HAVING SUM(d.delivery_quantity) - ISNULL(SUM(sd.quantity), 0) - ISNULL(SUM(sa.quantity), 0) <> 0
@@ -371,7 +366,7 @@ class ProduceService
 		LEFT JOIN product p on d.product_id = p.id
 		LEFT JOIN product_category pc on pc.id = p.category_id
 		where m.plan_delivery_dt BETWEEN '$start_dt' and '$end_dt'
-	    AND ISNULL(d.use_close, 0) = 0 AND left(pc.name, 2) <> '外销'
+	    AND ISNULL(d.use_close, 0) = 0 AND isnull(p.is_export, 0) = 0
         GROUP BY d.product_id
         ";
         
@@ -396,7 +391,7 @@ class ProduceService
 		LEFT JOIN product p on d.product_id = p.id
 		LEFT JOIN product_category pc on pc.id = p.category_id
 		where m.plan_delivery_dt BETWEEN '$start_dt' and '$end_dt'
-	    AND ISNULL(d.use_close, 0) = 0 AND left(pc.name, 2) = '外销'
+	    AND ISNULL(d.use_close, 0) = 0 AND p.is_export = 1
         GROUP BY d.product_id, d.batch_sn";
 
         // 营销计划数量
@@ -485,7 +480,7 @@ class ProduceService
         LEFT JOIN product p on d.product_id = p.id
         LEFT JOIN product_category pc on pc.id = p.category_id
         where ".sql_year_month('m.invoice_dt')." = '$now_month'
-        and left(pc.name, 2) <> '外销'
+        and isnull(p.is_export, 0) = 0
         GROUP BY d.product_id";
 
         // 上月发货数量
@@ -509,7 +504,7 @@ class ProduceService
 		LEFT JOIN product p on d.product_id = p.id
 		LEFT JOIN product_category pc on pc.id = p.category_id
 		where ".sql_year_month('m.invoice_dt')." = '$last_month'
-		and left(pc.name, 2) <> '外销'
+		and isnull(p.is_export, 0) = 0
 		group by d.product_id";
 
         $sql = "select p.department_id, dep.name department_name, dep.name department_id_name,p.category_id,
@@ -598,8 +593,7 @@ class ProduceService
         
             where ISNULL(d.use_close, 0) = 0 
             and m.status > 0 
-            and m.created_at > 1585065600
-            AND LEFT(pc.name, 2) <> '外销'
+            AND isnull(p.is_export, 0) = 0
             GROUP BY d.product_id, ISNULL(m.pay_dt, null), m.status 
             HAVING SUM(d.delivery_quantity) - ISNULL(SUM(i.quantity),0) - ISNULL(SUM(r.quantity),0) <> 0
         ) as a
@@ -654,10 +648,9 @@ class ProduceService
             LEFT JOIN product p on d.product_id = p.id
             LEFT JOIN product_category pc on pc.id = p.category_id
                 
-            where ISNULL(d.use_close,0) = 0
-            and m.created_at > 1585065600
+            where ISNULL(d.use_close, 0) = 0
             AND m.status > 0 
-            and LEFT(pc.name, 2) = '外销'
+            and p.is_export = 1
             GROUP BY d.product_id, d.batch_sn, ISNULL(m.pay_dt, null), m.status
             HAVING SUM(d.delivery_quantity)-ISNULL(SUM(i.quantity),0)-ISNULL(SUM(r.quantity),0) <> 0
         ) as b
@@ -687,7 +680,7 @@ class ProduceService
 		WHERE (p.product_type=1 or p.material_type > 0) and 
 		(kc.warehouse_name LIKE '%成品%' or kc.warehouse_code = '07') and kc.warehouse_code <> '25'
 	    and ($warehouse_id = 0 OR kc.warehouse_id = $warehouse_id)
-	    AND LEFT(pc.name, 2) <> '外销'
+	    AND isnull(p.is_export, 0) = 0
 		GROUP by kc.product_id 
         HAVING sum(kc.ky_num) <> 0
         
@@ -715,13 +708,13 @@ class ProduceService
 		LEFT JOIN product_category pc on pc.id = p.category_id
 		WHERE p.product_type=1 and kc.warehouse_name LIKE '%成品%' and kc.warehouse_code <> '25'
 		AND ($warehouse_id = 0 OR kc.warehouse_id = $warehouse_id)
-		AND LEFT(pc.name, 2) = '外销'
+		AND p.is_export = 1
 		GROUP by kc.product_id, kc.batch_sn
         HAVING sum(kc.ky_num) <> 0
         
         UNION ALL
 		
-        --川南库存
+        --待入库存
         SELECT
         kc.product_id,
         '' batch_sn,
@@ -740,7 +733,7 @@ class ProduceService
         0 syfh_num
 		from (".StockService::getStockSelectSql().") kc
 		LEFT JOIN product p on kc.product_id = p.id
-		WHERE p.product_type = 1 and kc.warehouse_name LIKE '%川南%'
+		WHERE p.product_type = 1 and kc.warehouse_code = '22'
 	    and ($warehouse_id = 0 OR kc.warehouse_id = $warehouse_id)
 		GROUP by kc.product_id
         HAVING sum(kc.ky_num) <> 0
@@ -796,7 +789,7 @@ class ProduceService
 		LEFT JOIN product p on d.product_id = p.id
 		LEFT JOIN product_category pc on pc.id = p.category_id
 		where m.plan_delivery_dt between '$start_dt' and '$end_dt'
-		AND ISNULL(d.use_close, 0) = 0 and m.status > 0 AND left(pc.name, 2) <> '外销'
+		AND ISNULL(d.use_close, 0) = 0 and m.status > 0 AND isnull(p.is_export, 0) = 0
         GROUP BY m.plan_delivery_dt, d.product_id
 
         UNION ALL
@@ -822,7 +815,7 @@ class ProduceService
 		LEFT JOIN product p on d.product_id = p.id
         LEFT JOIN product_category pc on pc.id = p.category_id
         where m.plan_delivery_dt between '$start_dt' and '$end_dt'
-		AND ISNULL(d.use_close, 0) = 0 and m.status > 0 and left(pc.name, 2) = '外销'
+		AND ISNULL(d.use_close, 0) = 0 and m.status > 0 and p.is_export = 1
         GROUP BY m.plan_delivery_dt, d.product_id, d.batch_sn
         
         UNION ALL
@@ -866,7 +859,7 @@ class ProduceService
             LEFT JOIN product_category pc on pc.id = p.category_id
             
             where m.plan_delivery_dt between '$start_dt' and '$end_dt'
-            AND ISNULL(d.use_close, 0) = 0 and m.status > 0 and left(pc.name, 2) <> '外销'
+            AND ISNULL(d.use_close, 0) = 0 and m.status > 0 and isnull(p.is_export, 0) = 0
             GROUP BY m.plan_delivery_dt, d.id, d.product_id, i.quantity, r.quantity
             having ISNULL(SUM(d.delivery_quantity), 0) - ISNULL(SUM(i.quantity), 0) - ISNULL(SUM(r.quantity), 0) <> 0
         ) as c
@@ -913,7 +906,7 @@ class ProduceService
             LEFT JOIN product_category pc on pc.id = p.category_id
             
             where m.plan_delivery_dt between '$start_dt' and '$end_dt'
-            AND ISNULL(d.use_close,0) = 0 and m.status > 0 and left(pc.name, 2) = '外销'
+            AND ISNULL(d.use_close,0) = 0 and m.status > 0 and p.is_export = 1
             GROUP BY m.plan_delivery_dt, d.id, d.product_id, i.quantity, r.quantity
             having isnull(SUM(d.delivery_quantity), 0) - isnull(SUM(i.quantity), 0) - isnull(SUM(r.quantity), 0) <> 0
         ) as d
@@ -1014,7 +1007,7 @@ class ProduceService
 		LEFT JOIN product p on d.product_id = p.id
         LEFT JOIN product_category pc on pc.id = p.category_id
         where m.invoice_dt between '$start_dt' and '$end_dt'
-		and left(pc.name,2) <> '外销'
+		and isnull(p.is_export, 0) = 0
         GROUP BY m.invoice_dt, d.product_id";
         
         $dates = date_range($start_dt, $end_dt);
@@ -1061,9 +1054,9 @@ class ProduceService
         }
      
         if ($ny == 1) {
-            $sql2[] = "and pc.name not like '外销%'";
+            $sql2[] = "and isnull(p.is_export, 0) = 0";
         } else if($ny == 2) {
-            $sql2[] = "and pc.name like '外销%'";
+            $sql2[] = "and p.is_export = 1";
         }
 
         $sql2[] = "group by pc.id,pc.name,pc.code,p.id,p.code,p.name,isnull(batch_sn,''),p.spec,pu.name

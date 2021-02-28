@@ -264,15 +264,7 @@ class DashboardController extends DefaultController
     public function settingInfoAction()
     {
         // 定义权限
-        $permissions = [
-            'me' => "本人",
-            'me2' => "本人和下属",
-            'department' => "本部门",
-            'department2' => "本部门和下属部门",
-            'team' => "本销售组",
-            'team2' => "本销售组和下属销售组",
-            'all' => "所有人",
-        ];
+        $permissions = option('role.access')->pluck('name', 'id');
         $dates = [
             'day' => '今天',
             'day2' => '昨天',
@@ -294,7 +286,7 @@ class DashboardController extends DefaultController
             $row['date'] = 'month';
         }
         if (empty($row['permission'])) {
-            $row['permission'] = 'department';
+            $row['permission'] = 'dept';
         }
         $row['widget_name'] = $widget['name'];
 
@@ -315,7 +307,7 @@ class DashboardController extends DefaultController
             $row['date'] = 'month';
         }
         if (empty($row['permission'])) {
-            $row['permission'] = 'department';
+            $row['permission'] = 'dept';
         }
         $row['widget_name'] = $widget['name'];
 

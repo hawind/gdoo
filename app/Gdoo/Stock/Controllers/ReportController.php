@@ -31,9 +31,8 @@ class ReportController extends DefaultController
             ['form_type' => 'dialog', 'name' => '仓库', 'field' => 'warehouse_id', 'options' => ['url' => 'stock/warehouse/dialog', 'query' => ['multi'=>0]]],
             ['form_type' => 'dialog', 'name' => '产品', 'field' => 'product_id', 'options' => ['url' => 'product/product/dialog', 'query' => ['multi'=>0]]],
             ['form_type' => 'text', 'name' => '批号', 'field' => 'batch_sn', 'options' => []],
-            ['form_type' => 'select', 'name' => '内销/外销', 'field' => 'type', 'options' => [['id'=>'内销','name'=>'内销'],['id'=>'外贸','name'=>'外贸']]],
+            ['form_type' => 'select', 'name' => '内销/外销', 'field' => 'type', 'options' => [['id'=>'内销','name'=>'内销'],['id'=>'外销','name'=>'外销']]],
             //['form_type' => 'select', 'name' => '是否统计批号', 'field' => 'batch', 'value' => 0, 'options' => [['id'=>1,'name'=>'是'],['id'=>0,'name'=>'否']]],
-            ['form_type' => 'select', 'name' => '包含不满件库', 'field' => 'bmj', 'value' => 0, 'options' => [['id'=>1,'name'=>'是'],['id'=>0,'name'=>'否']]],
             ['form_type' => 'date2', 'name' => '单据日期', 'field' => 'date', 'value' => [$sdate, $edate], 'options' => []],
         ], 'model');
 
@@ -85,10 +84,9 @@ class ReportController extends DefaultController
         ], [
             ['form_type' => 'dialog', 'name' => '仓库', 'field' => 'warehouse_id', 'options' => ['url' => 'stock/warehouse/dialog', 'query' => ['multi'=>0]]],
             ['form_type' => 'text', 'name' => '存货编码', 'field' => 'product_code', 'options' => []],
-            ['form_type' => 'select', 'name' => '内销/外销', 'field' => 'type', 'options' => [['id'=>'1','name'=>'内销'],['id'=>'2','name'=>'外贸']]],
+            ['form_type' => 'select', 'name' => '内销/外销', 'field' => 'type', 'options' => [['id'=>'1','name'=>'内销'],['id'=>'2','name'=>'外销']]],
             ['form_type' => 'date2', 'name' => '生产日期', 'field' => 'date', 'value' => [], 'options' => []],
             ['form_type' => 'select', 'name' => '统计批号', 'field' => 'batch', 'value' => 1, 'options' => [['id'=>1,'name'=>'是'],['id'=>0,'name'=>'否']]],
-            ['form_type' => 'select', 'name' => '包含不满件库', 'field' => 'bmj', 'value' => 0, 'options' => [['id'=>1,'name'=>'是'],['id'=>0,'name'=>'否']]],
             
         ], 'model');
 
@@ -144,9 +142,8 @@ class ReportController extends DefaultController
             ['form_type' => 'dialog', 'name' => '仓库', 'field' => 'warehouse_id', 'options' => ['url' => 'stock/warehouse/dialog', 'query' => ['multi'=>0]]],
             ['form_type' => 'dialog', 'name' => '产品', 'field' => 'product_id', 'options' => ['url' => 'product/product/dialog', 'query' => ['multi'=>0]]],
             ['form_type' => 'text', 'name' => '批号', 'field' => 'batch_sn', 'options' => []],
-            ['form_type' => 'select', 'name' => '内销/外销', 'field' => 'type', 'options' => [['id'=>'内销','name'=>'内销'],['id'=>'外贸','name'=>'外贸']]],
+            ['form_type' => 'select', 'name' => '内销/外销', 'field' => 'type', 'options' => [['id'=>'内销','name'=>'内销'],['id'=>'外销','name'=>'外销']]],
             ['form_type' => 'select', 'name' => '统计批号', 'field' => 'batch', 'value' => 0, 'options' => [['id'=>1,'name'=>'是'],['id'=>0,'name'=>'否']]],
-            ['form_type' => 'select', 'name' => '包含不满件库', 'field' => 'bmj', 'value' => 0, 'options' => [['id'=>1,'name'=>'是'],['id'=>0,'name'=>'否']]],
             ['form_type' => 'date2', 'name' => '单据日期', 'field' => 'date', 'value' => [$sdate, $edate], 'options' => []],
         ], 'model');
 

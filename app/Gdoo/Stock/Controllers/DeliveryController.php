@@ -379,7 +379,7 @@ class DeliveryController extends WorkflowController
         return $form;
     }
 
-    // 获取库存(不含不满件)
+    // 获取库存
     public function getBatchSelectAction()
     {
         $search = search_form(['advanced' => ''], [

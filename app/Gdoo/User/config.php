@@ -93,7 +93,7 @@ return [
                     "name" => "编辑"
                 ],
                 "config" => [
-                    "name" => "控制器权限"
+                    "name" => "权限"
                 ],
                 "delete" => [
                     "name" => "删除"

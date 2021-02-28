@@ -46,7 +46,7 @@ class Record08Hook
         ->leftJoin('product', 'product.id', '=', 'stock_record08_data.product_id')
         ->where('stock_record08_data.record08_id', $id)
         ->get(['stock_record08_data.*', 'product.code as product_code']);
-        // 同步数据到yonyou
+        // 同步数据到外部接口
         $ret = plugin_sync_api('postRecord08', ['master' => $master, 'rows' => $rows]);
         if ($ret['success'] == true) {
             return $params;
@@ -57,7 +57,7 @@ class Record08Hook
     public function onBeforeAbort($params) {
         $id = $params['id'];
         $master = DB::table('stock_record08')->where('id', $id)->first();
-        // 检查用友单据是否存在
+        // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'Rdrecord08', 'field' => 'cCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
             abort_error('用友存在其他入库单['.$master['sn'].']无法弃审。');

@@ -441,7 +441,7 @@ class PromotionController extends WorkflowController
                     promotion.id,
                     promotion.customer_id,
                     customer_id_customer.region_id,
-                    customer_id_region_id_customer_region.name as region_name,
+                    region_id_customer_region.name as region_name,
                     customer_id_customer.code as customer_code,
                     customer_id_customer.name as customer_name,
                     customer_id_customer.warehouse_contact,

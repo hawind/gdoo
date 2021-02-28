@@ -137,8 +137,8 @@ class DirectController extends WorkflowController
             pu.name as product_unit,
             p.material_type,
             p.product_type,
-            SUBSTRING(batch_sn, 3, 4) as batch_sn,
-            case when right(w.name, 4) = '不满件库' then 'B' else '' end warehouse_type
+            batch_sn,
+            w.name as warehouse_name
         ")
         ->orderBy('p.code', 'asc')
         ->get();

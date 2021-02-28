@@ -18,7 +18,7 @@
 <table class="table table-bordered" id="report_export">
 <tr>
 <th style="white-space:nowrap">
-销售团队
+销售组
 </th>
 
 @foreach($categorys as $k => $v)
