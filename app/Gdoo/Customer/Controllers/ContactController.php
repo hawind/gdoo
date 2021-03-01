@@ -76,7 +76,6 @@ class ContactController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -86,19 +85,16 @@ class ContactController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示客户联系人
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
@@ -107,13 +103,10 @@ class ContactController extends DefaultController
         }
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $header = Grid::header([
-            'code'  => 'customer_contact',
+            'code' => 'customer_contact',
         ]);
         $search = $header['search_form'];
         $query = $search['query'];
@@ -131,7 +124,7 @@ class ContactController extends DefaultController
                 }
             }
 
-            // 客户圈权限
+            // 销售组权限
             $region = regionCustomer();
             if ($region['authorise']) {
                 foreach ($region['whereIn'] as $key => $where) {

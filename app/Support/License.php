@@ -26,7 +26,7 @@ class License
     }
 
     /**
-     * 设置演示表，操作时候进行判断
+     * 判断是否演示模式
      */
     public static function demoCheck($table = null)
     {

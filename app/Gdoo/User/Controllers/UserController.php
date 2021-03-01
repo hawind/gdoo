@@ -99,7 +99,6 @@ class UserController extends DefaultController
         ]);
     }
 
-    // 显示用户
     public function showAction()
     {
         $id = (int)Request::get('id');
@@ -113,7 +112,6 @@ class UserController extends DefaultController
         ], 'create');
     }
 
-    // 新建用户
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -123,7 +121,6 @@ class UserController extends DefaultController
         ], 'create');
     }
 
-    // 编辑用户
     public function editAction()
     {
         return $this->createAction();
@@ -191,7 +188,6 @@ class UserController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    // 账户删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

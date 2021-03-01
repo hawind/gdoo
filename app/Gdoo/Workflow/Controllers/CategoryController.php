@@ -12,7 +12,6 @@ use Gdoo\Model\Models\Bill;
 
 class CategoryController extends DefaultController
 {
-    // 流程类别
     public function indexAction()
     {
         $header = [
@@ -188,7 +187,6 @@ class CategoryController extends DefaultController
         return $this->editAction();
     }
 
-    // 删除流程类别
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

@@ -59,7 +59,7 @@
     <table width="100%" style="LINE-HEIGHT:30px;font-size:11pt;" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
         <tr>
             <td width="40%">制单人：{{$master['created_by']}}</td>
-            <td width="40%">库管员：{{$warehouse_by}}</td>
+            <td width="40%">库管员：</td>
             <td width="20%" align="right">第<font tdata="PageNO">##</font>页，<font tdata="PageCount">##</font></span>页</td>
         </tr>
     </table>

@@ -20,7 +20,6 @@ class SampleApplyController extends WorkflowController
 {
     public $permission = ['dialog', 'serviceDelivery'];
 
-    // 列表
     public function indexAction()
     {
         $header = Grid::header([
@@ -86,7 +85,7 @@ class SampleApplyController extends WorkflowController
             
             $model->select($header['select']);
 
-            // 发货统计
+            // 明细统计
             $model->leftJoin(DB::raw('(select SUM(ISNULL(d.money, 0)) money, SUM(ISNULL(d.quantity, 0)) quantity, d.sample_id
                 FROM sample_apply_data as d
                 GROUP BY d.sample_id
@@ -118,7 +117,6 @@ class SampleApplyController extends WorkflowController
         ]);
     }
 
-    // 明细列表
     public function detailAction()
     {
         $header = Grid::header([
@@ -182,7 +180,6 @@ class SampleApplyController extends WorkflowController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -197,25 +194,21 @@ class SampleApplyController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 打印
     public function printAction()
     {
         $this->layout = 'layouts.print2';
@@ -227,7 +220,7 @@ class SampleApplyController extends WorkflowController
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
-            $rows = SampleApplyProduct::whereIn('id', $gets['ids'])->get();
+            $rows = SampleApply::whereIn('id', $gets['ids'])->get();
             foreach($rows as $row) {
                 $row->use_close = $row->use_close == 1 ? 0 : 1;
                 $row->save();
@@ -287,7 +280,6 @@ class SampleApplyController extends WorkflowController
         ]);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

@@ -18,7 +18,6 @@ class AllocationController extends WorkflowController
 {
     public $permission = ['dialog', 'logistics', 'stockSelect'];
 
-    // 列表
     public function indexAction()
     {
         $header = Grid::header([
@@ -72,7 +71,6 @@ class AllocationController extends WorkflowController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -87,25 +85,21 @@ class AllocationController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 打印
     public function printAction()
     {
         $id = Request::get('id');
@@ -138,17 +132,10 @@ class AllocationController extends WorkflowController
             'template' => DB::table('model_template')->where('id', $template_id)->first()
         ];
 
-        if ($master['in_warehouse_code'] == 27 || $master['in_warehouse_code'] == 21) {
-            $warehouse_by = '李志全';
-        } else {
-            $warehouse_by = '万海英';
-        }
-            
         $tpl = $this->display([
             'master' => $master,
             'rows' => $rows,
             'form' => $form,
-            'warehouse_by' => $warehouse_by,
         ], 'print/'.$template_id);
         return $tpl;
     }

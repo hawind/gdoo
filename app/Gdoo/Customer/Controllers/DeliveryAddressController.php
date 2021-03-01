@@ -75,7 +75,6 @@ class DeliveryAddressController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -85,19 +84,16 @@ class DeliveryAddressController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示客户联系人
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
@@ -106,9 +102,6 @@ class DeliveryAddressController extends DefaultController
         }
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $header = Grid::header([

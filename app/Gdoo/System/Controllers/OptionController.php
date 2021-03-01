@@ -14,7 +14,6 @@ class OptionController extends DefaultController
 {
     public $permission = ['category'];
     
-    // 枚举列表
     public function indexAction()
     {
         $header = [
@@ -153,7 +152,6 @@ class OptionController extends DefaultController
         $header['search_form'] = $search;
         $header['js'] = Grid::js($header);
 
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);
@@ -164,7 +162,6 @@ class OptionController extends DefaultController
         return $this->createAction();
     }
 
-    // 新建字典
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -178,9 +175,6 @@ class OptionController extends DefaultController
         ], 'edit');
     }
 
-    /**
-     * 保存
-     */
     public function storeAction()
     {
         if (Request::method() == 'POST') {
@@ -212,7 +206,6 @@ class OptionController extends DefaultController
         }
     }
 
-    // 删除字典
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

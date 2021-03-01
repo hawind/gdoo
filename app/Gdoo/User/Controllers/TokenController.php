@@ -75,9 +75,9 @@ class TokenController extends Controller
 
             $assets = UserAssetService::getRoleAssets($user->role_id);
             return response()->json([
-                'token'   => $this->createToken($user->id),
-                'access'  => $assets,
-                'user'    => $user,
+                'user' => $user,
+                'token' => $this->createToken($user->id),
+                'access' => $assets,
                 'success' => 1,
             ]);
         }

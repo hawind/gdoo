@@ -70,22 +70,6 @@ return [
                 ],
             ]
         ],
-        "widget" => [
-            "name" => "流程部件",
-            "actions" => [
-                "efficiency" => [
-                    "name" => "流程效率",
-                ]
-            ]
-        ],
-        "monitor" => [
-            "name" => "监控流程",
-            "actions" => [
-                "summary" => [
-                    "name" => "汇总"
-                ]
-            ]
-        ],
         "category" => [
             "name" => "流程类别",
             "actions" => [
@@ -103,60 +87,7 @@ return [
                 ]
             ]
         ],
-        "step" => [
-            "name" => "步骤设计",
-            "actions" => [
-                "index" => [
-                    "name" => "列表"
-                ],
-                "view" => [
-                    "name" => "查看"
-                ],
-                "save" => [
-                    "name" => "保存"
-                ],
-                "add" => [
-                    "name" => "新建"
-                ],
-                "edit" => [
-                    "name" => "编辑"
-                ],
-                "delete" => [
-                    "name" => "删除"
-                ]
-            ]
-        ],
-        "form" => [
-            "name" => "表单设计",
-            "actions" => [
-                "index" => [
-                    "name" => "列表"
-                ],
-                "view" => [
-                    "name" => "查看"
-                ],
-                "count" => [
-                    "name" => "新建"
-                ]
-            ]
-        ],
-        "design" => [
-            "name" => "流程设计",
-            "actions" => [
-                "index" => [
-                    "name" => "列表"
-                ],
-                "process" => [
-                    "name" => "编辑"
-                ],
-                "add" => [
-                    "name" => "新建"
-                ],
-                "delete" => [
-                    "name" => "删除"
-                ]
-            ]
-        ],"template" => [
+        "template" => [
             "name" => "视图",
             "actions" => [
                 "index" => [

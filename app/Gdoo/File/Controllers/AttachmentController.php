@@ -10,6 +10,7 @@ use URL;
 use Gdoo\File\Models\Attachment;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Illuminate\Support\Str;
 
 class AttachmentController extends DefaultController
 {
@@ -25,9 +26,6 @@ class AttachmentController extends DefaultController
         parent::__construct();
     }
     
-    /**
-     * 添加文件到草稿
-     */
     public function draftAction()
     {
         set_time_limit(0);
@@ -69,9 +67,6 @@ class AttachmentController extends DefaultController
         return 0;
     }
 
-    /**
-     * 查看文件
-     */
     public function fileinfoAction()
     {
         $id = Request::get('id', 0);
@@ -85,11 +80,6 @@ class AttachmentController extends DefaultController
             if (!is_file($path)) {
                 return $this->json('文件不存在。');
             }
-
-            //$isimg = '|jpg|png|gif|bmp|jpeg|', '|'.$ext.'|';
-            //$isoffice = '|doc|docx|xls|xlsx|ppt|pptx|pdf|', '|'.$ext.'|';
-            //$isbianju = '|doc|docx|xls|xlsx|ppt|pptx|', '|'.$ext.'|';
-            //$isyulan = ',txt,log,html,htm,js,php,php3,mp4,md,cs,sql,java,json,css,asp,aspx,shtml,cpp,c,vbs,jsp,xml,bat,ini,conf,sh,', ','.$ext.',';
 
             $isview = 0;
             $isimg = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
@@ -156,9 +146,6 @@ class AttachmentController extends DefaultController
                 $size = $file->getSize();
                 $name = $file->getClientOriginalName();
                 $extension = strtolower($file->getClientOriginalExtension());
-                //$name = $paths['filename'];
-                //$extension = strtolower($name);
-                //$_FILES['Filedata']['size']
 
                 // 保存附件的表名
                 $table = empty($gets['model']) ? 'attachment' : $gets['model'];
@@ -168,24 +155,20 @@ class AttachmentController extends DefaultController
 
                 // 附件存放目录
                 $upload_path = upload_path($path);
-                /*
-                if(!is_dir($upload_path)) {
-                    mkdir($upload_path, 0755, true);
-                }
-                */
+
                 // 附件新名字
-                $filename = date('ymdhi').str_random(4).".".$extension;
+                $filename = date('ymdhi').Str::random(4).".".$extension;
 
                 if (in_array($extension, explode(',', $upload_type))) {
                     // 移动文件
                     if ($file->move($upload_path, $filename)) {
                         $data = [
-                            'title'       => $name,
-                            'path'        => $path,
-                            'type'        => $extension,
-                            'name'        => $filename,
-                            'size'        => $size,
-                            'add_time'    => time(),
+                            'title' => $name,
+                            'path'  => $path,
+                            'type' => $extension,
+                            'name' => $filename,
+                            'size' => $size,
+                            'add_time' => time(),
                             'add_user_id' => Auth::id(),
                         ];
 
@@ -219,10 +202,7 @@ class AttachmentController extends DefaultController
             $size = $file->getSize();
             $name = $file->getClientOriginalName();
             $extension = strtolower($file->getClientOriginalExtension());
-            //$name = $paths['filename'];
-            //$extension = strtolower($name);
-            //$_FILES['Filedata']['size']
-
+ 
             // 保存附件的表名
             $table = empty($gets['model']) ? 'attachment' : $gets['model'];
 
@@ -231,23 +211,19 @@ class AttachmentController extends DefaultController
 
             // 附件存放目录
             $upload_path = upload_path($path);
-            /*
-            if(!is_dir($upload_path)) {
-                mkdir($upload_path, 0755, true);
-            }
-            */
+
             // 附件新名字
-            $filename = date('ymdhi').str_random(4).".".$extension;
+            $filename = date('ymdhi').Str::random(4).".".$extension;
 
             if (in_array($extension, explode(',', $upload_type))) {
                 // 移动文件
                 if ($file->move($upload_path, $filename)) {
                     $insert_id = DB::table($table)->insertGetId([
                         'title' => $name,
-                        'path'  => $path,
-                        'type'  => $extension,
-                        'name'  => $filename,
-                        'size'  => $size,
+                        'path' => $path,
+                        'type' => $extension,
+                        'name' => $filename,
+                        'size' => $size,
                         'add_time' => time(),
                         'add_user_id' => Auth::id(),
                     ]);

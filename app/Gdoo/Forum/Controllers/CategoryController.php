@@ -1,12 +1,12 @@
 <?php namespace Gdoo\Forum\Controllers;
 
 use DB;
+use Request;
 
 use Gdoo\Index\Controllers\DefaultController;
 
 class CategoryController extends DefaultController
 {
-    // 论坛类别
     public function indexAction()
     {
         // 更新排序
@@ -29,7 +29,6 @@ class CategoryController extends DefaultController
         ]);
     }
 
-    // 论坛列别编辑
     public function addAction()
     {
         $id = (int)Request::get('id');
@@ -52,11 +51,10 @@ class CategoryController extends DefaultController
         $row = DB::table('forum')->where('id', $id)->first();
 
         return $this->display(array(
-            'row'  => $row,
+            'row' => $row,
         ));
     }
 
-    // 论坛列别删除
     public function deleteAction()
     {
         if ($id = Request::get('id')) {

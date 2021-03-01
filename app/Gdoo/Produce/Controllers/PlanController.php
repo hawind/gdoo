@@ -59,7 +59,6 @@ class PlanController extends WorkflowController
         }
 
         $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
             ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
         ];
 
@@ -167,7 +166,6 @@ class PlanController extends WorkflowController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -177,19 +175,16 @@ class PlanController extends WorkflowController
         ], 'create');
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建
     public function showAction()
     {
         return $this->createAction('show');
@@ -211,7 +206,6 @@ class PlanController extends WorkflowController
         return $this->json($rows, true);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

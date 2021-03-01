@@ -51,7 +51,7 @@ class OrderService
     }
 
     /**
-     * 获取为使用的促销id
+     * 获取销售未发订单
      * 
      */
     public static function getSaleOrderDataSql() 
@@ -131,7 +131,7 @@ class OrderService
     }
 
     /**
-     * 获取为使用的促销id
+     * 获取销售订单未发货
      * 
      */
     public static function getSaleOrderSelectDetailNotDeliverySql() 
@@ -174,7 +174,7 @@ class OrderService
     }
 
     /**
-     * 获取为使用的促销id
+     * 获取销售订单发货表
      * 
      */
     public static function getSaleOrderSelectDetailSql() 
@@ -235,7 +235,7 @@ class OrderService
     }
 
     /**
-     * 获取为使用的促销id
+     * 获取销售订单调拨发货
      * 
      */
     public static function getSaleOrderSelectDetailReqSql() 
@@ -331,7 +331,7 @@ class OrderService
     }
 
     /**
-     * 获取为使用的促销id
+     * 获取赠品其他出库单明细
      * 
      */
     public static function getSampleSelectDetailSql() 

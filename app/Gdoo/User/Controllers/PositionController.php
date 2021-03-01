@@ -69,7 +69,6 @@ class PositionController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -79,25 +78,9 @@ class PositionController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
-    }
-
-    // 显示客户联系人
-    public function showAction()
-    {
-        $id = (int)Request::get('id');
-        $position = UserPosition::find($id);
-        $options = [
-            'table' => 'user_position',
-            'row'   => $position,
-        ];
-        $tpl = Form::show($options);
-        return $this->display([
-            'tpl' => $tpl,
-        ]);
     }
 
     public function dialogAction()
@@ -122,7 +105,6 @@ class PositionController extends DefaultController
         ]);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

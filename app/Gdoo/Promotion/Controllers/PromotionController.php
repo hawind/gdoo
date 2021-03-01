@@ -114,7 +114,6 @@ class PromotionController extends WorkflowController
         ]);
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -142,25 +141,21 @@ class PromotionController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核促销
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 显示促销
     public function printAction()
     {
         $id = (int) Request::get('id');
@@ -300,14 +295,6 @@ class PromotionController extends WorkflowController
                     $model->orderBy($query['sort'], $query['order']);
                 }
 
-                /*
-                '17' as fee_src_type_id,
-                '6' as fee_category_id,
-                '赠品' as fee_category_id_name,
-                '2' as type_id,
-                '赠品' as type_id_name
-                */
-
                 $rows = $model->get();
                 $rows->transform(function ($row) {
                     // 赠品
@@ -377,7 +364,6 @@ class PromotionController extends WorkflowController
         return $this->json($count, true);
     }
 
-    // 核销对话框
     public function dialogAction()
     {
         $search = search_form(
@@ -513,7 +499,6 @@ class PromotionController extends WorkflowController
         ]);
     }
 
-    // 删除促销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

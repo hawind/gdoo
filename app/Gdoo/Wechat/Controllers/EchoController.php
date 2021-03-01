@@ -37,42 +37,6 @@ class EchoController extends Controller
             $config = WechatService::getConfig();
             $this->openid = $msg['FromUserName'];
 
-            // $fc = new \GdooWord('igb', database_path().'/dict.igb');
-            // $arr = $fc->getAutoWord($msg['Content']);
-            // Log::info('anc', $arr);
-            /*
-            $items = [
-                new NewsItem([
-                    'title' => '某某某公司发货提醒',
-                    'description' => "单据编号：123456\n发货时间：2020-01-12",
-                    'url' => "http://israel.sinaapp.com/cet/index.php?openid=".$this->openid,
-                    'image' => '',
-                ]),
-            ];
-            */
-
-            /*
-            $items = [
-                new NewsItem([
-                    'title' => '流程[办公用品采购]审核提醒',
-                    'description' => "转交人：李先生\n时间：2020-01-12",
-                    'url' => "http://shenghua.test/index.php?openid=".$this->openid,
-                    'image' => '',
-                ]),
-            ];
-
-            $news = new News($items);
-            return $news;
-
-            $msg = new Text("订单发货最新三条\n1.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100\n2.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100\n2.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100");
-            $msg = new Text("促销最新三条\n1.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100\n2.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100\n2.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100");
-            $msg = new Text("进店最新三条\n1.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100\n2.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100\n2.单据编号：123456，发货时间：2020-01-12，件数：123，金额：100");
-
-            return $msg;
-            */
-            //print_R($arr);
-            //exit;
-
             if ($config['status'] == 0) {
                 return '服务关闭中，请稍后再试。';
             }
@@ -82,11 +46,10 @@ class EchoController extends Controller
                     return $msg['Content'];
                     break;
                 case 'image':
-                    //$this->special('image', $msg);
+                    return $msg['Content'];
                     break;
                 case 'voice':
                     return $msg['Content'];
-                    //$this->special('voice', $msg);
                     break;
                 case 'video':
                     return '收到视频消息';
@@ -211,22 +174,15 @@ class EchoController extends Controller
         }
     }
 
-    public function replyNews($msg) {
-        $temple = DB::table('house_temple')->where('ticket', $msg['Ticket'])->first();
+    public function replyArticle($msg) {
         $this->we->reply([
             'type' => 'news',
-                'articles' => [[
-                    'title' => $temple['name'],								
-                    'description' => $temple['remark'],						
-                    'picurl' => url('uploads/'.$temple['image']),
-                    'url' => url('wap/index/info', ['id' => $temple['id']]),
-                ],[
-                    'title' => '立即供灯',
-                    'description' => '立即供灯',
-                    'picurl' => '',
-                    'url' => url('wap/light/index', ['temple_id' => $temple['id']]),
-                ]
-            ]
+            'articles' => [[
+                'title' => '关注',								
+                'description' => '关注',						
+                'picurl' => '',
+                'url' => '',
+            ]]
         ]);
     }
 
@@ -237,7 +193,7 @@ class EchoController extends Controller
     {
         // 有场景参数
         if (isset($msg['Ticket'])) {
-            $this->replyNews($msg);
+            $this->replyArticle($msg);
         }
     }
 

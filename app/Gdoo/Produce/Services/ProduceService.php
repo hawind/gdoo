@@ -7,13 +7,11 @@ use Gdoo\Stock\Services\StockService;
 class ProduceService
 {
     /**
-     * 获取开票单位锁定金额
+     * 获取生产计划
      * 
-     * @i_UserID
-	 * @i_UserName
-	  *@i_Date 日期
-	 * @i_DeptId 车间
-	 * @i_IsCalAgain 是否重新计算
+	 * @date 日期
+	 * @department_id 车间
+	 * @isCalAgain 是否重新计算
      */
     public static function getMaterialPlanDay($date, $department_id, $isCalAgain)
     {

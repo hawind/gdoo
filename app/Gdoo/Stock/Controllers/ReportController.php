@@ -99,18 +99,6 @@ class ReportController extends DefaultController
             }
             $rows = [];
             if ($query['filter'] == 1) {
-                /*
-                $rows = DB::select('EXEC P_ReportOrderStockTotal ?,?,?,?,?,?,?,?', [
-                    $fields['warehouse_id'],
-                    $fields['product_code'],
-                    $fields['type'],
-                    $fields['date'][0],
-                    $fields['date'][1],
-                    auth()->id(),
-                    $fields['batch'],
-                    $fields['bmj'],
-                ]);
-                */
                 $rows = StockService::reportOrderStockTotal(
                     $fields['warehouse_id'],
                     $fields['product_code'],

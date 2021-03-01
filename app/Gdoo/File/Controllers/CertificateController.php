@@ -9,6 +9,7 @@ use Validator;
 use Gdoo\Model\Grid;
 
 use Gdoo\File\Models\Certificate;
+use Illuminate\Support\Str;
 
 class CertificateController extends DefaultController
 {
@@ -83,13 +84,12 @@ class CertificateController extends DefaultController
                 // 扩展名称
                 $extension = $file->getClientOriginalExtension();
                 // 附件新名字
-                $filename = date('dhis_').str_random(4).'.'.$extension;
+                $filename = date('dhis_').Str::random(4).'.'.$extension;
                 $filename = mb_strtolower($filename);
                 $uploadSuccess = $file->move($upload_path, $filename);
                 if ($uploadSuccess) {
                     // 数据库写入
                     $draft = new Certificate;
-                    //$draft->name = mb_strtolower($file->getClientOriginalName());
                     $draft->name = $name;
                     $draft->path = $path.'/'.$filename;
                     $draft->type = $extension;

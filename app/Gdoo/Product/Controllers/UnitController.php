@@ -38,9 +38,7 @@ class UnitController extends DefaultController
             foreach ($header['join'] as $join) {
                 $model->leftJoin($join[0], $join[1], $join[2], $join[3]);
             }
-            $model
-            //->orderBy($header['sort'], $header['order'])
-            ->orderBy('code', 'asc');
+            $model->orderBy('code', 'asc');
 
             foreach ($search['where'] as $where) {
                 if ($where['active']) {
@@ -68,7 +66,6 @@ class UnitController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -78,25 +75,9 @@ class UnitController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
-    }
-
-    // 显示客户联系人
-    public function showAction()
-    {
-        $id = (int)Request::get('id');
-        $group = ProductUnit::find($id);
-        $options = [
-            'table' => 'warehouse',
-            'row'   => $group,
-        ];
-        $tpl = Form::show($options);
-        return $this->display([
-            'tpl' => $tpl,
-        ]);
     }
 
    public function dialogAction()
@@ -121,7 +102,6 @@ class UnitController extends DefaultController
         ]);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

@@ -86,7 +86,6 @@ class PriceController extends DefaultController
         ]);
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -96,19 +95,16 @@ class PriceController extends DefaultController
         ], 'create');
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('edit');
     }
 
-    // 客户价格列表
     public function listAction()
     {
         $gets = Request::all();
@@ -135,7 +131,6 @@ class PriceController extends DefaultController
         return $this->json($rows, true);
     }
 
-    // 参考客户价格
     public function referCustomerAction()
     {
         $search = search_form(
@@ -186,7 +181,6 @@ class PriceController extends DefaultController
         ]);
     }
 
-    // 数据导入
     public function importAction()
     {
         if (Request::method() == 'POST') {
@@ -196,7 +190,6 @@ class PriceController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    // 删除促销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

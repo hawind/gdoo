@@ -248,7 +248,6 @@ class RoleController extends DefaultController
         ]);
     }
 
-    // 删除角色
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

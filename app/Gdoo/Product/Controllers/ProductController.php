@@ -91,7 +91,6 @@ class ProductController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -101,13 +100,11 @@ class ProductController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示客户联系人
     public function showAction()
     {
         $id = (int)Request::get('id');
@@ -127,9 +124,6 @@ class ProductController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $header = Grid::header([
@@ -281,27 +275,11 @@ class ProductController extends DefaultController
         }
     }
     
-    // 删除产品
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');
             return Form::remove(['code' => 'product', 'ids' => $ids]);
         }
-        /*
-        $id = Request::get('id');
-        if (empty($id)) {
-            return $this->error('最少选择一行记录。');
-        }
-
-        $products = DB::table('product')->whereIn('id', $id)->get();
-        foreach ($products as $product) {
-            // 删除图片
-            image_delete($product['image']);
-        }
-        // 删除数据
-        DB::table('product')->whereIn('id', $id)->delete();
-        */
-        return $this->json('恭喜你，产品删除成功。', url_referer('index'));
     }
 }

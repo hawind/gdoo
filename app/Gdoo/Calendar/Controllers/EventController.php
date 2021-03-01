@@ -19,7 +19,7 @@ class EventController extends DefaultController
 {
     public $permission = ['share', 'items'];
 
-    // 事件对象
+    // 事件列表
     public function indexAction()
     {
         $gets = Request::all();
@@ -137,14 +137,6 @@ class EventController extends DefaultController
             $vcalendar = VObject::parse($event['calendardata']);
             $vevent = $vcalendar->VEVENT;
 
-            /*
-            $accessclass = $vevent->getAsString('CLASS');
-            $permissions = CalendarService::getPermissions($id, Calendar::EVENT, $accessclass);
-            if(!$permissions & OCP\PERMISSION_UPDATE) {
-                return $this->json('permission denied');
-            }
-            */
-
             $delta = new \DateInterval('P0D');
             $delta->s = $gets['delta'];
 
@@ -247,13 +239,6 @@ class EventController extends DefaultController
             $end = $gets['end'];
             $allday = $gets['allDay'];
 
-            /*
-            if (!$end) {
-                $duration = 60;
-                $end = $start + ($duration * 60);
-            }
-            */
-
             $start = new \DateTime('@'.strtotime($start));
             $end = new \DateTime('@'.strtotime($end));
 
@@ -267,22 +252,7 @@ class EventController extends DefaultController
 
             $calendar_options = CalendarService::getCalendars(Auth::id(), false);
 
-            /*
-            分享日历暂时未实现
-            foreach($calendars as $calendar)
-            {
-                if($calendar['userid'] != OCP\User::getUser()) {
-                    $sharedCalendar = OCP\Share::getItemSharedWithBySource('calendar', $calendar['id']);
-                    if ($sharedCalendar && ($sharedCalendar['permissions'] & OCP\PERMISSION_UPDATE)) {
-                        array_push($calendar_options, $calendar);
-                    }
-                } else {
-                    array_push($calendar_options, $calendar);
-                }
-            }*/
-
             $options['calendar_options'] = $calendar_options;
-
             $options['access_class_options'] = CalendarService::getAccessClassOptions();
             $options['valarm_options'] = CalendarService::getValarmOptions();
             $options['repeat_options'] = CalendarService::getRepeatOptions();
@@ -356,12 +326,12 @@ class EventController extends DefaultController
                 $end_at   = strtotime($gets['to'].' '.$gets['totime']);
 
                 $share_data = array(
-                    'source_id'    => $gets['id'],
-                    'source_type'  => 'event',
-                    'receive_id'   => $gets['receive_id'],
+                    'source_id' => $gets['id'],
+                    'source_type' => 'event',
+                    'receive_id' => $gets['receive_id'],
                     'receive_name' => $gets['receive_name'],
-                    'start_at'     => $start_at,
-                    'end_at'       => $end_at,
+                    'start_at' => $start_at,
+                    'end_at' => $end_at,
                 );
 
                 $share = ShareService::getItem('event', $gets['id']);
@@ -374,7 +344,7 @@ class EventController extends DefaultController
                 return $this->json($e->getMessage());
             }
 
-            if ($data['calendarid'] != $gets['calendarid']) {
+            if ($event['calendarid'] != $gets['calendarid']) {
                 try {
                     CalendarService::moveToCalendar($gets['id'], $gets['calendarid']);
                 } catch (\Exception $e) {
@@ -394,13 +364,6 @@ class EventController extends DefaultController
 
             $object = VObject::parse($event['calendardata']);
             $vevent = $object->VEVENT;
-
-            /*
-            $object = Sabre_Calendar_Object::cleanByAccessClass($id, $object);
-            $accessclass = $vevent->getAsString('CLASS');
-            $permissions = CalendarService::getPermissions($id, Calendar::EVENT, $accessclass);
-            */
-
             $dtstart = $vevent->DTSTART;
             $dtend = CalendarService::getDTEndFromVEvent($vevent);
 
@@ -573,7 +536,6 @@ class EventController extends DefaultController
                 $repeat['repeat'] = 'doesnotrepeat';
             }
 
-            // $options['category_options'] = CalendarService::getCategoryOptions();
             $options['calendar_options']= CalendarService::getCalendars(Auth::id(), false);
             $options['access_class_options'] = CalendarService::getAccessClassOptions();
             $options['valarm_options'] = CalendarService::getValarmOptions();
@@ -588,21 +550,9 @@ class EventController extends DefaultController
             $options['repeat_byweekno_options'] = CalendarService::getByWeekNoOptions();
             $options['repeat_bymonthday_options'] = CalendarService::getByMonthDayOptions();
 
-            /*
-            if($permissions & OCP\PERMISSION_UPDATE) {
-                $tmpl = new OCP\Template('calendar', 'part.editevent');
-            } elseif($permissions & OCP\PERMISSION_READ) {
-                $tmpl = new OCP\Template('calendar', 'part.showevent');
-            } elseif($permissions === 0) {
-                OCP\JSON::error(array('data' => array('message' => CalendarService::$l10n->t('You do not have the permissions to edit this event.'))));
-                exit;
-            }*/
-            
             $options['id'] = $gets['id'];
-            $options['permissions']  = $permissions;
             $options['lastmodified'] = $event['lastmodified'];
             $options['title'] = $summary;
-            $options['accessclass'] = $accessclass;
             $options['location'] = $location;
             $options['categories'] = $categories;
             $options['calendarid'] = $event['calendarid'];
@@ -707,7 +657,6 @@ class EventController extends DefaultController
         $description = strtr($vevent->getAsString('DESCRIPTION'), array('\,' => ',', '\;' => ';'));
         
         $options['id'] = $id;
-        $options['permissions'] = $permissions;
         $options['lastmodified'] = $event['lastmodified'];
         $options['title'] = $summary;
         $options['location'] = $location;

@@ -56,7 +56,6 @@ class ProfileController extends DefaultController
 
     /**
      * 获取用户信息
-     *
      */
     public function getUserAction()
     {
@@ -67,7 +66,6 @@ class ProfileController extends DefaultController
 
     /**
      * 更新安全密钥
-     *
      */
     public function secretAction()
     {
@@ -81,7 +79,7 @@ class ProfileController extends DefaultController
         }
     }
 
-    /* 修改密码 */
+    // 修改密码 
     public function passwordAction()
     {
         if (Request::method() == 'POST') {

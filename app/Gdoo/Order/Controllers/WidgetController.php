@@ -195,50 +195,6 @@ class WidgetController extends DefaultController
             }
             $res = $direct->get();
             $rows[] = ['title' => '本月直营共发出 <span class="red">'.number_format($res->sum('count')).'</span> 张发货单，<span class="red">'.number_format($res->sum('quantity')).' </span>件，<span class="red">'.number_format($res->sum('money')).'</span> 元'];
-            
-            /*
-            // 订单审核状态。
-            $model = DB::table('customer_order')
-            ->leftJoin('customer', 'customer.id', '=', 'customer_order.customer_id')
-            ->selectRaw('sum(l.xshj_num) AS xshj_num, sum(l.sqjl_num) AS sqjl_num');
-
-            // 销售会计审核日期
-            $model->leftJoin(DB::raw("(select
-                m.data_id,
-                sum(case when d.run_name = '销售会计' then 1 else 0 end) as xshj_num,
-                sum(case when d.run_name = '省区经理' then 1 else 0 end) as sqjl_num
-                FROM model_run_log as d left join model_run as m on d.run_id = m.id where m.bill_id = 23 and d.updated_id = 0 and d.[option] = 1
-                GROUP BY m.data_id
-            ) as l
-            "), 'l.data_id', '=', 'customer_order.id');
-
-            if ($region['authorise']) {
-                foreach ($region['whereIn'] as $key => $where) {
-                    $model->whereIn($key, $where);
-                }
-            }
-            $res = $model->first();
-            $rows[] = ['title' => '订单待审核：销售会计<span class="red">'. $res['xshj_num'].'</span>张，省区经理<span class="red">'.$res['sqjl_num'].'</span>张'];
-            */
-            
-            /*
-            // 目前在途[]件。
-            $model = DB::table('customer_order')
-            ->leftJoin('customer_order_data', 'customer_order_data.order_id', '=', 'customer_order.id')
-            ->leftJoin('customer', 'customer.id', '=', 'customer_order.customer_id')
-            ->whereRaw('FROM_UNIXTIME(customer_order.created_at,"%Y") BETWEEN '.$lastYear.' AND '.$nowYear)
-            ->where('customer_order.delivery_time', '>', 0)
-            ->where('customer_order.arrival_time', 0)
-            ->selectRaw('SUM(customer_order_data.amount) AS amount');
-
-            if ($region['authorise']) {
-                foreach ($region['whereIn'] as $key => $where) {
-                    $model->whereIn($key, $where);
-                }
-            }
-            $res = $model->first();
-            $rows[] = ['title' => '目前在途订单 <span class="red">'.(int)$res['amount'].'</span> 件'];
-            */
 
             $json['total'] = sizeof($rows);
             $json['data'] = $rows;

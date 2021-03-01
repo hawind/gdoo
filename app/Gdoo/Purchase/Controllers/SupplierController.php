@@ -70,7 +70,6 @@ class SupplierController extends DefaultController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -80,27 +79,21 @@ class SupplierController extends DefaultController
         ], 'create');
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $search = search_form(
@@ -138,7 +131,6 @@ class SupplierController extends DefaultController
         ]);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

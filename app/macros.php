@@ -293,11 +293,6 @@ Builder::macro('permission', function ($field, $user = null, $null = false, $all
     }
     
     if ($children) {
-        $dep = explode(',', $us['deptpath']);
-        foreach ($dep as $deps) {
-            $_deps = str_replace(['[', ']'], ['', ''], $deps);
-            $where[] = db_instr($fids, 'd'.$_deps);
-        }
     }
     
     $sql = join(' or ', $where);

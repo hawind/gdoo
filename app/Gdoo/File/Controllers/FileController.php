@@ -8,6 +8,7 @@ use Gdoo\Index\Models\Share;
 use Gdoo\File\Models\File;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Illuminate\Support\Str;
 
 class FileController extends DefaultController
 {
@@ -105,7 +106,7 @@ class FileController extends DefaultController
                 // 扩展名称
                 $extension = $file->getClientOriginalExtension();
                 // 附件新名字
-                $filename = date('dhis_').str_random(4).'.'.$extension;
+                $filename = date('dhis_').Str::random(4).'.'.$extension;
                 $filename = mb_strtolower($filename);
 
                 $uploadSuccess = $file->move($upload_path, $filename);
@@ -132,12 +133,7 @@ class FileController extends DefaultController
     // 个人云盘
     public function indexAction()
     {
-        $search = search_form([
-            'referer' => 1,
-        ], []);
-
         $user_id = auth()->id();
-
         $parent_id = Request::get('parent_id', 0);
 
         $rows = DB::table('file')
@@ -187,11 +183,7 @@ class FileController extends DefaultController
     // 共享给我的
     public function receivedataAction()
     {
-        $search = search_form([
-            'referer' => 1,
-        ], []);
-
-        $user_id   = Request::get('user_id');
+        $user_id = Request::get('user_id');
         $parent_id = Request::get('parent_id');
 
         // 共享的全部文件和文件夹
@@ -250,20 +242,16 @@ class FileController extends DefaultController
 
         $user = $row = DB::table('user')->where('id', $user_id)->first();
         return $this->display([
-            'rows'       => $rows,
+            'rows' => $rows,
             'breadcrumb' => $breadcrumb,
-            'parent_id'  => $parent_id,
-            'user'       => $user,
+            'parent_id' => $parent_id,
+            'user' => $user,
         ]);
     }
 
     // 我共享的
     public function shareAction()
     {
-        $search = search_form([
-            'referer' => 1,
-        ], []);
-
         $user_id = Request::get('user_id', auth()->id());
 
         // 共享的全部文件和文件夹
@@ -323,9 +311,9 @@ class FileController extends DefaultController
         }
         
         return $this->display([
-            'rows'       => $rows,
+            'rows' => $rows,
             'breadcrumb' => $breadcrumb,
-            'parent_id'  => $parent_id,
+            'parent_id' => $parent_id,
         ]);
     }
 
@@ -345,8 +333,6 @@ class FileController extends DefaultController
 
         $rows = [
             'name' => '公共网盘', 'type' => '',
-            'name' => '公共网盘',
-            'name' => '公共网盘',
         ];
 
         return $this->display([

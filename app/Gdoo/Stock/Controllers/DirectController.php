@@ -16,7 +16,6 @@ class DirectController extends WorkflowController
 {
     public $permission = ['dialog', 'importExcel'];
 
-    // 列表
     public function indexAction()
     {
         $header = Grid::header([
@@ -69,7 +68,6 @@ class DirectController extends WorkflowController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -84,25 +82,21 @@ class DirectController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 打印
     public function printAction()
     {
         $id = Request::get('id'); 
@@ -236,7 +230,6 @@ class DirectController extends WorkflowController
         return view('importExcel');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

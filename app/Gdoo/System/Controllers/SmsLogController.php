@@ -13,7 +13,7 @@ class SmsLogController extends DefaultController
     public $permission = [];
     
     /**
-     * 短信设置
+     * 短信记录
      */
     public function indexAction()
     {
@@ -147,9 +147,6 @@ class SmsLogController extends DefaultController
         ]);
     }
 
-    /**
-     * 删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

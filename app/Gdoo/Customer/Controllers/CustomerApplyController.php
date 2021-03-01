@@ -93,7 +93,6 @@ class CustomerApplyController extends WorkflowController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'create')
     {
         $id = (int)Request::get('id');
@@ -112,25 +111,21 @@ class CustomerApplyController extends WorkflowController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示客户联系人
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

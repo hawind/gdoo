@@ -75,7 +75,7 @@ class ProjectController extends DefaultController
         ]);
     }
 
-    // 项目显示
+    // 项目详情
     public function showAction(Request $request)
     {
         return $this->display([]);

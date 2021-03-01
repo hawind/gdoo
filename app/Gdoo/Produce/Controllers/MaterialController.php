@@ -77,7 +77,6 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -87,7 +86,6 @@ class MaterialController extends DefaultController
         ], 'create');
     }
 
-    // 创建
     public function editAction()
     {
         return $this->createAction('edit');
@@ -275,7 +273,6 @@ class MaterialController extends DefaultController
         return $this->json('配方保存成功。', true);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
@@ -284,9 +281,6 @@ class MaterialController extends DefaultController
         }
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $search = search_form([

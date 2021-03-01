@@ -70,7 +70,6 @@ class LogisticsController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -80,19 +79,16 @@ class LogisticsController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 创建客户联系人
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
@@ -101,18 +97,15 @@ class LogisticsController extends DefaultController
         }
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $search = search_form([
             'advanced' => '',
-            'prefix'   => '',
-            'offset'   => '',
-            'sort'     => '',
-            'order'    => '',
-            'limit'    => '',
+            'prefix' => '',
+            'offset' => '',
+            'sort' => '',
+            'order' => '',
+            'limit' => '',
         ], [
             ['text','logistics.name','名称'],
         ]);

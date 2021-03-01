@@ -72,7 +72,6 @@ class RegionController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -82,7 +81,6 @@ class RegionController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
@@ -129,7 +127,6 @@ class RegionController extends DefaultController
         }
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

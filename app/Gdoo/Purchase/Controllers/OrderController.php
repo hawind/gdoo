@@ -69,7 +69,6 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -79,19 +78,16 @@ class OrderController extends WorkflowController
         ], 'create');
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建
     public function showAction()
     {
         return $this->createAction('show');
@@ -191,7 +187,6 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

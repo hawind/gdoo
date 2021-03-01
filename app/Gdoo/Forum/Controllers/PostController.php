@@ -2,6 +2,7 @@
 
 use DB;
 use Auth;
+use Request;
 
 use Gdoo\Forum\Models\Forum;
 use Gdoo\Forum\Models\ForumPost;

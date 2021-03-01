@@ -20,9 +20,6 @@ class StepController extends DefaultController
 {
     public $permission = ['condition', 'steps', 'index2', 'save', 'add', 'show'];
 
-    /**
-     * 步骤列表
-     */
     public function indexAction()
     {
         // 更新排序
@@ -61,9 +58,6 @@ class StepController extends DefaultController
         ]);
     }
 
-    /**
-     * 步骤列表
-     */
     public function index2Action()
     {
         // 更新排序
@@ -127,7 +121,7 @@ class StepController extends DefaultController
         ]);
     }
 
-    // 添加步骤和克隆步骤
+    // 克隆步骤
     public function addAction()
     {
         if (Request::method() == 'POST') {
@@ -145,7 +139,6 @@ class StepController extends DefaultController
         }
     }
 
-    // 查看步骤信息
     public function showAction()
     {
         $gets = Request::all();
@@ -153,7 +146,6 @@ class StepController extends DefaultController
         return $this->json($row, true);
     }
 
-    // 保存步骤
     public function saveAction()
     {
         if (Request::method() == 'POST') {
@@ -384,10 +376,6 @@ class StepController extends DefaultController
         return json_encode($rows);
     }
 
-
-    /**
-     * 删除步骤
-     */
     public function deleteAction()
     {
         $id = Request::get('id');

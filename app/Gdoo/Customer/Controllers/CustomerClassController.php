@@ -101,7 +101,6 @@ class CustomerClassController extends DefaultController
                     $model->search($where);
                 }
             }
-            // $model->where('end', 1);
             $rows = $model->get();
             return response()->json(['data' => $rows]);
         }

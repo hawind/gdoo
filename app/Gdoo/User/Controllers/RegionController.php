@@ -37,6 +37,5 @@ class RegionController extends DefaultController
             }
         }
         echo join("\n", $data);
-        exit;
     }
 }

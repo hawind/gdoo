@@ -80,7 +80,6 @@ class RebateController extends AuditController
         ]);
     }
 
-    // 其他费用
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -99,13 +98,11 @@ class RebateController extends AuditController
         ], 'create');
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
@@ -116,17 +113,13 @@ class RebateController extends AuditController
         if (Request::method() == 'POST') {
             $file = Request::file('file');
             if ($file->isValid()) {
-                $types = DB::table('customer_order_type')->get()->keyBy('name');
-
                 /*
                 [0] => 客户编码
                 [1] => 客户名称
                 [2] => 金额
                 */
-
                 $rows = readExcel($file->getPathName());
                 $items = [];
-
                 $codes = [];
                 foreach($rows as $i => $row) {
                     if ($i > 1) {
@@ -155,7 +148,6 @@ class RebateController extends AuditController
         return view('importExcel');
     }
 
-    // 删除促销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

@@ -6,6 +6,7 @@ use Validator;
 use DB;
 
 use Gdoo\Index\Services\AttachmentService;
+use Illuminate\Support\Str;
 use URL;
 
 class AttachmentController extends DefaultController
@@ -19,13 +20,6 @@ class AttachmentController extends DefaultController
     {
         if (Request::method() == 'POST') {
             $file = Request::file('file');
-
-            /*
-            $rules = [
-                'file' => 'mimes:'.$this->setting['upload_type'],
-            ];
-            $v = Validator::make(['file' => $file], $rules);
-            */
 
             $upload_type = explode(',', $this->setting['upload_type']);
         
@@ -47,7 +41,7 @@ class AttachmentController extends DefaultController
                 $upload_path = upload_path().'/'.$path;
                 
                 // 文件新名字
-                $filename = date('dhis_').str_random(4).'.'.$extension;
+                $filename = date('dhis_').Str::random(4).'.'.$extension;
                 $filename = mb_strtolower($filename);
 
                 if ($file->move($upload_path, $filename)) {
@@ -98,7 +92,7 @@ class AttachmentController extends DefaultController
             $extension = $file->getClientOriginalExtension();
 
             // 文件新名字
-            $filename = date('dhis_').str_random(4).'.'.$extension;
+            $filename = date('dhis_').Str::random(4).'.'.$extension;
             $filename = mb_strtolower($filename);
 
             if ($file->move($upload_path, $filename)) {

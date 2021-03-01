@@ -45,9 +45,6 @@ class OrderController extends WorkflowController
         'serviceCustomerMoney',
     ];
 
-    /**
-     * 订单列表
-     */
     public function indexAction()
     {
         // 客户权限
@@ -61,19 +58,6 @@ class OrderController extends WorkflowController
 
         $search = $header['search_form'];
         $query = $search['query'];
-
-        $search['forms']['field'][] = 'acc_audit_date';
-        $search['forms']['condition'][] = '';
-        $search['forms']['search'][] = '';
-        $search['forms']['option'][] = [];
-        $search['columns'][] = [
-            'form_type' => 'date',
-            'field' => 'acc_audit_date',
-            'name' => '销售会计审核日期',
-            'options' => [],
-        ];
-        $header['search_form'] = $search;
-
         $cols = $header['cols'];
 
         // 自定义列
@@ -259,17 +243,7 @@ class OrderController extends WorkflowController
 
             foreach ($search['where'] as $where) {
                 if ($where['active']) {
-                    if ($where['field'] == 'acc_audit_date') {
-                        // 销售会计审核日期
-                        $model->leftJoin(DB::raw("(select max(d.updated_at) as audit_date, m.data_id
-                            FROM model_run_log as d left join model_run as m on d.run_id = m.id where m.bill_id = 23 and d.run_name = '销售会计'
-                            GROUP BY m.data_id
-                        ) as l
-                        "), 'l.data_id', '=', 'customer_order.id')
-                        ->whereRaw('('.sql_year_month('l.audit_date', 'ts').' = ?)', [$where['search']]);
-                    } else {
-                        $model->search($where);
-                    }
+                    $model->search($where);
                 }
             }
 
@@ -708,7 +682,6 @@ class OrderController extends WorkflowController
         }
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -731,19 +704,16 @@ class OrderController extends WorkflowController
         return $this->display(['form' => $form], $tpl);
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
@@ -770,7 +740,6 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    // 显示促销
     public function printAction()
     {
         $id = Request::get('id');
@@ -809,9 +778,6 @@ class OrderController extends WorkflowController
         return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $header = Grid::header([
@@ -1174,9 +1140,6 @@ class OrderController extends WorkflowController
         return $data;
     }
 
-    /**
-     * 订单删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

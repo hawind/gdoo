@@ -76,7 +76,6 @@ class MarketController extends DefaultController
         ]);
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -90,25 +89,21 @@ class MarketController extends DefaultController
         ], 'create');
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核促销
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 删除促销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
@@ -128,11 +123,7 @@ class MarketController extends DefaultController
 
         if (Request::method() == 'POST') {
             $model = DB::table('approach_market');
-            /*
-            foreach ($header['join'] as $join) {
-                $model->leftJoin($join[0], $join[1], $join[2], $join[3]);
-            }
-            */
+            
             if ($query['sort'] && $query['order']) {
                 $model->orderBy($query['sort'], $query['order']);
             }

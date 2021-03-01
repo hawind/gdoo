@@ -441,9 +441,7 @@ class ChatController extends Controller
             // 这里有一点bug，如果只有一条未读只能显示一条
             if ($unread_total > 0) {
                $model->where('cms.status', 0);
-            } 
-
-            //$model->whereRaw("(cm.receive_id = '$gid' and cm.id in(select message_id from chat_message_status where user_id = '$auth_id'))");
+            }
 
             // 获取大于当前时间的记录
             if ($lastdt > 0) {

@@ -492,51 +492,6 @@ class CalendarService
     }
 
     /**
-     * @brief Remove all properties which should not be exported for the AccessClass Confidential
-     * @param string $id Event ID
-     * @param VObject $vobject Sabre VObject
-     * @return object
-     */
-    public static function cleanByAccessClass($id, $vobject)
-    {
-        // Do not clean your own calendar
-        if (self::getowner($id) === Auth::id()) {
-            return $vobject;
-        }
-
-        if (isset($vobject->VEVENT)) {
-            $velement = $vobject->VEVENT;
-        } elseif (isset($vobject->VJOURNAL)) {
-            $velement = $vobject->VJOURNAL;
-        } elseif (isset($vobject->VTODO)) {
-            $velement = $vobject->VTODO;
-        }
-
-        if (isset($velement->CLASS) && $velement->CLASS->value == 'CONFIDENTIAL') {
-            foreach ($velement->children as &$property) {
-                switch ($property->name) {
-                    case 'CREATED':
-                    case 'DTSTART':
-                    case 'RRULE':
-                    case 'DURATION':
-                    case 'DTEND':
-                    case 'CLASS':
-                    case 'UID':
-                        break;
-                    case 'SUMMARY':
-                        $property->value = 'Busy';
-                        break;
-                    default:
-                        $velement->__unset($property->name);
-                        unset($property);
-                        break;
-                }
-            }
-        }
-        return $vobject;
-    }
-
-    /**
      * @brief Get the permissions determined by the access class of an event/todo/journal
      * @param VObject $vobject Sabre VObject
      * @return (int) $permissions - CRUDS permissions

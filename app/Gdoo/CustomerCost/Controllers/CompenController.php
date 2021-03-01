@@ -80,7 +80,6 @@ class CompenController extends AuditController
         ]);
     }
 
-    // 其他费用
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -99,13 +98,11 @@ class CompenController extends AuditController
         ], 'create');
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
@@ -155,7 +152,6 @@ class CompenController extends AuditController
         return view('importExcel');
     }
 
-    // 删除促销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

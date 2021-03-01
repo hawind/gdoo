@@ -8,6 +8,7 @@ use DB;
 use Gdoo\System\Models\Media;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Illuminate\Support\Str;
 
 class MediaController extends DefaultController
 {
@@ -29,9 +30,6 @@ class MediaController extends DefaultController
         ], 'qrcode');
     }
 
-    /**
-     * 新建文件
-     */
     public function createAction()
     {
         $folderId = Request::get('folder_id');
@@ -50,7 +48,7 @@ class MediaController extends DefaultController
             $extension = $file->getClientOriginalExtension();
 
             // 文件新名字
-            $filename = date('dhis_').str_random(4).'.'.$extension;
+            $filename = date('dhis_').Str::random(4).'.'.$extension;
             $filename = mb_strtolower($filename);
 
             $fileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
@@ -84,9 +82,6 @@ class MediaController extends DefaultController
         return $this->json('文件上传失败');
     }
     
-    /**
-     * 文件对话框
-     */
     public function dialogAction()
     {
         if (Request::method() == 'POST') {

@@ -180,13 +180,11 @@ class MailController extends DefaultController
         ]);
     }
 
-    // 新建邮箱帐号
     public function createAction()
     {
         return $this->editAction();
     }
 
-    // 编辑邮箱帐号
     public function editAction()
     {
         $id  = (int)Request::get('id');
@@ -196,9 +194,6 @@ class MailController extends DefaultController
         ], 'edit');
     }
 
-    /**
-     * 保存
-     */
     public function storeAction()
     {
         if (Request::method() == 'POST') {
@@ -224,9 +219,6 @@ class MailController extends DefaultController
         }
     }
 
-    /**
-     * 删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

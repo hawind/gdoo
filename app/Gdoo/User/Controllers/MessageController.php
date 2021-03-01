@@ -143,7 +143,7 @@ class MessageController extends Controller
     }
 
     /**
-     * 提醒设置
+     * 未读提醒
      */
     public function countAction()
     {
@@ -154,9 +154,6 @@ class MessageController extends Controller
         return response()->json($count);
     }
 
-    /**
-     * 删除提醒
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

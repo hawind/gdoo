@@ -15,7 +15,7 @@ class CalendarController extends DefaultController
     public $permission = ['calendars', 'help'];
 
     /**
-     * 显示日历
+     * 日历首页
      */
     public function indexAction()
     {
@@ -46,8 +46,8 @@ class CalendarController extends DefaultController
         $calendars = CalendarService::getCalendars($user_id);
 
         $calendars[] = [
-            'id'            => 'shared',
-            'displayname'   => '共享事件',
+            'id' => 'shared',
+            'displayname' => '共享事件',
             'calendarcolor' => '#999',
         ];
         $sources = [];
@@ -82,24 +82,20 @@ class CalendarController extends DefaultController
                 } catch (\Exception $e) {
                     return $this->json($e->getMessage());
                 }
-                /*} else {
-                    return $this->json('permission denied');
-                */
             }
             $calendar = CalendarService::getCalendar($gets['id'], false);
             return $this->json([
-                'active'      => $gets['active'],
+                'active' => $gets['active'],
                 'eventSource' => array(
-                    'id'              => $calendar['id'],
-                    'url'             => url('event/index', ['calendar_id' => $calendar['id']]),
+                    'id' => $calendar['id'],
+                    'url' => url('event/index', ['calendar_id' => $calendar['id']]),
                     'backgroundColor' => $calendar['calendarcolor'],
-                    "borderColor"     => $calendar['calendarcolor'],
+                    "borderColor" => $calendar['calendarcolor'],
                 )
             ], true);
         }
     }
 
-    // 添加日历
     public function addAction()
     {
         $gets = Request::all();
@@ -123,7 +119,6 @@ class CalendarController extends DefaultController
         return $this->render();
     }
 
-    // 删除日历
     public function deleteAction()
     {
         $id = Request::get('id');

@@ -16,7 +16,6 @@ class Record08Controller extends AuditController
 {
     public $permission = ['dialog', 'importExcel'];
 
-    // 列表
     public function indexAction()
     {
         $header = Grid::header([
@@ -70,7 +69,6 @@ class Record08Controller extends AuditController
         ]);
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -85,19 +83,16 @@ class Record08Controller extends AuditController
         ], $tpl);
     }
 
-    // 编辑
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 打印
     public function printAction()
     {
         $this->layout = 'layouts.print2';
@@ -155,7 +150,6 @@ class Record08Controller extends AuditController
         return view('importExcel');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

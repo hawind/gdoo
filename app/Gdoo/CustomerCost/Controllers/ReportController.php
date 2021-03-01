@@ -66,14 +66,7 @@ class ReportController extends DefaultController
                 }
             }
 
-            // 销售会计审核日期
-            $rows = $model->leftJoin(DB::raw("(select max(d.updated_at) as audit_date, m.data_id
-                FROM model_run_log as d left join model_run as m on d.run_id = m.id where m.bill_id = 23 and d.run_name = '销售会计'
-                GROUP BY m.data_id
-            ) as l
-            "), 'l.data_id', '=', 'm.id')
-            ->whereRaw("(".sql_year_month('l.audit_date', 'ts')." BETWEEN ? AND ?)", $fields['date'])
-            ->orderBy(DB::raw(sql_year_month('l.audit_date', 'ts')), 'asc')
+            $rows = $model->orderBy('m.id', 'asc')
             ->get()->toArray();
 
             foreach($rows as &$row) {

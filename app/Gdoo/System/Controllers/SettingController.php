@@ -153,7 +153,6 @@ class SettingController extends DefaultController
         $header['search_form'] = $search;
         $header['js'] = Grid::js($header);
 
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);
@@ -161,13 +160,11 @@ class SettingController extends DefaultController
         return $this->display();
     }
 
-    // 新建邮箱帐号
     public function createAction()
     {
         return $this->editAction();
     }
 
-    // 编辑邮箱帐号
     public function editAction()
     {
         $id  = (int)Request::get('id');
@@ -258,9 +255,6 @@ class SettingController extends DefaultController
         }
     }
 
-    /**
-     * 删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

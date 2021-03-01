@@ -16,9 +16,6 @@ class ComplaintController extends WorkflowController
 {
     public $permission = ['dialog'];
 
-    /**
-     * 订单列表
-     */
     public function indexAction()
     {
         // 客户权限
@@ -84,7 +81,6 @@ class ComplaintController extends WorkflowController
         ]);
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -107,27 +103,21 @@ class ComplaintController extends WorkflowController
         return $this->display(['form' => $form], $tpl);
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 显示促销
     public function printAction()
     {
         return $this->createAction('print');
     }
 
-    /**
-     * 订单删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

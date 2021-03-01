@@ -12,7 +12,6 @@ use Gdoo\Index\Controllers\DefaultController;
 
 class MenuController extends DefaultController
 {
-    // 菜单列表
     public function indexAction()
     {
         $header = [
@@ -163,73 +162,11 @@ class MenuController extends DefaultController
         $header['search_form'] = $search;
         $header['js'] = Grid::js($header);
 
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);
-        /*
-        if (Request::method() == 'POST') {
-            $sorts = Request::get('sort');
-            foreach ($sorts as $id => $sort) {
-                DB::table('menu')->where('id', $id)->update(['sort' => $sort]);
-            }
-            tree_rebuild('menu');
-            return $this->success('index', '恭喜你，操作成功。');
-        }
-
-        $search = search_form([
-            'referer'  => 1,
-        ], []);
-        
-        $rows = DB::table('menu')
-        ->orderBy('lft', 'asc')
-        ->get();
-        */
-
-        /*
-        $rows = DB::table('dict')->get();
-
-        foreach ($rows as $key => $row) {
-
-            $values = json_decode($row['value'], true);
-
-            //$data['parent_id'] = $row['id'];
-
-            $id = DB::table('option')->insertGetId([
-                'parent_id' => 0,
-                'name'  => $row['name'],
-                'value' => $row['key'],
-            ]);
-
-            $data = [];
-
-            $data['parent_id'] = $id;
-
-            if($values) {
-
-            foreach ($values as $k => $v) {
-
-                $data['sort']  = $k;
-                $data['value'] = ''.$v['id'].'';
-                $data['name']  = ''.$v['name'].'';
-                DB::table('option')->insert($data);
-            }
-            }
-        }
-
-        print_r($rows);
-        exit;
-        */
-
-        //$rows = array_nest($rows);
-        /*
-        return $this->display([
-            'rows' => $rows,
-        ]);
-        */
     }
 
-    // 新建菜单
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -271,7 +208,6 @@ class MenuController extends DefaultController
         return $this->editAction();
     }
 
-    // 删除菜单
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

@@ -104,7 +104,6 @@ class CustomerController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'create')
     {
         $id = (int)Request::get('id');
@@ -129,13 +128,11 @@ class CustomerController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 批量编辑
     public function batchEditAction()
     {
         $gets = Request::all();
@@ -156,7 +153,6 @@ class CustomerController extends DefaultController
         ]);
     }
 
-    // 销售产品价格
     public function priceEditAction()
     {
         $gets = Request::all();
@@ -195,7 +191,6 @@ class CustomerController extends DefaultController
         ]);
     }
 
-    // 显示客户联系人
     public function showAction()
     {
         return $this->createAction('show');
@@ -211,7 +206,6 @@ class CustomerController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
@@ -220,9 +214,6 @@ class CustomerController extends DefaultController
         }
     }
 
-    /**
-     * 弹出层信息
-     */
     public function dialogAction()
     {
         $search = search_form(

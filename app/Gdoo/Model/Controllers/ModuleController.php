@@ -14,11 +14,8 @@ use Gdoo\Index\Controllers\DefaultController;
 
 class ModuleController extends DefaultController
 {
-    public $permission = ['test', 'refresh'];
+    public $permission = ['refresh'];
 
-    /**
-     * 邮件设置
-     */
     public function indexAction()
     {
         $header = [
@@ -146,59 +143,11 @@ class ModuleController extends DefaultController
         $header['search_form'] = $search;
         $header['js'] = Grid::js($header);
 
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);
     }
 
-    // 新建邮箱帐号
-    public function createAction()
-    {
-        return $this->editAction();
-    }
-
-    // 编辑邮箱帐号
-    public function editAction()
-    {
-        $id  = (int)Request::get('id');
-        $row = DB::table('mail')->where('id', $id)->first();
-        return $this->render([
-            'row' => $row,
-        ], 'edit');
-    }
-
-    /**
-     * 保存
-     */
-    public function storeAction()
-    {
-        if (Request::method() == 'POST') {
-            $gets = Request::all();
-            $rules = [
-                'name' => 'required',
-                'smtp' => 'required',
-                'user' => 'required',
-                'password' => 'required',
-                'port' => 'required',
-            ];
-            $v = Validator::make($gets, $rules);
-            if ($v->fails()) {
-                return $this->json(join('<br>', $v->errors()->all()));
-
-            }
-            if ($gets['id']) {
-                DB::table('mail')->where('id', $gets['id'])->update($gets);
-            } else {
-                DB::table('mail')->insert($gets);
-            }
-            return $this->json('恭喜你，操作成功。', true);
-        }
-    }
-
-    /**
-     * 删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

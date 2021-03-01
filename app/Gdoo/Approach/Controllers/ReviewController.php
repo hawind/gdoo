@@ -81,7 +81,6 @@ class ReviewController extends WorkflowController
         ]);
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -106,25 +105,21 @@ class ReviewController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑促销
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核促销
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示促销
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 显示促销
     public function printAction()
     {
         $this->layout = 'layouts.print2';
@@ -163,7 +158,6 @@ class ReviewController extends WorkflowController
         return $this->render(['query' => $query]);
     }
 
-    // 删除促销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

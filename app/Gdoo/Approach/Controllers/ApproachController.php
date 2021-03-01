@@ -94,7 +94,6 @@ class ApproachController extends WorkflowController
         ]);
     }
 
-    // 新建促销
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -114,25 +113,21 @@ class ApproachController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑进店
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核进店
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示进店
     public function showAction()
     {
         return $this->createAction('show');
     }
 
-    // 显示进店
     public function printAction()
     {
         $this->layout = 'layouts.print2';
@@ -357,7 +352,6 @@ class ApproachController extends WorkflowController
         ]);
     }
 
-    // 删除进店申请
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

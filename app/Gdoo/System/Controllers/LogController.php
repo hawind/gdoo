@@ -187,9 +187,6 @@ class LogController extends DefaultController
         ]);
     }
 
-    /**
-     * 删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

@@ -14,13 +14,12 @@ use Gdoo\Model\Grid;
 use Gdoo\Model\Form;
 
 use Gdoo\Index\Controllers\DefaultController;
-use Exception;
+use Illuminate\Support\Str;
 
 class MaterialController extends DefaultController
 {
     public $permission = ['detail', 'dialog', 'store', 'archive', 'download'];
     
-    // 促销核销列表
     public function indexAction()
     {
         // 客户权限
@@ -104,7 +103,6 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    // 促销核销明细
     public function detailAction()
     {
         $search = search_form([
@@ -171,7 +169,6 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    // 获取核销列表
     public function dialogAction()
     {
         $user = auth()->user();
@@ -191,7 +188,6 @@ class MaterialController extends DefaultController
         return $this->json($rows, true);
     }
     
-    // 显示促销
     public function showAction()
     {
         $id = Request::get('id');
@@ -221,7 +217,6 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    // 促销核销审核
     public function auditAction()
     {
         $id = (array)Request::get('id');
@@ -238,7 +233,6 @@ class MaterialController extends DefaultController
         return $this->json('操作成功。', true);
     }
 
-    // 促销核销审核
     public function archiveAction()
     {
         $id = (array)Request::get('id');
@@ -264,7 +258,6 @@ class MaterialController extends DefaultController
         return $this->json('', true);
     }
 
-    // 促销核销审核
     public function downloadAction()
     {
         $sn = Request::get('sn');
@@ -301,7 +294,7 @@ class MaterialController extends DefaultController
                         // 文件后缀名
                         $extension = $image->getClientOriginalExtension();
                         // 文件新名字
-                        $filename = date('dhis_').str_random(4).'.'.$extension;
+                        $filename = date('dhis_').Str::random(4).'.'.$extension;
                         $filename = mb_strtolower($filename);
                         if ($image->move($upload_path, $filename)) {
 
@@ -329,7 +322,6 @@ class MaterialController extends DefaultController
         }
     }
 
-    // 删除核销
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

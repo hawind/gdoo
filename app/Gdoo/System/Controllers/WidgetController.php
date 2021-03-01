@@ -231,7 +231,6 @@ class WidgetController extends DefaultController
         ]);
     }
 
-    // 新建部件
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -260,7 +259,6 @@ class WidgetController extends DefaultController
         ], 'create');
     }
 
-    // 编辑部件
     public function editAction()
     {
         return $this->createAction();
@@ -271,9 +269,6 @@ class WidgetController extends DefaultController
         return $this->editAction();
     }
 
-    /**
-     * 删除部件
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

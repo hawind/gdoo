@@ -67,7 +67,6 @@ class CategoryController extends DefaultController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction()
     {
         $id = (int)Request::get('id');
@@ -77,25 +76,9 @@ class CategoryController extends DefaultController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction();
-    }
-
-    // 显示客户联系人
-    public function showAction()
-    {
-        $id = (int)Request::get('id');
-        $group = Category::find($id);
-        $options = [
-            'table' => 'customer_cost_category',
-            'row' => $group,
-        ];
-        $tpl = Form::show($options);
-        return $this->display([
-            'tpl' => $tpl,
-        ]);
     }
 
    public function dialogAction()
@@ -106,7 +89,7 @@ class CategoryController extends DefaultController
         ]);
 
         if (Request::method() == 'POST') {
-            $model = Type::orderBy('sort', 'asc');
+            $model = Category::orderBy('sort', 'asc');
             foreach ($search['where'] as $where) {
                 if ($where['active']) {
                     $model->search($where);

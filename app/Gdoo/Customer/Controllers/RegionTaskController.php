@@ -91,7 +91,6 @@ class RegionTaskController extends AuditController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'create')
     {
         $id = (int)Request::get('id');
@@ -112,13 +111,11 @@ class RegionTaskController extends AuditController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 显示客户联系人
     public function showAction()
     {
         return $this->createAction('show');
@@ -303,7 +300,6 @@ class RegionTaskController extends AuditController
         ]);
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

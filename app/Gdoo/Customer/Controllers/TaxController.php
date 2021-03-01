@@ -83,7 +83,6 @@ class TaxController extends AuditController
         ]);
     }
 
-    // 新建客户联系人
     public function createAction($action = 'edit')
     {
         $id = (int)Request::get('id');
@@ -93,13 +92,11 @@ class TaxController extends AuditController
         ], 'create');
     }
 
-    // 创建客户联系人
     public function editAction()
     {
         return $this->createAction('edit');
     }
 
-    // 创建客户联系人
     public function showAction()
     {
         return $this->createAction('show');
@@ -168,8 +165,7 @@ class TaxController extends AuditController
             'header' => $header
         ]);
     }
-
-    // 删除
+    
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

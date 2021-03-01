@@ -164,7 +164,6 @@ class SmsController extends DefaultController
         $header['search_form'] = $search;
         $header['js'] = Grid::js($header);
 
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);
@@ -194,13 +193,11 @@ class SmsController extends DefaultController
         }
     }
 
-    // 新建短信帐号
     public function createAction()
     {
         return $this->editAction();
     }
 
-    // 编辑短信帐号
     public function editAction()
     {
         $id  = (int)Request::get('id');
@@ -210,9 +207,6 @@ class SmsController extends DefaultController
         ], 'edit');
     }
 
-    /**
-     * 删除
-     */
     public function deleteAction()
     {
         if (Request::method() == 'POST') {

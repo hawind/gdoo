@@ -38,7 +38,7 @@ class AES
      */
     public static function encrypt($data, $key)
     {
-        $iv   = openssl_random_pseudo_bytes(16);
+        $iv = openssl_random_pseudo_bytes(16);
         $encrypted = [
             base64_encode($iv),
             openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv)
@@ -56,8 +56,8 @@ class AES
      */
     public static function decrypt($data, $key)
     {
-        $encrypt   = json_decode(base64_decode($data), true);
-        $iv        = base64_decode($encrypt[0]);
+        $encrypt = json_decode(base64_decode($data), true);
+        $iv = base64_decode($encrypt[0]);
         $decrypted = openssl_decrypt($encrypt[1], 'aes-256-cbc', $key, 0, $iv);
         return $decrypted;
     }

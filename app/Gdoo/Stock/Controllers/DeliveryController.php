@@ -33,7 +33,6 @@ class DeliveryController extends WorkflowController
         'autoSave'
     ];
 
-    // 发货列表
     public function indexAction()
     {
         $header = Grid::header([
@@ -115,7 +114,6 @@ class DeliveryController extends WorkflowController
         ]);
     }
 
-    // 明细列表
     public function detailAction()
     {
         $header = Grid::header([
@@ -185,7 +183,6 @@ class DeliveryController extends WorkflowController
         ]);
     }
 
-    // 自动保存
     public function autoSaveAction()
     {
         $gets = Request::all();
@@ -245,7 +242,6 @@ class DeliveryController extends WorkflowController
         return $this->createAction('audit');
     }
 
-    // 新建
     public function createAction($action = 'edit')
     {
         $id = (int) Request::get('id');
@@ -269,19 +265,16 @@ class DeliveryController extends WorkflowController
         ], $tpl);
     }
 
-    // 编辑
     public function editAction()
     {
         return $this->createAction();
     }
 
-    // 审核
     public function auditAction()
     {
         return $this->createAction('audit');
     }
 
-    // 显示
     public function showAction()
     {
         return $this->createAction('show');
@@ -308,7 +301,6 @@ class DeliveryController extends WorkflowController
         ]);
     }
 
-    // 打印
     public function printAction()
     {
         $id = Request::get('id'); 
@@ -430,7 +422,6 @@ class DeliveryController extends WorkflowController
         ], 'getBatchSelect');
     }
 
-    // 删除
     public function deleteAction()
     {
         if (Request::method() == 'POST') {
