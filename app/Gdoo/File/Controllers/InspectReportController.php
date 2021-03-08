@@ -47,11 +47,10 @@ class InspectReportController extends DefaultController
 
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
-            $items = Grid::dataFilters($rows, $header, function($item) {
+            return Grid::dataFilters($rows, $header, function($item) {
                 $item['size'] = human_filesize($item['size']);
                 return $item;
             });
-            return $items->toJson();
         }
 
         $header['buttons'] = [

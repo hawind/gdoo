@@ -105,13 +105,14 @@ class Grid
             $rows[] = static::dataFilter($item, $header, $callback);
         }
 
-        $rows = collect($rows);
+        $ret = [];
         if ($items instanceof AbstractPaginator) {
-            $items->setCollection($rows);
+            $ret = $items->setCollection(collect($rows))->toArray();
         } else {
-            $items = $rows;
+            $ret = collect(['data' => $rows]);
         }
-        return $items;
+        $ret['header'] = $header;
+        return $ret;
     }
 
     public static function dataFilter($item, $header, $callback = null)

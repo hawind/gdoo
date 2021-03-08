@@ -35,15 +35,15 @@ $action = 'Gdoo\\'.ucfirst($uris['module']).'\\Controllers\\'.$controller.'Contr
 $method = Request::method();
 
 if ($method == 'GET') {
-    Route::get($path, $action);
+    Route::get($path, $action)->middleware('json');
 }
 
 if ($method == 'POST') {
-    Route::post($path, $action);
+    Route::post($path, $action)->middleware('json');
 }
 
 if ($method == 'OPTIONS') {
-    Route::options($path, $action);
+    Route::options($path, $action)->middleware('json');
 }
 
 View::addLocation(base_path('app/Gdoo/'.ucfirst(Request::module()).'/views'));

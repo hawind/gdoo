@@ -80,8 +80,7 @@ class RoleController extends DefaultController
             ->addSelect(DB::raw('(select count(id) from [user] where role_id = role.id) as user_count'));
 
             $rows = $model->paginate($query['limit'])->appends($query);
-            $items = Grid::dataFilters($rows, $header);
-            return $items->toJson();
+            return Grid::dataFilters($rows, $header);
         }
 
         $header['buttons'] = [

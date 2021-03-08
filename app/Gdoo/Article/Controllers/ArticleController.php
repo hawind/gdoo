@@ -80,10 +80,16 @@ class ArticleController extends DefaultController
             
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
+
+            $header['cols'] = $cols;
+            $header['tabs'] = Article::$tabs;
+            $header['bys'] = Article::$bys;
+            $header['js'] = Grid::js($header);
+
             $items = Grid::dataFilters($rows, $header, function($item) {
                 return $item;
             });
-            return $items->toJson();
+            return $items;
         }
 
         $header['buttons'] = [

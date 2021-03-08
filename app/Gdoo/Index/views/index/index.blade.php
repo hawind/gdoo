@@ -38,6 +38,7 @@
             </a>
 
             <a href="{{url('/')}}" class="navbar-brand">
+                
                 <img src="{{$asset_url}}/images/logo.svg" width="18" />
                 <!--
                 <i class="fa text-lg fa-buysellads"></i>

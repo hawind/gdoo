@@ -254,8 +254,7 @@ class OrderController extends WorkflowController
             }
 
             $rows = $model->paginate($query['limit'])->appends($query);
-            $items = Grid::dataFilters($rows, $header);
-            return $items->toJson();
+            return Grid::dataFilters($rows, $header);
         }
 
         $header['buttons'] = [
@@ -385,9 +384,7 @@ class OrderController extends WorkflowController
             $model->addSelect($header['select']);
 
             $rows = $model->paginate($query['limit'])->appends($query);
-
-            $items = Grid::dataFilters($rows, $header);
-            return $items->toJson();
+            return Grid::dataFilters($rows, $header);
         }
 
         $header['buttons'] = [
@@ -582,8 +579,7 @@ class OrderController extends WorkflowController
             }
 
             $rows = $model->paginate($query['limit'])->appends($query);
-            $items = Grid::dataFilters($rows, $header);
-            return $items->toJson();
+            return Grid::dataFilters($rows, $header);
         }
 
         $header['buttons'] = [

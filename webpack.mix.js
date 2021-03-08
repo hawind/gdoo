@@ -93,6 +93,5 @@ mix.combine([
 ],'public/assets/dist/index.min.css');
 
 if (mix.inProduction()) {
-    console.log(121);
     mix.version();
 }

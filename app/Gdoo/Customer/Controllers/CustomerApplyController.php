@@ -72,11 +72,9 @@ class CustomerApplyController extends WorkflowController
 
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
-
-            $items = Grid::dataFilters($rows, $header, function($item) {
+            return Grid::dataFilters($rows, $header, function($item) {
                 return $item;
             });
-            return $items->toJson();
         }
 
         $header['buttons'] = [

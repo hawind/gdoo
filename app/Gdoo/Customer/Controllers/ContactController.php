@@ -59,8 +59,7 @@ class ContactController extends DefaultController
 
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
-            $items = Grid::dataFilters($rows, $header);
-            return $items->toJson();
+            return Grid::dataFilters($rows, $header);
         }
 
         $header['buttons'] = [

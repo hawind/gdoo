@@ -6,7 +6,7 @@
         "gdoo",
         "web"
     ],
-    "license": "MIT",
+    "license": "Apache",
     "require": {
         "php": "^8.0",
         "fideloper/proxy": "^4.4",

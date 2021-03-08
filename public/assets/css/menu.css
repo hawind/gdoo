@@ -893,17 +893,27 @@ body.theme-purple {
     font-size: 10px;
     position: absolute;
     right: 3px;
-    top: 50%;
-    margin-top: -6px;
-    z-index: 100;
-    cursor: hand;
+    top: 3px;
+    z-index: 101;
     cursor: pointer;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.6);
     display: none;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
 }
 
 .tabs-list li:hover > .tab-close {
     display: block;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.tabs-list li:hover > .tab-close:hover {
+    display: block;
+    background: #fff;
+    color: #666;
 }
 
 .tab-drop {

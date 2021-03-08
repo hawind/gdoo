@@ -86,13 +86,11 @@ class PromotionController extends WorkflowController
             $model->addSelect(DB::raw("case when promotion.type_id = 2 then promotion.undertake_money else 0 end as zp_money"));
 
             $rows = $model->paginate($query['limit'])->appends($query);
-
-            $items = Grid::dataFilters($rows, $header, function($item) {
+            return Grid::dataFilters($rows, $header, function($item) {
                 $item['master_cash_amount'] = '<a href="javascript:;" data-toggle="event" data-action="fee_detail" data-master_id="'.$item['master_id'].'" class="option">'.$item['master_cash_amount'].'</a>';
                 $item['master_product'] = '<a href="javascript:;" data-toggle="event" data-action="product" data-master_id="'.$item['master_id'].'" class="option">明细</a>';
                 return $item;
             });
-            return $items->toJson();
         }
 
         $header['buttons'] = [
