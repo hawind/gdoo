@@ -1,7 +1,12 @@
 # Gdoo协同办公
 
-[![license][license-badge]][license-link]
-[![release][release-badge]][release-link]
+<p align="center">
+<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/version-beta2.2.2-%23ff0000" alt="Build Status" /></a>
+<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/laravel-8.0-%23ef3b2d" alt="laravel framework" /></a>
+<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/gdooFramework-1.0-%234c5ec2" alt="Gdoo快速开发框架" /></a>
+<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/MYSQL-8.0-%2300758f" alt="License" /></a>
+<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/Licence-Apache2.0-blue.svg?style=flat" /></a>
+</p>
 
 ## 介绍
 1. 进销存功能、营销管理功能、简单生产计划、业务员销售团队分级管理、支持客户任务和业务员任务进度统计、支持客户自主下单。特别注重销售管理、业绩分析。
@@ -14,8 +19,7 @@
 
 
 ## 申明
-本项目包含部分企业版(未授权)的前端组件如aggrid、dhtmlxgantt。如果你使用请获得相关的授权。开源此项目主要是学习和交流，由于是给企业定制的原因，大部分功能单一不完善，请不要直接投入使用。如果项目中有侵权问题请及时联系我，我会在第一时间调整。
-
+本项目包含部分企业版(未授权)的前端组件如aggrid、dhtmlxgantt。如果你使用请获得相关的授权。如果项目中有侵权问题请及时联系我，我会在第一时间调整。
 
 ## 模块
 - [x] 基本功能
@@ -81,7 +85,9 @@ QQ交流群: 79446405
 
 ![表单权限](http://demo.gdoo.net/uploads/demo/10.png)
 
-![h5兼容](http://demo.gdoo.net/uploads/demo/12.png)
+<p align="center">
+<img src="http://demo.gdoo.net/uploads/demo/12.png" alt="h5兼容">
+</p>
 
 ## 安装
 1. 推荐使用宝塔面板，安装nginx 1.18.x、php-8.x(需要扩展：fileinfo)、mysql-8.x(mariaDB 10.4.x)，如果你使用win请自行安装相关环境
@@ -102,10 +108,3 @@ QQ交流群: 79446405
 ## 开发
 1. 请在项目根目录执行 <code>yarn install</code> 安装前端依赖
 2. 待续
-
-[license-badge]: https://img.shields.io/badge/license-apache2-blue.svg
-[license-link]: LICENSE
-[ci-badge]: https://github.com/hawind/gdoo/workflows/gdoo/badge.svg
-[ci-link]: https://github.com/hawind/gdoo/actions?query=workflow:gdoo
-[release-badge]: https://img.shields.io/github/release/hawind/gdoo.svg?style=flat-square
-[release-link]: https://github.com/hawind/gdoo/releases
