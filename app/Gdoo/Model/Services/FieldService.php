@@ -1243,7 +1243,6 @@ class FieldService
 
         if ($field['is_print']) {
             foreach ($select as $t) {
-                $attribute = $field['attribute'];
                 $n = $v = '';
                 list($n, $v) = explode('|', $t);
                 $v = is_null($v) ? trim($n) : trim($v);
@@ -1260,7 +1259,6 @@ class FieldService
         $name = $attribute['name'];
         
         foreach ($select as $i => $t) {
-            
             $n = $v = '';
             list($n, $v) = explode('|', $t);
             $v = is_null($v) ? trim($n) : trim($v);
@@ -1278,55 +1276,71 @@ class FieldService
     public static function content_checkbox($field, $content = '', $row = [], $permission = [])
     {
         $field = static::content_field($field);
+        // 配置
         $setting = $field['setting'];
         $default = $setting['default'];
         $content = is_null($content) ? $default : $content;
-        $str = [];
+        $checkeds = [];
+        $items = [];
+        $values = explode(",", $content);
 
-        $attribute = $field['attribute'];
-        $id = $attribute['id'];
-        $name = $attribute['name'];
-
-        $_select = explode("\n", $setting['content']);
-        if ($field['is_print']) {
-            foreach ($_select as $t) {
-                $n = $v = '';
-                list($n, $v) = explode('|', $t);
-                $v = is_null($v) ? trim($n) : trim($v);
-                if ($row[$v] == 1) {
-                    $str[] = $n;
-                }
-                if ($v == $content) {
-                    $str[] = $n;
-                }
-            }
-            return join(',', $str);
-        }
-
-        if ($field['type']) {
-            $checked = $content == 1 ? 'checked="checked"' : '';
-            if ($field['is_show']) {
-                $str[] = '<label class="i-checks i-checks-sm m-b-none" style="font-weight:normal;"><input type="checkbox" disabled="disabled" '.$checked.'><i></i>'.$field['name'].'</label>';
-            } else {
-                $str[] = '<label class="i-checks i-checks-sm m-t-xs m-b-none" style="font-weight:normal;"><input type="checkbox" id="'. $id .'" name="'. $name . '" value="1" '.$checked.'><i></i>'.$field['name'].'</label>';
-            }
+        if ($setting['type']) {
+            $items = DB::table($setting['type'])->where('status', 1)->orderBy('sort', 'asc')->get();
         } else {
-            foreach ($_select as $t) {
-                $n = $v = '';
-                list($n, $v) = explode('|', $t);
-                $v = is_null($v) ? trim($n) : trim($v);
-                $checked = $row[$v] == 1 ? 'checked="checked"' : '';
-                if ($field['is_show']) {
-                    $str[] = '<label class="i-checks i-checks-sm m-b-none" style="font-weight:normal;"><input type="checkbox" disabled="disabled" '.$checked.'><i></i>'.$n.'</label>';
-                } else {
-                    $w = $permission[$v]['w'] == 1 ? '' : 'disabled="disabled"';
-                    $disabled = $permission[$v]['w'] == 1 ? '' : 'i-checks-disabled';
-                    $str[] = '<label class="i-checks '.$disabled.' i-checks-sm m-t-xs m-b-none" style="font-weight:normal;"><input type="checkbox" '.$w.' id="'. $field['table'] . '_'.$v.'" name="'. $field['table'] . '['.$v.']" value="1" '.$checked.'><i></i>'.$n.'</label>';
+            if (not_empty($setting['content'])) {
+                $selects = explode("\n", $setting['content']);
+                foreach ($selects as $select) {
+                    $n = $v = '';
+                    list($n, $v) = explode('|', $select);
+                    $v = is_null($v) ? trim($n) : trim($v);
+                    $items[] = ['id' => $v, 'name' => $n];
                 }
+            } else {
+                $items[] = ['id' => 1, 'name' => $field['name']];
             }
         }
-        
-        return join('&nbsp;&nbsp;', $str);
+
+        // 打印模式直接返回选中的值名称
+        if ($field['is_print']) {
+            foreach ($items as $item) {
+                if ($field['type']) {
+                    if (in_array($item['id'], $values)) {
+                        $checkeds[] = $item['name'];
+                    }
+                } else {
+                    if ($row[$item['id']] == 1) {
+                        $checkeds[] = $item['name'];
+                    }
+                }
+            }
+            return join(',', $checkeds);
+        }
+
+        $str = [];
+        foreach ($items as $item) {
+
+            // 存在字段
+            if ($field['type']) {
+                $value = $v;
+                $checked = in_array($v, $values) ? 'checked="checked"' : '';
+                $name = $field['table'].'['.$field['field'].']['.$v.']';
+                $key = $field['field'];
+            } else {
+                $value = 1;
+                $checked = $row[$item['id']] == $value ? 'checked="checked"' : '';
+                $name = $field['table'].'['.$item['id'].']';
+                $key = $item['id'];
+            }
+
+            if ($field['is_show']) {
+                $str[] = '<label class="i-checks i-checks-sm m-r-xs m-b-none"><input type="checkbox" id="'. $field['table'].'_'.$item['id'].'" disabled="disabled" '.$checked.'><i></i>'.$item['name'].'</label>';
+            } else {
+                $w = $permission[$key]['w'] == 1 ? '' : 'disabled="disabled"';
+                $disabled = $permission[$key]['w'] == 1 ? '' : 'i-checks-disabled';
+                $str[] = '<label class="i-checks '.$disabled.' i-checks-sm m-t-xs m-r-xs m-b-none"><input type="checkbox" '.$w.' id="'. $field['table'].'_'.$item['id'].'" name="'.$name.'" value="'.$value.'" '.$checked.'><i></i>'.$item['name'].'</label>';
+            }
+        }
+        return join(' ', $str);
     }
 
     public static function content_image($field, $content = '')

@@ -43,6 +43,16 @@ class ArticleController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Article::$tabs;
+        $header['bys'] = Article::$bys;
+        $header['js'] = Grid::js($header);
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -64,13 +74,14 @@ class ArticleController extends DefaultController
                 $model->permission('receive_id', null, false, true, false, 'created_id');
             }
     
-            // 查询是否已经阅读
+            // 是否已经阅读
             $reader = function ($q) {
                 $q->selectRaw('1')
                 ->from('article_reader')
                 ->whereRaw('article_reader.article_id = article.id')
                 ->where('article_reader.created_id', auth()->id());
             };
+
             if ($query['tab'] == 'done') {
                 $model->whereExists($reader);
             }
@@ -81,26 +92,10 @@ class ArticleController extends DefaultController
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
 
-            $header['cols'] = $cols;
-            $header['tabs'] = Article::$tabs;
-            $header['bys'] = Article::$bys;
-            $header['js'] = Grid::js($header);
-
-            $items = Grid::dataFilters($rows, $header, function($item) {
+            return Grid::dataFilters($rows, $header, function($item) {
                 return $item;
             });
-            return $items;
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Article::$tabs;
-        $header['bys'] = Article::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

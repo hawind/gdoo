@@ -30,7 +30,7 @@ class WidgetController extends DefaultController
             };
             $model->whereNotExists($reader);
 
-            $rows = $model->get(['id', 'title', 'created_at']);
+            $rows = $model->get(['id', 'name', 'created_at']);
             
             $json['total'] = sizeof($rows);
             $json['data'] = $rows;

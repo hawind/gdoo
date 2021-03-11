@@ -504,6 +504,11 @@ function getPanelHeight(v) {
             gridOptions.api.showLoadingOverlay();
             $.post(gridOptions.remoteDataUrl, remoteParams, function (res) {
 
+                if (typeof success === 'function') {
+                    success(res);
+                }
+                gridOptions.remoteSuccessed.call(gridOptions, res);
+
                 if (res.per_page) {
                     if (me.pagerDom === null) {
                         var div = me.api.gridCore.eGridDiv;
@@ -531,11 +536,6 @@ function getPanelHeight(v) {
                 gridOptions.api.setRowData(res.data);
                 gridOptions.generatePinnedBottomData();
 
-                if (typeof success === 'function') {
-                    success(res);
-                }
-                gridOptions.remoteSuccessed.call(gridOptions, res.data);
-
             }, 'json');
         }
 
@@ -548,17 +548,17 @@ function getPanelHeight(v) {
             gridOptions.api.showLoadingOverlay();
             $.post(gridOptions.remoteDataUrl, remoteParams, function (res) {
 
-                gridOptions.api.hideOverlay();
-                gridOptions.api.setRowData(res.data);
-                gridOptions.generatePinnedBottomData();
                 if (typeof success === 'function') {
                     success(res);
                 }
-                gridOptions.remoteSuccessed.call(gridOptions, res.data);
+                gridOptions.remoteSuccessed.call(gridOptions, res);
 
+                gridOptions.api.hideOverlay();
+                gridOptions.api.setRowData(res.data);
+                gridOptions.generatePinnedBottomData();
+            
             }, 'json');
         }
-
         return gridOptions;
     }
     window.agGridOptions = agGridOptions;

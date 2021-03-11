@@ -1550,6 +1550,9 @@ select.input-sm, select.form-group-sm .form-control {
 .form-controller .i-checks-disabled i {
     background-color: #eeeeee;
 }
+.form-controller .i-checks {
+    font-weight: normal;
+}
 
 @media all and (max-width: 767px) {
     .form-controller .control-label {

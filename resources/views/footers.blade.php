@@ -31,5 +31,6 @@
         var data = $(this).data();
         action[data.action]();
     });
+    
 })(jQuery);
 </script>

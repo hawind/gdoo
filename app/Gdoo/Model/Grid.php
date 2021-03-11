@@ -44,6 +44,7 @@ class Grid
                     }
                 }
             }
+            
             if ($item['province_id']) {
                 $region_ids[$item['province_id']] = $item['province_id'];
                 $region_ids[$item['city_id']] = $item['city_id'];
@@ -96,6 +97,15 @@ class Grid
             }
         }
 
+        $_header = $header;
+        unset($_header['columns']);
+        unset($_header['dialogs']);
+        unset($_header['join']);
+        unset($_header['js']);
+        unset($_header['raw_select']);
+        unset($_header['search']);
+        unset($_header['select']);
+
         $header['runs'] = $runs;
         $header['dialogs'] = $dialogs;
         $header['regions'] = $regions;
@@ -111,7 +121,7 @@ class Grid
         } else {
             $ret = collect(['data' => $rows]);
         }
-        $ret['header'] = $header;
+        $ret['header'] = $_header;
         return $ret;
     }
 
@@ -290,6 +300,25 @@ class Grid
         return $rows;
     }
 
+    // 重新排序join
+    public static function sortJoin($joins)
+    {
+        foreach ($joins as $k => $join) {
+            static::recursiveJoin($joins, $k);
+        }
+        array_multisort(array_column($joins, 5), SORT_ASC, $joins);
+        return $joins;
+    }
+
+    public static function recursiveJoin(&$joins, $parent_id = 0) {
+        foreach($joins as $k => &$join) {
+            if ($join[4] == $parent_id) {
+                $join[5] = $joins[$parent_id][5] + 1;
+                static::recursiveJoin($joins, $k);
+            }
+        }
+    }
+
     public static function fieldRelated($table, $row, &$join, &$select, &$index, &$column, &$search, $setting)
     {
         if ($row['data_type']) {
@@ -299,7 +328,7 @@ class Grid
             $_table = $data_link.'_'.$data_type;
 
             if ($row['type']) {
-                $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link];
+                $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link, $table, 1];
             }
 
             $field_count = mb_substr_count($data_field, ':');
@@ -314,8 +343,8 @@ class Grid
                 } else {
                     $_table = $row['field'].'_'.$_t1;
                 }
-                
-                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
+
+                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2, $data_link.'_'.$data_type, 1];
 
                 $index = $_table.'.'.$_t2;
 
@@ -461,7 +490,7 @@ class Grid
                 if ($_model['parent_id'] > 0) {
                     $select[$_model['table'].'.id'] = [];
                 }
-                $join[] = [$_model['table'], $_model['table'].'.'.$_model['relation'], '=', $master['table'].'.id'];
+                $join[] = [$_model['table'], $_model['table'].'.'.$_model['relation'], '=', $master['table'].'.id', $master['table'], 0];
             }
 
         } else {
@@ -549,7 +578,7 @@ class Grid
                 }
 
                 static::fieldRelated($_table, $row, $join, $select, $index, $column, $_search, $setting);
-                if ($row['is_link']) {
+                if (isset($left_fields[$field])) {
                     continue;
                 }
 
@@ -842,11 +871,8 @@ class Grid
 
         $res['select'] = $src_select;
         $res['raw_select'] = $raw_select;
+        $res['join'] = static::sortJoin($join);
 
-        //print_r($join);
-        //print_r($select);
-
-        $res['join'] = $join;
         $res['search'] = $search;
         $res['search_form'] = $search_form;
 

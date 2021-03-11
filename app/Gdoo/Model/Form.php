@@ -53,7 +53,7 @@ class Form
             $_table = $data_link.'_'.$data_type;
 
             if ($field['type']) {
-                $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link];
+                $join[$_table] = [$data_type.' as '.$_table, $_table.'.id', '=', $table.'.'.$data_link, $table, 1];
             }
 
             $links[$data_link][$data_link] = 'id';
@@ -76,7 +76,7 @@ class Form
                     $_table = $field['field'].'_'.$_t1;
                 }
                 
-                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2];
+                $join[$_table] = [$_t1.' as '.$_table, $_table.'.id', '=', $data_link.'_'.$data_type.'.'.$_v2, $data_link.'_'.$data_type, 1];
 
                 $index = $_table.'.'.$_t2;
                 if ($field['field'] == $data_link) {
@@ -141,6 +141,7 @@ class Form
         foreach($fields as $field) {
             static::fieldRelated($table, $field, $join, $select, $links);
         }
+        $join = Grid::sortJoin($join);
 
         $q = DB::table($table)
         ->where($table.'.id', (int)$options['id']);
@@ -1986,13 +1987,13 @@ class Form
         return hash_equals($sessionToken, $token);
     }
 
-    public static function dataFilter($table, $fields, $permissions, $master, $values)
+    public static function dataFilter($table, $fields, $permissions, $master, $values, &$dataFiles)
     {
         $permission = $permissions[$table];
 
-        foreach ($values as $key => $value) {
+        foreach ($fields as $field) {
             
-            $field = $fields[$key];
+            $key = $field['field'];
             $setting = $field['setting'];
             $value = $values[$key];
             $row = $permission[$key];
@@ -2042,7 +2043,11 @@ class Form
                     }
                     break;
                 case 'checkbox':
-                    $value = intval($value);
+                    if (is_array($value)) {
+                        $value = join(",", (array)$value);
+                    } else {
+                        $value = intval($value);
+                    }
                     break;
             }
             $values[$key] = $value;
@@ -2103,7 +2108,7 @@ class Form
 
                 // 格式化子表数据格式
                 foreach ($rows as $i => $row) {
-                    $rows[$i] = static::dataFilter($table, $fields, $permissions, $master, $row);
+                    $rows[$i] = static::dataFilter($table, $fields, $permissions, $master, $row, $dataFiles);
                 }
 
                 $datas[] = [
@@ -2115,7 +2120,7 @@ class Form
                 ];
             } else {
                 // 处理主表的字段格式
-                $gets[$t] = static::dataFilter($table, $fields, $permissions, $master, $gets[$t]);
+                $gets[$t] = static::dataFilter($table, $fields, $permissions, $master, $gets[$t], $dataFiles);
             }
         }
 
