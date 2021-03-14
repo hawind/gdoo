@@ -12,13 +12,7 @@ var config = gdoo.grids[table];
 var action = config.action;
 var search = config.search;
 (function ($) {
-
     var options = new agGridOptions();
-
-    // 自定义搜索方法
-    search.searchInit = function (e) {
-        var self = this;
-    }
 
     config.cols[0]['hide'] = true;
     config.cols[1]['hide'] = true;

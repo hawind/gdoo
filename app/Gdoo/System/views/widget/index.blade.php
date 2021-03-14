@@ -15,11 +15,6 @@
 
         action.dialogType = 'dialog';
 
-        // 自定义搜索方法
-        search.searchInit = function (e) {
-            var self = this;
-        }
-
         action.refresh = function() {
             var me = this;
             var loading = layer.msg('部件更新中...', {

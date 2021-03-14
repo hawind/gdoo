@@ -315,7 +315,7 @@ class MaterialController extends DefaultController
                 $rows['total'] = $model->count();
                 $rows['data']  = $model->get();
             }
-            return response()->json($rows);
+            return $rows;
         }
 
         return $this->render([

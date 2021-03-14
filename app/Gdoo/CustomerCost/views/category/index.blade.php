@@ -13,11 +13,6 @@
         var action = config.action;
         var search = config.search;
 
-        // 自定义搜索方法
-        search.searchInit = function (e) {
-            var self = this;
-        }
-        
         var options = new agGridOptions();
         var gridDiv = document.querySelector("#{{$header['table']}}-grid");
         gridDiv.style.height = getPanelHeight(48);

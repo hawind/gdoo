@@ -111,7 +111,7 @@ class TypeController extends DefaultController
                 $item['text'] = $item['name'];
                 return $item;
             });
-            return response()->json($items);
+            return $items;
         }
         $query['form_id'] = $query['jqgrid'] == '' ? $query['id'] : $query['jqgrid'];
         return $this->render([

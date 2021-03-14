@@ -106,10 +106,7 @@ class LocationController extends DefaultController
             $model->select($header['select']);
 
             $rows = $model->paginate($query['limit']);
-            $items = Grid::dataFilters($rows, $header, function($item) {
-                return $item;
-            });
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header);
         }
 
         return $this->render([
@@ -145,10 +142,7 @@ class LocationController extends DefaultController
             $model->select($header['select']);
 
             $rows = $model->paginate($query['limit']);
-            $items = Grid::dataFilters($rows, $header, function($item) {
-                return $item;
-            });
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header);
         }
 
         return $this->render([
@@ -167,7 +161,7 @@ class LocationController extends DefaultController
             ->where('warehouse_location.warehouse_id', $warehouse_id)
             ->where('warehouse_location.status', 1)
             ->orderBy('warehouse_location.sort', 'asc');
-            return response()->json($model->get());
+            return $model->get();
         }
     }
     

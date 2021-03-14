@@ -1,66 +1,50 @@
-<div id="{{$header['master_table']}}-controller">
+<div class="vue-list-page" id="{{$header['master_table']}}-controller">
     <div class="panel no-border">
-        @include('headers')
+        <div class="panel-header">
+            @include('headers2')
+        </div>
         <div class='list-jqgrid'>
             <div id="{{$header['master_table']}}-grid" style="width:100%;" class="ag-theme-balham"></div>
         </div>
     </div>
 </div>
 
-{{$header["js"]}}
-
 <script>
+Vue.createApp({
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
 
-(function ($) {
-    var header = {{json_encode($header, JSON_UNESCAPED_UNICODE)}};
+        var config = new gdoo.grid(table);
 
-    var table = '{{$header["master_table"]}}';
-    var config = gdoo.grids[table];
-    var action = config.action;
-    var search = config.search;
+        var grid = config.grid;
+        grid.remoteDataUrl = '{{url()}}';
+        grid.onRowDoubleClicked = function (params) {
+            if (params.node.rowPinned) {
+                return;
+            }
+            if (params.data == undefined) {
+                return;
+            }
+            if (params.data.master_id > 0) {
+                action.show(params.data);
+            }
+        };
 
-    action.dialogType = 'layer';
+        var action = config.action;
+        action.dialogType = 'layer';
 
-    // 自定义搜索方法
-    search.searchInit = function (e) {
-        var self = this;
+        var setup = config.setup;
+
+        Vue.onMounted(function() {
+            var gridDiv = document.querySelector("#" + table + "-grid");
+            gridDiv.style.height = getPanelHeight(136);
+            new agGrid.Grid(gridDiv, grid);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
+        });
+        return setup;
     }
-    
-    var options = new agGridOptions();
-    var gridDiv = document.querySelector("#{{$header['master_table']}}-grid");
-    gridDiv.style.height = getPanelHeight(48);
-
-    options.remoteDataUrl = '{{url()}}';
-    options.remoteParams = search.advanced.query;
-    options.columnDefs = config.cols;
-    options.onRowDoubleClicked = function (params) {
-        if (params.node.rowPinned) {
-            return;
-        }
-        if (params.data == undefined) {
-            return;
-        }
-        if (params.data.master_id > 0) {
-            action.show(params.data);
-        }
-    };
-
-    new agGrid.Grid(gridDiv, options);
-
-    // 读取数据
-    options.remoteData({page: 1});
-
-    // 绑定自定义事件
-    var $gridDiv = $(gridDiv);
-    $gridDiv.on('click', '[data-toggle="event"]', function () {
-        var data = $(this).data();
-        if (data.master_id > 0) {
-            action[data.action](data);
-        }
-    });
-    config.grid = options;
-
-})(jQuery);
+}).mount("#{{$header['master_table']}}-controller");
 </script>
-
-@include('footers')

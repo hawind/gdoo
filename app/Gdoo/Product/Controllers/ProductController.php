@@ -163,17 +163,10 @@ class ProductController extends DefaultController
 
             if ($query['suggest']) {
                 $rows = $model->limit(15)->get();
-                $data = Grid::dataFilters($rows, $header, function($item) {
-                    return $item;
-                });
-                $items['data'] = $data;
             } else {
                 $rows = $model->paginate($query['limit']);
-                $items = Grid::dataFilters($rows, $header, function($item) {
-                    return $item;
-                });
             }
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header);
         }
         return $this->render([
             'search' => $search,
@@ -246,17 +239,10 @@ class ProductController extends DefaultController
 
             if ($query['suggest']) {
                 $rows = $model->limit(15)->get();
-                $data = Grid::dataFilters($rows, $header, function($item) {
-                    return $item;
-                });
-                $items['data'] = $data;
             } else {
                 $rows = $model->paginate($query['limit']);
-                $items = Grid::dataFilters($rows, $header, function($item) {
-                    return $item;
-                });
             }
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header);
         }
         return $this->render([
             'search' => $search,
@@ -270,7 +256,7 @@ class ProductController extends DefaultController
             $rows = $model->get(['*', 'name as text'])->toArray();
             $rows = array_nest($rows);
             $rows = array_merge($rows);
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
     }
     

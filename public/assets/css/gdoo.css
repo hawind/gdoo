@@ -1878,3 +1878,14 @@ select.input-sm, select.form-group-sm .form-control {
 ::-webkit-scrollbar-corner {
 	background-color: #fafafa
 }
+
+/** vue 列表页样式定义 */
+.vue-list-page {
+    display: none;
+}    
+.vue-list-page .search-inline-form .form-group {
+    margin-left: 4px;
+}
+.vue-list-page .btn-group {
+    margin-left: 4px;
+}

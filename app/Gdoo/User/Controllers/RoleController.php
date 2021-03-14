@@ -205,7 +205,7 @@ class RoleController extends DefaultController
                 $row['sid'] = 'r'.$row['id'];
                 $data[] = $row;
             }
-            return response()->json(['data' => $data]);
+            return ['data' => $data];
         }
         return $this->render([
             'search' => $search,

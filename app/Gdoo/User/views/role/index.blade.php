@@ -16,11 +16,6 @@
             top.addTab('user/role/config?role_id=' + data.master_id, 'role_config', '权限配置');
         }
 
-        // 自定义搜索方法
-        search.searchInit = function (e) {
-            var self = this;
-        }
-
         var grid = new agGridOptions();
         var gridDiv = document.querySelector("#{{$header['table']}}-grid");
         gridDiv.style.height = getPanelHeight(48);

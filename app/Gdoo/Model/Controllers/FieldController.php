@@ -419,7 +419,7 @@ class FieldController extends DefaultController
     public function getEnumsAction()
     {
         $enums = Option::where('parent_id', 0)->orderBy('sort', 'asc')->orderBy('id', 'asc')->get();
-        return response()->json($enums);
+        return $enums;
     }
 
     public function deleteAction()

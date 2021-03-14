@@ -121,8 +121,7 @@ class SupplierController extends DefaultController
             }
 
             $model->select($header['select']);
-            $rows = $model->paginate($query['limit']);
-            return response()->json($rows);
+            return $model->paginate($query['limit']);
         }
         return $this->render([
             'search' => $search,

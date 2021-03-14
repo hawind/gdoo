@@ -70,7 +70,7 @@ class PlanController extends DefaultController
             }
             $rows = ProduceService::getPlanDetail($sdate, $edate, $query['warehouse_id'], $query['category_id'], $query['type']);
             $json = ['data' => $rows, 'status' => true];
-            return response()->json($json);
+            return $json;
         }
 
         $header = [
@@ -205,7 +205,7 @@ class PlanController extends DefaultController
                 });
             }
             $json = ['data' => $rows, 'status' => true];
-            return response()->json($json);
+            return $json;
         }
 
         $search['table'] = 'produce_plan';
@@ -298,7 +298,7 @@ class PlanController extends DefaultController
             }
             $rows = ProduceService::getPlanDetail($sdate, $edate, 0, $query['category_id'], $query['type']);
             $json = ['columns' => $columns, 'data' => $rows, 'status' => true];
-            return response()->json($json);
+            return $json;
         }
 
         $header = [

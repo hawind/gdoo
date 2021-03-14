@@ -99,7 +99,6 @@ class CategoryController extends DefaultController
             ['text','product_category.id','ID'],
         ]);
         $query = $search['query'];
-
         $type = Request::get('type', 1);
         if (Request::method() == 'POST') {
             $model = ProductCategory::orderBy('lft', 'asc');
@@ -110,7 +109,7 @@ class CategoryController extends DefaultController
                 $data[] = $row;
             }
             $json = ['data' => $data];
-            return response()->json($json);
+            return $json;
         }
 
         return $this->render(array(

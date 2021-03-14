@@ -5,13 +5,11 @@
     var search = config.search;
     search.advanced.el = $('#' + table + '-search-form-advanced').searchForm({
         data: search.forms,
-        advanced: true,
-        init: search.searchInit
+        advanced: true
     });
 
     search.simple.el = $('#' + table + '-search-form').searchForm({
-        data: search.forms,
-        init: search.searchInit
+        data: search.forms
     });
     search.simple.el.find('#search-submit').on('click', function() {
         var query = search.simple.el.serializeArray();

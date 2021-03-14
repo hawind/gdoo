@@ -7,7 +7,7 @@ class Article extends BaseModel
     protected $table = 'article';
 
     public static $tabs = [
-        'name'  => 'tab',
+        'name' => 'tab',
         'items' => [
             ['url' => 'article/article/index', 'name' => '未读', 'value' => 'unread'],
             ['url' => 'article/article/index', 'name' => '已读', 'value' => 'done'],
@@ -16,7 +16,7 @@ class Article extends BaseModel
     ];
 
     public static $bys = [
-        'name'  => 'by',
+        'name' => 'by',
         'items' => [
             ['value' => '', 'name' => '全部'],
             ['value' => 'divider'],

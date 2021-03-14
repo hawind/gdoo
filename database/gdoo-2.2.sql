@@ -11,7 +11,7 @@
  Target Server Version : 100508
  File Encoding         : 65001
 
- Date: 12/03/2021 07:53:50
+ Date: 15/03/2021 06:09:44
 */
 
 SET NAMES utf8mb4;
@@ -333,8 +333,8 @@ CREATE TABLE `article`  (
 -- ----------------------------
 -- Records of article
 -- ----------------------------
-INSERT INTO `article` VALUES (23, '测试公告', NULL, NULL, '<p>测试公告</p>', NULL, 0, 'd13,u1', '人事部,系统管理员', 0, '系统管理员', 1602514708, 1602514680, 1, 1, '系统管理员', 1614291134);
-INSERT INTO `article` VALUES (24, '测试新闻', NULL, NULL, '<p>测试新闻</p>', '测试新闻', NULL, 'u1', '系统管理员', 0, '系统管理员', 1605481210, 1605481200, 1, 1, '系统管理员', 1614291110);
+INSERT INTO `article` VALUES (23, '测试公告2', NULL, NULL, '<p>测试公告</p>', NULL, 0, 'd13,u1', '人事部,系统管理员', 0, '系统管理员', 1602514680, 1602514680, 1, 1, '系统管理员', 1615757694);
+INSERT INTO `article` VALUES (24, '测试新闻2', NULL, NULL, '<p>测试新闻</p>', '测试新闻', NULL, 'u1', '系统管理员', 0, '系统管理员', 1602514680, 1605481200, 1, 1, '系统管理员', 1615757685);
 
 -- ----------------------------
 -- Table structure for article_reader
@@ -934,7 +934,7 @@ CREATE TABLE `customer`  (
 -- ----------------------------
 -- Records of customer
 -- ----------------------------
-INSERT INTO `customer` VALUES (1, '11', '111', NULL, '111', '01001', '王二小食品有限公司', 1, 42, NULL, NULL, NULL, NULL, NULL, NULL, 1594147787, '系统管理员', '系统管理员', 1615310091, NULL, 1, 1, 1, 217, 229, 231, '0', '11', '12', NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, NULL, 27, 1, '2020-09-18', 0, 144, 1, 1);
+INSERT INTO `customer` VALUES (1, '11', '111', NULL, '111', '01001', '王二小食品有限公司', 1, 42, NULL, NULL, NULL, NULL, NULL, NULL, 1594147787, '系统管理员', '系统管理员', 1615757797, NULL, 1, 1, 1, 2249, 2271, 2272, '0', '11', '12', '213', 0, 0, '33', NULL, NULL, NULL, NULL, NULL, NULL, 2, NULL, 1, 1, '2020-09-18', 0, 149, 1, 1);
 
 -- ----------------------------
 -- Table structure for customer_apply
@@ -1451,14 +1451,15 @@ CREATE TABLE `customer_order`  (
   INDEX `idx_customer_order_status`(`status`) USING BTREE,
   INDEX `idx_customer_order_tax_id`(`tax_id`) USING BTREE,
   INDEX `idx_customer_order_freight_short_logistics_id`(`freight_short_logistics_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1005 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1006 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_order
 -- ----------------------------
 INSERT INTO `customer_order` VALUES (1, 1, 1, 'XSDD202007080001', NULL, '系统管理员', 1611703414, 1594147800, '系统管理员', NULL, 1, 1, 1, 1, '11', '15182223008', '1', '121212', '1', '15182223008', NULL, 1, '2020-09-18', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
 INSERT INTO `customer_order` VALUES (2, 1, 2, 'XSDD202009170001', NULL, '系统管理员', 1614280680, 1610840160, '系统管理员', NULL, 1, 1, 1, 1, '212', '12345678900', '1', '112', '1', '1', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `customer_order` VALUES (1004, 1, 0, 'XSDD202010120003', NULL, '系统管理员', 1615503913, 1613142720, '系统管理员', NULL, 2, 2, 1, 1, '777', '12345678901', '028381564', '眉山', '辉丰股份', '12121515465', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `customer_order` VALUES (1004, 1, 0, 'XSDD202010120003', NULL, '系统管理员', 1615757826, 1613142720, '系统管理员', NULL, 2, 2, 1, 1, '777', '12345678901', '028381564', '眉山', '辉丰股份', '12121515465', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `customer_order` VALUES (1005, 1, 0, 'XSDD202103150001', NULL, NULL, NULL, 1615757880, '系统管理员', NULL, 1, 1, 1, NULL, '111', '15182223008', '11', '111', '111', '15182223008', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_order_data
@@ -1512,7 +1513,7 @@ CREATE TABLE `customer_order_data`  (
   INDEX `idx_customer_order_data_ref_sale_id`(`ref_sale_id`) USING BTREE,
   INDEX `idx_customer_order_data_ref_sale_data_id`(`ref_sale_data_id`) USING BTREE,
   INDEX `idx_customer_order_data_fee_category_id`(`fee_category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1011 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_order_data
@@ -1527,8 +1528,9 @@ INSERT INTO `customer_order_data` VALUES (7, 1, 1437, 150.00, 1, NULL, NULL, '�
 INSERT INTO `customer_order_data` VALUES (8, 2, 20409, 92.00, 1, NULL, NULL, '系统管理员', 1614280680, 1600299444, '系统管理员', 10.00, NULL, 920.00, 0, 0, NULL, 0, 1, 1, 7.20, NULL, 0.00, 0, 10.00, 72.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
 INSERT INTO `customer_order_data` VALUES (9, 2, 20410, 92.00, 1, NULL, NULL, '系统管理员', 1614280680, 1600299444, '系统管理员', 10.00, NULL, 920.00, 0, 0, NULL, 0, 1, 1, 7.20, NULL, 0.00, 0, 10.00, 72.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
 INSERT INTO `customer_order_data` VALUES (10, 2, 2164, 19.00, 1, NULL, NULL, '系统管理员', 1614280680, 1600299444, '系统管理员', 10.00, NULL, 190.00, 0, 0, NULL, 0, 1, 1, 0.00, NULL, 0.00, 0, 10.00, 0.00, NULL, NULL, 0, NULL, 0, 0, 0, NULL, NULL);
-INSERT INTO `customer_order_data` VALUES (1007, 1004, 2166, 0.50, 1, NULL, NULL, '系统管理员', 1615503913, 1602515605, '系统管理员', 5.00, NULL, 2.50, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, 0, 5.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
-INSERT INTO `customer_order_data` VALUES (1009, 1004, 1600, 130.00, 1, NULL, NULL, '系统管理员', 1615503913, 1611531575, '系统管理员', 10.00, NULL, 1300.00, NULL, NULL, NULL, NULL, 1, 1, 8.75, NULL, 0.00, NULL, 10.00, 87.50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `customer_order_data` VALUES (1007, 1004, 2166, 0.50, 1, NULL, NULL, '系统管理员', 1615757826, 1602515605, '系统管理员', 5.00, NULL, 2.50, NULL, NULL, NULL, NULL, 1, 1, 0.00, NULL, 0.00, 0, 5.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `customer_order_data` VALUES (1009, 1004, 1600, 130.00, 1, NULL, NULL, '系统管理员', 1615757826, 1611531575, '系统管理员', 10.00, NULL, 1300.00, NULL, NULL, NULL, NULL, 1, 1, 8.75, NULL, 0.00, NULL, 10.00, 87.50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `customer_order_data` VALUES (1010, 1005, 1600, 130.00, 1, NULL, NULL, NULL, NULL, 1615757949, '系统管理员', 12.00, NULL, 1560.00, NULL, NULL, NULL, NULL, 1, NULL, 8.75, NULL, NULL, NULL, 12.00, 105.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_order_type
@@ -4028,7 +4030,7 @@ INSERT INTO `model_permission` VALUES (27, '新建', 'create,edit', '{\"warehous
 INSERT INTO `model_permission` VALUES (28, '新建', 'create,edit', '{\"product_category\":{\"name\":{\"w\":\"1\",\"v\":[\"required\"]},\"code\":{\"w\":\"1\"},\"parent_id\":{\"w\":\"1\"},\"sort\":{\"w\":\"1\"},\"status\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '', 0, 1576165753, 36);
 INSERT INTO `model_permission` VALUES (29, '新建', 'create', '{\"customer\":{\"name\":{\"w\":\"1\",\"v\":[\"required\"]},\"password\":{\"w\":\"1\"},\"region3_id\":{\"w\":\"1\"},\"region2_id\":{\"w\":\"1\"},\"region_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"contact_id\":{\"w\":\"1\"},\"head_name\":{\"w\":\"1\"},\"head_phone\":{\"w\":\"1\"},\"head_birthday\":{\"w\":\"1\"},\"manage_name\":{\"w\":\"1\"},\"manage_phone\":{\"w\":\"1\"},\"manage_weixin\":{\"w\":\"1\"},\"finance_name\":{\"w\":\"1\"},\"finance_phone\":{\"w\":\"1\"},\"cost_name\":{\"w\":\"1\"},\"cost_phone\":{\"w\":\"1\"},\"attachment\":{\"w\":\"1\"},\"tel\":{\"w\":\"1\"},\"fax\":{\"w\":\"1\"},\"email\":{\"w\":\"1\"},\"address\":{\"w\":\"1\"},\"warehouse_address\":{\"w\":\"1\"},\"warehouse_contact\":{\"w\":\"1\"},\"warehouse_phone\":{\"w\":\"1\"},\"warehouse_tel\":{\"w\":\"1\"},\"warehouse_size\":{\"w\":\"1\"},\"region\":{\"w\":\"1\"},\"province_id\":{\"w\":\"1\"},\"city_id\":{\"w\":\"1\"},\"county_id\":{\"w\":\"1\"},\"class2_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"type_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"grade_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"is_allocate\":{\"w\":\"1\"},\"is_direct\":{\"w\":\"1\"},\"general_taxpayer\":{\"w\":\"1\"},\"class_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"department_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"remark\":{\"w\":\"1\"},\"status\":{\"w\":\"1\",\"v\":[\"required\"]}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1589297434, 27);
 INSERT INTO `model_permission` VALUES (30, '新建', 'create,edit', '{\"customer_contact\":{\"code\":{\"w\":\"1\",\"v\":[\"required\"]},\"name\":{\"w\":\"1\",\"v\":[\"required\"]},\"customer_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"password\":{\"w\":\"1\"},\"phone\":{\"w\":\"1\",\"v\":[\"required\"]},\"birthday\":{\"w\":\"1\"},\"position\":{\"w\":\"1\"},\"address\":{\"w\":\"1\"},\"remark\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1592674110, 39);
-INSERT INTO `model_permission` VALUES (31, '新建', 'create', '{\"customer_order\":{\"sn\":{\"w\":\"1\",\"v\":[\"required\"],\"m\":\"1\"},\"created_at\":{\"w\":\"1\",\"v\":[\"required\"],\"m\":\"1\"},\"customer_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"warehouse_contact\":{\"w\":\"1\",\"v\":[\"required\"]},\"warehouse_phone\":{\"w\":\"1\",\"v\":[\"required\",\"regex:\\/^(1)[0-9]{10}$\\/\"]},\"warehouse_tel\":{\"w\":\"1\",\"v\":[\"required\"]},\"warehouse_address\":{\"w\":\"1\",\"v\":[\"required\"]},\"found_contact\":{\"w\":\"1\",\"v\":[\"required\"]},\"found_phone\":{\"w\":\"1\",\"v\":[\"required\"]},\"type_id\":{\"v\":[\"required\"]},\"export_country\":{\"w\":\"1\"},\"plan_delivery_dt\":{\"w\":\"1\"},\"pay_dt\":{\"w\":\"1\"},\"tax_type\":{\"w\":\"1\",\"v\":[\"required\"]},\"tax_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"attachment\":{\"w\":\"1\"},\"created_by\":{\"w\":\"1\",\"v\":[\"required\"],\"m\":\"1\"},\"remark\":{\"w\":\"1\"}},\"customer_order_data\":{\"@option\":{\"w\":\"1\",\"d\":\"1\"},\"type_id\":{\"w\":\"1\"},\"is_gift\":{\"w\":\"1\"},\"product_name\":{\"w\":\"1\"},\"quantity\":{\"w\":\"1\",\"v\":[\"required\",\"numeric_than:0\"]},\"delivery_quantity\":{\"w\":\"1\",\"v\":[\"required\",\"numeric_than:0\"]},\"price\":{\"w\":\"1\"},\"money\":{\"w\":\"1\"},\"batch_sn\":{\"w\":\"1\"},\"customer_stock\":{\"w\":\"1\"},\"customer_stock_dt\":{\"w\":\"1\"},\"remark\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1608682520, 23);
+INSERT INTO `model_permission` VALUES (31, '新建', 'create', '{\"customer_order\":{\"sn\":{\"w\":\"1\",\"v\":[\"required\"],\"m\":\"1\"},\"created_at\":{\"w\":\"1\",\"v\":[\"required\"],\"m\":\"1\"},\"customer_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"warehouse_contact\":{\"w\":\"1\",\"v\":[\"required\"]},\"warehouse_phone\":{\"w\":\"1\",\"v\":[\"required\",\"regex:\\/^(1)[0-9]{10}$\\/\"]},\"warehouse_tel\":{\"w\":\"1\",\"v\":[\"required\"]},\"warehouse_address\":{\"w\":\"1\",\"v\":[\"required\"]},\"found_contact\":{\"w\":\"1\",\"v\":[\"required\"]},\"found_phone\":{\"w\":\"1\",\"v\":[\"required\"]},\"type_id\":{\"v\":[\"required\"]},\"export_country\":{\"w\":\"1\"},\"plan_delivery_dt\":{\"w\":\"1\"},\"pay_dt\":{\"w\":\"1\"},\"tax_type\":{\"w\":\"1\",\"v\":[\"required\"]},\"tax_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"attachment\":{\"w\":\"1\"},\"created_by\":{\"w\":\"1\",\"v\":[\"required\"],\"m\":\"1\"},\"remark\":{\"w\":\"1\"}},\"customer_order_data\":{\"@option\":{\"w\":\"1\",\"d\":\"1\"},\"type_id\":{\"w\":\"1\"},\"is_gift\":{\"w\":\"1\"},\"product_name\":{\"w\":\"1\"},\"quantity\":{\"w\":\"1\",\"v\":[\"required\",\"numeric_than:0\"]},\"delivery_quantity\":{\"w\":\"1\",\"v\":[\"required\",\"numeric_than:0\"]},\"price\":{\"w\":\"1\"},\"money\":{\"w\":\"1\"},\"batch_sn\":{\"w\":\"1\"},\"customer_stock\":{\"w\":\"1\"},\"customer_stock_dt\":{\"w\":\"1\"},\"remark\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1615758267, 23);
 INSERT INTO `model_permission` VALUES (32, '新建', 'create,edit', '{\"department\":{\"name\":{\"w\":\"1\",\"v\":[\"required\"]},\"code\":{\"w\":\"1\"},\"parent_id\":{\"w\":\"1\"},\"manager\":{\"w\":\"1\"},\"sort\":{\"w\":\"1\"},\"remark\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1591608927, 31);
 INSERT INTO `model_permission` VALUES (33, '新建', 'create,edit', '{\"role\":{\"name\":{\"w\":\"1\",\"v\":[\"required\"]},\"code\":{\"w\":\"1\"},\"parent_id\":{\"w\":\"1\"},\"access\":{\"w\":\"1\",\"v\":[\"required\"]},\"sort\":{\"w\":\"1\"},\"remark\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1614412844, 32);
 INSERT INTO `model_permission` VALUES (34, '新建', 'create,edit', '{\"product\":{\"images\":{\"w\":\"1\"},\"name\":{\"w\":\"1\",\"v\":[\"required\"]},\"spec\":{\"w\":\"1\"},\"code\":{\"w\":\"1\"},\"barcode\":{\"w\":\"1\"},\"category_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"unit_id\":{\"w\":\"1\",\"v\":[\"required\"]},\"net_weight\":{\"w\":\"1\"},\"weight\":{\"w\":\"1\",\"v\":[\"required\"]},\"price1\":{\"w\":\"1\"},\"price2\":{\"w\":\"1\"},\"price5\":{\"w\":\"1\"},\"price3\":{\"w\":\"1\"},\"price4\":{\"w\":\"1\"},\"scale_quantity\":{\"w\":\"1\"},\"mini_quantity\":{\"w\":\"1\"},\"department_id\":{\"w\":\"1\"},\"is_produce_plan\":{\"w\":\"1\"},\"is_export\":{\"w\":\"1\"},\"is_purchase\":{\"w\":\"1\"},\"purchase_price\":{\"w\":\"1\"},\"purchase_tax_rate\":{\"w\":\"1\"},\"is_sale\":{\"w\":\"1\"},\"is_freight\":{\"w\":\"1\"},\"carton_barcode\":{\"w\":\"1\"},\"carton_size\":{\"w\":\"1\"},\"min_quantity\":{\"w\":\"1\"},\"freight_price\":{\"w\":\"1\"},\"product_type\":{\"w\":\"1\"},\"material_type\":{\"w\":\"1\"},\"remark\":{\"w\":\"1\"},\"sort\":{\"w\":\"1\"},\"status\":{\"w\":\"1\"}}}', 0, 1, 'all', '全体人员', 0, 1, NULL, '系统管理员', 0, 1614446102, 26);
@@ -4279,6 +4281,7 @@ INSERT INTO `model_seq_no` VALUES (17, '2020', 2);
 INSERT INTO `model_seq_no` VALUES (23, '20200708', 1);
 INSERT INTO `model_seq_no` VALUES (23, '20200917', 1);
 INSERT INTO `model_seq_no` VALUES (23, '20201012', 3);
+INSERT INTO `model_seq_no` VALUES (23, '20210315', 1);
 INSERT INTO `model_seq_no` VALUES (43, '20201023', 1);
 INSERT INTO `model_seq_no` VALUES (43, '20210301', 1);
 INSERT INTO `model_seq_no` VALUES (46, '20201023', 1);
@@ -6207,7 +6210,7 @@ CREATE TABLE `promotion`  (
 -- ----------------------------
 -- Records of promotion
 -- ----------------------------
-INSERT INTO `promotion` VALUES (1, 1, 1, 2, '2020-10-19', '2020-10-20', 1577838780, '系统管理员', 1613846057, '系统管理员', NULL, NULL, NULL, 'CXSQ20200001', NULL, 0, '21', NULL, '12', 10.00, 1000.00, '100', '123', NULL, 1000.00, NULL, NULL, '1', '2', 0, 1000.00, 0, '1000', '系统管理员 2021-02-20 18:32', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '212', 0, 1000.00, 100.00, 0, NULL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `promotion` VALUES (1, 1, 1, 2, '2020-10-19', '2020-10-20', 1577838780, '系统管理员', 1615508222, '系统管理员', NULL, NULL, NULL, 'CXSQ20200001', NULL, 0, '21', NULL, '12', 10.00, 1000.00, '100', '123', NULL, 1000.00, NULL, NULL, '1', '2', 0, 1000.00, 0, '1000', '系统管理员 2021-03-12 08:17', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '212', 0, 1000.00, 100.00, 0, NULL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, NULL, NULL, NULL, NULL);
 INSERT INTO `promotion` VALUES (2, 1, 1, 1, '2020-10-23', '2020-10-29', 1603460700, '系统管理员', 1603460784, '系统管理员', NULL, NULL, NULL, 'CXSQ20200002', NULL, NULL, '几个开放的几句话', NULL, '购房贷款计划', 0.00, 0.00, NULL, NULL, NULL, 0.00, NULL, '2020-10-23', '028-3815263', '13547652321', 0, 10.00, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 10.00, 100.00, 1, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
@@ -6241,7 +6244,7 @@ CREATE TABLE `promotion_data`  (
 -- ----------------------------
 -- Records of promotion_data
 -- ----------------------------
-INSERT INTO `promotion_data` VALUES (1, 1, NULL, 1603102979, '系统管理员', '系统管理员', 1613846057, 60.00, 2158, 10.00, 0.00, 6.00, 0, 1, 1, NULL, NULL);
+INSERT INTO `promotion_data` VALUES (1, 1, NULL, 1603102979, '系统管理员', '系统管理员', 1615508222, 60.00, 2158, 10.00, 0.00, 6.00, 0, 1, 1, NULL, NULL);
 INSERT INTO `promotion_data` VALUES (2, 2, NULL, 1603460784, '系统管理员', '系统管理员', 1603460784, 0.00, 20158, 2.00, NULL, 0.00, NULL, 1, 1, NULL, NULL);
 
 -- ----------------------------
@@ -10342,7 +10345,7 @@ CREATE TABLE `stock_delivery`  (
 -- Records of stock_delivery
 -- ----------------------------
 INSERT INTO `stock_delivery` VALUES (1, 1, 1, '系统管理员', 1615309945, 'FHDJ202010230001', 1603464188, '系统管理员', NULL, 42, '2021-02-25', 1, 1, '111', '11', '11', '111', '回单付，送货', 1, 1, 2.00, 0.00, 0.0, 0.0, 29, NULL, 0.00, 0.00, '02861791099', 2, NULL, 0.00, NULL, NULL, NULL, NULL, NULL, '系统管理员', '2021-03-10 01:12:25', 1, 1, NULL);
-INSERT INTO `stock_delivery` VALUES (2, 1, 0, '系统管理员', 1615242204, 'FHDJ202103010001', 1614539765, '系统管理员', NULL, NULL, '2021-03-01', 1, 4, '111222', '11', '11', '111', '回单付，送货', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, NULL);
+INSERT INTO `stock_delivery` VALUES (2, 1, 0, '系统管理员', 1615759533, 'FHDJ202103010001', 1614539765, '系统管理员', NULL, NULL, '2021-03-01', 1, 4, '111222', '11', '11', '111', '回单付，送货', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, NULL);
 
 -- ----------------------------
 -- Table structure for stock_delivery_data
@@ -10407,7 +10410,7 @@ CREATE TABLE `stock_delivery_data`  (
 -- ----------------------------
 INSERT INTO `stock_delivery_data` VALUES (1, 1, 20409, 92.00, NULL, NULL, '系统管理员', 1614192380, 1603464188, '系统管理员', 2.00, 184.00, 1, 7.20, NULL, NULL, NULL, NULL, '210225123', '2021-02-25', 0.00, 14.40, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `stock_delivery_data` VALUES (2, 1, 20410, 50.00, NULL, NULL, '系统管理员', 1614192380, 1614192227, '系统管理员', 10.00, 500.00, 1, 7.20, NULL, NULL, NULL, NULL, '210225123', '2021-02-25', 0.00, 72.00, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `stock_delivery_data` VALUES (3, 2, 20410, 92.00, NULL, NULL, '系统管理员', 1615242204, 1614539765, '系统管理员', 0.00, 0.00, 1, 7.20, NULL, NULL, NULL, NULL, '210225123', '2021-02-25', 0.00, 0.00, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `stock_delivery_data` VALUES (3, 2, 20410, 92.00, NULL, NULL, '系统管理员', 1615759533, 1614539765, '系统管理员', 0.00, 0.00, 1, 7.20, NULL, NULL, NULL, NULL, '210225123', '2021-02-25', 0.00, 0.00, 139, NULL, NULL, NULL, 1, 1, '99', '小菜', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for stock_direct
@@ -11043,7 +11046,7 @@ CREATE TABLE `user`  (
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES (1, 'admin', '系统管理员', 20, 1, 3, 0, 0, 1, 0, '', 0, NULL, 'PiyRVfaKAUtaUG1IIsyvHldR5rEI0Gd7enLeRZlEwUtM7yBfnUUShYMD9VOb', 1, 1, '2020-10-05', 0, '', '', 3, '028-12345678', '', '', '24', '', 1, '$2y$10$DFN0jlZa0x3IGcZAkolJTuYMnJpOnX78L9XG2Q5N2Y32FuAST8UwO', '123456', 'fvzone@qq.com', 0, '0', 0, 'primary', '系统管理员', 1615241969, 0, '', 0, NULL, '', '15182223008', 24);
-INSERT INTO `user` VALUES (2, '01001', '王二小食品有限公司', 27, 2, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1594147787, '系统管理员', NULL, NULL, '系统管理员', 1612836393, NULL, NULL, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `user` VALUES (2, '01001', '王二小食品有限公司', 1, 2, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1594147787, '系统管理员', NULL, NULL, '系统管理员', 1615757797, NULL, NULL, 1, NULL, NULL, '213', NULL);
 INSERT INTO `user` VALUES (3, 'zhaoyun', '赵云', 3, 1, 0, NULL, NULL, 1, NULL, NULL, NULL, NULL, 'jzzOIclqiE5180Lj27Ir8fEkP7THFHhHKDuzj8IlYWd8025ROeDJRCflDZAs', 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$qkonB.DXNaXvAzNQinz9UeXLAmIybudyYCN4FWiTf6JyeQk4BXT8W', '123456', NULL, 1601234908, '系统管理员', NULL, 'blue2', '系统管理员', 1613464164, NULL, NULL, 1, NULL, NULL, '15182223008', 0);
 INSERT INTO `user` VALUES (4, '关羽', '关羽', 19, 83, 0, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$a/sqD3GeTkC5UkB4BDyOvu67uQIoGm1sRLVS5TFyQsePC0qm0cT8m', '123456', NULL, 1601369401, '系统管理员', NULL, NULL, '系统管理员', 1614397204, NULL, NULL, 1, NULL, NULL, '15182223008', 0);
 INSERT INTO `user` VALUES (5, '52347', '刘洋', NULL, 95, NULL, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1603204082, '系统管理员', NULL, NULL, '系统管理员', 1612575522, NULL, NULL, NULL, NULL, NULL, '15879653821', NULL);

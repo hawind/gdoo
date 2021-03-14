@@ -130,7 +130,7 @@ class DepartmentController extends DefaultController
                 'name' => '全体人员',
                 'text' => '全体人员',
             ];
-            return response()->json(['data' => $data]);
+            return ['data' => $data];
         }
         return $this->render([
             'search' => $search

@@ -278,19 +278,14 @@ class CustomerController extends DefaultController
 
             if ($query['suggest']) {
                 $rows = $model->limit(15)->get();
-                $data = Grid::dataFilters($rows, $header, function($item) {
-                    return $item;
-                });
-                $items['data'] = $data;
             } else {
                 $rows = $model->paginate($query['limit']);
-                $items = Grid::dataFilters($rows, $header, function($item) {
-                    $item['text'] = $item['name'];
-                    $item['sid'] = 'u'.$item['user_id'];
-                    return $item;
-                });
             }
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header, function($item) {
+                $item['text'] = $item['name'];
+                $item['sid'] = 'u'.$item['user_id'];
+                return $item;
+            });
         }
         return $this->render([
             'search' => $search,

@@ -131,7 +131,7 @@ class AttachmentController extends DefaultController
     {
         $id = Request::get('id');
         $rows = AttachmentService::get($id);
-        return response()->json($rows);
+        return $rows;
     }
 
     /**
@@ -141,7 +141,7 @@ class AttachmentController extends DefaultController
     {
         $key = Request::get('key');
         $rows = AttachmentService::draft($key);
-        return response()->json($rows);
+        return $rows;
     }
     
     /**

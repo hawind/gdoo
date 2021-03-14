@@ -57,7 +57,7 @@ class EventController extends DefaultController
                 $events[] = $row;
             }
         }
-        return response()->json($events);
+        return $events;
     }
 
     // 客户端显示事件列表
@@ -120,7 +120,7 @@ class EventController extends DefaultController
             $repeat = CalendarObjectService::getEventRepeat($master, '1D', 'Y-n-j');
             $items = array_merge($items, $repeat);
         }
-        return response()->json($items);
+        return $items;
     }
 
     // 调整事件

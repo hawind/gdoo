@@ -102,7 +102,7 @@ class CustomerClassController extends DefaultController
                 }
             }
             $rows = $model->get();
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
         return $this->render([
             'search' => $search

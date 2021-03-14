@@ -163,9 +163,7 @@ class UserController extends DefaultController
                 [user].email,
                 [user].phone
             ");
-            $rows = $model->paginate($query['limit']);
-
-            return response()->json($rows);
+            return $model->paginate($query['limit']);
         }
         return $this->render(array(
             'search' => $search,

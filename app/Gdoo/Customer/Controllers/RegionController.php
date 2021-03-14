@@ -140,7 +140,7 @@ class RegionController extends DefaultController
             foreach($rows as $row) {
                 $json[] = $row;
             }
-            return response()->json(['data' => $json]);
+            return ['data' => $json];
         }
         return $this->render([
             'search' => $search

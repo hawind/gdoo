@@ -150,7 +150,7 @@ class MessageController extends Controller
         ->where('read_id', Auth::id())
         ->where('status', 0)
         ->count();
-        return response()->json($count);
+        return $count;
     }
 
     public function deleteAction()

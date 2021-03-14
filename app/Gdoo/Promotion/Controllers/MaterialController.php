@@ -208,7 +208,7 @@ class MaterialController extends DefaultController
         $row['upload_url'] = URL::to('/uploads');
 
         if (Request::wantsJson()) {
-            return response()->json($row);
+            return $row;
         }
 
         return $this->render([

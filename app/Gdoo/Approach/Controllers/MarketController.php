@@ -151,9 +151,7 @@ class MarketController extends DefaultController
             $model->selectRaw($sql);
             $rows = $model->paginate();
 
-            $items = Grid::dataFilters($rows, $header);
-
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header);
         }
     }
 }

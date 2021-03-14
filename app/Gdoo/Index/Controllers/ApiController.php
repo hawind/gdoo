@@ -108,7 +108,7 @@ class ApiController extends Controller
     {
         $key = Request::get('key');
         $rows = option($key);
-        return response()->json($rows)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        return $rows;
     }
 
     /**
@@ -118,7 +118,7 @@ class ApiController extends Controller
     {
         $key = Request::get('key');
         $rows = option($key);
-        return response()->json($rows)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        return $rows;
     }
 
     /**
@@ -156,6 +156,6 @@ class ApiController extends Controller
         ->get()->toArray();
 
         $rows = array_merge($title, $rows);
-        return response()->json($rows);
+        return $rows;
     }
 }

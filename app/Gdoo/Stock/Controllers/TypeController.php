@@ -106,10 +106,7 @@ class TypeController extends DefaultController
             $model->select($header['select']);
 
             $rows = $model->paginate($query['limit']);
-            $items = Grid::dataFilters($rows, $header, function($item) {
-                return $item;
-            });
-            return response()->json($items);
+            return Grid::dataFilters($rows, $header);
         }
 
         return $this->render([

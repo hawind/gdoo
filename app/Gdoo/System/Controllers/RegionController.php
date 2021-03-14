@@ -108,7 +108,7 @@ class RegionController extends DefaultController
                 $row['text'] = $row['layer_space'].$row['name'];
                 $json[] = $row;
             }
-            return response()->json(['data' => $json]);
+            return ['data' => $json];
         }
         return $this->render([
             'search' => $search,
@@ -122,7 +122,7 @@ class RegionController extends DefaultController
             $model = Region::orderBy('id', 'asc');
             $rows = $model->get(['*', 'name as text']);
             array_nest($rows);
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
     }
 

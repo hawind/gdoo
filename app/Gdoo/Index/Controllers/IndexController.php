@@ -50,10 +50,10 @@ class IndexController extends DefaultController
         if ($key) {
             $badge = ModuleService::badges($key);
             if ($badge) {
-                return response()->json($badge());
+                return $badge();
             }
         }
-        return response()->json(['total' => 0, 'data' => []]);
+        return ['total' => 0, 'data' => []];
     }
 
     // 获取全部待办数量
@@ -64,6 +64,6 @@ class IndexController extends DefaultController
         foreach($badges as $key => $badge) {
             $json[$key] = $badge();
         }
-        return response()->json($json);
+        return $json;
     }
 }

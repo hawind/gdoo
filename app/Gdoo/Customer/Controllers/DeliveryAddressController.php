@@ -139,11 +139,7 @@ class DeliveryAddressController extends DefaultController
             $model->select($header['select']);
 
             $rows = $model->paginate($query['limit']);
-
-            if (isset($query['autocomplete'])) {
-                return response()->json($rows->items());
-            }
-            return response()->json($rows);
+            return $rows;
         }
         return $this->render([
             'search' => $search,

@@ -45,12 +45,12 @@ class TaskController extends DefaultController
                 $rows[] = $_task;
             }
             $json['data'] = $rows;
-            return response()->json($json);
+            return $json;
         }
 
         if ($request->ajax()) {
             $tasks = TaskService::data($search);
-            return response()->json(['data' => $tasks]);
+            return ['data' => $tasks];
         }
         
         $project = Project::find($query['project_id']);

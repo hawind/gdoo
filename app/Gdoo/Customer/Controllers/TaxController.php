@@ -135,8 +135,7 @@ class TaxController extends AuditController
             }
 
             $model->select(['customer_tax.*','customer.code as customer_code', 'customer.name as customer_name']);
-            $rows = $model->paginate($query['limit']);
-            return response()->json($rows);
+            return $model->paginate($query['limit']);
         }
         return $this->render([
             'search' => $search,

@@ -1992,7 +1992,7 @@ class Form
         $permission = $permissions[$table];
 
         foreach ($fields as $field) {
-            
+
             $key = $field['field'];
             $setting = $field['setting'];
             $value = $values[$key];
@@ -2002,56 +2002,57 @@ class Form
             if ($row['w'] == 1) {
                 $_field_data = Hook::fire($table.'.onFieldFilter', ['table' => $table, 'master' => $master, 'field' => $field, 'values' => $values]);
                 extract($_field_data);
-            }
 
-            if ($field['data_format']) {
-                switch ($field['data_format']) {
-                    case 'number':
-                    case 'money':
-                        list($_, $len) = explode(',', $field['length']);
-                        $len = $len > 0 ? $len : 2;
-                        $value = round(floatval($value), $len);
+                if ($field['data_format']) {
+                    switch ($field['data_format']) {
+                        case 'number':
+                        case 'money':
+                            list($_, $len) = explode(',', $field['length']);
+                            $len = $len > 0 ? $len : 2;
+                            $value = round(floatval($value), $len);
+                            break;
+                    }
+                } else {
+                    switch ($field['type']) {
+                        case 'DECIMAL':
+                            list($_, $len) = explode(',', $field['length']);
+                            $value = round(floatval($value), $len);
+                            break;
+                    }
+                }
+
+                switch ($field['form_type']) {
+                    case 'autocomplete':
+                        $value = str_replace('draft_', '', $value);
+                        break;
+                    case 'address':
+                        $value = join("\n", (array)$value);
+                        break;
+                    case 'files':
+                        $value = (array)$value;
+                        $dataFiles = array_merge($dataFiles, $value);
+                        $value = join("\n", $value);
+                        break;
+                    case 'images':
+                        $value = join("\n", (array)$value);
+                        break;
+                    case 'date':
+                        if ($setting['save'] == 'u') {
+                            $value = empty($value) ? '' : strtotime($value);
+                        }
+                        break;
+                    case 'checkbox':
+                        if (is_array($value)) {
+                            $value = join(",", (array)$value);
+                        } else {
+                            $value = intval($value);
+                        }
                         break;
                 }
-            } else {
-                switch ($field['type']) {
-                    case 'DECIMAL':
-                        list($_, $len) = explode(',', $field['length']);
-                        $value = round(floatval($value), $len);
-                        break;
-                }
+                $values[$key] = $value;
             }
-
-            switch ($field['form_type']) {
-                case 'autocomplete':
-                    $value = str_replace('draft_', '', $value);
-                    break;
-                case 'address':
-                    $value = join("\n", (array)$value);
-                    break;
-                case 'files':
-                    $value = (array)$value;
-                    $dataFiles = array_merge($dataFiles, $value);
-                    $value = join("\n", $value);
-                    break;
-                case 'images':
-                    $value = join("\n", (array)$value);
-                    break;
-                case 'date':
-                    if ($setting['save'] == 'u') {
-                        $value = empty($value) ? '' : strtotime($value);
-                    }
-                    break;
-                case 'checkbox':
-                    if (is_array($value)) {
-                        $value = join(",", (array)$value);
-                    } else {
-                        $value = intval($value);
-                    }
-                    break;
-            }
-            $values[$key] = $value;
         }
+
         return $values;
     }
 

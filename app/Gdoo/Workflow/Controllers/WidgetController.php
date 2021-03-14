@@ -18,7 +18,7 @@ class WidgetController extends DefaultController
             $rows = [];
             $json['total'] = sizeof($rows);
             $json['data'] = $rows;
-            return response()->json($json);
+            return $json;
         }
         return $this->render();
     }

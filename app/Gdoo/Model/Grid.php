@@ -20,6 +20,7 @@ use Gdoo\Model\Models\Step;
 use Gdoo\Model\Models\StepLog;
 use Gdoo\Model\Services\ModelService;
 use Gdoo\Model\Services\ModuleService;
+use Gdoo\User\Services\UserAssetService;
 
 class Grid
 {
@@ -99,12 +100,26 @@ class Grid
 
         $_header = $header;
         unset($_header['columns']);
+        unset($_header['cols']);
         unset($_header['dialogs']);
         unset($_header['join']);
         unset($_header['js']);
         unset($_header['raw_select']);
         unset($_header['search']);
         unset($_header['select']);
+
+        // 重新组合字段给前端
+        $columns = [];
+        foreach ($header['cols'] as $field => $col) {
+            if ($field == 'action' && empty($col['events'])) {
+                continue;
+            }
+            if ($col['field'] == 'created_by') {
+                $col['formatter'] = 'created_by';
+            }
+            $columns[] = $col;
+        }
+        $_header['columns'] = $columns;
 
         $header['runs'] = $runs;
         $header['dialogs'] = $dialogs;
@@ -886,12 +901,16 @@ class Grid
         $res['form_type'] = $bill['form_type'];
 
         $res['bill_id'] = $bill['id'];
+        $res['bill_uri'] = $bill['uri'];
         $res['name'] = $master['name'];
         $res['model_id'] = $master['id'];
         $res['is_sort'] = $master['is_sort'];
         $res['table'] = $table;
         $res['sort'] = $sort;
         $res['order'] = $order;
+
+        // 获取当前权限
+        $res['access'] = UserAssetService::getNowRoleAssets();
 
         // 是否开启简单搜索框
         $res['simple_search_form'] = 1;

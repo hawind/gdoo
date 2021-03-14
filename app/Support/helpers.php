@@ -1512,7 +1512,7 @@ function response_json($data, $status = false)
         }
     }
     $json['data'] = $data;
-    return response()->json($json);
+    return $json;
 }
 
 // 登录是客户

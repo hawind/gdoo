@@ -203,6 +203,6 @@ class EchoController extends Controller
             'data' => $data,
             'status' => $status,
         ];
-        return response()->json($json)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        return $json;
     }
 }

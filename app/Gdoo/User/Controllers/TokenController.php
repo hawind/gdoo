@@ -37,11 +37,11 @@ class TokenController extends Controller
         }
 
         if (empty($gets['username'])) {
-            return response()->json(['message'=>'账户不能为空。','success'=>false]);
+            return ['message'=>'账户不能为空。','success'=>false];
         }
 
         if (empty($gets['password'])) {
-            return response()->json(['message'=>'密码不能为空。','success'=>false]);
+            return ['message'=>'密码不能为空。','success'=>false];
         }
 
         $credentials = [
@@ -55,7 +55,7 @@ class TokenController extends Controller
 
             if ($user['auth_device']) {
                 if (empty($gets['deviceId'])) {
-                    return response()->json(['message'=>'设备ID不能为空。','success'=>false]);
+                    return ['message'=>'设备ID不能为空。','success'=>false];
                 }
 
                 // 设备ID为空时自动绑定
@@ -65,7 +65,7 @@ class TokenController extends Controller
                     // 存在设备ID检查是否匹配
                     $auth_device_id = explode(PHP_EOL, $user['auth_device_id']);
                     if (in_array($gets['deviceId'], $auth_device_id) == false) {
-                        return response()->json(['message'=>'设备ID错误，请联系相关人员。','success'=>false]);
+                        return ['message'=>'设备ID错误，请联系相关人员。','success'=>false];
                     }
                 }
             }
@@ -74,18 +74,18 @@ class TokenController extends Controller
             $user->save();
 
             $assets = UserAssetService::getRoleAssets($user->role_id);
-            return response()->json([
+            return [
                 'user' => $user,
                 'token' => $this->createToken($user->id),
                 'access' => $assets,
                 'success' => 1,
-            ]);
+            ];
         }
-        return response()->json(['message'=>'账户或密码错误。', 'success'=>false]);
+        return ['message'=>'账户或密码错误。', 'success'=>false];
     }
 
     public function logoutAction()
     {
-        return response('注销完成。');
+        return '注销完成。';
     }
 }

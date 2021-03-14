@@ -83,11 +83,6 @@
 
     action.dialogType = 'layer';
 
-    // 自定义搜索方法
-    search.searchInit = function (e) {
-        var self = this;
-    }
-
     var height = getPanelHeight(140);
     var treeOptions = new agGridOptions();
     treeOptions.rowSelection = 'single';

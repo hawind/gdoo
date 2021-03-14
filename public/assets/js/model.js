@@ -517,7 +517,6 @@
     function gridAction(table, name) {
         this.name = name;
         this.table = table;
-        this.routes = {};
         this.dialogType = 'dialog';
 
         this.show = function(data, key, name) {

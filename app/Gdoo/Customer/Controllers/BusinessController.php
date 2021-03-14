@@ -92,7 +92,7 @@ class BusinessController extends DefaultController
         $row['address'] = str_replace("\n", " ", $row['address']);
         $attachments = AttachmentService::show($row['attachment']);
         $row['attachments'] = $attachments['main'];
-        return response()->json($row);
+        return $row;
     }
 
     // 负责人列表

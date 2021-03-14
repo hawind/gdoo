@@ -94,7 +94,7 @@ class UnitController extends DefaultController
                 }
             }
             $rows = $model->get(['*', 'name as text']);
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
         return $this->render([
             'search' => $search,

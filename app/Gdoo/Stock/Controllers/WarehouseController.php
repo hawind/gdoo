@@ -113,11 +113,10 @@ class WarehouseController extends DefaultController
                 $locations[$_location['warehouse_id']][] = $_location;
             }
 
-            $items = Grid::dataFilters($rows, $header, function($item) use($locations) {
+            return Grid::dataFilters($rows, $header, function($item) use($locations) {
                 $item['pos'] = (array)$locations[$item['id']];
                 return $item;
             });
-            return response()->json($items);
         }
 
         return $this->render([

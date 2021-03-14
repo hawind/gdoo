@@ -828,7 +828,7 @@ class OrderController extends WorkflowController
                 $item['text'] = $item['name'];
                 return $item;
             });
-            return response()->json($items);
+            return $items;
         }
         return $this->render([
             'search' => $search,
@@ -918,7 +918,7 @@ class OrderController extends WorkflowController
                 ");
                 $rows = $model->get();
             }
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
         return $this->render([
             'search' => $search,

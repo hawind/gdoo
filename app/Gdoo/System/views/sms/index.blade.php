@@ -39,11 +39,6 @@
             }
         }
 
-        // 自定义搜索方法
-        search.searchInit = function (e) {
-            var self = this;
-        }
-        
         var options = new agGridOptions();
         var gridDiv = document.querySelector("#{{$header['master_table']}}-grid");
         gridDiv.style.height = getPanelHeight(48);

@@ -15,11 +15,6 @@
 
         action.dialogType = 'layer';
 
-        // 自定义搜索方法
-        search.searchInit = function (e) {
-            var self = this;
-        }
-
         action.fee_detail = function(data) {
             viewDialog({
                 title: '兑现明细',

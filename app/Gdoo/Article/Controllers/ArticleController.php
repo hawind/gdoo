@@ -51,7 +51,6 @@ class ArticleController extends DefaultController
         $header['cols'] = $cols;
         $header['tabs'] = Article::$tabs;
         $header['bys'] = Article::$bys;
-        $header['js'] = Grid::js($header);
 
         $search = $header['search_form'];
         $query = $search['query'];

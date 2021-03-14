@@ -177,11 +177,10 @@ class CostController extends AuditController
             }
 
             $rows = $model->get();
-
             $rows->transform(function($row) {
                 return $row;
             });
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
 
         return $this->render([

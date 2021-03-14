@@ -198,7 +198,7 @@ class WidgetController extends DefaultController
 
             $json['total'] = sizeof($rows);
             $json['data'] = $rows;
-            return response()->json($json);
+            return $json;
         }
         return $this->render();
     }
@@ -225,7 +225,7 @@ class WidgetController extends DefaultController
             ->get();
             $json['total'] = $rows->count();
             $json['data'] = $rows;
-            return response()->json($json);
+            return $json;
         }
         return $this->render();
     }

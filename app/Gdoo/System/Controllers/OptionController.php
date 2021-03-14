@@ -202,7 +202,7 @@ class OptionController extends DefaultController
         if (Request::method() == 'POST') {
             $rows = Option::where('parent_id', 0)->orderBy('sort', 'asc')->orderBy('id', 'asc')->get();
             $rows->prepend(['name' => '全部类别', 'id' => 0, 'parent_id' => 0]);
-            return response()->json(['data' => $rows]);
+            return ['data' => $rows];
         }
     }
 

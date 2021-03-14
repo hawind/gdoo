@@ -42,11 +42,6 @@
         statusAction('unread');
     };
 
-    // 自定义搜索方法
-    search.searchInit = function(e) {
-        var self = this;
-    }
-
     var grid = new agGridOptions();
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = search.advanced.query;

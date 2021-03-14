@@ -174,10 +174,10 @@ class AttachmentController extends DefaultController
 
                         $insert_id = DB::table($table)->insertGetId($data);
                         $data['id'] = $insert_id;
-                        return response()->json($data);
+                        return $data;
                     }
                 }
-                return response()->json([]);
+                return [];
             }
         }
         $query = Request::all();
