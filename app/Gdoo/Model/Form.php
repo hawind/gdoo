@@ -1989,17 +1989,19 @@ class Form
 
     public static function dataFilter($table, $fields, $permissions, $master, $values, &$dataFiles)
     {
-        $permission = $permissions[$table];
+        $_permissions = $permissions[$table];
 
         foreach ($fields as $field) {
 
             $key = $field['field'];
             $setting = $field['setting'];
             $value = $values[$key];
-            $row = $permission[$key];
+            $permission = $_permissions[$key];
 
-            // 可写时才调用自定义过滤器
-            if ($row['w'] == 1) {
+            // 权限可写
+            if ($permission['w'] == 1) {
+                
+                // 自定义过滤器
                 $_field_data = Hook::fire($table.'.onFieldFilter', ['table' => $table, 'master' => $master, 'field' => $field, 'values' => $values]);
                 extract($_field_data);
 
