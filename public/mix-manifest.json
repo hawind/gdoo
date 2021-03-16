@@ -1,8 +1,9 @@
 {
-    "/assets/dist/bundle.min.js": "/assets/dist/bundle.min.js?id=66f13bad36bfa2e3ec52",
-    "/assets/dist/app.min.js": "/assets/dist/app.min.js?id=1298156573de42582abf",
-    "/assets/dist/app.min.css": "/assets/dist/app.min.css?id=079ac4e85bbcc7ba871f",
-    "/assets/vendor/ag-grid/ag-grid.min.css": "/assets/vendor/ag-grid/ag-grid.min.css?id=0e414057cb24126f35ae",
-    "/assets/dist/index.min.js": "/assets/dist/index.min.js?id=0b5199e460c9072a6bee",
-    "/assets/dist/index.min.css": "/assets/dist/index.min.css?id=41b06417831d9328ede1"
+    "/assets/dist/bundle.min.js": "/assets/dist/bundle.min.js?id=b46cb4305a863944f84c",
+    "/assets/dist/vendor.min.js": "/assets/dist/vendor.min.js?id=29c59d13160c6607b4af",
+    "/assets/dist/gdoo.min.js": "/assets/dist/gdoo.min.js?id=b40a40adf287e5ea02aa",
+    "/assets/dist/index.min.js": "/assets/dist/index.min.js?id=9f7be548e55d993be518",
+    "/assets/dist/vendor.min.css": "/assets/dist/vendor.min.css?id=99a58728a17257718260",
+    "/assets/dist/gdoo.min.css": "/assets/dist/gdoo.min.css?id=3817f9870ed3748aba46",
+    "/assets/dist/index.min.css": "/assets/dist/index.min.css?id=ccde8d73c536940b91d9"
 }

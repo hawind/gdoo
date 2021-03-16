@@ -1,12 +1,15 @@
 <div class="gdoo-list-page" id="{{$header['master_table']}}-page">
+
     <div class="gdoo-list panel">
         <div class="gdoo-list-header">
             <gdoo-grid-header :header="header" :grid="grid" :action="action" />
         </div>
+
         <div class='gdoo-list-grid'>
             <div id="{{$header['master_table']}}-grid" class="ag-theme-balham"></div>
         </div>
     </div>
+
 </div>
 
 <script>

@@ -37,7 +37,7 @@ class ApproachController extends WorkflowController
         $cols['master_cash_amount']['cellRenderer'] = 'htmlCellRenderer';
 
         $header['buttons'] = [
-            // ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => 0],
             ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
         ];
 

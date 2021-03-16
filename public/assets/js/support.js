@@ -51,7 +51,7 @@ $(function() {
 
         var tr = $(this);
         var checkbox = tr.find('.select-row');
-        var checked  = checkbox.prop('checked');
+        var checked = checkbox.prop('checked');
 
         if(checkbox.length == 0) {
             return;
@@ -107,6 +107,12 @@ $(function() {
             }
             query[k] = v;
         });
+
+        // 传递当前iframe
+        var iframe_id = getIframeName();
+        if (iframe_id) {
+            query.iframe_id = iframe_id;
+        }
 
         var option = gdoo.formKey(params);
         var event = gdoo.event.get(option.key);
@@ -239,7 +245,8 @@ $(function() {
 
     // 关闭layerFrame
     $document.on('click.frame.close', '[data-toggle="layer-frame-close"]', function() {
-        layerFrameClose();
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
     });
 
     // 打开layerFrame
@@ -868,9 +875,9 @@ function ajaxSubmit(table, callback) {
     });
 }
 
-function layerFrameClose() {
-    var index = parent.layer.getFrameIndex(window.name);
-    parent.layer.close(index);
+function getIframeName() {
+    var name = window.name;
+    return name ? name.replace('iframe_', '') : '';
 }
 
 /**

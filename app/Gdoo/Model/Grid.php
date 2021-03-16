@@ -571,7 +571,7 @@ class Grid
             'headerCheckboxSelection' => true,
         ];
 
-        $res['cols']['sequence_sn'] = [
+        $res['cols']['seq_sn'] = [
             'width' => 60,
             'headerName' => '序号',
             'suppressSizeToFit' => true,

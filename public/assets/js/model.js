@@ -48,17 +48,17 @@
         var iframes = top.document.getElementsByTagName("iframe");
         for (var i=0; i < iframes.length; i++) {
             var iframe = iframes[i];
-            var igdoo = iframe.contentWindow.gdoo;
+            var $gdoo = iframe.contentWindow.gdoo;
             if (iframe.id == 'tab_iframe_dashboard') {
                 // 刷新首页全部部件
-                var widgets = Object.values(igdoo.widgets);
+                var widgets = Object.values($gdoo.widgets);
                 widgets.forEach(function(grid) {
                     grid.remoteData();
                 });
             } else {
                 // 刷新全部页面的相关grid
-                if (igdoo && igdoo.grids) {
-                    var grids = igdoo.grids;
+                if ($gdoo && $gdoo.grids) {
+                    var grids = $gdoo.grids;
                     if (grids[table]) {
                         grids[table].grid.remoteData();
                     }

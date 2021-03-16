@@ -25,7 +25,7 @@ class CategoryController extends DefaultController
 
         $cols = $header['cols'];
 
-        $cols['sequence_sn']['hide'] = true;
+        $cols['seq_sn']['hide'] = true;
         $cols['name']['hide'] = true;
 
         $cols['actions']['options'] = [[

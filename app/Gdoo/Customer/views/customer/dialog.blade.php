@@ -92,8 +92,25 @@
                 id.push(row[sid]);
                 text.push(row.name);
             });
-            $('#'+option.id).val(id.join(','));
-            $('#'+option.id+'_text').val(text.join(','));
+
+            /*
+            if (params.iframe_id) {
+                var iframe = window.frames['iframe_' + params.iframe_id];
+                if (iframe) {
+                    var $option_id = $('#' + option.id, doc);
+                    var $option_text = $('#'+option.id + '_text', doc);
+                }
+            } else {
+                var $option = $('#' + option.id);
+                var $option_text = $('#'+option.id + '_text');
+            }
+            */
+
+            var $option = $('#' + option.id);
+            var $option_text = $('#'+option.id + '_text');
+
+            $option_id.val(id.join(','));
+            $option_text.val(text.join(','));
 
             if (event.exist('onSelect')) {
                 return event.trigger('onSelect', multiple ? rows : rows[0]);

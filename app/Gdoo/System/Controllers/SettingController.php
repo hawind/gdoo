@@ -47,7 +47,7 @@ class SettingController extends DefaultController
                 'checkboxSelection' => true,
                 'headerCheckboxSelection' => true,
             ],
-            'sequence_sn' => [
+            'seq_sn' => [
                 'width' => 60,
                 'headerName' => '序号',
                 'suppressSizeToFit' => true,

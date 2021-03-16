@@ -5,11 +5,19 @@
     <title>{{$setting['title']}} - Powered By {{$setting['powered']}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="stylesheet" href="{{mix('/assets/dist/index.min.css')}}" type="text/css" />
-    <script src="{{$public_url}}/common?v={{time()}}"></script>
-    <script src="{{mix('/assets/dist/index.min.js')}}"></script>
-    <script src="{{mix('/assets/dist/bundle.min.js')}}"></script>
-    <script src="{{$asset_url}}/vendor/layer/layer.js"></script>
+
+    <link href="{{mix('/assets/dist/vendor.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{mix('/assets/dist/gdoo.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{mix('/assets/dist/index.min.css')}}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="{{mix('/assets/dist/vendor.min.js')}}"></script>
+    <script type="text/javascript" src="{{$asset_url}}/vendor/layer/layer.js"></script>
+    <script type="text/javascript" src="{{$asset_url}}/vendor/datepicker/datepicker.js"></script>
+    <script type="text/javascript" src="{{$public_url}}/common?s={{time()}}"></script>
+
+    <script type="text/javascript" src="{{mix('/assets/dist/bundle.min.js')}}"></script>
+    <script type="text/javascript" src="{{mix('/assets/dist/index.min.js')}}"></script>
+    <script type="text/javascript" src="{{mix('/assets/dist/gdoo.min.js')}}"></script>
 
     <style type="text/css">
     @foreach($menus['children'] as $menu_id => $menu)
@@ -20,6 +28,7 @@
     .side-nav .hover a.a{{$menu_id}} .icon .fa { color: {{$menu['color']}}; }
     @endforeach
     </style>
+    
 </head>
 
 <body class="theme-{{auth()->user()->theme ?: 'lilac'}}">

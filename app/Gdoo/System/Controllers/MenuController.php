@@ -41,7 +41,7 @@ class MenuController extends DefaultController
                 'checkboxSelection' => true,
                 'headerCheckboxSelection' => true,
             ],
-            'sequence_sn' => [
+            'seq_sn' => [
                 'width' => 60,
                 'headerName' => '序号',
                 'suppressSizeToFit' => true,
@@ -126,7 +126,7 @@ class MenuController extends DefaultController
         ];
 
         $cols = $header['cols'];
-        $cols['sequence_sn']['hide'] = true;
+        $cols['seq_sn']['hide'] = true;
         $cols['text']['hide'] = true;
         unset($cols['checkbox']);
         $header['cols'] = $cols;

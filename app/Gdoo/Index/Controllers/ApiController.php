@@ -22,7 +22,9 @@ class ApiController extends Controller
         $settings['realtime'] = not_empty(env('REALTIME_KEY'));
         
         header('Content-type: text/javascript');
-        echo 'var settings = '. json_encode($settings, JSON_UNESCAPED_UNICODE);
+        $e[] = 'var settings = '. json_encode($settings, JSON_UNESCAPED_UNICODE);
+        $e[] = env("AGGRID_LICENSE");
+        echo join(";\n", $e).';';
         exit;
     }
 

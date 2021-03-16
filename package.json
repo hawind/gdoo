@@ -19,7 +19,6 @@
         "vue-loader": "16.1.0"
     },
     "dependencies": {
-        "element-plus": "^1.0",
         "vue": "^3.0.5",
         "vuedraggable": "^4.0.1"
     }

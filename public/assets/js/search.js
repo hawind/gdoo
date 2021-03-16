@@ -274,57 +274,6 @@
             e += '</div>';
             element[i].value.append($(e));
         }
-        self._product_category = function(i, query) {
-
-            var category = self.attr(i, 0);
-            var product  = self.attr(i, 1);
-
-            var category_id = category.value;
-            var product_id  = product.value;
-
-            element[i].value.append('<select name="'+category.name+'" id="'+category.id+'" class="form-control input-sm"></select>&nbsp;<select name="'+product.name+'" id="'+product.id+'" class="form-control input-sm"></select>');
-            
-            $.post(app.url('product/category/dialog', query), function(res) {
-                var option = '<option value=""> - </option>';
-                $.map(res.rows, function(row) {
-                    option += '<option value="'+row.id+'">' + row.layer_space + row.name + '</option>';
-                });
-                var e = $('#'+category.id).html(option);
-                if(category_id) {
-                    e.val(category_id);
-                }
-                _product(i);
-            });
-
-            self.on('change', '#'+category.id, function() {
-                category_id = this.value;
-                product_id  = 0;
-                _product(i);
-            });
-
-            function _product(i) {
-                var option = '<option value=""> - </option>';
-                if(category_id) {
-                    var q = {
-                        field_0: 'product.category_id',
-                        condition_0: 'eq',
-                        search_0: category_id,
-                        limit: 0
-                    };
-                    $.post(app.url('product/product/dialog', q), function(res) {
-                        $.map(res.data, function(row) {
-                            option += '<option value="'+row.id+'">'+row.text+'</option>';
-                        });
-                        var e = $('#'+product.id).html(option);
-                        if(product_id) {
-                            e.val(product_id);
-                        }
-                    });
-                } else {
-                    $('#'+product.id).html(option);
-                }
-            }
-        }
 
         var handle = {
             empty: function(i) {
@@ -485,7 +434,7 @@
             }
         }
 
-        self.attr    = attr;
+        self.attr = attr;
         self.element = element;
         self.options = options;
 
