@@ -25,11 +25,22 @@ class RegionController extends DefaultController
         ]);
 
         $cols = $header['cols'];
+        $cols['sequence_sn']['hide'] = true;
+        $cols['name']['hide'] = true;
+        unset($cols['checkbox']);
+        
         $cols['actions']['options'] = [[
             'name' => '编辑',
             'action' => 'edit',
             'display' => $this->access['edit'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerRegion::$tabs;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -39,7 +50,7 @@ class RegionController extends DefaultController
                 $model->leftJoin($join[0], $join[1], $join[2], $join[3]);
             }
 
-            $model->orderBy('lft', 'asc')
+            $model->orderBy('customer_region.lft', 'asc')
             ->orderBy($header['sort'], $header['order']);
 
             foreach ($search['where'] as $where) {
@@ -48,31 +59,20 @@ class RegionController extends DefaultController
                 }
             }
 
-            $model->select($header['select'])
-            ->addSelect(DB::raw('parent_id'));
+            $model->select($header['select']);
             $rows = $model->get()->toNested('name');
 
             $users = DB::table('user')->get()->keyBy('id');
-            $items = Grid::dataFilters($rows, $header, function($item) use($users) {
+            return Grid::dataFilters($rows, $header, function($item) use($users) {
                 $owner_assist = explode(',', $item['owner_assist']);
-                $_rows = [];
+                $owner = [];
                 foreach ($owner_assist as $user_id) {
-                    $_rows[] = $users[$user_id]['name'];
+                    $owner[] = $users[$user_id]['name'];
                 }
-                $item['owner_assist'] = join(',', $_rows);
+                $item['owner_assist'] = join(',', $owner);
                 return $item;
             });
-            return $this->json($items, true);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerRegion::$tabs;
-        $header['bys'] = CustomerRegion::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

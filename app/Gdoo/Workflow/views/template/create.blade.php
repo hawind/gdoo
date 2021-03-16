@@ -26,17 +26,9 @@
 
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
-
-                            <!--
-                            <draggable :list="fields" class="list-group" :sort="false" :group="{name:'gdooComponent', pull:true, put:false}" ghost-class="ghostClass">
-                                <div class="list-group-item" v-for="(item, key) in fields" :key="key">
-                                    <div class="title">{{item.name}}</div>
-                                </div>
-                            </draggable>
-                            -->
                             
                             <div class="af-left-group-controller af-over-y">
-                                <draggable :list="items" class="af-left-group"
+                                <gdooDraggable :list="items" class="af-left-group"
                                     :sort="false"
                                     item-key="name"
                                     :group="{name:'gdooComponent', pull:'clone', put:false}"
@@ -48,7 +40,7 @@
                                             <div class="title">{{element.name}}</div>
                                         </div>
                                     </template>
-                                </draggable>
+                                </gdooDraggable>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -76,7 +68,7 @@
 
             <div class="col-sm-8 col-center m-b-sm">
                 <div class="droppedFieldsBox" id="droppedFieldsBox">
-                    <gdoo-form-designer :parent_id="0" :items="state.views" class="af-items af-over-y"></gdoo-form-designer>
+                    <gdoo-form-designer :parent_id="0" :items="state.views" class="af-items af-over-y" />
                     <div class="clearfix"></div>
                 </div>
             </div>
@@ -409,8 +401,8 @@ function strLeftPad(num, n) {
 
 const vueApp = Vue.createApp({
     components: {
-        draggable: GdooVueComponents.draggable,
-        'gdoo-form-designer': GdooVueComponents.gdooFormDesigner,
+        gdooDraggable,
+        gdooFormDesigner,
     },
     setup() {
         let fieldTypes = [

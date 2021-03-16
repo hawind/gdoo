@@ -1,38 +1,24 @@
-{{$header["js"]}}
-
-<div class="panel no-border m-b-sm" id="{{$header['table']}}-controller">
-
-    @include('headers')
-
-    <div class="col-xs-4 col-sm-2">
-        <div id="{{$header['master_table']}}-tree" style="width:100%;" class="tree-grid ag-theme-balham"></div>
-    </div>
-    
-    <div class="col-xs-8 col-sm-10">
-        <div class="list-jqgrid">
-            <div id="{{$header['master_table']}}-grid" style="width:100%;" class="list-grid ag-theme-balham"></div>
+<div class="gdoo-list-page" id="{{$header['master_table']}}-page">
+    <div class="gdoo-list panel">
+        <div class="gdoo-list-header">
+            <gdoo-grid-header :header="header" :grid="grid" :action="action" />
         </div>
+        <div class="gdoo-list-grid">
+            <div class="col-xs-4 col-sm-2">
+                <div id="{{$header['master_table']}}-tree" class="tree-grid ag-theme-balham"></div>
+            </div>
+            <div class="col-xs-8 col-sm-10">
+                <div id="{{$header['master_table']}}-grid" class="list-grid ag-theme-balham"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </div>
-
-    <div class="clearfix"></div>
 </div>
 
 <style>
-/*
-.list-grid.ag-theme-balham .ag-ltr .ag-cell {
-    vertical-align: middle;
-    line-height: 42px;
-}
-
-.thumb-sm {
-    vertical-align: middle;
-    margin-top: 3px;
-}
-*/
 .tree-grid.ag-theme-balham {
     border-right: 1px solid #BDC3C7;
 }
-
 .tree-grid.ag-theme-balham .ag-ltr .ag-cell {
     border-width: 0 0 0 0;
     border-right-color: #d9dcde;
@@ -53,6 +39,7 @@
 .tree-box .ul {
     margin-bottom: 0;
 }
+
 .col-xs-4 {
     padding-right: 0;
     padding-left: 5px;
@@ -75,85 +62,69 @@
 </style>
 
 <script>
-(function ($) {
-    var table = '{{$header["table"]}}';
-    var config = gdoo.grids[table];
-    var action = config.action;
-    var search = config.search;
+Vue.createApp({
+    components: {
+        gdooGridHeader,
+    },
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
 
-    action.dialogType = 'layer';
+        var tree = new agGridOptions();
+        tree.rowSelection = 'single';
+        tree.autoGroupColumnDef = {
+            headerName: '类别名称',
+            width: 250,
+            sortable: false,
+            suppressMenu: true,
+            cellRendererParams: {
+                suppressCount: true,
+            }
+        };
+        tree.treeData = true;
+        tree.groupDefaultExpanded = -1;
+        
+        tree.getDataPath = function(data) {
+            return data.tree_path;
+        };
+        tree.columnDefs = [];
+        tree.rowSelection = 'single';
+        tree.enableCellTextSelection = false;
+        tree.onRowClicked = function (params) {
+            var query = {};
+            query['category_id'] = params.data.id;
+            query['page'] = 1;
+            config.grid.remoteData(query);
+        };
+        tree.remoteDataUrl = "{{url('category')}}";
 
-    var height = getPanelHeight(140);
-    var treeOptions = new agGridOptions();
-    treeOptions.rowSelection = 'single';
-    var treeDiv = document.querySelector("#{{$header['master_table']}}-tree");
-    treeDiv.style.height = height;
+        var config = new gdoo.grid(table);
 
-    treeOptions.autoGroupColumnDef = {
-        headerName: '类别名称',
-        width: 250,
-        sortable: false,
-        suppressMenu: true,
-        cellRendererParams: {
-            suppressCount: true,
-        }
-    };
-    treeOptions.treeData = true;
-    treeOptions.groupDefaultExpanded = -1;
-    
-    treeOptions.getDataPath = function(data) {
-        return data.tree_path;
-    };
-    treeOptions.columnDefs = [];
-    treeOptions.rowSelection = 'single';
-    treeOptions.enableCellTextSelection = false;
-    treeOptions.onRowClicked = function (params) {
-        var query = {};
-        query['category_id'] = params.data.id;
-        query['page'] = 1;
-        config.grid.remoteData(query);
-    };
-    treeOptions.remoteDataUrl = "{{url('category')}}";
-    new agGrid.Grid(treeDiv, treeOptions);
-    // 读取数据
-    treeOptions.remoteData();
-    
-    var options = new agGridOptions();
-    var gridDiv = document.querySelector("#{{$header['table']}}-grid");
-    gridDiv.style.height = height;
+        var grid = config.grid;
+        grid.autoColumnsToFit = true;
+        grid.remoteDataUrl = '{{url()}}';
 
-    options.remoteDataUrl = '{{url()}}';
-    options.remoteParams = search.advanced.query;
-    options.columnDefs = config.cols;
-    //options.rowHeight = 47;
-    options.autoColumnsToFit = false;
-    options.onRowDoubleClicked = function (params) {
-        if (params.node.rowPinned) {
-            return;
-        }
-        if (params.data == undefined) {
-            return;
-        }
-        if (params.data.master_id > 0) {
-            action.show(params.data);
-        }
-    };
+        var action = config.action;
+        // 详情页打开方式
+        action.dialogType = 'layer';
+        // 双击行执行的方法
+        action.rowDoubleClick = action.show;
 
-    new agGrid.Grid(gridDiv, options);
+        var setup = config.setup;
 
-    // 读取数据
-    options.remoteData({page: 1});
+        Vue.onMounted(function() {
+            var height = 136;
+            var treeDiv = document.querySelector('#' + table + '-tree');
+            treeDiv.style.height = config.getPanelHeight(height);
+            new agGrid.Grid(treeDiv, tree);
+            tree.remoteData();
 
-    // 绑定自定义事件
-    var $gridDiv = $(gridDiv);
-    $gridDiv.on('click', '[data-toggle="event"]', function () {
-        var data = $(this).data();
-        if (data.master_id > 0) {
-            action[data.action](data);
-        }
-    });
-    config.grid = options;
-})(jQuery);
-
+            var gridDiv = config.div(height);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
+        });
+        return setup;
+    }
+}).mount("#{{$header['master_table']}}-page");
 </script>
-@include('footers')

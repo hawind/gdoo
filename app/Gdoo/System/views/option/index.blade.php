@@ -1,25 +1,24 @@
-{{$header["js"]}}
-<div class="panel no-border m-b-sm" id="{{$header['table']}}-controller">
-    @include('headers')
-
-    <div class="col-xs-4 col-sm-2">
-        <div class="list-jqgrid">
-            <div id="{{$header['table']}}-tree" style="width:100%;" class="tree-grid ag-theme-balham"></div>
+<div class="gdoo-list-page" id="{{$header['master_table']}}-page">
+    <div class="gdoo-list panel">
+        <div class="gdoo-list-header">
+            <gdoo-grid-header :header="header" :grid="grid" :action="action" />
         </div>
+        <div class="gdoo-list-grid">
+            <div class="col-xs-4 col-sm-2">
+                <div id="{{$header['master_table']}}-tree" class="tree-grid ag-theme-balham"></div>
+            </div>
+            <div class="col-xs-8 col-sm-10">
+                <div id="{{$header['master_table']}}-grid" class="list-grid ag-theme-balham"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </div>
-    
-    <div class="col-xs-8 col-sm-10">
-        <div id="{{$header['table']}}-grid" style="width:100%;" class="ag-theme-balham"></div>
-    </div>
-    
-    <div class="clearfix"></div>
 </div>
- 
+
 <style>
 .tree-grid.ag-theme-balham {
     border-right: 1px solid #BDC3C7;
 }
-
 .tree-grid.ag-theme-balham .ag-ltr .ag-cell {
     border-width: 0 0 0 0;
     border-right-color: #d9dcde;
@@ -40,6 +39,7 @@
 .tree-box .ul {
     margin-bottom: 0;
 }
+
 .col-xs-4 {
     padding-right: 0;
     padding-left: 5px;
@@ -48,6 +48,7 @@
     padding-left: 5px;
     padding-right: 5px;
 }
+
 @media screen and (min-width: 768px) {
     .col-sm-2 {
         padding-right: 0;
@@ -59,66 +60,53 @@
     }
 }
 </style>
+
 <script>
-var table = '{{$header["table"]}}';
-var config = gdoo.grids[table];
-var action = config.action;
-var search = config.search;
-(function ($) {
-    var height = getPanelHeight(98);
-    var treeOptions = new agGridOptions();
-    var gridDiv = document.querySelector("#{{$header['table']}}-tree");
-    gridDiv.style.height = height;
-    treeOptions.columnDefs = [
-        {cellClass:'text-left', field: 'name', headerName: '枚举类别'},
-    ];
-    treeOptions.onRowClicked = function (params) {
-        if (params.data.id >= 0) {
-            var query = search.simple.query;
+Vue.createApp({
+    components: {
+        gdooGridHeader,
+    },
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
+
+        var tree = new agGridOptions();
+        tree.columnDefs = [
+            {cellClass:'text-left', field: 'name', headerName: '枚举类别'},
+        ];
+        tree.onRowClicked = function (params) {
+            var query = {};
             query['parent_id'] = params.data.id;
             query['page'] = 1;
             config.grid.remoteData(query);
-        }
-    };
-    treeOptions.remoteDataUrl = "{{url('category')}}";
-    new agGrid.Grid(gridDiv, treeOptions);
-    // 读取数据
-    treeOptions.remoteData();
+        };
+        tree.remoteDataUrl = "{{url('category')}}";
 
-    var options = new agGridOptions();
-    var gridDiv = document.querySelector("#{{$header['table']}}-grid");
-    gridDiv.style.height = height;
-    options.remoteDataUrl = '{{url()}}';
-    options.remoteParams = search.advanced.query;
-    options.columnDefs = config.cols;
-    options.onRowDoubleClicked = function (params) {
-        if (params.node.rowPinned) {
-            return;
-        }
-        if (params.data == undefined) {
-            return;
-        }
-        if (params.data.id > 0) {
-            action.edit(params.data);
-        }
-    };
+        var config = new gdoo.grid(table);
 
-    new agGrid.Grid(gridDiv, options);
+        var grid = config.grid;
+        grid.autoColumnsToFit = true;
+        grid.remoteDataUrl = '{{url()}}';
 
-    // 读取数据
-    options.remoteData({page: 1});
+        var action = config.action;
+        // 双击行执行的方法
+        action.rowDoubleClick = action.edit;
 
-    // 绑定自定义事件
-    var $gridDiv = $(gridDiv);
-    $gridDiv.on('click', '[data-toggle="event"]', function () {
-        var data = $(this).data();
-        if (data.master_id > 0) {
-            action[data.action](data);
-        }
-    });
+        var setup = config.setup;
 
-    config.grid = options;
+        Vue.onMounted(function() {
+            var height = 93;
+            var treeDiv = document.querySelector('#' + table + '-tree');
+            treeDiv.style.height = config.getPanelHeight(height);
+            new agGrid.Grid(treeDiv, tree);
+            tree.remoteData();
 
-})(jQuery);
+            var gridDiv = config.div(height);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
+        });
+        return setup;
+    }
+}).mount("#{{$header['master_table']}}-page");
 </script>
-@include('footers')

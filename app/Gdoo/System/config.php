@@ -5,9 +5,9 @@ return [
     "description" => "系统模块",
     'dialogs' => [
         'region' => [
-            'name'  => '行政区域',
-            'model' => 'Gdoo\System\Region::Dialog',
-            'url'   => 'system/region/dialog',
+            'name' => '行政区域',
+            'model' => 'Gdoo\System\Models\Region::Dialog',
+            'url' => 'system/region/dialog',
         ],
     ],
     "controllers" => [
@@ -133,11 +133,6 @@ return [
                 "index" => [
                     "name" => "列表"
                 ],
-                /*
-                "create" => [
-                    "name" => "新建"
-                ],
-                */
                 "edit" => [
                     "name" => "编辑"
                 ],

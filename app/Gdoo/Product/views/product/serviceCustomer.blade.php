@@ -5,7 +5,7 @@
 </div>
 
 <div class="col-xs-3">
-    <div class="list-jqgrid">
+    <div class="gdoo-list-grid">
         <div id="dialog-{{$search['query']['id']}}-tree" style="width:100%;height:380px;" class="ag-theme-balham abc"></div>
     </div>
 </div>

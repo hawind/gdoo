@@ -22,7 +22,6 @@ class RegionTaskController extends AuditController
             'referer' => 1,
             'sort' => 'customer_region_task_data.id',
             'order' => 'asc',
-            'search' => [],
         ]);
 
         $cols = $header['cols'];
@@ -32,6 +31,14 @@ class RegionTaskController extends AuditController
             'action' => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
+        ];
+        
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerRegionTask::$tabs;
         
         $search = $header['search_form'];
         $query = $search['query'];
@@ -69,22 +76,8 @@ class RegionTaskController extends AuditController
 
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
-            $rows = Grid::dataFilters($rows, $header);
-            return $rows->toJson();
+            return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
-        ];
-        
-        $header['right_buttons'] = [
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerRegionTask::$tabs;
-        $header['bys'] = CustomerRegionTask::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,
@@ -128,14 +121,14 @@ class RegionTaskController extends AuditController
     {
         $year = date('Y');
         $search = search_form([], [[
-                'form_type' => 'year', 
-                'field' => 'date', 
+                'form_type' => 'year',
+                'field' => 'date',
                 'name' => '年份',
                 'value' => $year,
             ],[
-                'form_type' =>'dialog', 
+                'form_type' =>'dialog',
                 'field' => 'region_id',
-                'name' => '销售组', 
+                'name' => '销售组',
                 'options' => ['url' => 'customer/region/dialog', 'query' => ['layer' => 3]]
             ],
         ], 'model');

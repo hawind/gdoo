@@ -34,6 +34,19 @@ class PriceController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['right_buttons'] = [
+            ['name' => '导入', 'icon' => 'fa-mail-reply', 'color' => 'default', 'action' => 'import', 'display' => $this->access['import']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerPrice::$tabs;
+        $header['bys'] = CustomerPrice::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -65,20 +78,6 @@ class PriceController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['right_buttons'] = [
-            ['name' => '导入', 'icon' => 'fa-mail-reply', 'color' => 'default', 'action' => 'import', 'display' => $this->access['import']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerPrice::$tabs;
-        $header['bys'] = CustomerPrice::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

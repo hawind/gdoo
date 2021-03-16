@@ -1,5 +1,5 @@
 function getPanelHeight(v) {
-    var list = $('.list-jqgrid').position();
+    var list = $('.gdoo-list-grid').position();
     var position = list.top + v +'px';
     return 'calc(100vh - ' + position + ')';
 }

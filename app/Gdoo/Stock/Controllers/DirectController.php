@@ -32,6 +32,14 @@ class DirectController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Direct::$tabs;
+        $header['bys'] = Direct::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -52,15 +60,6 @@ class DirectController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Direct::$tabs;
-        $header['bys'] = Direct::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

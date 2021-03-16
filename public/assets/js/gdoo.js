@@ -75,6 +75,50 @@
         };
 
         this.action = new gridAction();
+        
+        // 默认不自动计算栏目宽度
+        this.grid.autoColumnsToFit = false;
+
+        // 默认点击行触发
+        this.grid.onRowDoubleClicked = function (params) {
+            if (params.node.rowPinned) {
+                return;
+            }
+            if (params.data == undefined) {
+                return;
+            }
+            if (params.data.master_id > 0) {
+                if (root.action.rowDoubleClick) {
+                    root.action.rowDoubleClick(params.data);
+                }
+            }
+        };
+
+        this.div = function(height) {
+            var gridDiv = document.querySelector("#" + this.table + "-grid");
+            // 因为panel高度根据页面原素高度不一致，这里设置修正值
+            gridDiv.style.height = this.getPanelHeight(height);
+            new agGrid.Grid(gridDiv, this.grid);
+
+            // 绑定自定义事件
+            $(gridDiv).on('click', '[data-toggle="event"]', function () {
+                var data = $(this).data();
+                if (data.master_id > 0) {
+                    root.action[data.action](data);
+                }
+            });
+
+            return gridDiv;
+        }
+
+        /**
+         * 获取panel计算整体窗口高度
+         */
+        this.getPanelHeight = function(v) {
+            var list = $('.gdoo-list-grid').position();
+            var position = list.top + v +'px';
+            return 'calc(100vh - ' + position + ')';
+        }
 
         this.init = function(res) {
             var me = this;
@@ -84,53 +128,59 @@
                 me.header.init = true;
                 me.header.create_btn = header.create_btn;
                 me.header.trash_btn = header.trash_btn;
-                me.header.access = header.access;
                 me.header.name = header.name;
                 me.header.table = table;
-    
+
                 // 搜索
                 var search_form = header.search_form;
                 search_form.simple_search = header.simple_search_form;
-
                 me.header.search_form = search_form;
                 me.search.forms = search_form.forms;
 
-                // 设置栏目
-                me.grid.api.setColumnDefs(header.columns);
-                me.grid.columnDefs = header.columns;
-
-                me.grid.remoteParams = search_form.query;
-    
                 // 操作
                 me.action.table = table;
                 me.action.name = header.master_name;
                 me.action.bill_url = header.bill_uri;
+
+                // access
+                if (header.access) {
+                    me.header.access = header.access;
+                }
     
                 // 按钮
-                me.header.right_buttons = header.right_buttons;
-                me.header.left_buttons = header.left_buttons;
-                me.header.center_buttons = header.buttons;
+                if (header.right_buttons) {
+                    me.header.right_buttons = header.right_buttons;
+                }
+                if (header.left_buttons) {
+                    me.header.left_buttons = header.left_buttons;
+                }
+                if (header.buttons) {
+                    me.header.center_buttons = header.buttons;
+                }
     
+                // bys
+                if (header.bys) {
+                    me.header.bys = header.bys;
+                }
+
                 // tabs
-                me.header.bys = header.bys;
-                me.header.tabs = header.tabs;
-                me.header.tabs.active = search_form.params['tab'] ? search_form.params['tab'] : header.tabs.items[0].value;
-                
+                if (header.tabs) {
+                    me.header.tabs = header.tabs;
+                    me.header.tabs.active = search_form.params['tab'] ? search_form.params['tab'] : header.tabs.items[0].value;
+                }
+
+                // 设置栏目
+                me.grid.api.setColumnDefs(header.columns);
+                me.grid.columnDefs = header.columns;
+                me.grid.remoteParams = search_form.query;
+
                 // 渲染完成显示div
-                $('#' + table + '-controller').show();
+                $('#' + table + '-page').show();
 
                 setTimeout(function() {
                     me.searchForm();
                 }, 1);
 
-                // 绑定自定义事件
-                var $gridDiv = $("#" + table + "-grid");
-                $gridDiv.on('click', '[data-toggle="event"]', function () {
-                    var data = $(this).data();
-                    if (data.master_id > 0) {
-                        me.action[data.action](data);
-                    }
-                });
             }
         }
     
@@ -156,37 +206,10 @@
             });
         }
     
-        this.tabBtn = function(tab) {
-            root.header.tabs.active = tab.value;
-            root.grid.remoteData({page:1, tab:tab.value});
-        }
-        this.actBtn = function(act) {
-            root.action[act]();
-        }
-        this.linkBtn = function(btn) {
-            if (btn.action) {
-                root.action[btn.action]();
-            }
-        }
-        this.byBtn = function(by) {
-            root.header.by_title = by.name;
-            root.grid.remoteData({page:1, by:by.value});
-        }
-
-        function url(url, query) {
-            let params = this.toRaw(me.header.search_form.params);
-            for (const key in query) {
-                params[key] = query[key];
-            }
-            return app.url(url, params);
-        }
-
         this.setup = {
-            header: this.header, 
-            tabBtn: this.tabBtn,
-            actBtn: this.actBtn,
-            linkBtn: this.linkBtn,
-            byBtn: this.byBtn
+            header: this.header,
+            action: this.action,
+            grid: this.grid
         };
 
         gdoo.grids[table] = {

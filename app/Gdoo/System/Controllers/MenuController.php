@@ -124,6 +124,19 @@ class MenuController extends DefaultController
                 'filter' => false,
             ],
         ];
+
+        $cols = $header['cols'];
+        $cols['sequence_sn']['hide'] = true;
+        $cols['text']['hide'] = true;
+        unset($cols['checkbox']);
+        $header['cols'] = $cols;
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['search_form'] = $search;
         $query = $search['query'];
 
         if (Request::method() == 'POST') {
@@ -150,17 +163,11 @@ class MenuController extends DefaultController
             $items = $rows->items();
             array_nest($items);
             $rows->items($items);
-           
-            return $rows;
+
+            $ret = $rows->toArray();
+            $ret['header'] = Grid::getColumns($header);
+            return $ret;
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['search_form'] = $search;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

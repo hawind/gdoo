@@ -8,14 +8,14 @@ class Record01 extends BaseModel
     protected $table = 'stock_record01';
 
     public static $tabs = [
-        'name'  => 'tab',
+        'name' => 'tab',
         'items' => [
             ['value' => 'record01', 'url' => 'stock/record01/index', 'name' => '采购入库单'],
         ]
     ];
 
     public static $bys = [
-        'name'  => 'by',
+        'name' => 'by',
         'items' => [
             ['value' => '', 'name' => '全部'],
             ['value' => 'enabled', 'name' => '启用'],

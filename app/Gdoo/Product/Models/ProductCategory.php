@@ -12,17 +12,6 @@ class ProductCategory extends BaseModel
             ['value' => 'category.index', 'url' => 'product/category/index', 'name' => '产品类别'],
         ]
     ];
-
-    public static $bys = [
-        'name'  => 'by',
-        'items' => [
-            ['value' => '', 'name' => '全部'],
-            ['value' => 'divider'],
-            ['value' => 'day', 'name' => '今日创建'],
-            ['value' => 'week', 'name' => '本周创建'],
-            ['value' => 'month', 'name' => '本月创建'],
-        ]
-    ];
     
     public function scopeType($query, $type = 1)
     {

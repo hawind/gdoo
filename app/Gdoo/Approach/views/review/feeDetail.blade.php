@@ -15,7 +15,6 @@
     grid.remoteParams = params;
     grid.rowMultiSelectWithClick = false;
     grid.rowSelection = 'multiple';
-    // grid.autoColumnsToFit = false;
     grid.defaultColDef.suppressMenu = true;
     grid.defaultColDef.sortable = false;
     grid.columnDefs = [

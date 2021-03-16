@@ -26,12 +26,22 @@ class CustomerClassController extends DefaultController
         ]);
 
         $cols = $header['cols'];
+        $cols['sequence_sn']['hide'] = true;
+        $cols['name']['hide'] = true;
+
         $cols['actions']['options'] = [[
             'name' => '编辑',
             'action' => 'edit',
             'display' => $display['edit'],
         ]];
         unset($cols['checkbox']);
+
+        $header['buttons'] = [
+            ['name' => '删除','icon' => 'fa-remove','action' => 'delete','display' => $display['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerClass::$tabs;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -48,24 +58,13 @@ class CustomerClassController extends DefaultController
                 }
             }
 
-            $model->select($header['select'])
-            ->addSelect(DB::raw('parent_id'));
+            $model->select($header['select']);
 
             $items = $model->get()->toNested('name');
-            $items = Grid::dataFilters($items, $header, function($item) {
+            return Grid::dataFilters($items, $header, function($item) {
                 return $item;
             });
-            return $this->json($items, true);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除','icon' => 'fa-remove','action' => 'delete','display' => $display['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerClass::$tabs;
-        $header['bys'] = CustomerClass::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

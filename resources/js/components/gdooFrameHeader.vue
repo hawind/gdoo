@@ -89,7 +89,7 @@
 <script>
 import { defineComponent } from 'vue'
 export default defineComponent({
-    name: 'notification',
+    name: 'gdoo-frame-header',
     data() {
         return {
             user: {},

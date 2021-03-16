@@ -44,6 +44,18 @@ class ProductController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['right_buttons'] = [
+            ['name' => '导入', 'color' => 'default', 'icon' => 'fa-mail-reply', 'action' => 'import', 'display' => $this->access['import']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Product::$tabs;
+        $header['bys'] = Product::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -71,19 +83,6 @@ class ProductController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['right_buttons'] = [
-            ['name' => '导入', 'color' => 'default', 'icon' => 'fa-mail-reply', 'action' => 'import', 'display' => $this->access['import']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Product::$tabs;
-        $header['bys'] = Product::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

@@ -140,6 +140,16 @@ class MailController extends DefaultController
                 'filter' => false,
             ],
         ];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['left_buttons'] = [
+            ['name' => '测试邮件', 'color' => 'default', 'icon' => 'fa-envelope-o', 'action' => 'test', 'display' => 1],
+        ];
+
+        $header['search_form'] = $search;
         $query = $search['query'];
 
         if (Request::method() == 'POST') {
@@ -159,22 +169,11 @@ class MailController extends DefaultController
                 }
                 return $row;
             });
-            return $rows->toJson();
+            $ret = $rows->toArray();
+            $ret['header'] = Grid::getColumns($header);
+            return $ret;
         }
 
-        $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '测试邮件', 'color' => 'default', 'icon' => 'fa-envelope-o', 'action' => 'test', 'display' => 1],
-        ];
-
-        $header['search_form'] = $search;
-        $header['js'] = Grid::js($header);
-
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);

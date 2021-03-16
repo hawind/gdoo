@@ -29,9 +29,21 @@ class CostController extends AuditController
 
         $cols['actions']['options'] = [[
             'name' => '显示',
-            'action'  => 'show',
+            'action' => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['right_buttons'] = [
+            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
+            ['name' => '费用调整单', 'color' => 'info', 'icon' => 'fa-plus', 'action' => 'create4', 'display' => $this->access['create4']],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = Cost::$tabs;
+        $header['bys'] = Cost::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -70,25 +82,6 @@ class CostController extends AuditController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-        ];
-
-        $header['right_buttons'] = [
-            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
-            ['name' => '费用调整单', 'color' => 'info', 'icon' => 'fa-plus', 'action' => 'create4', 'display' => $this->access['create4']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Cost::$tabs;
-        $header['bys'] = Cost::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

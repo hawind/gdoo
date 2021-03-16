@@ -472,7 +472,7 @@
 @verbatim
 <div id="app">
     <div class="dragDemo">
-        <draggable class="list-group"
+        <gdooDraggable class="list-group"
             element="div"
             v-model="listLeft"
             :move="onMove"
@@ -482,8 +482,8 @@
             <div v-for="(item, key) in listLeft" :key="key">
                 {{item.name}}-{{item.value}}
             </div>
-        </draggable>
-        <draggable class="list-group"
+        </gdooDraggable>
+        <gdooDraggable class="list-group"
             element="div"
             v-model="listLeft1"
             :move="onMove"
@@ -493,8 +493,8 @@
             <div v-for="(item, key) in listLeft1" :key="key">
                 {{item.name}}-{{item.value}}
             </div>
-        </draggable>
-        <draggable class="list-group"
+        </gdooDraggable>
+        <gdooDraggable class="list-group"
             element="div"
             v-model="listRight"
             :move="onMove"
@@ -504,7 +504,7 @@
             <div v-for="(item,key) in listRight" :key="key">
                 {{item.name}}-{{item.value}}
             </div>
-        </draggable>
+        </gdooDraggable>
     </div>
 </div>
 @endverbatim

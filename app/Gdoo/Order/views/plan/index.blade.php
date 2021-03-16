@@ -1,7 +1,7 @@
 <div class="panel b-a" id="{{$header['master_table']}}-controller">
     @include('headers')
 
-    <div class='list-jqgrid'>
+    <div class='gdoo-list-grid'>
         <div id="{{$header['master_table']}}-grid" style="width:100%;" class="ag-theme-balham"></div>
     </div>
 </div>
@@ -17,12 +17,11 @@
     grid.remoteParams = params;
 
     grid.defaultColDef.suppressMenu = true;
-    //grid.defaultColDef.sortable = false;
     grid.defaultColDef.filter = false;
-    // grid.autoColumnsToFit = false;
     grid.singleClickEdit = true;
     grid.rowSelection = 'single';
     grid.suppressCellSelection = false;
+
     grid.columnDefs = [
         {cellClass:'text-center', field: 'sn', type: 'sn', headerName: '序号', width: 50},
         {cellClass:'text-center', field: 'product_code', headerName: '产品编码', width: 100},
@@ -101,7 +100,6 @@
         if (data.action == 'export') {
             action.export(data, '生产计划总表');
         }
-
     });
 
 })(jQuery);

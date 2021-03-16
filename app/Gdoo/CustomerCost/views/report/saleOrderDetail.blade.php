@@ -1,7 +1,7 @@
 <div class="panel b-a" id="{{$header['master_table']}}-controller">
     @include('headers')
 
-    <div class='list-jqgrid'>
+    <div class='gdoo-list-grid'>
         <div id="{{$header['master_table']}}-grid" style="width:100%;" class="ag-theme-balham"></div>
     </div>
 </div>

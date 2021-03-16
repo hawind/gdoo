@@ -8,7 +8,7 @@
 </div>
 
 <div class="todo-grid-box">
-    <div class="list-jqgrid" id="todo-grid-controller">
+    <div class="gdoo-list-grid" id="todo-grid-controller">
         <div id="todo-grid" class="ag-theme-balham" style="width:100%;height:200px;"></div>
     </div>
 </div>

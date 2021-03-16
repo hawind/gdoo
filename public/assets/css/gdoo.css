@@ -1879,13 +1879,20 @@ select.input-sm, select.form-group-sm .form-control {
 	background-color: #fafafa
 }
 
-/** vue 列表页样式定义 */
-.vue-list-page {
+/** gdoo 列表页样式定义 */
+.gdoo-list-page {
     display: none;
 }    
-.vue-list-page .search-inline-form .form-group {
+.gdoo-list-page .search-inline-form .form-group {
     margin-left: 4px;
 }
-.vue-list-page .btn-group {
+.gdoo-list-page .btn-group {
     margin-left: 4px;
+}
+.gdoo-list {
+    border-color: transparent;
+    border-width: 0;
+}
+.gdoo-list-grid .ag-theme-balham {
+    width: 100%;
 }

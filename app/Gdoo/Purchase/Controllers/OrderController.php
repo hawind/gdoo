@@ -33,6 +33,14 @@ class OrderController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Order::$tabs;
+        $header['bys'] = Order::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -53,15 +61,6 @@ class OrderController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Order::$tabs;
-        $header['bys'] = Order::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

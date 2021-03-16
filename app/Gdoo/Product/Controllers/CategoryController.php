@@ -25,12 +25,24 @@ class CategoryController extends DefaultController
 
         $cols = $header['cols'];
 
+        $cols['sequence_sn']['hide'] = true;
+        $cols['name']['hide'] = true;
+
         $cols['actions']['options'] = [[
             'name' => '编辑',
             'action' => 'edit',
             'display' => $this->access['edit'],
         ]];
+        
         unset($cols['checkbox']);
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = ProductCategory::$tabs;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -51,19 +63,8 @@ class CategoryController extends DefaultController
             $model->select($header['select']);
 
             $rows = $model->get()->toNested();
-            $items = Grid::dataFilters($rows, $header);
-            return $this->json($items, true);
+            return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = ProductCategory::$tabs;
-        $header['bys'] = ProductCategory::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

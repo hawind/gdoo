@@ -64,7 +64,6 @@ var params = JSON.parse('{{json_encode($query)}}');
     var sGrid = new agGridOptions();
     sGrid.remoteDataUrl = '{{url()}}';
     sGrid.remoteParams = params;
-    //sGrid.rowMultiSelectWithClick = true;
     sGrid.rowSelection = 'multiple';
     sGrid.autoColumnsToFit = false;
     sGrid.defaultColDef.suppressMenu = true;

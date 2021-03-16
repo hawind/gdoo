@@ -23,7 +23,6 @@ class LogisticsController extends DefaultController
             'code' => 'logistics',
             'referer' => 1,
             'search' => ['by' => ''],
-            'trash_btn' => 0,
         ]);
 
         $cols = $header['cols'];
@@ -33,6 +32,13 @@ class LogisticsController extends DefaultController
             'action' => 'edit',
             'display' => $this->access['edit'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = Logistics::$tabs;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -54,15 +60,6 @@ class LogisticsController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = Logistics::$tabs;
-        $header['bys'] = Logistics::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

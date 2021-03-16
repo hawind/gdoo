@@ -19,7 +19,7 @@
             <div class="panel-heading">
                 <div>字段列表</div>
             </div>
-            <draggable class="list-group"
+            <gdooDraggable class="list-group"
                 v-model="listLeft"
                 item-key="name"
                 group="people"
@@ -31,7 +31,7 @@
                         {{element.name}}
                     </a>
                 </template>
-            </draggable>
+            </gdooDraggable>
 
         </div>
     </div>
@@ -41,7 +41,7 @@
                 <div>字段列表</div>
             </div>
 
-            <draggable class="list-group"
+            <gdooDraggable class="list-group"
                 v-model="listRight"
                 item-key="name"
                 group="people"
@@ -52,7 +52,7 @@
                         {{element.name}}
                     </a>
                 </template>
-            </draggable>
+            </gdooDraggable>
         </div>
     </div>
     </div>
@@ -139,11 +139,12 @@
 }
 </style>
 <script>
+
 var template = JSON.parse('{{json_encode($template, JSON_UNESCAPED_UNICODE)}}');
 var rightIndex = -1;
 var vueData = {
     components: {
-        draggable: GdooVueComponents.draggable,
+        gdooDraggable,
     },
     data() {
         return {

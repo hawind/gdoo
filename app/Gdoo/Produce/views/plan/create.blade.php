@@ -25,8 +25,8 @@ var master_id = '{{$form["row"]["id"]}}';
 
 // grid初始化事件
 gdoo.event.set('grid.produce_plan_data', {
-    init() {
-        grid = this;
+    ready(me) {
+        grid = me;
         grid.enableCellTextSelection = false;
         grid.enableRangeSelection = true;
         grid.suppressContextMenu = false;
@@ -38,7 +38,6 @@ gdoo.event.set('grid.produce_plan_data', {
             var field = params.colDef.field;
             var value = params.value || 0;
             var style = {};
-            // 'font-weight':'bold', 
             if (field == "xqzc_num" && value > 0) {
                 style = {'color':'red'};
             }
@@ -56,9 +55,6 @@ gdoo.event.set('grid.produce_plan_data', {
             }
             return style;
         };
-    },
-    ready(me) {
-        grid = me;
         grid.dataKey = 'product_id';
     },
     onSaveAfter(res) {

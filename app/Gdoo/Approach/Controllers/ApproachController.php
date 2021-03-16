@@ -36,6 +36,19 @@ class ApproachController extends WorkflowController
         $cols['master_product']['cellRenderer'] = 'htmlCellRenderer';
         $cols['master_cash_amount']['cellRenderer'] = 'htmlCellRenderer';
 
+        $header['buttons'] = [
+            // ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Approach::$tabs;
+        $header['bys'] = Approach::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -73,20 +86,6 @@ class ApproachController extends WorkflowController
                 return $item;
             });
         }
-
-        $header['buttons'] = [
-            // ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Approach::$tabs;
-        $header['bys'] = Approach::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

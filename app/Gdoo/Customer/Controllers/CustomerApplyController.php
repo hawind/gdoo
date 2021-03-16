@@ -8,7 +8,6 @@ use Gdoo\Model\Grid;
 use Gdoo\Model\Form;
 
 use Gdoo\Customer\Models\CustomerApply;
-use Gdoo\User\Models\User;
 
 use Gdoo\Index\Controllers\WorkflowController;
 
@@ -32,11 +31,15 @@ class CustomerApplyController extends WorkflowController
             'name' => '显示',
             'action' => 'show',
             'display' => $this->access['show'],
-        ]/*,[
-            'name' => '编辑',
-            'action' => 'edit',
-            'display' => $this->access['edit'],
-        ]*/];
+        ]];
+
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerApply::$tabs;
+        $header['bys'] = CustomerApply::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -76,15 +79,6 @@ class CustomerApplyController extends WorkflowController
                 return $item;
             });
         }
-
-        $header['buttons'] = [
-            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerApply::$tabs;
-        $header['bys'] = CustomerApply::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

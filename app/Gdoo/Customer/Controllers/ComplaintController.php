@@ -38,6 +38,14 @@ class ComplaintController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerComplaint::$tabs;
+        $header['bys'] = CustomerComplaint::$bys;
+
         if (Request::method() == 'POST') {
 
             $model = DB::table($header['table'])->setBy($header);
@@ -64,15 +72,6 @@ class ComplaintController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerComplaint::$tabs;
-        $header['bys'] = CustomerComplaint::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

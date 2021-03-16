@@ -30,8 +30,6 @@ class SampleApplyController extends WorkflowController
 
         $cols = $header['cols'];
 
-        $cols = $header['cols'];
-
         // 自定义列
         $customFields = [
             'quantity' => [
@@ -61,6 +59,18 @@ class SampleApplyController extends WorkflowController
             'action' => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['right_buttons'] = [
+            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = SampleApply::$tabs;
+        $header['bys'] = SampleApply::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -97,20 +107,6 @@ class SampleApplyController extends WorkflowController
             return Grid::dataFilters($rows, $header);
         }
 
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['right_buttons'] = [
-            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = SampleApply::$tabs;
-        $header['bys'] = SampleApply::$bys;
-        $header['js'] = Grid::js($header);
-
         return $this->display([
             'header' => $header,
         ]);
@@ -132,6 +128,18 @@ class SampleApplyController extends WorkflowController
             'action' => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['right_buttons'] = [
+            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = SampleApply::$tabs2;
+        $header['bys'] = SampleApply::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -158,20 +166,6 @@ class SampleApplyController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['right_buttons'] = [
-            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = SampleApply::$tabs2;
-        $header['bys'] = SampleApply::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

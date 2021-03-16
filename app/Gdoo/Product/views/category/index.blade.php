@@ -1,26 +1,28 @@
-{{$header["js"]}}
-<div class="panel no-border" id="{{$header['table']}}-controller">
-    @include('headers')
-    <div class="list-jqgrid">
-        <div id="{{$header['table']}}-grid" class="ag-theme-balham"></div>
-        <div class="ag-theme-balham" id="ag-pagination"></div>
-        <div class="clearfix"></div>
+<div class="gdoo-list-page" id="{{$header['master_table']}}-page">
+    <div class="gdoo-list panel">
+        <div class="gdoo-list-header">
+            <gdoo-grid-header :header="header" :grid="grid" :action="action" />
+        </div>
+        <div class='gdoo-list-grid'>
+            <div id="{{$header['master_table']}}-grid" class="ag-theme-balham"></div>
+        </div>
     </div>
 </div>
+
 <script>
-    (function ($) {
-        var table = '{{$header["table"]}}';
-        var config = gdoo.grids[table];
-        var action = config.action;
-        var search = config.search;
+Vue.createApp({
+    components: {
+        gdooGridHeader,
+    },
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
 
-        var grid = new agGridOptions;
+        var config = new gdoo.grid(table);
 
-        var gridDiv = document.querySelector("#{{$header['table']}}-grid");
-        gridDiv.style.height = getPanelHeight(11);
+        var grid = config.grid;
+        grid.autoColumnsToFit = true;
+        grid.remoteDataUrl = '{{url()}}';
 
-        config.cols[0]['hide'] = true;
-        config.cols[1]['hide'] = true;
         grid.autoGroupColumnDef = {
             headerName: '名称',
             width: 250,
@@ -31,43 +33,24 @@
         };
         grid.treeData = true;
         grid.groupDefaultExpanded = -1;
-        
         grid.getDataPath = function(data) {
             return data.tree_path;
         };
 
-        grid.remoteDataUrl = '{{url()}}';
-        grid.remoteParams = search.advanced.query;
-        grid.columnDefs = config.cols;
-        grid.onRowDoubleClicked = function (params) {
-            if (params.node.rowPinned) {
-                return;
-            }
-            if (params.data == undefined) {
-                return;
-            }
-            if (params.data.id > 0) {
-                params.data.master_id = params.data.id;
-                action.edit(params.data);
-            }
-        };
+        var action = config.action;
+        // 双击行执行的方法
+        action.rowDoubleClick = action.edit;
 
-        new agGrid.Grid(gridDiv, grid);
+        var setup = config.setup;
 
-        // 读取数据
-        grid.remoteData({page: 1});
-
-        // 绑定自定义事件
-        var $gridDiv = $(gridDiv);
-        $gridDiv.on('click', '[data-toggle="event"]', function () {
-            var data = $(this).data();
-            if (data.master_id > 0) {
-                action[data.action](data);
-            }
+        Vue.onMounted(function() {
+            var gridDiv = config.div(101);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
         });
-
-        config.grid = grid;
-
-    })(jQuery);
+        return setup;
+    }
+}).mount("#{{$header['master_table']}}-page");
 </script>
-@include('footers')

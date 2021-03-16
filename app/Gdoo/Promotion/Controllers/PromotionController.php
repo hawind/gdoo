@@ -55,6 +55,17 @@ class PromotionController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['left_buttons'] = [
+            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Promotion::$tabs;
+        $header['bys'] = Promotion::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -92,20 +103,6 @@ class PromotionController extends WorkflowController
                 return $item;
             });
         }
-
-        $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Promotion::$tabs;
-        $header['bys'] = Promotion::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

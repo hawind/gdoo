@@ -38,6 +38,24 @@ class CustomerController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
+            ['name' => '销售产品价格', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'priceEdit', 'display' => $this->access['priceEdit']],
+        ];
+        
+        $header['right_buttons'] = [
+            ['name' => '导入', 'color' => 'default', 'icon' => 'fa-mail-reply', 'action' => 'import', 'display' => $this->access['import']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Customer::$tabs;
+        $header['bys'] = Customer::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -77,25 +95,6 @@ class CustomerController extends DefaultController
                 return $item;
             });
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-            ['name' => '销售产品价格', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'priceEdit', 'display' => $this->access['priceEdit']],
-        ];
-        
-        $header['right_buttons'] = [
-            ['name' => '导入', 'color' => 'default', 'icon' => 'fa-mail-reply', 'action' => 'import', 'display' => $this->access['import']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Customer::$tabs;
-        $header['bys'] = Customer::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

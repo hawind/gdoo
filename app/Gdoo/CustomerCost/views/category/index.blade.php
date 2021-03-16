@@ -1,52 +1,42 @@
-{{$header["js"]}}
-
-<div class="panel no-border" id="{{$header['table']}}-controller">
-    @include('headers')
-    <div class='list-jqgrid'>
-        <div id="{{$header['table']}}-grid" style="width:100%;" class="ag-theme-balham"></div>
+<div class="gdoo-list-page" id="{{$header['master_table']}}-page">
+    <div class="gdoo-list panel">
+        <div class="gdoo-list-header">
+            <gdoo-grid-header :header="header" :grid="grid" :action="action" />
+        </div>
+        <div class='gdoo-list-grid'>
+            <div id="{{$header['master_table']}}-grid" class="ag-theme-balham"></div>
+        </div>
     </div>
 </div>
+
 <script>
-    (function ($) {
-        var table = '{{$header["table"]}}';
-        var config = gdoo.grids[table];
+Vue.createApp({
+    components: {
+        gdooGridHeader,
+    },
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
+
+        var config = new gdoo.grid(table);
+
+        var grid = config.grid;
+        grid.autoColumnsToFit = true;
+        grid.remoteDataUrl = '{{url()}}';
+
         var action = config.action;
-        var search = config.search;
+        // 双击行执行的方法
+        action.rowDoubleClick = action.edit;
 
-        var options = new agGridOptions();
-        var gridDiv = document.querySelector("#{{$header['table']}}-grid");
-        gridDiv.style.height = getPanelHeight(48);
+        var setup = config.setup;
 
-        options.remoteDataUrl = '{{url()}}';
-        options.remoteParams = search.advanced.query;
-        options.columnDefs = config.cols;
-        options.onRowDoubleClicked = function (params) {
-            if (params.node.rowPinned) {
-                return;
-            }
-            if (params.data == undefined) {
-                return;
-            }
-            if (params.data.id > 0) {
-                action.edit(params.data);
-            }
-        };
-
-        new agGrid.Grid(gridDiv, options);
-
-        // 读取数据
-        options.remoteData({page: 1});
-
-        // 绑定自定义事件
-        var $gridDiv = $(gridDiv);
-        $gridDiv.on('click', '[data-toggle="event"]', function () {
-            var data = $(this).data();
-            if (data.master_id > 0) {
-                action[data.action](data);
-            }
+        Vue.onMounted(function() {
+            var gridDiv = config.div(136);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
         });
-        config.grid = options;
-    })(jQuery);
-
+        return setup;
+    }
+}).mount("#{{$header['master_table']}}-page");
 </script>
-@include('footers')

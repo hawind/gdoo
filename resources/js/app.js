@@ -3,13 +3,14 @@ require('./bootstrap');
 const Vue = require('vue');
 window.Vue = Vue;
 
-// 把vue的模块传递给全局变量
-import Notification from './components/Notification.vue';
+// 第三方全局模块
 import draggable from 'vuedraggable';
-import GdooFormDesigner from './components/GdooFormDesigner.vue';
+window.gdooDraggable = draggable;
 
-window.GdooVueComponents = {
-    draggable: draggable,
-    gdooFormDesigner: GdooFormDesigner,
-    notification: Notification
-};
+// 自定义全局模块
+import gdooFrameHeader from './components/gdooFrameHeader.vue';
+import gdooFormDesigner from './components/gdooFormDesigner.vue';
+import gdooGridHeader from './components/gdooGridHeader.vue';
+window.gdooFrameHeader = gdooFrameHeader;
+window.gdooFormDesigner = gdooFormDesigner;
+window.gdooGridHeader = gdooGridHeader;

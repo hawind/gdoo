@@ -1,4 +1,4 @@
-<div class="list-jqgrid">
+<div class="gdoo-list-grid">
     <div id="customer-birthday-widget" class="ag-theme-balham" style="width:100%;height:200px;"></div>
 </div>
 <script>

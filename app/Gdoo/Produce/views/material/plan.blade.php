@@ -8,7 +8,7 @@
         <span id="plan_info"></span>
     </div>
 
-    <div class='list-jqgrid'>
+    <div class='gdoo-list-grid'>
         <div id="material_plan-grid" style="width:100%;" class="ag-theme-balham"></div>
     </div>
 </div>

@@ -189,6 +189,17 @@ class WidgetController extends DefaultController
                 'filter' => false,
             ],
         ];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => 0],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '更新', 'color' => 'default', 'icon' => 'fa-refresh', 'action' => 'refresh', 'display' => 1],
+        ];
+
+        $header['search_form'] = $search;
         $query = $search['query'];
 
         if (Request::method() == 'POST') {
@@ -207,24 +218,13 @@ class WidgetController extends DefaultController
                 $row['default'] = $row['default'] == 1 ? '是' : '否';
                 $row['status'] = $row['status'] == 1 ? '启用' : '禁用';
                 $row['grid'] = $row['grid'] == 8 ? '左' : '右';
-
                 $row['updated_dt'] = format_datetime($row['updated_at']);
                 return $row;
             });
-            return $rows;
+            $ret = $rows->toArray();
+            $ret['header'] = Grid::getColumns($header);
+            return $ret;
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '更新', 'color' => 'default', 'icon' => 'fa-refresh', 'action' => 'refresh', 'display' => 1],
-        ];
-
-        $header['search_form'] = $search;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

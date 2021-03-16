@@ -29,9 +29,22 @@ class AdjustController extends AuditController
 
         $cols['actions']['options'] = [[
             'name' => '显示',
-            'action'  => 'show',
+            'action' => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['right_buttons'] = [
+            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Adjust::$tabs;
+        $header['bys'] = Adjust::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -63,20 +76,6 @@ class AdjustController extends AuditController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['right_buttons'] = [
-            ['name' => '关闭', 'color' => 'default', 'icon' => 'fa-lock', 'action' => 'close', 'display' => $this->access['close']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Adjust::$tabs;
-        $header['bys'] = Adjust::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

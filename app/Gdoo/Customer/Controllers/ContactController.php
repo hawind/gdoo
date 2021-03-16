@@ -29,10 +29,17 @@ class ContactController extends DefaultController
         $region = regionCustomer('customer_id_customer');
  
         $cols['actions']['options'] = [[
-            'name'  => '编辑',
+            'name' => '编辑',
             'action' => 'edit',
             'display' => $this->access['edit'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = Contact::$tabs;
+        $header['bys'] = Contact::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -61,14 +68,6 @@ class ContactController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = Contact::$tabs;
-        $header['bys']  = Contact::$bys;
-        $header['js']   = Grid::js($header);
 
         return $this->display([
             'header' => $header,

@@ -4,7 +4,7 @@
 }
 </style>
 <div class="wrapper-sm p-t-none">
-    <div class="list-jqgrid">
+    <div class="gdoo-list-grid">
         <div id="order-index-widget" class="ag-theme-balham" style="width:100%;height:200px;"></div>
     </div>
 </div>

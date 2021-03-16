@@ -31,6 +31,13 @@ class CategoryController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = StockCategory::$tabs;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -52,15 +59,6 @@ class CategoryController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = StockCategory::$tabs;
-        $header['bys'] = StockCategory::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

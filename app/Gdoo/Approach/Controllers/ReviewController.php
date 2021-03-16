@@ -34,6 +34,18 @@ class ReviewController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = ApproachReview::$tabs;
+        $header['bys'] = ApproachReview::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -60,20 +72,6 @@ class ReviewController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = ApproachReview::$tabs;
-        $header['bys'] = ApproachReview::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

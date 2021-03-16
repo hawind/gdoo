@@ -21,7 +21,7 @@ class Record11Controller extends AuditController
         $header = Grid::header([
             'code' => 'stock_record11',
             'referer' => 1,
-            'search'  => ['by' => ''],
+            'search' => ['by' => ''],
         ]);
 
         $cols = $header['cols'];
@@ -31,6 +31,14 @@ class Record11Controller extends AuditController
             'action'  => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Record11::$tabs;
+        $header['bys'] = Record11::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -52,15 +60,6 @@ class Record11Controller extends AuditController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Record11::$tabs;
-        $header['bys'] = Record11::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

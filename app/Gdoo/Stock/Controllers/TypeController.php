@@ -31,6 +31,14 @@ class TypeController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = StockType::$tabs;
+        $header['bys'] = StockType::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -52,15 +60,6 @@ class TypeController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = StockType::$tabs;
-        $header['bys'] = StockType::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

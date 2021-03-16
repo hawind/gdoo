@@ -16,6 +16,12 @@ class BillController extends DefaultController
 {
     public function indexAction()
     {
+        $search = search_form([
+            'advanced' => '',
+        ], [
+            ['form_type' => 'text', 'name' => '名称', 'field' => 'model_bill.name', 'value' => '', 'options' => []],
+        ], 'model');
+
         $header = [
             'master_name' => '单据',
             'simple_search_form' => 1,
@@ -23,12 +29,6 @@ class BillController extends DefaultController
             'master_table' => 'model_bill',
             'create_btn' => 1,
         ];
-
-        $search = search_form([
-            'advanced' => '',
-        ], [
-            ['form_type' => 'text', 'name' => '名称', 'field' => 'model_bill.name', 'value' => '', 'options' => []],
-        ], 'model');
 
         $header['cols'] = [
             'checkbox' => [
@@ -157,6 +157,13 @@ class BillController extends DefaultController
                 'filter' => false,
             ],
         ];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['search_form'] = $search;
         $query = $search['query'];
 
         if (Request::method() == 'POST') {
@@ -193,18 +200,12 @@ class BillController extends DefaultController
                 $row['model_name'] = $row['model_name'].'('.$row['model_table'].')';
                 return $row;
             });
-            return $rows;
+
+            $ret = $rows->toArray();
+            $ret['header'] = Grid::getColumns($header);
+            return $ret;
         }
 
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['search_form'] = $search;
-        $header['js'] = Grid::js($header);
-
-        // 配置权限
         return $this->display([
             'header' => $header,
         ]);

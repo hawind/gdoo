@@ -31,7 +31,7 @@
 		</form>
 	</div>
 
-	<div class="list-jqgrid">
+	<div class="gdoo-list-grid">
 		<div id="jqgrid-table" class="ag-theme-balham" style="width:100%;"></div>
 	</div>
 

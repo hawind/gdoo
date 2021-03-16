@@ -36,6 +36,14 @@ class PlanController extends WorkflowController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = Plan::$tabs;
+        $header['bys'] = Plan::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -56,15 +64,6 @@ class PlanController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = Plan::$tabs;
-        $header['bys'] = Plan::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

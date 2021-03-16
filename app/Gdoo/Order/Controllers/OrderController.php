@@ -199,6 +199,18 @@ class OrderController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerOrder::$tabs;
+        $header['bys'] = CustomerOrder::$bys;
+
         if (Request::method() == 'POST') {
             $model = DB::table($header['table'])->setBy($header);
             foreach ($header['join'] as $join) {
@@ -256,20 +268,6 @@ class OrderController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerOrder::$tabs;
-        $header['bys'] = CustomerOrder::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,
@@ -343,6 +341,14 @@ class OrderController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerOrder::$tabs2;
+        $header['bys'] = CustomerOrder::$bys;
+
         if (Request::method() == 'POST') {
 
             $model = DB::table($header['table'])->setBy($header);
@@ -386,16 +392,6 @@ class OrderController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerOrder::$tabs2;
-        $header['bys'] = CustomerOrder::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,
@@ -526,6 +522,20 @@ class OrderController extends WorkflowController
             'display' => $this->access['show'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '修改预计发货日期', 'color' => 'default', 'icon' => 'fa-file-text-o', 'action' => 'deliveryPlan', 'display' => $this->access['deliveryPlan']],
+            ['name' => '修改物流信息', 'color' => 'default', 'action' => 'logisticsPlan', 'display' => $this->access['logisticsPlan']],
+            ['name' => '修改运费支付方式', 'color' => 'default', 'action' => 'deliveryEdit', 'display' => $this->access['deliveryEdit']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerOrder::$tabs3;
+        $header['bys'] = CustomerOrder::$bys;
+
         if (Request::method() == 'POST') {
             $model = DB::table($header['table'])->setBy($header);
             foreach ($header['join'] as $join) {
@@ -581,22 +591,6 @@ class OrderController extends WorkflowController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '修改预计发货日期', 'color' => 'default', 'icon' => 'fa-file-text-o', 'action' => 'deliveryPlan', 'display' => $this->access['deliveryPlan']],
-            ['name' => '修改物流信息', 'color' => 'default', 'action' => 'logisticsPlan', 'display' => $this->access['logisticsPlan']],
-            ['name' => '修改运费支付方式', 'color' => 'default', 'action' => 'deliveryEdit', 'display' => $this->access['deliveryEdit']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerOrder::$tabs3;
-        $header['bys'] = CustomerOrder::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

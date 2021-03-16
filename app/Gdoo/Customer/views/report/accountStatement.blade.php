@@ -6,7 +6,7 @@
         <a class="btn btn-sm btn-default" data-toggle="material_plan" data-action="export"><i class="fa fa-share"></i> 导出</a>
     </div>
 
-    <div class='list-jqgrid'>
+    <div class='gdoo-list-grid'>
         <div id="material_plan-grid" style="width:100%;" class="ag-theme-balham"></div>
     </div>
 </div>

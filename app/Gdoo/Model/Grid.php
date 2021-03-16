@@ -98,29 +98,6 @@ class Grid
             }
         }
 
-        $_header = $header;
-        unset($_header['columns']);
-        unset($_header['cols']);
-        unset($_header['dialogs']);
-        unset($_header['join']);
-        unset($_header['js']);
-        unset($_header['raw_select']);
-        unset($_header['search']);
-        unset($_header['select']);
-
-        // 重新组合字段给前端
-        $columns = [];
-        foreach ($header['cols'] as $field => $col) {
-            if ($field == 'action' && empty($col['events'])) {
-                continue;
-            }
-            if ($col['field'] == 'created_by') {
-                $col['formatter'] = 'created_by';
-            }
-            $columns[] = $col;
-        }
-        $_header['columns'] = $columns;
-
         $header['runs'] = $runs;
         $header['dialogs'] = $dialogs;
         $header['regions'] = $regions;
@@ -136,8 +113,43 @@ class Grid
         } else {
             $ret = collect(['data' => $rows]);
         }
-        $ret['header'] = $_header;
+
+        $ret['header'] = static::getColumns($header);
         return $ret;
+    }
+
+    /**
+     * 重新组合字段(主要给前端使用)
+     */
+    public static function getColumns($header)
+    {
+        $columns = [];
+        foreach ($header['cols'] as $field => $col) {
+            if ($field == 'action' && empty($col['events'])) {
+                continue;
+            }
+            if ($col['field'] == 'created_by') {
+                $col['formatter'] = 'created_by';
+            }
+            $columns[] = $col;
+        }
+
+        unset($header['cols']);
+        unset($header['dialogs']);
+        unset($header['join']);
+        unset($header['js']);
+        unset($header['raw_select']);
+        unset($header['search']);
+        unset($header['select']);
+        unset($header['runs']);
+        unset($header['regions']);
+
+        $header['columns'] = $columns;
+        
+        if (empty($header['bill_uri'])) {
+            $header['bill_uri'] = Request::module().'/'.Request::controller();
+        }
+        return $header;
     }
 
     public static function dataFilter($item, $header, $callback = null)

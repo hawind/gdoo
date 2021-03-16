@@ -62,7 +62,7 @@
                 </a>
             </li>
         </ul>
-        <div id="notificationApp"><notification/></div>
+        <div id="notificationApp"><gdoo-frame-header /></div>
     </header>
 
     <div class="nav-scroll">
@@ -178,7 +178,7 @@
     <script>
         const vueApp = Vue.createApp({
             components: {
-                notification: GdooVueComponents.notification,
+                gdooFrameHeader,
             }
         });
         vueApp.config.globalProperties.url = app.url;

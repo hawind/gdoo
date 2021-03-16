@@ -32,6 +32,14 @@ class TaskController extends AuditController
             'action' => 'show',
             'display' => $this->access['show'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerTask::$tabs;
         
         $search = $header['search_form'];
         $query = $search['query'];
@@ -59,22 +67,8 @@ class TaskController extends AuditController
 
             $model->select($header['select']);
             $rows = $model->paginate($query['limit'])->appends($query);
-            $rows = Grid::dataFilters($rows, $header);
-            return $rows->toJson();
+            return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-mail-reply', 'action' => 'export', 'display' => 1],
-        ];
-        
-        $header['right_buttons'] = [
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerTask::$tabs;
-        $header['bys'] = CustomerTask::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

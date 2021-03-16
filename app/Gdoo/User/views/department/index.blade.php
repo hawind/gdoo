@@ -1,7 +1,7 @@
 {{$header["js"]}}
 <div class="panel no-border" id="{{$header['table']}}-controller">
     @include('headers')
-    <div class="list-jqgrid">
+    <div class="gdoo-list-grid">
         <div id="{{$header['table']}}-grid" class="ag-theme-balham"></div>
         <div class="ag-theme-balham" id="ag-pagination"></div>
         <div class="clearfix"></div>

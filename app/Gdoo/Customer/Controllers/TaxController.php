@@ -34,6 +34,19 @@ class TaxController extends AuditController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = CustomerTax::$tabs;
+        $header['bys'] = CustomerTax::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -62,20 +75,6 @@ class TaxController extends AuditController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '批量编辑', 'color' => 'default', 'icon' => 'fa-pencil-square-o', 'action' => 'batchEdit', 'display' => $this->access['batchEdit']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = CustomerTax::$tabs;
-        $header['bys'] = CustomerTax::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,
