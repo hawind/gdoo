@@ -70,8 +70,6 @@
     new agGrid.Grid(gridDiv, options);
 
     window.todoGrid = options;
-
-    // 读取数据
     options.remoteData();
 
     gdoo.widgets['model_todo_widget'] = options;

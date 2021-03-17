@@ -53,9 +53,9 @@ var params = JSON.parse('{{json_encode($query)}}');
         sGrid.remoteData(params);
     };
     new agGrid.Grid(mGridDiv, mGrid);
-    // 读取数据
     mGrid.remoteData();
     $ref_customer_order = mGrid;
+
     params['master'] = 0;
     var sGridDiv = document.querySelector("#ref_cancel_order_data");
     var sGrid = new agGridOptions();
@@ -92,7 +92,6 @@ var params = JSON.parse('{{json_encode($query)}}');
     };
 
     new agGrid.Grid(sGridDiv, sGrid);
-    // 读取数据
     sGrid.remoteData();
     $ref_customer_order_data = sGrid;
 

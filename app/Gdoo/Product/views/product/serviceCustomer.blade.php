@@ -73,7 +73,6 @@
     treeOptions.remoteDataUrl = "{{url('category')}}";
 
     new agGrid.Grid(gridDiv, treeOptions);
-    // 读取数据
     treeOptions.remoteData();
 
     var search = JSON.parse('{{json_encode($search)}}');
@@ -83,7 +82,6 @@
     var event = gdoo.event.get(option.key);
     event.trigger('query', params);
 
-    var sid = params.prefix == 1 ? 'sid' : 'id';
     var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     var grid = new agGridOptions();
     var multiple = params.multi == 0 ? false : true;
@@ -111,71 +109,18 @@
     };
 
     grid.onRowDoubleClicked = function (row) {
-        var ret = writeSelected();
+        var ret = gdoo.writeSelected(event, params, option, grid);
         if (ret == true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
-    /**
-    * 初始化选择
-    */
-    function initSelected() {
-        if (params.is_grid) {
-        } else {
-            var rows = {};
-            var id = $('#'+option.id).val();
-            if (id) {
-                var ids = id.split(',');
-                for (var i = 0; i < ids.length; i++) {
-                    rows[ids[i]] = ids[i];
-                }
-            }
-            grid.api.forEachNode(function(node) {
-                var key = node.data[sid];
-                if (rows[key] != undefined) {
-                    node.setSelected(true);
-                }
-            });
-        }
-    }
-
-    /**
-    * 写入选中
-    */
-    function writeSelected() {
-        var rows = grid.getSelectedRows();
-        if (params.is_grid) {
-            var list = gdoo.forms[params.form_id];
-            list.api.dialogSelected(params);
-        } else {
-            var id = [];
-            var text = [];
-            $.each(rows, function(k, row) {
-                id.push(row[sid]);
-                text.push(row.name);
-            });
-            $('#'+option.id).val(id.join(','));
-            $('#'+option.id+'_text').val(text.join(','));
-
-            if (event.exist('onSelect')) {
-                return event.trigger('onSelect', multiple ? rows : rows[0]);
-            }
-        }
-
-        return true;
-    }
-    grid.writeSelected = writeSelected;
     gdoo.dialogs[option.id] = grid;
-
     new agGrid.Grid(gridDiv, grid);
     
-    // 读取数据
     grid.remoteData({page: 1});
-
-    // 数据载入成功
-    grid.remoteSuccessed = function() {
-        initSelected();
+    grid.remoteAfterSuccess = function() {
+        gdoo.initSelected(params, option, grid);
     }
 
     var data = search.forms;

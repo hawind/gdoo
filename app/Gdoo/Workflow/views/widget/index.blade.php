@@ -43,7 +43,6 @@
     };
     new agGrid.Grid(gridDiv, options);
 
-    // 读取数据
     options.remoteData({page: 1});
 
     gdoo.widgets['workflow_widget_index'] = options;

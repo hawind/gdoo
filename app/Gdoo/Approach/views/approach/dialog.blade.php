@@ -68,64 +68,15 @@ var params = JSON.parse('{{json_encode($query)}}');
     };
 
     mGrid.onRowDoubleClicked = function (row) {
-        var ret = writeSelected();
+        var ret = gdoo.writeSelected(event, params, option, mGrid);
         if (ret === true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
-    /**
-     * 初始化选择
-     */
-    function initSelected() {
-        if (params.is_grid) {
-        } else {
-            var rows = {};
-            var id = $('#'+option.id).val();
-            if (id) {
-                var ids = id.split(',');
-                for (var i = 0; i < ids.length; i++) {
-                    rows[ids[i]] = ids[i];
-                }
-            }
-            mGrid.api.forEachNode(function(node) {
-                var key = node.data['id'];
-                if (rows[key] != undefined) {
-                    node.setSelected(true);
-                }
-            });
-        }
-    }
-
-    /**
-     * 写入选中
-     */
-    function writeSelected() {
-        var rows = mGrid.api.getSelectedRows();
-        if (params.is_grid) {
-            var list = gdoo.forms[params.form_id];
-            list.api.dialogSelected(params);
-        } else {
-            var id = [];
-            var text = [];
-            $.each(rows, function(k, row) {
-                id.push(row['id']);
-                text.push(row.name);
-            });
-            $('#'+option.id).val(id.join(','));
-            $('#'+option.id+'_text').val(text.join(','));
-
-            if (event.exist('onSelect')) {
-                return event.trigger('onSelect', multiple ? rows : rows[0]);
-            }
-        }
-        return true;
-    }
-    mGrid.writeSelected = writeSelected;
     gdoo.dialogs[option.id] = mGrid;
-
     new agGrid.Grid(mGridDiv, mGrid);
-    // 读取数据
+
     mGrid.remoteData();
     $ref_approach = mGrid;
 
@@ -161,14 +112,12 @@ var params = JSON.parse('{{json_encode($query)}}');
     };
 
     new agGrid.Grid(sGridDiv, sGrid);
-    // 读取数据
     sGrid.remoteData();
     $ref_approach_data = sGrid;
 
     var data = JSON.parse('{{json_encode($search["forms"])}}');
     var search = $('#dialog-approach-search-form').searchForm({
-        data: data,
-        init:function(e) {}
+        data: data
     });
 
     search.find('#search-submit').on('click', function() {

@@ -22,7 +22,6 @@ var $promotion_customer_order_data = null;
     var event = gdoo.event.get(option.key);
     event.trigger('query', params);
 
-    var sid = params.prefix == 1 ? 'sid' : 'id';
     var multiple = params.multi == 0 ? false : true;
     var mGrid = new agGridOptions();
 
@@ -56,69 +55,19 @@ var $promotion_customer_order_data = null;
     };
 
     mGrid.onRowDoubleClicked = function (row) {
-        var ret = writeSelected();
+        var ret = gdoo.writeSelected(event, params, option, mGrid);
         if (ret == true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
-    /**
-     * 初始化选择
-     */
-    function initSelected() {
-        if (params.is_grid) {
-        } else {
-            var rows = {};
-            var id = $('#'+option.id).val();
-            if (id) {
-                var ids = id.split(',');
-                for (var i = 0; i < ids.length; i++) {
-                    rows[ids[i]] = ids[i];
-                }
-            }
-            mGrid.api.forEachNode(function(node) {
-                var key = node.data[sid];
-                if (rows[key] != undefined) {
-                    node.setSelected(true);
-                }
-            });
-        }
-    }
-
-    /**
-     * 写入选中
-     */
-    function writeSelected() {
-        var rows = mGrid.api.getSelectedRows();
-        if (params.is_grid) {
-            var list = gdoo.forms[params.form_id];
-            list.api.dialogSelected(params);
-        } else {
-            var id = [];
-            var text = [];
-            $.each(rows, function(k, row) {
-                id.push(row[sid]);
-                text.push(row.name);
-            });
-            $('#'+option.id).val(id.join(','));
-            $('#'+option.id+'_text').val(text.join(','));
-
-            if (event.exist('onSelect')) {
-                return event.trigger('onSelect', multiple ? rows : rows[0]);
-            }
-        }
-        return true;
-    }
-    mGrid.writeSelected = writeSelected;
     gdoo.dialogs[option.id] = mGrid;
-
     var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     new agGrid.Grid(gridDiv, mGrid);
-    // 读取数据
+    
     mGrid.remoteData();
-    // 数据载入成功
-    mGrid.remoteSuccessed = function() {
-        initSelected();
+    mGrid.remoteAfterSuccess = function() {
+        gdoo.initSelected(params, option, mGrid);
     }
 
     params['master'] = 0;
@@ -148,7 +97,6 @@ var $promotion_customer_order_data = null;
         {cellClass:'text-center', field: 'id', headerName: 'ID', width: 60}
     ];
     new agGrid.Grid(sGridDiv, sGrid);
-    // 读取数据
     sGrid.remoteData();
     $promotion_customer_order_data = sGrid;
 

@@ -55,7 +55,7 @@ var params = JSON.parse('{{json_encode($query)}}');
         sGrid.remoteData(params);
     };
     new agGrid.Grid(mGridDiv, mGrid);
-    // 读取数据
+
     mGrid.remoteData();
     $ref_promotion = mGrid;
 
@@ -82,7 +82,7 @@ var params = JSON.parse('{{json_encode($query)}}');
         {cellClass:'text-center', field: 'id', headerName: 'ID', width: 60}
     ];
     new agGrid.Grid(sGridDiv, sGrid);
-    // 读取数据
+
     sGrid.remoteData();
     $ref_promotion_data = sGrid;
 

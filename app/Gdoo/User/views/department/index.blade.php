@@ -42,7 +42,6 @@
         grid.columnDefs = config.cols;
         new agGrid.Grid(gridDiv, grid);
 
-        // 读取数据
         grid.remoteData();
 
         // 绑定自定义事件

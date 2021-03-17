@@ -85,7 +85,6 @@ var params = JSON.parse('{{json_encode($query)}}');
         {cellClass:'text-right',field:'undertake_money', headerName: '支持费用', width: 100}
     ];
     new agGrid.Grid(tabDiv, grid);
-    // 读取数据
     grid.remoteData({type: 'promotion'});
 
     var tabDiv2 = document.querySelector("#ref_tab_b");
@@ -102,7 +101,6 @@ var params = JSON.parse('{{json_encode($query)}}');
         {cellClass:'text-right',field:'apply2_money', headerName: '支持费用', width: 140}
     ];
     new agGrid.Grid(tabDiv2, grid2);
-    // 读取数据
     grid2.remoteData({type: 'approach'});
 
     var tabDiv3 = document.querySelector("#ref_tab_c");
@@ -118,7 +116,6 @@ var params = JSON.parse('{{json_encode($query)}}');
         {cellClass:'text-right',field:'undertake_money', headerName: '支持费用', width: 140}
     ];
     new agGrid.Grid(tabDiv3, grid3);
-    // 读取数据
     grid3.remoteData({type: 'material'});
 })(jQuery);
 </script>

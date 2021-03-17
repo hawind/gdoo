@@ -62,7 +62,6 @@
         grid.remoteDataUrl = app.url(params.url);
         grid.remoteParams = params;
 
-        // 读取数据
         grid.remoteData();
         return $input;
     }

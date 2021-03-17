@@ -74,7 +74,6 @@
         grid.api.setColumnDefs(columnDefs);
     }
 
-    // 读取数据
     grid.remoteData(null, function(res) {
         setColumns(res);
     });

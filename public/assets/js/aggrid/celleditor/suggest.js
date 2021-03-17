@@ -58,7 +58,6 @@
     function refreshDropMenu($input, data, options) {
         showDropMenu($input, options);
         grid.remoteParams.q = $input.val();
-        // 读取数据
         grid.remoteData();
         return $input;
     }

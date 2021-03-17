@@ -22,7 +22,6 @@
 
     grid.columnDefs = columnDefs;
     new agGrid.Grid(gridDiv, grid);
-    // 读取数据
     grid.remoteData({page: 1});
 
     gdoo.widgets['customer_widget_birthday'] = grid;

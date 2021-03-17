@@ -47,7 +47,6 @@
     new agGrid.Grid(gridDiv, grid);
     gridDiv.style.height = getPanelHeight(12);
 
-    // 读取数据
     grid.remoteData();
 
     var search = $('#' + table + '-search-form-advanced').searchForm({

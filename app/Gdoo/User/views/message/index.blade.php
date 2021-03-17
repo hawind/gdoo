@@ -62,7 +62,6 @@
     gridDiv.style.height = getPanelHeight(48);
     new agGrid.Grid(gridDiv, grid);
 
-    // 读取数据
     grid.remoteData({page: 1});
 
     // 绑定自定义事件

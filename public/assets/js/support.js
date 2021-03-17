@@ -130,10 +130,9 @@ $(function() {
                 text: "确定",
                 'class': "btn-default",
                 click: function() {
-                    var me = this;
-                    var list = gdoo.dialogs[option.id] || {};
-                    if (typeof list.writeSelected == 'function') {
-                        var ret = list.writeSelected();
+                    var list = gdoo.dialogs[option.id];
+                    if (list) {
+                        var ret = gdoo.writeSelected(event, params, option, list);
                         if (ret === true) {
                             $(this).dialog("close");
                         }
@@ -875,9 +874,30 @@ function ajaxSubmit(table, callback) {
     });
 }
 
+/**
+ * 获取框架的name
+ * @returns
+ */
 function getIframeName() {
     var name = window.name;
     return name ? name.replace('iframe_', '') : '';
+}
+
+/**
+ * 获取框架的document
+ * @param {*} iframe_id 
+ * @returns 
+ */
+function getIframeDocument(iframe_id) {
+    if (iframe_id) {
+        var iframe = window.frames['iframe_' + iframe_id];
+        if (iframe) {
+            return iframe.document;
+        } else {
+            //toastrError('iframe_id参数无效。');
+        }
+    }
+    return null;
 }
 
 /**

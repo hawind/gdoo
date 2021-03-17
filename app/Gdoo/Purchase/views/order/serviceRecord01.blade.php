@@ -52,7 +52,6 @@
             sGrid.remoteData(params);
         };
         new agGrid.Grid(mGridDiv, mGrid);
-        // 读取数据
         mGrid.remoteData();
         $ref_purchase_order = mGrid;
         params['master'] = 0;
@@ -97,7 +96,6 @@
         };
     
         new agGrid.Grid(sGridDiv, sGrid);
-        // 读取数据
         sGrid.remoteData();
         $ref_purchase_order_data = sGrid;
     

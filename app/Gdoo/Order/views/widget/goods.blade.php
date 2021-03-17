@@ -31,7 +31,6 @@
         }
     };
     new agGrid.Grid(gridDiv, options);
-    // 读取数据
     options.remoteData({page: 1});
     gdoo.widgets['order_widget_goods'] = options;
 })(jQuery);

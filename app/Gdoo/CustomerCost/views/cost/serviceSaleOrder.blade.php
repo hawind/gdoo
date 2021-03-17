@@ -33,8 +33,6 @@ var params = JSON.parse('{{json_encode($query)}}');
 
     var gridDiv = document.querySelector("#ref_customer_cost");
     new agGrid.Grid(gridDiv, grid);
-
-    // 读取数据
     grid.remoteData();
 
     $ref_customer_cost = grid;

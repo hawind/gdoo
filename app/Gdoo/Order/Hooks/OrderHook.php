@@ -10,7 +10,7 @@ class OrderHook
         $permission = $params['permission'];
         $data = $permission['customer_order_data'];
 
-        // 是客户不能编辑产品类型
+        // 以下角色类型无法修改子表字段
         $role_ids = [2, 83, 84, 85];
         if (in_array(auth()->user()->role_id, $role_ids)) {
             // 不能编辑类型
@@ -44,33 +44,15 @@ class OrderHook
         // 只限制内销和直营
         if (in_array($master['type_id'], [1, 3])) {
             // 客户和区域经理和业务员限制下单数和倍数
-            $role_ids = [2, 83, 84];
-
-            // 成品数量
-            $product_quantity = $product_money = 0;
+            $role_ids = [2, 83, 84, 85];
 
             if (in_array(auth()->user()->role_id, $role_ids)) {
-
-                $_product_ids = DB::table('product')
-                ->whereRaw('product_type = 1')
-                ->pluck('id', 'id')->toArray();
-
-                $quantitys = [];
                 $product_ids = [];
                 foreach($params['datas'] as $i => $datas) {
                     if ($datas['table'] == 'customer_order_data') {
                         foreach($datas['data'] as $j => $row) {
                             $quantitys[$row['product_id']][] = $row['quantity'];
                             $product_ids[] = $row['product_id'];
-
-                            // 获取产成品数量
-                            if (isset($_product_ids[$row['product_id']])) {
-                                if ($row['type_id'] == 1) {
-                                    $product_quantity += $row['quantity'];
-                                    $product_money += $row['money'];
-                                }
-                            }
-
                         }
                     }
                 }
@@ -101,11 +83,6 @@ class OrderHook
             }
         }
 
-        $params['master'] = $master;
-
-        $fee = 0;
-        $amount = 0;
-
         foreach($params['datas'] as $i => $datas) {
             if ($datas['table'] == 'customer_order_data') {
 
@@ -116,9 +93,10 @@ class OrderHook
                         if (empty($row['promotion_sn'])) {
                             abort_error('赠品必须有编号。');
                         }
+
                         // 赠品修改客户促销开票单位
                         if ($row['fee_src_id'] > 0) {
-                            // 检查赠品是否在其他订单里已经使用过了
+                            // 促销费用首次使用回写开票单位到促销申请
                             $count = DB::table('customer_order_data')
                             ->where('order_id', '<>', $row['order_id'])
                             ->where('fee_src_id', $row['fee_src_id'])
@@ -139,27 +117,11 @@ class OrderHook
                         }
                     }
 
-                    // 判断费用比例
-                    $money = floatval($row['money']);
-                    if ($row['product_code'] == '99001') {
-                        $fee += $money;
-                    } else {
-                        $amount += $money;
-                    }
-
                     $datas['data'][$j] = $row;
                 }
                 $params['datas'][$i] = $datas;
             }
         }
-
-        // 费用不能大于20%
-        /*
-        $feeAmount = $amount * 0.2;
-        if (abs($fee) > $feeAmount) {
-            abort_error('费用金额不能大于'.$feeAmount);
-        }
-        */
         
         return $params;
     }

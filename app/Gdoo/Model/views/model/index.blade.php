@@ -68,8 +68,6 @@
         };
 
         new agGrid.Grid(gridDiv, options);
-
-        // 读取数据
         options.remoteData({page: 1});
 
         // 绑定自定义事件

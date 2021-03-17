@@ -47,6 +47,80 @@
         }
     };
 
+    /**
+     * 对话框字段写入选中
+     */
+    gdoo.writeSelected = function(event, params, option, grid) {
+        var rows = grid.api.getSelectedRows();
+        if (params.is_grid) {
+            var list = gdoo.forms[params.form_id];
+            list.api.dialogSelected(params);
+        } else {
+            var sid = params.prefix == 1 ? 'sid' : 'id';
+            var multiple = params.multi == 0 ? false : true;
+
+            var id = [];
+            var text = [];
+            $.each(rows, function(k, row) {
+                id.push(row[sid]);
+                text.push(row.name);
+            });
+
+            var doc = getIframeDocument(params.iframe_id);
+            if (doc) {
+                var $option_id = $('#' + option.id, doc);
+                var $option_text = $('#'+option.id + '_text', doc);
+            } else {
+                var $option_id = $('#' + option.id);
+                var $option_text = $('#' + option.id + '_text');
+            }
+
+            $option_id.val(id.join(','));
+            $option_text.val(text.join(','));
+
+            if (event.exist('onSelect')) {
+                return event.trigger('onSelect', multiple ? rows : rows[0]);
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * 初始化选择
+     */
+    gdoo.initSelected = function(params, option, grid) {
+        if (params.is_grid) {
+        } else {
+            var doc = getIframeDocument(params.iframe_id);
+            if (doc) {
+                var $option_id = $('#' + option.id, doc);
+            } else {
+                var $option_id = $('#' + option.id);
+            }
+
+            var sid = params.prefix == 1 ? 'sid' : 'id';
+            var id = $option_id.val();
+            var rows = {};
+            if (id) {
+                var ids = id.split(',');
+                for (var i = 0; i < ids.length; i++) {
+                    rows[ids[i]] = ids[i];
+                }
+            }
+
+            grid.api.forEachNode(function(node) {
+                var key = node.data[sid];
+                if (rows[key] != undefined) {
+                    node.setSelected(true);
+                }
+            });
+        }
+    }
+
+    /**
+     * grid列表显示构建
+     * @param {*} table
+     */
     gdoo.grid = function(table) {
         var root = this;
         this.table = table;

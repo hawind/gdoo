@@ -37,7 +37,6 @@
     var gridDiv = document.querySelector("#dialog-delivery_plan");
     new agGrid.Grid(gridDiv, grid);
 
-    // 读取数据
     grid.remoteData();
 
 })(jQuery);

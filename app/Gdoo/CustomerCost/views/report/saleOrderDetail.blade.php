@@ -51,8 +51,6 @@
     var gridDiv = document.querySelector("#{{$header['master_table']}}-grid");
     new agGrid.Grid(gridDiv, grid);
     gridDiv.style.height = getPanelHeight(12);
-
-    // 读取数据
     grid.remoteData();
 
     var search_advanced = $('#' + table + '-search-form-advanced').searchForm({

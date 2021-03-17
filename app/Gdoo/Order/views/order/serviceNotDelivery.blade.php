@@ -53,9 +53,9 @@
             sGrid.remoteData(params);
         };
         new agGrid.Grid(mGridDiv, mGrid);
-        // 读取数据
         mGrid.remoteData();
         $ref_customer_order = mGrid;
+
         params['master'] = 0;
         var sGridDiv = document.querySelector("#ref_customer_order_data");
         var sGrid = new agGridOptions();
@@ -90,7 +90,6 @@
         };
     
         new agGrid.Grid(sGridDiv, sGrid);
-        // 读取数据
         sGrid.remoteData();
         $ref_customer_order_data = sGrid;
     

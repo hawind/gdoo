@@ -10,107 +10,63 @@
 
 <script>
 (function ($) {
-var search = JSON.parse('{{json_encode($search)}}');
-var params = search.query;
-var sid = params.prefix == 1 ? 'sid' : 'id';
-var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
-var grid = new agGridOptions();
-var selectedData = {};
-var multiple = params.multi == 0 ? false : true;
-grid.remoteDataUrl = '{{url()}}';
-grid.remoteParams = {};
-//grid.rowMultiSelectWithClick = multiple;
-grid.rowSelection = multiple ? 'multiple' : 'single';
-grid.columnDefs = [
-    {suppressMenu: true, cellClass:'text-center', checkboxSelection: true, headerCheckboxSelection: multiple, suppressSizeToFit: true, sortable: false, width: 40},
-    {suppressMenu: true, cellClass:'text-center', sortable: false, field: 'name', headerName: '姓名', minWidth: 160},
-    {suppressMenu: true, cellClass:'text-center', field: 'phone', headerName: '手机', width: 160},
-    {suppressMenu: true, cellClass:'text-center', field: 'id', headerName: 'ID', width: 80}
-];
+    var search = JSON.parse('{{json_encode($search)}}');
+    var params = search.query;
 
-grid.onRowClicked1 = function(row) {
-    var id = row.data[sid];
-    if (selectedData[id]) {
-        delete selectedData[id];
-        row.node.setSelected(false);
-    } else {
-        if (multiple == false) {
-            selectedData = {};
+    var option = gdoo.formKey(params);
+    var event = gdoo.event.get(option.key);
+    event.trigger('query', params);
+
+    var grid = new agGridOptions();
+    var multiple = params.multi == 0 ? false : true;
+    grid.remoteDataUrl = '{{url()}}';
+    grid.remoteParams = params;
+    grid.suppressRowClickSelection = true;
+    grid.rowSelection = multiple ? 'multiple' : 'single';
+
+    grid.columnDefs = [
+        {suppressMenu: true, cellClass:'text-center', checkboxSelection: true, headerCheckboxSelection: multiple, suppressSizeToFit: true, sortable: false, width: 40},
+        {suppressMenu: true, cellClass:'text-center', sortable: false, field: 'name', headerName: '姓名', minWidth: 160},
+        {suppressMenu: true, cellClass:'text-center', field: 'phone', headerName: '手机', width: 160},
+        {suppressMenu: true, cellClass:'text-center', field: 'id', headerName: 'ID', width: 80}
+    ];
+
+    grid.onRowClicked = function(row) {
+        var selected = row.node.isSelected();
+        if (selected === false) {
+            row.node.setSelected(true, true);
         }
-        selectedData[id] = row.data.name;
-    }
-    writeSelected();
-};
+    };
 
-grid.onSelectionChanged = function() {
-    var rows = grid.api.getSelectedRows();
-    selectedData = {};
-    for (let i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        selectedData[row.id] = row.name;
-    }
-    writeSelected();
-};
-
-grid.onRowDoubleClicked = function (row) {
-    grid.onRowClicked(row);
-    $('#gdoo-dialog-' + params.dialog_index).dialog('close');
-};
-
-function initSelected() {
-    selectedData = {};
-    var id = $('#'+params.id).val();
-    var text = $('#'+params.id+'_text').val();
-    if (id && text) {
-        id = id.split(',');
-        text = text.split(',');
-        for (var i = 0; i < id.length; i++) {
-            selectedData[id[i]] = text[i];
+    grid.onRowDoubleClicked = function (row) {
+        var ret = gdoo.writeSelected(event, params, option, grid);
+        if (ret == true) {
+            $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
-    }
-}
+    };
 
-function writeSelected() {
-    var id = [];
-    var text = [];
-    $.each(selectedData, function(k, v) {
-        id.push(k);
-        text.push(v);
+    gdoo.dialogs[option.id] = grid;
+    new agGrid.Grid(gridDiv, grid);
+
+    grid.remoteData({page: 1});
+
+    // 数据载入成功
+    grid.remoteAfterSuccess = function() {
+        gdoo.initSelected(params, option, grid);
+    }
+
+    var data = search.forms;
+    var search = $("#dialog-{{$search['query']['id']}}-search-form").searchForm({
+        data: data
     });
-    $('#'+params.id).val(id.join(','));
-    $('#'+params.id+'_text').val(text.join(','));
-}
-
-new agGrid.Grid(gridDiv, grid);
-
-// 读取数据
-grid.remoteData({page: 1});
-
-// 数据载入成功
-grid.remoteSuccessed = function() {
-    initSelected();
-    grid.api.forEachNode(function(node) {
-        // 默认选中
-        $.each(selectedData, function(k, v) {
-            if (node.data[sid] == k) {
-                node.setSelected(true);
-            }
+    search.find('#search-submit').on('click', function() {
+        var params = search.serializeArray();
+        $.map(params, function(row) {
+            data[row.name] = row.value;
         });
+        grid.remoteData(data);
+        return false;
     });
-}
-
-var data = search.forms;
-var search = $("#dialog-{{$search['query']['id']}}-search-form").searchForm({
-    data: data
-});
-search.find('#search-submit').on('click', function() {
-    var params = search.serializeArray();
-    $.map(params, function(row) {
-        data[row.name] = row.value;
-    });
-    grid.remoteData(data);
-    return false;
-});
 
 })(jQuery);
 </script>

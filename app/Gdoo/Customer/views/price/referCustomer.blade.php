@@ -15,10 +15,8 @@
     var event = gdoo.event.get(option.key);
     event.trigger('query', params);
 
-    var sid = params.prefix == 1 ? 'sid' : 'id';
     var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     var grid = new agGridOptions();
-    var selectedData = {};
     var multiple = params.multi == 0 ? false : true;
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = params;
@@ -44,17 +42,15 @@
     };
 
     grid.onRowDoubleClicked = function (row) {
-        var ret = writeSelected();
+        var ret = gdoo.writeSelected(event, params, option, grid);
         if (ret == true) {
             $('#aike-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
     gdoo.dialogs[option.id] = grid;
-
     new agGrid.Grid(gridDiv, grid);
-
-    // 读取数据
+    
     grid.remoteData();
 
     var data = search.forms;

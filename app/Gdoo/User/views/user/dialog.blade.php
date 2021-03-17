@@ -25,10 +25,8 @@
     var event = gdoo.event.get(option.key);
     event.trigger('query', params);
 
-    var sid = params.prefix == 1 ? 'sid' : 'id';
     var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     var grid = new agGridOptions();
-    var selectedData = {};
     var multiple = params.multi == 0 ? false : true;
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = params;
@@ -42,33 +40,12 @@
         {suppressMenu: true, cellClass:'text-center', field: 'id', headerName: 'ID', width: 60}
     ];
 
-    var selecteds = {};
-
-    var id = $('#'+option.id).val();
-    var text = $('#'+option.id+'_text').val();
-    if (id) {
-        var ids = id.split(',');
-        var texts = text.split(',');
-        for (var i = 0; i < ids.length; i++) {
-            selecteds[ids[i]] = texts[i];
-        }
-    }
-
     function statusRenderer(row) {
         if (row.value == 0) {
             return '<span style="color:red">禁用</span>';
         }
         if (row.value == 1) {
             return '启用';
-        }
-    }
-
-    grid.onCustomRowSelected = function(event) {
-        var data = event.node.data;
-        if (event.node.isSelected()) {
-            selecteds[data[sid]] = data.name;
-        } else {
-            delete selecteds[data[sid]];
         }
     }
 
@@ -80,62 +57,18 @@
     };
 
     grid.onRowDoubleClicked = function (row) {
-        var ret = writeSelected();
+        var ret = gdoo.writeSelected(event, params, option, grid);
         if (ret == true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
-    /**
-     * 初始化选择
-     */
-    function initSelected() {
-        if (params.is_grid) {
-        } else {
-            grid.api.forEachNode(function(node) {
-                var key = node.data[sid];
-                if (selecteds[key] != undefined) {
-                    node.setSelected(true);
-                }
-            });
-        }
-    }
-
-    /**
-     * 写入选中
-     */
-    function writeSelected() {
-        var rows = grid.api.getSelectedRows();
-        if (params.is_grid) {
-            var list = gdoo.forms[params.form_id];
-            list.api.dialogSelected(params);
-        } else {
-            var id = [];
-            var text = [];
-            $.each(selecteds, function(k, v) {
-                id.push(k);
-                text.push(v);
-            });
-            $('#'+option.id).val(id.join(','));
-            $('#'+option.id+'_text').val(text.join(','));
-
-            if (event.exist('onSelect')) {
-                return event.trigger('onSelect', multiple ? rows : rows[0]);
-            }
-        }
-        return true;
-    }
-    grid.writeSelected = writeSelected;
     gdoo.dialogs[option.id] = grid;
-    
     new agGrid.Grid(gridDiv, grid);
 
-    // 读取数据
     grid.remoteData({page: 1});
-
-    // 数据载入成功
-    grid.remoteSuccessed = function() {
-        initSelected();
+    grid.remoteAfterSuccess = function() {
+        gdoo.initSelected(params, option, grid);
     }
 
     var data = search.forms;

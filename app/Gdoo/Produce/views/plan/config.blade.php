@@ -65,7 +65,6 @@
         }
     });
     
-    // 读取数据
     grid.remoteData();
 
     $('#product_formula_delete').on('click', function() {

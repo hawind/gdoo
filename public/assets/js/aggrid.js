@@ -295,15 +295,9 @@ function getPanelHeight(v) {
             rowSelection: 'multiple',
             localeText: localeText,
             suppressAnimationFrame: true,
-            // suppressAutoSize: true,
             suppressContextMenu: true,
             // 关闭参数检查
             suppressPropertyNamesCheck: true,
-            // pagination: true,
-            // rowModelType: 'infinite',
-            // paginationPageSize: 25,
-            // cacheBlockSize: 25,
-            // suppressPaginationPanel: true,
             suppressCellSelection: true,
             enableCellTextSelection: true,
             // 自定义后端数据地址
@@ -324,10 +318,11 @@ function getPanelHeight(v) {
             onCellEditingStarted(params) {
                 this.lastEditCell = params;
             },
-            remoteSuccessed() {},
-            onGridSizeChanged(params) {
+            remoteBeforeSuccess() {},
+            remoteAfterSuccess() {},
+            onGridSizeChanged() {
             },
-            onGridReady(params) {
+            onGridReady() {
             },
             onFirstDataRendered(params) {
                 var me = this;
@@ -370,20 +365,7 @@ function getPanelHeight(v) {
                         }
                     }
                 }
-                if (typeof me.onCustomRowSelected == "function") {
-                    me.onCustomRowSelected.call(me, params);
-                }
             },
-            onRowDoubleClicked(params) {
-                console.log('onRowDoubleClicked');
-            },
-            /*
-            getRowNodeId_bak(data) {
-                if (data.id) {
-                    return data.id;
-                }
-            },
-            */
             columnTypes: {
                 number: {
                     cellClass: 'ag-cell-number',
@@ -504,10 +486,11 @@ function getPanelHeight(v) {
             gridOptions.api.showLoadingOverlay();
             $.post(gridOptions.remoteDataUrl, remoteParams, function (res) {
 
+                gridOptions.remoteBeforeSuccess.call(gridOptions, res);
+
                 if (typeof success === 'function') {
                     success(res);
                 }
-                gridOptions.remoteSuccessed.call(gridOptions, res);
 
                 if (res.per_page) {
                     if (me.pagerDom === null) {
@@ -536,6 +519,7 @@ function getPanelHeight(v) {
                 gridOptions.api.setRowData(res.data);
                 gridOptions.generatePinnedBottomData();
 
+                gridOptions.remoteAfterSuccess.call(gridOptions, res);
             }, 'json');
         }
 
@@ -548,14 +532,17 @@ function getPanelHeight(v) {
             gridOptions.api.showLoadingOverlay();
             $.post(gridOptions.remoteDataUrl, remoteParams, function (res) {
 
+                gridOptions.remoteBeforeSuccess.call(gridOptions, res);
+
                 if (typeof success === 'function') {
                     success(res);
                 }
-                gridOptions.remoteSuccessed.call(gridOptions, res);
 
                 gridOptions.api.hideOverlay();
                 gridOptions.api.setRowData(res.data);
                 gridOptions.generatePinnedBottomData();
+
+                gridOptions.remoteAfterSuccess.call(gridOptions, res);
             
             }, 'json');
         }

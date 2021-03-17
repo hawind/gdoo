@@ -118,7 +118,6 @@ function durationRenderer(params) {
     gridDiv.style.height = getPanelHeight(12);
 
     new agGrid.Grid(gridDiv, grid);
-    // 读取数据
     grid.remoteData();
 
     var search = $('#search-task-form').searchForm({
