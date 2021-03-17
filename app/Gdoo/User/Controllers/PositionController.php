@@ -16,7 +16,7 @@ class PositionController extends DefaultController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'user_position',
@@ -68,7 +68,7 @@ class PositionController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'user_position', 'id' => $id]);
@@ -77,12 +77,12 @@ class PositionController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form([], [
             ['text','user_position.name','名称'],
@@ -104,7 +104,7 @@ class PositionController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

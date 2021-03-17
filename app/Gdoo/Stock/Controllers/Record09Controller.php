@@ -16,7 +16,7 @@ class Record09Controller extends WorkflowController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'stock_record09',
@@ -67,7 +67,7 @@ class Record09Controller extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -81,22 +81,22 @@ class Record09Controller extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
         $id = Request::get('id');
         $template_id = Request::get('template_id');
@@ -138,7 +138,7 @@ class Record09Controller extends WorkflowController
         return $tpl;
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

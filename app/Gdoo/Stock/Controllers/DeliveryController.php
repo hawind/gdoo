@@ -33,7 +33,7 @@ class DeliveryController extends WorkflowController
         'autoSave'
     ];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'stock_delivery',
@@ -111,7 +111,7 @@ class DeliveryController extends WorkflowController
         ]);
     }
 
-    public function detailAction()
+    public function detail()
     {
         $header = Grid::header([
             'code' => 'stock_delivery',
@@ -178,7 +178,7 @@ class DeliveryController extends WorkflowController
         ]);
     }
 
-    public function autoSaveAction()
+    public function autoSave()
     {
         $gets = Request::all();
         $master = $gets['master'];
@@ -234,10 +234,10 @@ class DeliveryController extends WorkflowController
             $url = url($master['uri'].'/show', ['id' => $id, 'client' => $master['client']]);
             return $this->json($bill['name'].'保存成功', $url);
         }
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -260,23 +260,23 @@ class DeliveryController extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -296,7 +296,7 @@ class DeliveryController extends WorkflowController
         ]);
     }
 
-    public function printAction()
+    public function print()
     {
         $id = Request::get('id'); 
         $template_id = Request::get('template_id');
@@ -333,12 +333,12 @@ class DeliveryController extends WorkflowController
         }
 
         // 默认模板
-        $tpl = $this->createAction('print');
+        $tpl = $this->create('print');
         return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
     // 物流信息
-    public function logisticsAction()
+    public function logistics()
     {
         if (Request::method() == 'POST') {
             $gets = Request::get('stock_delivery');
@@ -367,7 +367,7 @@ class DeliveryController extends WorkflowController
     }
 
     // 获取库存
-    public function getBatchSelectAction()
+    public function getBatchSelect()
     {
         $search = search_form(['advanced' => ''], [
             ['form_type' => 'text', 'name' => '产品名称', 'field' => 'name'],
@@ -384,7 +384,7 @@ class DeliveryController extends WorkflowController
     }
 
     // 获取库存(直营)
-    public function getBatchSelectZYAction()
+    public function getBatchSelectZY()
     {
         $search = search_form(['advanced' => ''], [
             ['form_type' => 'text', 'name' => '产品名称', 'field' => 'name'],
@@ -401,7 +401,7 @@ class DeliveryController extends WorkflowController
     }
 
     // 获取库存(全部)
-    public function getBatchSelectAllAction()
+    public function getBatchSelectAll()
     {
         $search = search_form(['advanced' => ''], [
             ['form_type' => 'text', 'name' => '产品名称', 'field' => 'name'],
@@ -417,7 +417,7 @@ class DeliveryController extends WorkflowController
         ], 'getBatchSelect');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

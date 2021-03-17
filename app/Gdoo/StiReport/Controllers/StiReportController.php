@@ -11,7 +11,7 @@ class StiReportController extends DefaultController
 {
     public $permission = ['viewer', 'designer', 'saveReport', 'license', 'render'];
 
-    public function designerAction()
+    public function designer()
     {
         $template_id = (int)Request::get('template_id');
         $template = DB::table('model_template')->where('id', $template_id)->first();
@@ -24,17 +24,17 @@ class StiReportController extends DefaultController
         return $this->render(['report_name' => $report_name, 'report_file' => $report_file]);
     }
 
-    public function viewerAction()
+    public function viewer()
     {
         return $this->render();
     }
 
-    public function renderAction()
+    public function render()
     {
         return $this->render();
     }
 
-    public function saveReportAction()
+    public function saveReport()
     {
         $gets = Request::all();
         $fileName = $gets['fileName'];

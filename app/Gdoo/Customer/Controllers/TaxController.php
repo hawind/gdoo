@@ -15,7 +15,7 @@ class TaxController extends AuditController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_tax',
@@ -81,7 +81,7 @@ class TaxController extends AuditController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'customer_tax', 'id' => $id, 'action' => $action]);
@@ -90,17 +90,17 @@ class TaxController extends AuditController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -143,7 +143,7 @@ class TaxController extends AuditController
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -163,7 +163,7 @@ class TaxController extends AuditController
         ]);
     }
     
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

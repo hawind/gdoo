@@ -18,7 +18,7 @@ class AllocationController extends WorkflowController
 {
     public $permission = ['dialog', 'logistics', 'stockSelect'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'stock_allocation',
@@ -69,7 +69,7 @@ class AllocationController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -83,22 +83,22 @@ class AllocationController extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
         $id = Request::get('id');
         $template_id = Request::get('template_id');
@@ -139,7 +139,7 @@ class AllocationController extends WorkflowController
     }
 
     // 选择库存
-    public function stockSelectAction()
+    public function stockSelect()
     {
         $search = search_form(['advanced' => ''], [
             ['form_type' => 'text', 'name' => '产品名称', 'field' => 'name'],
@@ -167,7 +167,7 @@ class AllocationController extends WorkflowController
     }
 
     // 物流信息
-    public function logisticsAction()
+    public function logistics()
     {
         if (Request::method() == 'POST') {
             $gets = Request::get('stock_allocation');
@@ -195,7 +195,7 @@ class AllocationController extends WorkflowController
     }
 
     // 删除
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

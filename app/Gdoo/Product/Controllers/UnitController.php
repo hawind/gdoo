@@ -14,7 +14,7 @@ class UnitController extends DefaultController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'product_unit',
@@ -63,7 +63,7 @@ class UnitController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'product_unit', 'id' => $id]);
@@ -72,12 +72,12 @@ class UnitController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-   public function dialogAction()
+   public function dialog()
     {
         $search = search_form([], [
             ['text','product_unit.name','名称'],
@@ -99,7 +99,7 @@ class UnitController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

@@ -12,7 +12,7 @@ class WidgetController extends DefaultController
 {
     public $permission = ['index'];
     
-    public function indexAction()
+    public function index()
     {
         if (Request::method() == 'POST') {
             $rows = [];

@@ -15,7 +15,7 @@ class LocationController extends DefaultController
 {
     public $permission = ['dialog', 'dialog2', 'serviceWarehouse'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'warehouse_location',
@@ -65,7 +65,7 @@ class LocationController extends DefaultController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'warehouse_location', 'id' => $id, 'action' => $action]);
@@ -74,12 +74,12 @@ class LocationController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $header = Grid::header([
             'code' => 'warehouse_location',
@@ -115,7 +115,7 @@ class LocationController extends DefaultController
     /**
      * 获取现存量
      */
-    public function dialog2Action()
+    public function dialog2()
     {
         $header = Grid::header([
             'code' => 'warehouse_location',
@@ -151,7 +151,7 @@ class LocationController extends DefaultController
     /**
      * 获取仓库货位
      */
-    public function serviceWarehouseAction()
+    public function serviceWarehouse()
     {
         $warehouse_id = Request::get('warehouse_id');
         if (Request::method() == 'POST') {
@@ -163,7 +163,7 @@ class LocationController extends DefaultController
         }
     }
     
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

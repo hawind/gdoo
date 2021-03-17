@@ -28,7 +28,7 @@ class TokenController extends Controller
     /**
      * APP登录
      */
-    public function loginAction()
+    public function login()
     {
         if (Request::isJson()) {
             $gets = json_decode(Request::getContent(), true);
@@ -84,7 +84,7 @@ class TokenController extends Controller
         return ['message'=>'账户或密码错误。', 'success'=>false];
     }
 
-    public function logoutAction()
+    public function logout()
     {
         return '注销完成。';
     }

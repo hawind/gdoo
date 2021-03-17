@@ -45,7 +45,7 @@ class OrderController extends WorkflowController
         'serviceCustomerMoney',
     ];
 
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -277,7 +277,7 @@ class OrderController extends WorkflowController
     /**
      * 订单明细列表
      */
-    public function detailAction()
+    public function detail()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -401,7 +401,7 @@ class OrderController extends WorkflowController
     /**
      * 发货计划
      */
-    public function deliveryAction()
+    public function delivery()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -600,7 +600,7 @@ class OrderController extends WorkflowController
     /**
      * 获取发货计划明细
      */
-    public function deliveryPlanAction()
+    public function deliveryPlan()
     {
         $query = Request::all();
         if (Request::method() == 'POST') {
@@ -615,7 +615,7 @@ class OrderController extends WorkflowController
     /**
      *  修改运费支付方式
      */
-    public function deliveryEditAction()
+    public function deliveryEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -634,7 +634,7 @@ class OrderController extends WorkflowController
     /**
      *  修改物流信息
      */
-    public function logisticsPlanAction()
+    public function logisticsPlan()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -661,7 +661,7 @@ class OrderController extends WorkflowController
     /**
      * 修改发货计划日期
      */
-    public function deliveryPlanDateAction()
+    public function deliveryPlanDate()
     {
         $query = Request::all();
         if (Request::method() == 'POST') {
@@ -672,7 +672,7 @@ class OrderController extends WorkflowController
         }
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -694,23 +694,23 @@ class OrderController extends WorkflowController
         return $this->display(['form' => $form], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -730,7 +730,7 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    public function printAction()
+    public function print()
     {
         $id = Request::get('id');
         $template_id = Request::get('template_id');
@@ -764,11 +764,11 @@ class OrderController extends WorkflowController
             ]);
         }
 
-        $tpl = $this->createAction('print');
+        $tpl = $this->create('print');
         return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $header = Grid::header([
             'code' => 'customer_order',
@@ -833,7 +833,7 @@ class OrderController extends WorkflowController
     /**
      * 参照到促销申请
      */
-    public function servicePromotionAction()
+    public function servicePromotion()
     {
         $search = search_form([], [
             ['text','customer.name','客户名称'],
@@ -921,7 +921,7 @@ class OrderController extends WorkflowController
     }
 
     // 发货参照订单
-    public function serviceDeliveryAction()
+    public function serviceDelivery()
     {
         $date = date("Y-m-d", strtotime("+1 day"));
         $search = search_form(
@@ -978,7 +978,7 @@ class OrderController extends WorkflowController
     }
 
     // 未发货订单(参照)
-    public function serviceNotDeliveryAction()
+    public function serviceNotDelivery()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -1032,7 +1032,7 @@ class OrderController extends WorkflowController
     }
 
     // 订单退货(参照)
-    public function serviceCancelOrderAction()
+    public function serviceCancelOrder()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -1101,7 +1101,7 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    public function serviceCustomerMoneyAction()
+    public function serviceCustomerMoney()
     {
         $tax_id = Request::get('tax_id');
         $tax = DB::table('customer_tax')->where('id', $tax_id)->first();
@@ -1130,7 +1130,7 @@ class OrderController extends WorkflowController
         return $data;
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

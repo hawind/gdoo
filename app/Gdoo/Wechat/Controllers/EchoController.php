@@ -25,7 +25,7 @@ class EchoController extends Controller
         parent::__construct();
     }
 
-    public function indexAction()
+    public function index()
     {
         if (empty($_GET['echostr']) && empty($_GET["signature"]) && empty($_GET["nonce"])) {
             exit('Access denied');

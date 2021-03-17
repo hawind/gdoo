@@ -20,7 +20,7 @@ class StepController extends DefaultController
 {
     public $permission = ['condition', 'steps', 'index2', 'save', 'add', 'show'];
 
-    public function indexAction()
+    public function index()
     {
         // 更新排序
         if (Request::method() == 'POST') {
@@ -58,7 +58,7 @@ class StepController extends DefaultController
         ]);
     }
 
-    public function index2Action()
+    public function index2()
     {
         // 更新排序
         if (Request::method() == 'POST') {
@@ -122,7 +122,7 @@ class StepController extends DefaultController
     }
 
     // 克隆步骤
-    public function addAction()
+    public function add()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -139,14 +139,14 @@ class StepController extends DefaultController
         }
     }
 
-    public function showAction()
+    public function show()
     {
         $gets = Request::all();
         $row = DB::table('model_step')->where('id', $gets['id'])->first();
         return $this->json($row, true);
     }
 
-    public function saveAction()
+    public function save()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -167,7 +167,7 @@ class StepController extends DefaultController
     /**
      * 节点条件
      */
-    public function conditionAction()
+    public function condition()
     {
         $id = Request::get('id');
         $bill_id = Request::get('bill_id');
@@ -240,7 +240,7 @@ class StepController extends DefaultController
     /**
      * 创建步骤
      */
-    public function createAction()
+    public function create()
     {
         $id = Request::get('id');
         $bill_id = Request::get('bill_id');
@@ -303,7 +303,7 @@ class StepController extends DefaultController
     /**
      * 流程移交
      */
-    public function moveAction()
+    public function move()
     {
         $id = Request::get('id');
         $bill_id = Request::get('bill_id');
@@ -364,7 +364,7 @@ class StepController extends DefaultController
         ]);
     }
 
-    public function stepsAction()
+    public function steps()
     {
         $table = Request::get('table');
         $model = Model::where('table', $table)->first();
@@ -376,7 +376,7 @@ class StepController extends DefaultController
         return json_encode($rows);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = Request::get('id');
         if ($id > 0) {

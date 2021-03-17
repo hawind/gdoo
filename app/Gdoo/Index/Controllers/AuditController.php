@@ -24,7 +24,7 @@ class AuditController extends DefaultController
     /**
      * 审核
      */
-    public function auditAction()
+    public function audit()
     {
         if (Request::method() == 'POST') {
             $key = Request::get('key');
@@ -48,7 +48,7 @@ class AuditController extends DefaultController
     /**
      * 弃审
      */
-    public function abortAction()
+    public function abort()
     {
         if (Request::method() == 'POST') {
             $key = Request::get('key');

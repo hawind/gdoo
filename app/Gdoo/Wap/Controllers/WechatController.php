@@ -17,7 +17,7 @@ class WechatController extends Controller
 {
     public $permission = [];
 
-    public function configAction()
+    public function config()
     {
         $config = Setting::where('type', 'wechat')->get()->pluck('value', 'key');
         return $this->json($config, true);
@@ -26,7 +26,7 @@ class WechatController extends Controller
     /**
      * 微信用户绑定
      */
-    public function loginAction()
+    public function login()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -60,7 +60,7 @@ class WechatController extends Controller
     /**
      * 获取微信登录数据
      */
-    public function authorizeAction()
+    public function authorize()
     {
         try {
             $app = WechatService::getApp();
@@ -85,7 +85,7 @@ class WechatController extends Controller
     /**
      * 微信用户解绑
      */
-    public function logoutAction()
+    public function logout()
     {
         $openid = Request::get('openid');
         DB::table('wechat_user')->where('openid', $openid)->delete();
@@ -96,7 +96,7 @@ class WechatController extends Controller
     /**
      * 微信获取配置
      */
-    public function jsConfigAction()
+    public function jsConfig()
     {
         $app = WechatService::getApp();
         $url = Request::get('url');
@@ -107,7 +107,7 @@ class WechatController extends Controller
     /**
      * 微信获取配置
      */
-    public function mapGeocoderAction()
+    public function mapGeocoder()
     {
         $location = Request::get('location');
         $text = file_get_contents('https://apis.map.qq.com/ws/geocoder/v1/?location=' . $location . '&key=W6FBZ-JV4K4-O6WU5-XGZOL-GMTPJ-KIFWJ&get_poi=0');

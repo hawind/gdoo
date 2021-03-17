@@ -26,7 +26,7 @@ class AttachmentController extends DefaultController
         parent::__construct();
     }
     
-    public function draftAction()
+    public function draft()
     {
         set_time_limit(0);
 
@@ -67,7 +67,7 @@ class AttachmentController extends DefaultController
         return 0;
     }
 
-    public function fileinfoAction()
+    public function fileinfo()
     {
         $id = Request::get('id', 0);
         $type = Request::get('type', 0);
@@ -113,7 +113,7 @@ class AttachmentController extends DefaultController
         }
     }
 
-    public function removeAction()
+    public function remove()
     {
         $id = Request::get('id', 0);
         if ($id > 0) {
@@ -130,7 +130,7 @@ class AttachmentController extends DefaultController
         return 0;
     }
 
-    public function uploaderAction()
+    public function uploader()
     {
         set_time_limit(0);
 
@@ -187,7 +187,7 @@ class AttachmentController extends DefaultController
         ]);
     }
 
-    public function addAction()
+    public function add()
     {
         set_time_limit(0);
 
@@ -234,7 +234,7 @@ class AttachmentController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $gets = Request::all();
         if ($gets['id'] > 0) {
@@ -254,7 +254,7 @@ class AttachmentController extends DefaultController
     }
 
     // 预览文件
-    public function showAction()
+    public function show()
     {
         $id = (int)Request::get('id');
         $model = Request::get('model');
@@ -284,7 +284,7 @@ class AttachmentController extends DefaultController
     /**
      * 预览文件
      */
-    public function previewAction()
+    public function preview()
     {
         $id = Request::get('id');
         $file = Attachment::where('id', $id)->first();
@@ -301,7 +301,7 @@ class AttachmentController extends DefaultController
     }
 
     // 下载文件
-    public function downloadAction()
+    public function download()
     {
         $id = (int)Request::get('id');
         $row = DB::table('attachment')->where('id', $id)->first();

@@ -12,7 +12,7 @@ class RegionController extends DefaultController
     /**
      * 市列表
      */
-    public function indexAction()
+    public function index()
     {
         $id = (int) Request::get('id', '0');
         $parent_id = (int) Request::get('parent_id', '0');

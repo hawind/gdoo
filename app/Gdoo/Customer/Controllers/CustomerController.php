@@ -16,7 +16,7 @@ class CustomerController extends DefaultController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer',
@@ -101,7 +101,7 @@ class CustomerController extends DefaultController
         ]);
     }
 
-    public function createAction($action = 'create')
+    public function create($action = 'create')
     {
         $id = (int)Request::get('id');
 
@@ -125,12 +125,12 @@ class CustomerController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -150,7 +150,7 @@ class CustomerController extends DefaultController
         ]);
     }
 
-    public function priceEditAction()
+    public function priceEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -188,13 +188,13 @@ class CustomerController extends DefaultController
         ]);
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     // 数据导入
-    public function importAction()
+    public function import()
     {
         if (Request::method() == 'POST') {
             return Form::import(['table' => 'customer', 'keys' => ['code', 'username']]);
@@ -203,7 +203,7 @@ class CustomerController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');
@@ -211,7 +211,7 @@ class CustomerController extends DefaultController
         }
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form(
             ['advanced' => ''], [

@@ -18,7 +18,7 @@ class PriceController extends DefaultController
 {
     public $permission = ['dialog', 'list', 'referCustomer'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_price',
@@ -84,7 +84,7 @@ class PriceController extends DefaultController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'customer_price', 'id' => $id, 'action' => $action]);
@@ -93,17 +93,17 @@ class PriceController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function listAction()
+    public function list()
     {
         $gets = Request::all();
         if ($gets['customer_id']) {
@@ -129,7 +129,7 @@ class PriceController extends DefaultController
         return $this->json($rows, true);
     }
 
-    public function referCustomerAction()
+    public function referCustomer()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -179,7 +179,7 @@ class PriceController extends DefaultController
         ]);
     }
 
-    public function importAction()
+    public function import()
     {
         if (Request::method() == 'POST') {
             return Form::import(['table' => 'customer_price', 'keys' => ['customer_id', 'product_id']]);
@@ -188,7 +188,7 @@ class PriceController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

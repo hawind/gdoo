@@ -15,7 +15,7 @@ class CustomerApplyController extends WorkflowController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_apply',
@@ -85,7 +85,7 @@ class CustomerApplyController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'create')
+    public function create($action = 'create')
     {
         $id = (int)Request::get('id');
 
@@ -103,22 +103,22 @@ class CustomerApplyController extends WorkflowController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

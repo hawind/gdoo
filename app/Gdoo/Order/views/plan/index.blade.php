@@ -63,7 +63,7 @@
 
     gdoo.grids[table] = {grid: grid};
 
-    var action = new gridAction(table, '生产计划总表');
+    var action = new grid(table, '生产计划总表');
     var panel = $('#' + table + '-controller');
 
     panel.on('click', '[data-toggle="' + table + '"]', function() {

@@ -14,7 +14,7 @@ class ApproachController extends WorkflowController
 {
     public $permission = ['dialog', 'reference', 'useCount', 'serviceReview', 'serviceCostList', 'serviceCostDetail', 'product'];
 
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -92,7 +92,7 @@ class ApproachController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
 
@@ -111,29 +111,29 @@ class ApproachController extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
         $this->layout = 'layouts.print2';
-        print_prince($this->createAction('print'));
+        print_prince($this->create('print'));
     }
 
     // 关闭操作
-    public function closeAction()
+    public function close()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -146,7 +146,7 @@ class ApproachController extends WorkflowController
     }
 
     // 产品明细
-    public function productAction()
+    public function product()
     {
         $query = Request::all();
         if (Request::method() == 'POST') {
@@ -161,7 +161,7 @@ class ApproachController extends WorkflowController
     }
 
     // 核销单选择
-    public function serviceReviewAction()
+    public function serviceReview()
     {
         $header = Grid::header([
             'code' => 'approach',
@@ -245,7 +245,7 @@ class ApproachController extends WorkflowController
     }
 
     // 费用申请明细
-    public function serviceCostDetailAction()
+    public function serviceCostDetail()
     {
         $query = Request::all();
         $customer_id = (int)$query['customer_id'];
@@ -330,7 +330,7 @@ class ApproachController extends WorkflowController
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -350,7 +350,7 @@ class ApproachController extends WorkflowController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

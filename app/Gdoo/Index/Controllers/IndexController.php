@@ -18,7 +18,7 @@ class IndexController extends DefaultController
         'support',
     ];
 
-    public function indexAction()
+    public function index()
     {
         $user = auth()->user();
         return $this->render([
@@ -27,7 +27,7 @@ class IndexController extends DefaultController
     }
 
     // 技术支持
-    public function supportAction()
+    public function support()
     {
         return $this->render();
     }
@@ -35,7 +35,7 @@ class IndexController extends DefaultController
     /*
      * 通用对话框
      */
-    public function dialogAction()
+    public function dialog()
     {
         $gets = Request::all();
         return $this->render([
@@ -44,7 +44,7 @@ class IndexController extends DefaultController
     }
 
     // 获取单个待办数量
-    public function badgeAction()
+    public function badge()
     {
         $key = Request::input('key');
         if ($key) {
@@ -57,7 +57,7 @@ class IndexController extends DefaultController
     }
 
     // 获取全部待办数量
-    public function badgesAction()
+    public function badges()
     {
         $badges = ModuleService::badges();
         $json = [];

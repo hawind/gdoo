@@ -17,7 +17,7 @@ class CalendarController extends DefaultController
     /**
      * 日历首页
      */
-    public function indexAction()
+    public function index()
     {
         $user_id = Request::get('user_id', Auth::id());
 
@@ -40,7 +40,7 @@ class CalendarController extends DefaultController
     /**
      * 日历列表
      */
-    public function calendarsAction()
+    public function calendars()
     {
         $user_id = Request::get('user_id', Auth::id());
         $calendars = CalendarService::getCalendars($user_id);
@@ -71,7 +71,7 @@ class CalendarController extends DefaultController
         ], true);
     }
 
-    public function activeAction()
+    public function active()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -96,7 +96,7 @@ class CalendarController extends DefaultController
         }
     }
 
-    public function addAction()
+    public function add()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -114,12 +114,12 @@ class CalendarController extends DefaultController
     }
 
     // 帮助信息
-    public function helpAction()
+    public function help()
     {
         return $this->render();
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = Request::get('id');
         if ($id > 0) {

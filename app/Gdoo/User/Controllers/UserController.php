@@ -21,7 +21,7 @@ class UserController extends DefaultController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'user',
@@ -98,7 +98,7 @@ class UserController extends DefaultController
         ]);
     }
 
-    public function showAction()
+    public function show()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'user', 'id' => $id, 'action' => 'show']);
@@ -111,7 +111,7 @@ class UserController extends DefaultController
         ], 'create');
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'user', 'id' => $id]);
@@ -120,12 +120,12 @@ class UserController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $group_id = Request::get('group_id', 1);
         $header = Grid::header([
@@ -172,7 +172,7 @@ class UserController extends DefaultController
     }
 
     // 数据导入
-    public function importAction()
+    public function import()
     {
         if (Request::method() == 'POST') {
             return Form::import([
@@ -185,7 +185,7 @@ class UserController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

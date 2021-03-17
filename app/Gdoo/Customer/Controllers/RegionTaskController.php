@@ -15,7 +15,7 @@ class RegionTaskController extends AuditController
 {
     public $permission = [];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_region_task',
@@ -84,7 +84,7 @@ class RegionTaskController extends AuditController
         ]);
     }
 
-    public function createAction($action = 'create')
+    public function create($action = 'create')
     {
         $id = (int)Request::get('id');
 
@@ -104,20 +104,20 @@ class RegionTaskController extends AuditController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     /**
      * 区域进度
      */
-    public function progressAction()
+    public function progress()
     {
         $year = date('Y');
         $search = search_form([], [[
@@ -293,7 +293,7 @@ class RegionTaskController extends AuditController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

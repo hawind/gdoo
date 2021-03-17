@@ -25,7 +25,7 @@ class ConfigController extends DefaultController
         $this->menu = $menu;
     }
 
-    public function configAction()
+    public function config()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -47,7 +47,7 @@ class ConfigController extends DefaultController
     /**
      * 自定义菜单
      */
-    public function menuAction()
+    public function menu()
     {
         if (Request::ajax()) {
             

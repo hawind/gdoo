@@ -14,7 +14,7 @@ class ApiController extends Controller
     /**
      * 初始化JS输出
      */
-    public function commonAction()
+    public function common()
     {
         $settings['public_url'] = URL::to('/');
         $settings['upload_file_type'] = $this->setting['upload_type'];
@@ -31,7 +31,7 @@ class ApiController extends Controller
     /**
      * 任务调用
      */
-    public function taskAction()
+    public function task()
     {
         $rows = DB::table('cron')->where('status', 1)->get();
         if ($rows) {
@@ -56,7 +56,7 @@ class ApiController extends Controller
     /**
      * 获取单据编号
      */
-    public function billSeqNoAction()
+    public function billSeqNo()
     {
         $bill_id = Request::get('bill_id');
         $date = Request::get('date');
@@ -76,7 +76,7 @@ class ApiController extends Controller
     /**
      * 汉字转拼音
      */
-    public function pinyinAction()
+    public function pinyin()
     {
         $word = Request::get('name');
         $type = Request::get('type');
@@ -95,7 +95,7 @@ class ApiController extends Controller
     /**
      * 显示位置信息
      */
-    public function locationAction()
+    public function location()
     {
         $gets = Request::all();
         return $this->render(array(
@@ -106,7 +106,7 @@ class ApiController extends Controller
     /**
      * 系统字典
      */
-    public function dictAction()
+    public function dict()
     {
         $key = Request::get('key');
         $rows = option($key);
@@ -116,7 +116,7 @@ class ApiController extends Controller
     /**
      * 系统选项
      */
-    public function optionAction()
+    public function option()
     {
         $key = Request::get('key');
         $rows = option($key);
@@ -126,7 +126,7 @@ class ApiController extends Controller
     /**
      * 不支持浏览器提示
      */
-    public function unsupportedBrowserAction()
+    public function unsupportedBrowser()
     {
         return $this->render();
     }
@@ -134,7 +134,7 @@ class ApiController extends Controller
     /*
      * 显示用户列表
      */
-    public function dialogAction()
+    public function dialog()
     {
         $gets = Request::all();
         return $this->render([
@@ -145,7 +145,7 @@ class ApiController extends Controller
     /*
      * 调用省市县显示
      */
-    public function regionAction()
+    public function region()
     {
         $parent_id = Request::get('parent_id', 0);
         $layer = Request::get('layer', 1);

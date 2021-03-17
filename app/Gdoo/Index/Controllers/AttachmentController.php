@@ -16,7 +16,7 @@ class AttachmentController extends DefaultController
     /**
      * 上传文件
      */
-    public function uploaderAction()
+    public function uploader()
     {
         if (Request::method() == 'POST') {
             $file = Request::file('file');
@@ -71,7 +71,7 @@ class AttachmentController extends DefaultController
     /**
      * 新建文件
      */
-    public function createAction()
+    public function create()
     {
         set_time_limit(0);
 
@@ -110,7 +110,7 @@ class AttachmentController extends DefaultController
     /**
      * 二维码上传
      */
-    public function qrcodeAction()
+    public function qrcode()
     {
         $key = Request::get('key');
         $path = Request::get('path');
@@ -127,7 +127,7 @@ class AttachmentController extends DefaultController
     /**
      * 获取文件列表
      */
-    public function listAction()
+    public function list()
     {
         $id = Request::get('id');
         $rows = AttachmentService::get($id);
@@ -137,7 +137,7 @@ class AttachmentController extends DefaultController
     /**
      * 获取草稿列表
      */
-    public function draftAction()
+    public function draft()
     {
         $key = Request::get('key');
         $rows = AttachmentService::draft($key);
@@ -147,7 +147,7 @@ class AttachmentController extends DefaultController
     /**
     * 预览文件
     */
-    public function showAction()
+    public function show()
     {
         $id = Request::get('id');
 
@@ -170,7 +170,7 @@ class AttachmentController extends DefaultController
     /**
      * 预览文件
      */
-    public function previewAction()
+    public function preview()
     {
         $id = Request::get('id');
         $file = AttachmentService::get($id)[0];
@@ -194,7 +194,7 @@ class AttachmentController extends DefaultController
     /**
      * 下载文件
      */
-    public function downloadAction()
+    public function download()
     {
         $id = Request::get('id');
         if ($id) {
@@ -204,7 +204,7 @@ class AttachmentController extends DefaultController
         }
     }
     
-    public function deleteAction()
+    public function delete()
     {
         $gets = Request::all();
         if ($gets['id']) {

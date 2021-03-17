@@ -18,7 +18,7 @@ class MailController extends DefaultController
     /**
      * 邮件设置
      */
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '邮件',
@@ -179,12 +179,12 @@ class MailController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function editAction()
+    public function edit()
     {
         $id  = (int)Request::get('id');
         $row = DB::table('mail')->where('id', $id)->first();
@@ -193,7 +193,7 @@ class MailController extends DefaultController
         ], 'edit');
     }
 
-    public function storeAction()
+    public function store()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -218,7 +218,7 @@ class MailController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');
@@ -230,7 +230,7 @@ class MailController extends DefaultController
     /**
      * 邮件测试
      */
-    public function testAction()
+    public function test()
     {
         $mail_to = Request::get('mail_to');
         if (Request::method() == 'POST') {

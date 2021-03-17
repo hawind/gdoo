@@ -85,7 +85,7 @@
 
     gdoo.grids[table] = {grid: grid};
 
-    var action = new gridAction(table, '生产计划');
+    var action = new grid(table, '生产计划');
     var panel = $('#' + table + '-controller');
 
     var producePlan = function() {

@@ -16,7 +16,7 @@ class SettingController extends DefaultController
     /**
      * 基本设置
      */
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '系统设置',
@@ -159,12 +159,12 @@ class SettingController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function editAction()
+    public function edit()
     {
         $id  = (int)Request::get('id');
         $row = DB::table('setting')->where('id', $id)->first();
@@ -176,7 +176,7 @@ class SettingController extends DefaultController
     /**
      * 上传设置
      */
-    public function uploadAction()
+    public function upload()
     {
         // 扫描字体目录
         $paths = new \DirectoryIterator(public_path('assets/fonts'));
@@ -194,7 +194,7 @@ class SettingController extends DefaultController
     /**
      * 图片设置
      */
-    public function imageAction()
+    public function image()
     {
         // 扫描字体目录
         $paths = new \DirectoryIterator(public_path('assets/fonts'));
@@ -212,7 +212,7 @@ class SettingController extends DefaultController
     /**
      * 安全设置
      */
-    public function securityAction()
+    public function security()
     {
         return $this->display();
     }
@@ -220,7 +220,7 @@ class SettingController extends DefaultController
     /**
      * 日期时间
      */
-    public function datetimeAction()
+    public function datetime()
     {
         $lang = trans('setting');
         return $this->display(array(
@@ -231,7 +231,7 @@ class SettingController extends DefaultController
     /**
      * 保存
      */
-    public function storeAction()
+    public function store()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -254,7 +254,7 @@ class SettingController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

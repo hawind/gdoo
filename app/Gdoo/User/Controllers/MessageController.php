@@ -19,7 +19,7 @@ class MessageController extends Controller
     /**
      * 消息列表
      */
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'user_message',
@@ -84,7 +84,7 @@ class MessageController extends Controller
     /*
      * 消息状态标记
      */
-    public function statusAction()
+    public function status()
     {
         $id = (array)Request::get('id');
         $type = Request::get('type');
@@ -107,7 +107,7 @@ class MessageController extends Controller
     /**
      * 新建提醒
      */
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -127,7 +127,7 @@ class MessageController extends Controller
     /**
      * 显示提醒
      */
-    public function showAction()
+    public function show()
     {
         $id = Request::get('id');
         $row = DB::table('user_message')->find($id);
@@ -144,7 +144,7 @@ class MessageController extends Controller
     /**
      * 未读提醒
      */
-    public function countAction()
+    public function count()
     {
         $count = DB::table('user_message')
         ->where('read_id', Auth::id())
@@ -153,7 +153,7 @@ class MessageController extends Controller
         return $count;
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

@@ -12,7 +12,7 @@ use Gdoo\Index\Controllers\DefaultController;
 
 class MenuController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '模型',
@@ -174,7 +174,7 @@ class MenuController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
 
@@ -206,16 +206,16 @@ class MenuController extends DefaultController
         ], 'create');
     }
 
-    public function editAction() {
-        return $this->createAction();
+    public function edit() {
+        return $this->create();
     }
 
-    public function storeAction()
+    public function store()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

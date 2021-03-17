@@ -25,7 +25,7 @@ class RoleController extends DefaultController
 {
     public $permission = ['dialog', 'permission'];
 
-    public function indexAction()
+    public function index()
     {
         $display = $this->access;
 
@@ -96,7 +96,7 @@ class RoleController extends DefaultController
         ]);
     }
 
-    public function configAction()
+    public function config()
     {
         $gets = Request::all();
 
@@ -168,7 +168,7 @@ class RoleController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'role', 'id' => $id]);
@@ -177,12 +177,12 @@ class RoleController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form([], [
             ['text','role.name','名称'],
@@ -215,7 +215,7 @@ class RoleController extends DefaultController
     /**
      * 角色设置
      */
-    public function permissionAction()
+    public function permission()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -247,7 +247,7 @@ class RoleController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
 

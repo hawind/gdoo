@@ -13,7 +13,7 @@ class WidgetController extends DefaultController
     /**
      * 项目任务信息
      */
-    public function infoAction()
+    public function info()
     {
         $config = InfoService::getInfo('project_task');
 

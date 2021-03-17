@@ -7,7 +7,7 @@ use Gdoo\Index\Controllers\DefaultController;
 
 class CategoryController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         // 更新排序
         if ($post = $this->post('sort')) {
@@ -29,7 +29,7 @@ class CategoryController extends DefaultController
         ]);
     }
 
-    public function addAction()
+    public function add()
     {
         $id = (int)Request::get('id');
 
@@ -55,7 +55,7 @@ class CategoryController extends DefaultController
         ));
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if ($id = Request::get('id')) {
             DB::table('forum')->where('id', $id)->delete();

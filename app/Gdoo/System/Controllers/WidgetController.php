@@ -17,7 +17,7 @@ class WidgetController extends DefaultController
     /**
      * 部件设置
      */
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '部件',
@@ -231,7 +231,7 @@ class WidgetController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
 
@@ -259,17 +259,17 @@ class WidgetController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function storeAction()
+    public function store()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');
@@ -281,7 +281,7 @@ class WidgetController extends DefaultController
     /**
      * 更新部件列表
      */
-    public function refreshAction()
+    public function refresh()
     {
         if (Request::method() == 'POST') {
             $widgets = ModuleService::widgets();

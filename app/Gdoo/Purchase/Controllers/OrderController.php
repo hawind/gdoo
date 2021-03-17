@@ -17,7 +17,7 @@ class OrderController extends WorkflowController
 {
     public $permission = ['dialog', 'serviceRecord01'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'purchase_order',
@@ -67,7 +67,7 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'purchase_order', 'id' => $id, 'action' => $action]);
@@ -76,23 +76,23 @@ class OrderController extends WorkflowController
         ], 'create');
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     // 参照其他入库单
-    public function serviceRecord01Action()
+    public function serviceRecord01()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -185,7 +185,7 @@ class OrderController extends WorkflowController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

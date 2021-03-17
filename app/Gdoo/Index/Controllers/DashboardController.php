@@ -10,7 +10,7 @@ class DashboardController extends DefaultController
 {
     public $permission = ['index', 'config', 'quickMenu', 'settingWidget', 'settingInfo'];
 
-    public function indexAction()
+    public function index()
     {
         $auth = auth()->user();
 
@@ -110,7 +110,7 @@ class DashboardController extends DefaultController
     }
 
     // 仪表板设置
-    public function configAction()
+    public function config()
     {
         $auth = auth()->user();
 
@@ -250,7 +250,7 @@ class DashboardController extends DefaultController
     }
 
     // 添加快捷菜单
-    public function quickMenuAction()
+    public function quickMenu()
     {
         $menus = DB::table('menu')->orderBy('lft', 'asc')->get();
         $menus = array_nest($menus);
@@ -261,7 +261,7 @@ class DashboardController extends DefaultController
     }
 
     // 设置单个组件
-    public function settingInfoAction()
+    public function settingInfo()
     {
         // 定义权限
         $permissions = option('role.access')->pluck('name', 'id');
@@ -298,7 +298,7 @@ class DashboardController extends DefaultController
     }
 
     // 设置单个组件
-    public function settingWidgetAction()
+    public function settingWidget()
     {
         $widget_id = Request::input('widget_id');
         $row = UserWidget::where('id', $widget_id)->first();

@@ -7,12 +7,12 @@ use Request;
 class DemoController extends Controller
 {
     #[Attribute(Attribute::TARGET_FUNCTION)]
-    public function vouchAction()
+    public function vouch()
     {
         return $this->display();
     }
 
-    public function helloAction()
+    public function hello()
     {
     }
 }

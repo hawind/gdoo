@@ -18,7 +18,7 @@ class ReportController extends DefaultController
     public $permission = [];
 
     // 客户对账单
-    public function accountStatementAction()
+    public function accountStatement()
     {
         $sdate = date('Y-01-01');
         $edate = date('Y-m-d');

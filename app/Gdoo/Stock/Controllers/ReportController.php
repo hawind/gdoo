@@ -21,7 +21,7 @@ class ReportController extends DefaultController
     public $permission = [];
 
     // 库存明细表
-    public function stockDetailAction()
+    public function stockDetail()
     {
         $sdate = date('Y-m-01');
         $edate = date('Y-m-d');
@@ -77,7 +77,7 @@ class ReportController extends DefaultController
     }
 
     // 库存汇总表
-    public function stockTotalAction()
+    public function stockTotal()
     {
         $search = search_form([
             'advanced' => 0,
@@ -120,7 +120,7 @@ class ReportController extends DefaultController
     }
 
     // 进销存库存汇总表
-    public function stockInOutAction()
+    public function stockInOut()
     {
         $sdate = date('Y-m-01');
         $edate = date('Y-m-d');

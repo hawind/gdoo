@@ -20,7 +20,7 @@ class EventController extends DefaultController
     public $permission = ['share', 'items'];
 
     // 事件列表
-    public function indexAction()
+    public function index()
     {
         $gets = Request::all();
         $calendars = CalendarService::getCalendars($gets['user_id']);
@@ -61,7 +61,7 @@ class EventController extends DefaultController
     }
 
     // 客户端显示事件列表
-    public function itemsAction()
+    public function items()
     {
         $gets = Request::all();
         $start = strtotime($gets['start']);
@@ -124,7 +124,7 @@ class EventController extends DefaultController
     }
 
     // 调整事件
-    public function resizeAction()
+    public function resize()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -156,7 +156,7 @@ class EventController extends DefaultController
     }
 
     // 移动事件
-    public function moveAction()
+    public function move()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -204,7 +204,7 @@ class EventController extends DefaultController
         }
     }
 
-    public function addAction()
+    public function add()
     {
         $gets = Request::all();
         // 更新数据
@@ -298,7 +298,7 @@ class EventController extends DefaultController
     }
 
     // 编辑事件
-    public function editAction()
+    public function edit()
     {
         $gets = Request::all();
 
@@ -609,7 +609,7 @@ class EventController extends DefaultController
         }
     }
 
-    public function viewAction()
+    public function view()
     {
         $id = (int)Request::get('id');
         $event = CalendarService::getEvent($id);
@@ -686,7 +686,7 @@ class EventController extends DefaultController
         ));
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = Request::get('id');
         if ($id > 0) {

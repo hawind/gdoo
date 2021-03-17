@@ -688,7 +688,7 @@ class Plugin extends DAV\ServerPlugin {
      * @param array $postVars
      * @return bool
      */
-    public function browserPostAction($uri, $action, array $postVars) {
+    public function browserPost($uri, $action, array $postVars) {
 
         if ($action!=='mkaddressbook')
             return;

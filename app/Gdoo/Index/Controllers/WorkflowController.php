@@ -46,7 +46,7 @@ class WorkflowController extends DefaultController
     /**
      * 流程审核
      */
-    public function flowAuditAction()
+    public function flowAudit()
     {
         $gets = Request::all();
 
@@ -220,7 +220,7 @@ class WorkflowController extends DefaultController
     /**
      * 撤回流程
      */
-    public function recallAction()
+    public function recall()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -332,7 +332,7 @@ class WorkflowController extends DefaultController
     /**
      * 弃审流程
      */
-    public function abortAction()
+    public function abort()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -416,7 +416,7 @@ class WorkflowController extends DefaultController
     /**
      * 标记已阅读
      */
-    public function flowReadAction()
+    public function flowRead()
     {
         if (Request::method() == 'POST') {
             $gets = Request::get('master');
@@ -430,7 +430,7 @@ class WorkflowController extends DefaultController
     /**
      * 流程清除重置
      */
-    public function flowResetAction()
+    public function flowReset()
     {
         if (Request::method() == 'POST') {
             $master = Request::get('master');
@@ -460,7 +460,7 @@ class WorkflowController extends DefaultController
     /**
      * 保存草稿
      */
-    public function flowDraftAction()
+    public function flowDraft()
     {
         $gets = Request::all();
         $master = $gets['master'];
@@ -498,7 +498,7 @@ class WorkflowController extends DefaultController
     /**
      * 获取办理步骤
      */
-    public function flowStepAction()
+    public function flowStep()
     {
         $gets = Request::all();
         $master = $gets['master'];
@@ -668,7 +668,7 @@ class WorkflowController extends DefaultController
     /**
      * 审批记录
      */
-    public function flowLogAction()
+    public function flowLog()
     {
         $key = Request::get('key');
         $keys = AES::decrypt($key, config('app.key'));
@@ -745,7 +745,7 @@ class WorkflowController extends DefaultController
     /**
      * 回退已经生效的流程
      */
-    public function flowReturnAction()
+    public function flowReturn()
     {
         $gets = Request::all();
         $run_id = $gets['run_id'];
@@ -838,7 +838,7 @@ class WorkflowController extends DefaultController
     /**
      * 流程修正
      */
-    public function flowReviseAction()
+    public function flowRevise()
     {
         $gets = Request::all();
         $keys = AES::decrypt($gets['key'], config('app.key'));
@@ -988,7 +988,7 @@ class WorkflowController extends DefaultController
     /**
      * 统计待办流程数量
      */
-    public function flowCountAction()
+    public function flowCount()
     {
         $rows = DB::table('model_step_log')->where('user_id', auth()->id())
         ->where('status', 0)

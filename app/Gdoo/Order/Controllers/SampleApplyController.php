@@ -20,7 +20,7 @@ class SampleApplyController extends WorkflowController
 {
     public $permission = ['dialog', 'serviceDelivery'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'sample_apply',
@@ -112,7 +112,7 @@ class SampleApplyController extends WorkflowController
         ]);
     }
 
-    public function detailAction()
+    public function detail()
     {
         $header = Grid::header([
             'code' => 'sample_apply',
@@ -172,7 +172,7 @@ class SampleApplyController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -186,29 +186,29 @@ class SampleApplyController extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
         $this->layout = 'layouts.print2';
-        print_prince($this->createAction('print'));
+        print_prince($this->create('print'));
     }
 
     // 关闭
-    public function closeAction()
+    public function close()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -225,7 +225,7 @@ class SampleApplyController extends WorkflowController
     }
 
     // 样品出库
-    public function serviceDeliveryAction()
+    public function serviceDelivery()
     {
         $header = Grid::header([
             'code' => 'sample_apply',
@@ -272,7 +272,7 @@ class SampleApplyController extends WorkflowController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

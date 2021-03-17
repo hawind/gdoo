@@ -18,7 +18,7 @@ class PermissionController extends DefaultController
 {
     public $permission = ['index','create','delete'];
 
-    public function indexAction()
+    public function index()
     {
         if (Request::method() == 'POST') {
             $sorts = Request::get('sort');
@@ -41,7 +41,7 @@ class PermissionController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -103,7 +103,7 @@ class PermissionController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = Request::get('id');
         if ($id > 0) {

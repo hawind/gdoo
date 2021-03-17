@@ -35,11 +35,11 @@
 
     // 标记已读
     action.read = function() {
-        statusAction('read');
+        status('read');
     };
     // 标记未读
     action.unread = function() {
-        statusAction('unread');
+        status('unread');
     };
 
     var grid = new agGridOptions();

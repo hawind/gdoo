@@ -12,7 +12,7 @@ class ReportController extends DefaultController
     /**
      * 费用使用统计
      */
-    public function saleOrderDetailAction()
+    public function saleOrderDetail()
     {
         $sdate = date('Y-m-01');
         $edate = date('Y-m-d');

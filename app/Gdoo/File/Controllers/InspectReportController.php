@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class InspectReportController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'file_inspect_report',
@@ -67,7 +67,7 @@ class InspectReportController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $file = Request::file('file');
@@ -104,7 +104,7 @@ class InspectReportController extends DefaultController
         return $this->render();
     }
 
-    public function downloadAction()
+    public function download()
     {
         $id = (int) Request::get('id', 0);
         $row = DB::table('file_inspect_report')->where('id', $id)->first();
@@ -131,7 +131,7 @@ class InspectReportController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = (array)Request::get('id');
         $rows = DB::table('file_inspect_report')->whereIn('id', $id)->get();

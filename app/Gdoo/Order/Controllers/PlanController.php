@@ -25,7 +25,7 @@ class PlanController extends DefaultController
     /**
      * 生产计划总表
      */
-    public function indexAction()
+    public function index()
     {
         // 开始天
         $sdate = date('Y-m-d', strtotime("-1 day"));
@@ -94,7 +94,7 @@ class PlanController extends DefaultController
     /**
      * 外销销售进度表
      */
-    public function export_saleAction()
+    public function export_sale()
     {
         // 开始天
         $sdate = date('Y-m-01');
@@ -217,7 +217,7 @@ class PlanController extends DefaultController
     /**
      * 生产计划
      */
-    public function produceAction()
+    public function produce()
     {
         // 开始天
         $sdate = date('Y-m-d', strtotime("-1 day"));
@@ -322,7 +322,7 @@ class PlanController extends DefaultController
     /**
      * 获取发货计划明细
      */
-    public function producePlanAction()
+    public function producePlan()
     {
         $query = Request::all();
         if (Request::method() == 'POST') {
@@ -362,7 +362,7 @@ class PlanController extends DefaultController
     }
 
     // 保存生产计划
-    public function produce_saveAction()
+    public function produce_save()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -391,7 +391,7 @@ class PlanController extends DefaultController
     }
 
     // 提交生产计划
-    public function produce_submitAction()
+    public function produce_submit()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();

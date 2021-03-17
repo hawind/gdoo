@@ -16,7 +16,7 @@ class LogController extends DefaultController
     /**
      * 系统日志
      */
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '系统日志',
@@ -189,7 +189,7 @@ class LogController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

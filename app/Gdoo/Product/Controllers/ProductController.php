@@ -22,7 +22,7 @@ class ProductController extends DefaultController
 {
     public $permission = ['dialog', 'show', 'category', 'serviceCustomer'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'product',
@@ -89,7 +89,7 @@ class ProductController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'product', 'id' => $id]);
@@ -98,12 +98,12 @@ class ProductController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'product', 'id' => $id, 'action' => 'show']);
@@ -113,7 +113,7 @@ class ProductController extends DefaultController
     }
 
     // 数据导入
-    public function importAction()
+    public function import()
     {
         if (Request::method() == 'POST') {
             return Form::import(['table' => 'product', 'keys' => ['code', 'category_id', 'unit_id']]);
@@ -122,7 +122,7 @@ class ProductController extends DefaultController
         return $this->render(['tips' => $tips], 'layouts.import');
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $header = Grid::header([
             'code' => 'product',
@@ -175,7 +175,7 @@ class ProductController extends DefaultController
     /**
      * 以客户产品列表
      */
-    public function serviceCustomerAction()
+    public function serviceCustomer()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -248,7 +248,7 @@ class ProductController extends DefaultController
         ]);
     }
 
-    public function categoryAction()
+    public function category()
     {
         if (Request::method() == 'POST') {
             $model = ProductCategory::orderBy('lft', 'asc');
@@ -259,7 +259,7 @@ class ProductController extends DefaultController
         }
     }
     
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

@@ -10,7 +10,7 @@ class WidgetController extends DefaultController
     public $permission = ['birthday'];
 
     // 生日提醒
-    public function birthdayAction()
+    public function birthday()
     {
         if (Request::method() == 'POST') {
 

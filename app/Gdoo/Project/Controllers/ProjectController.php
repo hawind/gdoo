@@ -20,7 +20,7 @@ class ProjectController extends DefaultController
 {
     public $permission = [];
     
-    public function indexAction()
+    public function index()
     {
         $search = search_form([
             'referer' => 1,
@@ -76,13 +76,13 @@ class ProjectController extends DefaultController
     }
 
     // 项目详情
-    public function showAction(Request $request)
+    public function show(Request $request)
     {
         return $this->display([]);
     }
 
     // 添加项目
-    public function addAction(Request $request)
+    public function add(Request $request)
     {
         if ($request->method() == 'POST') {
             $gets = $request->input();
@@ -105,7 +105,7 @@ class ProjectController extends DefaultController
     }
 
     // 编辑项目
-    public function editAction(Request $request)
+    public function edit(Request $request)
     {
         if ($request->method() == 'POST') {
             $gets = $request->input();
@@ -134,7 +134,7 @@ class ProjectController extends DefaultController
     }
 
     // 删除项目
-    public function deleteAction(Request $request)
+    public function delete(Request $request)
     {
         $id = $request->input('id');
         $id = array_filter((array)$id);

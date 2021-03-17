@@ -20,7 +20,7 @@ class MaterialController extends DefaultController
 {
     public $permission = ['dialog', 'config', 'configSave', 'planProduct', 'planTotal'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'product_material',
@@ -73,7 +73,7 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'product_material', 'id' => $id, 'action' => $action]);
@@ -82,13 +82,13 @@ class MaterialController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
     // 配方
-    public function configAction()
+    public function config()
     {
         $id = (int)Request::get('id');
         if (Request::method() == 'POST') {
@@ -108,7 +108,7 @@ class MaterialController extends DefaultController
     }
 
     // 用料计划
-    public function planAction()
+    public function plan()
     {
         $search = search_form([
             'advanced' => 0,
@@ -164,7 +164,7 @@ class MaterialController extends DefaultController
     }
 
     // 用料计划产品
-    public function planProductAction()
+    public function planProduct()
     {
         $search = search_form([], [], 'model');
         $query = $search['query'];
@@ -208,7 +208,7 @@ class MaterialController extends DefaultController
     }
 
     // 用料计划总量
-    public function planTotalAction()
+    public function planTotal()
     {
         $search = search_form([], [], 'model');
         $query = $search['query'];
@@ -243,7 +243,7 @@ class MaterialController extends DefaultController
     }
 
     // 配方保存
-    public function configSaveAction()
+    public function configSave()
     {
         $gets = Request::all();
         $id = $gets['id'];
@@ -269,7 +269,7 @@ class MaterialController extends DefaultController
         return $this->json('配方保存成功。', true);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');
@@ -277,7 +277,7 @@ class MaterialController extends DefaultController
         }
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form([
             'advanced' => '',

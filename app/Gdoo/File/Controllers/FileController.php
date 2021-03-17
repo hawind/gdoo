@@ -21,7 +21,7 @@ class FileController extends DefaultController
             ['id' => 'receive','name' => '我收到的'],
         ];
 
-    public function index1Action()
+    public function index1()
     {
         $rows = [
             ['id' => 'common', 'name' => '公共云盘'],
@@ -35,7 +35,7 @@ class FileController extends DefaultController
     }
 
     // 新建文件夹
-    public function folderAction()
+    public function folder()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -53,7 +53,7 @@ class FileController extends DefaultController
     }
 
     // 共享操作
-    public function sharingAction()
+    public function sharing()
     {
         $gets = Request::all();
 
@@ -86,7 +86,7 @@ class FileController extends DefaultController
     }
 
     // 上传文件
-    public function uploadAction()
+    public function upload()
     {
         $parent_id = Request::get('parent_id', 0);
         
@@ -131,7 +131,7 @@ class FileController extends DefaultController
     }
 
     // 个人云盘
-    public function indexAction()
+    public function index()
     {
         $user_id = auth()->id();
         $parent_id = Request::get('parent_id', 0);
@@ -170,7 +170,7 @@ class FileController extends DefaultController
     }
 
     // 共享给我的
-    public function receiveAction()
+    public function receive()
     {
         $user_id = auth()->id();
         $shares = Share::getItemsSourceBy(['folder', 'file'], $user_id)->pluck('created_id');
@@ -181,7 +181,7 @@ class FileController extends DefaultController
     }
 
     // 共享给我的
-    public function receivedataAction()
+    public function receivedata()
     {
         $user_id = Request::get('user_id');
         $parent_id = Request::get('parent_id');
@@ -250,7 +250,7 @@ class FileController extends DefaultController
     }
 
     // 我共享的
-    public function shareAction()
+    public function share()
     {
         $user_id = Request::get('user_id', auth()->id());
 
@@ -318,7 +318,7 @@ class FileController extends DefaultController
     }
 
     // 公共网盘
-    public function commonAction()
+    public function common()
     {
         $folder_id = Request::get('folder_id', 0);
         $files = DB::table('file')
@@ -340,7 +340,7 @@ class FileController extends DefaultController
         ]);
     }
 
-    public function downAction()
+    public function down()
     {
         $id = (int) Request::get('id', 0);
         $row = DB::table('file')->where('id', $id)->first();
@@ -372,7 +372,7 @@ class FileController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = (array)Request::get('id');

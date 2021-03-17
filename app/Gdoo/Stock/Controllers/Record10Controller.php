@@ -16,7 +16,7 @@ class Record10Controller extends WorkflowController
 {
     public $permission = ['dialog', 'print3'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'stock_record10',
@@ -67,7 +67,7 @@ class Record10Controller extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -82,30 +82,30 @@ class Record10Controller extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function print2Action()
+    public function print2()
     {
         $this->layout = 'layouts.print2';
-        $view = $this->createAction('print');
+        $view = $this->create('print');
         $viewData = $view->getData();
-        print_prince($this->createAction('print'));
+        print_prince($this->create('print'));
     }
 
-    public function printAction()
+    public function print()
     {
         $id = Request::get('id');
         $template_id = Request::get('template_id');
@@ -149,12 +149,12 @@ class Record10Controller extends WorkflowController
 
         } else {
             $this->layout = 'layouts.print2';
-            $tpl = $this->createAction('print');
+            $tpl = $this->create('print');
             print_prince($tpl);
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

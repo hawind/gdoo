@@ -60,7 +60,7 @@
 
     gdoo.grids[table] = {grid: grid};
 
-    var action = new gridAction(table, '销售订单费用明细表');
+    var action = new grid(table, '销售订单费用明细表');
     var panel = $('#' + table + '-controller');
 
     panel.on('click', '[data-toggle="' + table + '"]', function() {

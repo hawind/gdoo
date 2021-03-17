@@ -15,7 +15,7 @@ class CustomerClassController extends DefaultController
 {
     public $permission = ['dialog'];
     
-    public function indexAction()
+    public function index()
     {
         $display = $this->access;
 
@@ -71,7 +71,7 @@ class CustomerClassController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'customer_class', 'id' => $id]);
@@ -80,12 +80,12 @@ class CustomerClassController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form([], [
             ['text','customer_class.name','名称'],
@@ -108,7 +108,7 @@ class CustomerClassController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

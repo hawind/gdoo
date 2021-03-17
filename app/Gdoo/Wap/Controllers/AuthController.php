@@ -19,7 +19,7 @@ class AuthController extends Controller
     /**
      * 用户登录
      */
-    public function loginAction()
+    public function login()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -41,7 +41,7 @@ class AuthController extends Controller
     /**
      * 用户注销
      */
-    public function logoutAction()
+    public function logout()
     {
         Auth::logout();
         return $this->json('解绑成功。', true);

@@ -14,7 +14,7 @@ class MarketController extends DefaultController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -74,7 +74,7 @@ class MarketController extends DefaultController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -87,22 +87,22 @@ class MarketController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');
@@ -111,7 +111,7 @@ class MarketController extends DefaultController
     }
 
     // 对话框
-    public function dialogAction()
+    public function dialog()
     {
         $header = Grid::header([
             'code' => 'approach_market',

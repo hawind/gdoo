@@ -19,7 +19,7 @@ class CommentController extends DefaultController
     public $permission = [];
     
     // 添加评论
-    public function addAction(Request $request)
+    public function add(Request $request)
     {
         if ($request->method() == 'POST') {
             $gets = $request->input();
@@ -49,7 +49,7 @@ class CommentController extends DefaultController
     }
 
     // 编辑评论
-    public function editAction(Request $request)
+    public function edit(Request $request)
     {
         if ($request->method() == 'POST') {
             $gets = $request->input();
@@ -74,7 +74,7 @@ class CommentController extends DefaultController
     }
 
     // 删除评论
-    public function deleteAction(Request $request)
+    public function delete(Request $request)
     {
         if ($request->method() == 'POST') {
             $id = $request->input('id');

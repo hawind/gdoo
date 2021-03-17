@@ -17,7 +17,7 @@ class AdjustController extends AuditController
 {
     public $permission = [];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_cost_adjust',
@@ -82,7 +82,7 @@ class AdjustController extends AuditController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
 
@@ -100,17 +100,17 @@ class AdjustController extends AuditController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

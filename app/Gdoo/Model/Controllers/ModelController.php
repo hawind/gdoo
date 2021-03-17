@@ -20,7 +20,7 @@ use Gdoo\Index\Controllers\DefaultController;
 
 class ModelController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '模型',
@@ -167,7 +167,7 @@ class ModelController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -200,17 +200,17 @@ class ModelController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function storeAction()
+    public function store()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $ids = (array)Request::get('id');
         if (count($ids) > 0) {

@@ -16,7 +16,7 @@ class TemplateController extends DefaultController
 {
     public $permission = ['create', 'create2'];
 
-    public function indexAction()
+    public function index()
     {
         if (Request::method() == 'POST') {
             $sorts = Request::get('sort');
@@ -44,7 +44,7 @@ class TemplateController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $gets = Request::all();
 
@@ -157,7 +157,7 @@ class TemplateController extends DefaultController
         ]);
     }
 
-    public function create2Action()
+    public function create2()
     {
         $gets = Request::all();
 
@@ -251,7 +251,7 @@ class TemplateController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = Request::get('id');
         if ($id > 0) {

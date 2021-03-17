@@ -15,7 +15,7 @@ class TaskController extends AuditController
 {
     public $permission = ['importExcel'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_task',
@@ -75,7 +75,7 @@ class TaskController extends AuditController
         ]);
     }
 
-    public function createAction($action = 'create')
+    public function create($action = 'create')
     {
         $id = (int)Request::get('id');
         $form = Form::make([
@@ -94,20 +94,20 @@ class TaskController extends AuditController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     /**
      * 区域进度
      */
-    public function progressAction()
+    public function progress()
     {
         $year = date('Y');
         $search = search_form([], [[
@@ -311,7 +311,7 @@ class TaskController extends AuditController
         ]);
     }
 
-    public function importExcelAction()
+    public function importExcel()
     {
         if (Request::method() == 'POST') {
             $file = Request::file('file');
@@ -358,7 +358,7 @@ class TaskController extends AuditController
         return view('importExcel');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

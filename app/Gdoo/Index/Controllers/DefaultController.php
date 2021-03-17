@@ -48,7 +48,7 @@ class DefaultController extends Controller
     /**
      * 保存表单
      */
-    public function storeAction()
+    public function store()
     {
         $gets = Request::all();
         $master = $gets['master'];
@@ -81,7 +81,7 @@ class DefaultController extends Controller
     /**
      * 关闭行数据
      */
-    public function closeRowAction()
+    public function closeRow()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -103,7 +103,7 @@ class DefaultController extends Controller
     /**
      * 关闭所有行数据
      */
-    public function closeAllRowAction()
+    public function closeAllRow()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {

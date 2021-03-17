@@ -16,7 +16,7 @@ class BusinessController extends DefaultController
     public $permission = [];
 
     // 商机列表
-    public function indexAction()
+    public function index()
     {
     }
 }

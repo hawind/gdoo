@@ -16,7 +16,7 @@ class ReviewController extends WorkflowController
 {
     public $permission = ['dialog', 'reference', 'useCount', 'feeDetail'];
 
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -79,7 +79,7 @@ class ReviewController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
 
@@ -103,29 +103,29 @@ class ReviewController extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
         $this->layout = 'layouts.print2';
-        print_prince($this->createAction('print'));
+        print_prince($this->create('print'));
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -146,7 +146,7 @@ class ReviewController extends WorkflowController
     }
 
     // 兑现明细
-    public function feeDetailAction()
+    public function feeDetail()
     {
         $query = Request::all();
         if (Request::method() == 'POST') {
@@ -156,7 +156,7 @@ class ReviewController extends WorkflowController
         return $this->render(['query' => $query]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

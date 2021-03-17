@@ -22,7 +22,7 @@ class AuthController extends Controller
     /**
      * 二次验证
      */
-    public function totpAction()
+    public function totp()
     {
         // 时间验证密钥
         $t = new Totp();
@@ -58,7 +58,7 @@ class AuthController extends Controller
     /**
      * 表单登录
      */
-    public function loginAction()
+    public function login()
     {
         $gets = Request::all();
 
@@ -151,7 +151,7 @@ class AuthController extends Controller
     /**
      * 验证码
      */
-    public function captchaAction()
+    public function captcha()
     {
         Captcha::make();
     }
@@ -159,7 +159,7 @@ class AuthController extends Controller
     /**
      * 二维码登录
      */
-    public function qrcodeAction()
+    public function qrcode()
     {
         return $this->display([
         ]);
@@ -168,7 +168,7 @@ class AuthController extends Controller
     /**
      * 注销
      */
-    public function logoutAction()
+    public function logout()
     {
         Auth::logout();
         Session::flush();

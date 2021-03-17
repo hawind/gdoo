@@ -25,7 +25,7 @@ class ProfileController extends DefaultController
     public $permission = ['index', 'password', 'avatar', 'secret', 'getUser'];
 
     // 资料修改
-    public function indexAction()
+    public function index()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -57,7 +57,7 @@ class ProfileController extends DefaultController
     /**
      * 获取用户信息
      */
-    public function getUserAction()
+    public function getUser()
     {
         $user['avatar'] = avatar(auth()->user()->avatar);
         $user['name'] = auth()->user()->name;
@@ -67,7 +67,7 @@ class ProfileController extends DefaultController
     /**
      * 更新安全密钥
      */
-    public function secretAction()
+    public function secret()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');
@@ -80,7 +80,7 @@ class ProfileController extends DefaultController
     }
 
     // 修改密码 
-    public function passwordAction()
+    public function password()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -122,7 +122,7 @@ class ProfileController extends DefaultController
     }
 
     // 用户头像
-    public function avatarAction()
+    public function avatar()
     {
         $gets = Request::all();
 

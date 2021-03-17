@@ -17,7 +17,7 @@ class LogisticsController extends DefaultController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'logistics',
@@ -66,7 +66,7 @@ class LogisticsController extends DefaultController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'logistics', 'id' => $id, 'action' => $action]);
@@ -75,17 +75,17 @@ class LogisticsController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');
@@ -93,7 +93,7 @@ class LogisticsController extends DefaultController
         }
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form([
             'advanced' => '',

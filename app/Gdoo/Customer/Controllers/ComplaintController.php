@@ -16,7 +16,7 @@ class ComplaintController extends WorkflowController
 {
     public $permission = ['dialog'];
 
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -78,7 +78,7 @@ class ComplaintController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -100,22 +100,22 @@ class ComplaintController extends WorkflowController
         return $this->display(['form' => $form], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
-        return $this->createAction('print');
+        return $this->create('print');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

@@ -10,7 +10,7 @@ class WidgetController extends DefaultController
 {
     public $permission = ['index', 'goods'];
 
-    public function indexAction()
+    public function index()
     {
         if (Request::method() == 'POST') {
 
@@ -206,7 +206,7 @@ class WidgetController extends DefaultController
     /**
      * 明日预计到货列表
      */
-    public function goodsAction()
+    public function goods()
     {
         if (Request::method() == 'POST') {
 

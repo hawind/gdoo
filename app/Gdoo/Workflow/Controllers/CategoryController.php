@@ -12,7 +12,7 @@ use Gdoo\Model\Models\Bill;
 
 class CategoryController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '流程类别',
@@ -152,7 +152,7 @@ class CategoryController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -177,17 +177,17 @@ class CategoryController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function storeAction()
+    public function store()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

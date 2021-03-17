@@ -17,7 +17,7 @@ class SmsController extends DefaultController
     /**
      * 短信设置
      */
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '短信',
@@ -173,7 +173,7 @@ class SmsController extends DefaultController
     /**
      * 短信保存
      */
-    public function storeAction()
+    public function store()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -194,12 +194,12 @@ class SmsController extends DefaultController
         }
     }
 
-    public function createAction()
+    public function create()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function editAction()
+    public function edit()
     {
         $id  = (int)Request::get('id');
         $row = DB::table('sms')->where('id', $id)->first();
@@ -208,7 +208,7 @@ class SmsController extends DefaultController
         ], 'edit');
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');
@@ -220,7 +220,7 @@ class SmsController extends DefaultController
     /**
      * 短信测试
      */
-    public function testAction()
+    public function test()
     {
         $phone = Request::get('phone');
         if (Request::method() == 'POST') {

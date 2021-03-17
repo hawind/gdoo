@@ -23,7 +23,7 @@ class ArticleController extends DefaultController
 {
     public $permission = [];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'article',
@@ -101,7 +101,7 @@ class ArticleController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'article', 'id' => $id]);
@@ -110,12 +110,12 @@ class ArticleController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
         $id = (int)Request::get('id');
 
@@ -156,7 +156,7 @@ class ArticleController extends DefaultController
     /**
      * 阅读记录
      */
-    public function readerAction()
+    public function reader()
     {
         $id = Request::get('id', 0);
 
@@ -190,7 +190,7 @@ class ArticleController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

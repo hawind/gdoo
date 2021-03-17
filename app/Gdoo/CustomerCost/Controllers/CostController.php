@@ -17,7 +17,7 @@ class CostController extends AuditController
 {
     public $permission = ['dialog', 'serviceSaleOrder', 'useCount'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'customer_cost',
@@ -88,7 +88,7 @@ class CostController extends AuditController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
 
@@ -106,18 +106,18 @@ class CostController extends AuditController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     // 费用参照到订单
-    public function serviceSaleOrderAction() 
+    public function serviceSaleOrder() 
     {
         $header = Grid::header([
             'code' => 'customer_cost',
@@ -183,7 +183,7 @@ class CostController extends AuditController
     }
 
     // 可用列表
-    public function useCountAction()
+    public function useCount()
     {
         $customer_id = Request::get('customer_id');
         $count = DB::table('customer_cost_data')
@@ -194,7 +194,7 @@ class CostController extends AuditController
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -215,7 +215,7 @@ class CostController extends AuditController
     }
 
     // 费用关闭
-    public function closeAction()
+    public function close()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -233,7 +233,7 @@ class CostController extends AuditController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

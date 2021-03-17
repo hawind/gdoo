@@ -19,7 +19,7 @@ class PromotionController extends WorkflowController
 {
     public $permission = ['dialog', 'serviceSaleOrder', 'useCount', 'product'];
 
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -109,7 +109,7 @@ class PromotionController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int) Request::get('id');
         $header['action'] = $action;
@@ -136,22 +136,22 @@ class PromotionController extends WorkflowController
         ], $tpl);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('audit');
+        return $this->create('audit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
-    public function printAction()
+    public function print()
     {
         $id = (int) Request::get('id');
         $template_id = (int) Request::get('template_id');
@@ -168,7 +168,7 @@ class PromotionController extends WorkflowController
     }
 
     // 赠品促销参照到订单
-    public function serviceSaleOrderAction()
+    public function serviceSaleOrder()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -320,7 +320,7 @@ class PromotionController extends WorkflowController
     }
 
     // 产品明细
-    public function productAction()
+    public function product()
     {
         $query = Request::all();
         if (Request::method() == 'POST') {
@@ -334,7 +334,7 @@ class PromotionController extends WorkflowController
         return $this->render(['query' => $query]);
     }
 
-    public function closeAction()
+    public function close()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -347,7 +347,7 @@ class PromotionController extends WorkflowController
     }
     
     // 可用列表
-    public function useCountAction()
+    public function useCount()
     {
         $customer_id = Request::get('customer_id');
 
@@ -359,7 +359,7 @@ class PromotionController extends WorkflowController
         return $this->json($count, true);
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $search = search_form(
             ['advanced' => ''], [
@@ -474,7 +474,7 @@ class PromotionController extends WorkflowController
     }
 
     // 批量编辑
-    public function batchEditAction()
+    public function batchEdit()
     {
         $gets = Request::all();
         if (Request::method() == 'POST') {
@@ -494,7 +494,7 @@ class PromotionController extends WorkflowController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

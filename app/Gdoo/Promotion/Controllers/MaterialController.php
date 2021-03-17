@@ -20,7 +20,7 @@ class MaterialController extends DefaultController
 {
     public $permission = ['detail', 'dialog', 'store', 'archive', 'download'];
     
-    public function indexAction()
+    public function index()
     {
         // 客户权限
         $region = regionCustomer('customer_id_customer');
@@ -101,7 +101,7 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    public function detailAction()
+    public function detail()
     {
         $search = search_form([
             'status' => '',
@@ -167,7 +167,7 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    public function dialogAction()
+    public function dialog()
     {
         $user = auth()->user();
 
@@ -186,7 +186,7 @@ class MaterialController extends DefaultController
         return $this->json($rows, true);
     }
     
-    public function showAction()
+    public function show()
     {
         $id = Request::get('id');
         $row = Material::with('promotion')
@@ -215,7 +215,7 @@ class MaterialController extends DefaultController
         ]);
     }
 
-    public function auditAction()
+    public function audit()
     {
         $id = (array)Request::get('id');
         $status = Request::get('status');
@@ -231,7 +231,7 @@ class MaterialController extends DefaultController
         return $this->json('操作成功。', true);
     }
 
-    public function archiveAction()
+    public function archive()
     {
         $id = (array)Request::get('id');
 
@@ -256,7 +256,7 @@ class MaterialController extends DefaultController
         return $this->json('', true);
     }
 
-    public function downloadAction()
+    public function download()
     {
         $sn = Request::get('sn');
         if(empty($sn)) {
@@ -265,7 +265,7 @@ class MaterialController extends DefaultController
         return response()->download(upload_path('promotion/material/archive.zip'), $sn.'_'.date('Y-m-d').'.zip');
     }
 
-    public function storeAction()
+    public function store()
     {
         // 上传文件
         if (Request::method() == 'POST') {
@@ -320,7 +320,7 @@ class MaterialController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $var1 = (array)Request::get('id');

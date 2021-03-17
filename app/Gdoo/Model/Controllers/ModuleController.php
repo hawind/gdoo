@@ -16,7 +16,7 @@ class ModuleController extends DefaultController
 {
     public $permission = ['refresh'];
 
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '模块',
@@ -148,7 +148,7 @@ class ModuleController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');
@@ -160,7 +160,7 @@ class ModuleController extends DefaultController
     /**
      * 更新模块列表
      */
-    public function refreshAction()
+    public function refresh()
     {
         if (Request::method() == 'POST') {
             $modules = ModuleService::details();

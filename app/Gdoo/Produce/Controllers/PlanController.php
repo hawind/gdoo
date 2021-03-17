@@ -20,7 +20,7 @@ class PlanController extends WorkflowController
 {
     public $permission = ['dialog', 'orderPlan', 'planExport'];
 
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'produce_plan',
@@ -71,7 +71,7 @@ class PlanController extends WorkflowController
     }
 
     // 生产计划导出
-    public function planExportAction()
+    public function planExport()
     {
         $search = search_form([
             'advanced' => 0,
@@ -164,7 +164,7 @@ class PlanController extends WorkflowController
         ]);
     }
 
-    public function createAction($action = 'edit')
+    public function create($action = 'edit')
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'produce_plan', 'id' => $id, 'action' => $action]);
@@ -173,23 +173,23 @@ class PlanController extends WorkflowController
         ], 'create');
     }
 
-    public function auditAction()
+    public function audit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction('edit');
+        return $this->create('edit');
     }
 
-    public function showAction()
+    public function show()
     {
-        return $this->createAction('show');
+        return $this->create('show');
     }
 
     // 参照订单计划
-    public function orderPlanAction()
+    public function orderPlan()
     {
         $plan_date = Request::get('plan_date');
         $rows = [];
@@ -204,7 +204,7 @@ class PlanController extends WorkflowController
         return $this->json($rows, true);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');

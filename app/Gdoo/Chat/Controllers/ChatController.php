@@ -45,7 +45,7 @@ class ChatController extends Controller
         });
     }
 
-    public function startAction() 
+    public function start() 
     {
         return $this->return_json([
             'title' => $this->setting['title'],
@@ -53,19 +53,19 @@ class ChatController extends Controller
         ]);
     }
 
-    public function indexAction() 
+    public function index() 
     {
         return $this->render([
             'user' => $this->user,
         ]);
     }
 
-    public function getServerURLAction() 
+    public function getServerURL() 
     {
         return ChatService::getServerURL($this->user);
     }
 
-    public function uploadAction(Request $request) 
+    public function upload(Request $request) 
     {
         if ($request->method() == 'POST') {
             $user = $this->user;
@@ -124,19 +124,19 @@ class ChatController extends Controller
         }
     }
 
-    public function getHistoryAction() 
+    public function getHistory() 
     {
         $auth_id = $this->user['id'];
         $json = ChatService::getHistory($auth_id);
         return $this->return_json($json);
     }
 
-    public function getMaxUploadAction() 
+    public function getMaxUpload() 
     {
         return $this->return_json(['maxUpload' => $this->setting['upload_max']]);
     }
 
-    public function getGroupUserAction(Request $request) 
+    public function getGroupUser(Request $request) 
     {
         $gets = $request->all();
         $auth_id = $this->user['id'];
@@ -144,7 +144,7 @@ class ChatController extends Controller
         return $this->return_json($json);
     }
 
-    public function clearRecordAction(Request $request) 
+    public function clearRecord(Request $request) 
     {
         $gets = $request->all();
         $auth_id = $this->user['id'];
@@ -152,14 +152,14 @@ class ChatController extends Controller
         return $this->return_json('删除成功');
     }
 
-    public function inviteUserAction(Request $request) 
+    public function inviteUser(Request $request) 
     {
         $gets = $request->all();
         ChatService::inviteUser($this->user, $gets['gid'], $gets['val']);
         return $this->return_json('邀请成功');
     }
 
-    public function getReceiverAction(Request $request) 
+    public function getReceiver(Request $request) 
     {
         $gets = $request->all();
         $auth_id = $this->user['id'];
@@ -167,7 +167,7 @@ class ChatController extends Controller
         return $this->return_json(['receinfor' => $json]);
     }
 
-    public function exitGroupAction(Request $request) 
+    public function exitGroup(Request $request) 
     {
         $gets = $request->all();
         $auth_id = $this->user['id'];
@@ -175,7 +175,7 @@ class ChatController extends Controller
         return $this->return_json('退出会话成功');
     }
 
-    public function createGroupAction(Request $request) 
+    public function createGroup(Request $request) 
     {
         $gets = $request->all();
         $auth_id = $this->user['id'];
@@ -190,7 +190,7 @@ class ChatController extends Controller
         return $this->return_json('创建会话成功');
     }
 
-    public function clearHistoryAction(Request $request) 
+    public function clearHistory(Request $request) 
     {
         $gets = $request->all();
         $auth_id = $this->user['id'];
@@ -198,7 +198,7 @@ class ChatController extends Controller
         return $this->return_json('退出会话成功');
     }
 
-	public function getDepartmentUserDataAction()
+	public function getDepartmentUserData()
 	{
 		$roles = DB::table('role')->get()->toNested();
         $departments = DB::table('department')
@@ -244,7 +244,7 @@ class ChatController extends Controller
         return $this->return_json($json);
     }
     
-    public function loginAction(Request $request) 
+    public function login(Request $request) 
     {
         if ($request->method() == 'POST') {
             $gets = $request->all();
@@ -262,7 +262,7 @@ class ChatController extends Controller
         return $this->render();
     }
 
-    public function logoutAction() 
+    public function logout() 
     {
         Auth::logout();
         Session::flush();
@@ -272,7 +272,7 @@ class ChatController extends Controller
     /**
 	* 撤回消息功能
 	*/
-    public function recallMessageAction(Request $request) 
+    public function recallMessage(Request $request) 
     {
         $auth_id = $this->user['id'];
         $gets = $request->all();
@@ -280,7 +280,7 @@ class ChatController extends Controller
         return $this->return_json($json);
     }
 
-    public function sendMessageAction(Request $request) 
+    public function sendMessage(Request $request) 
     {
         $gets = $request->all();
         $auth = $this->user;
@@ -291,7 +291,7 @@ class ChatController extends Controller
         return $this->return_json($json);
     }
     
-    public function getRecordAction(Request $request) 
+    public function getRecord(Request $request) 
     {
         $auth = $this->user;
         $auth_id = (int)$auth['id'];
@@ -498,7 +498,7 @@ class ChatController extends Controller
         return $this->return_json($json);
     }
 
-    public function initAction(Request $request)
+    public function init(Request $request)
     {
         $auth_id = $this->user['id'];
         $roles = DB::table('role')->get()->toNested();

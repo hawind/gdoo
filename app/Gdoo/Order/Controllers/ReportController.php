@@ -40,7 +40,7 @@ class ReportController extends DefaultController
     }
 
     // 销售曲线图分析
-    public function indexAction()
+    public function index()
     {
         // 本年时间
         $now_year = date('Y');
@@ -216,7 +216,7 @@ class ReportController extends DefaultController
     }
 
     // 全国数据分类方法
-    public function categoryAction()
+    public function category()
     {
         $customer_type = Request::get('customer_type', 0);
 
@@ -480,7 +480,7 @@ class ReportController extends DefaultController
     }
 
     // 客户销售排序
-    public function rankingAction()
+    public function ranking()
     {
         // 客户名称
         $customer_name = Request::get('customer_name');
@@ -673,7 +673,7 @@ class ReportController extends DefaultController
     }
 
     // 单品查询
-    public function singleAction()
+    public function single()
     {
         // 客户权限
         $selects = regionCustomer('customer');
@@ -817,7 +817,7 @@ class ReportController extends DefaultController
     }
 
     // 城市数据分析
-    public function cityAction()
+    public function city()
     {
         // 当前年月日
         $now_sdate = Request::get('date1', date("Y").'-01-01');
@@ -1061,7 +1061,7 @@ class ReportController extends DefaultController
     }
 
     // 单区域数据分析
-    public function citydataAction()
+    public function citydata()
     {
         // 获得销售员登录名
         $year = Request::get('year');
@@ -1139,7 +1139,7 @@ class ReportController extends DefaultController
     }
 
     // 单品客户数据分析
-    public function clientAction()
+    public function client()
     {
         $now_year = Request::get('year', date('Y'));
         // 获得前一年的年份
@@ -1320,7 +1320,7 @@ class ReportController extends DefaultController
     }
 
     // 客户数据分析
-    public function clientdataAction()
+    public function clientdata()
     {
         $year = Request::get('year');
         $product_id = Request::get('product_id');
@@ -1404,7 +1404,7 @@ class ReportController extends DefaultController
      * 新客户分析
      * 计算本年度有订单去年无订单为新客户
      */
-    public function newclientAction()
+    public function newclient()
     {
         // 筛选专用函数
         $selects = regionCustomer('customer');
@@ -1530,7 +1530,7 @@ class ReportController extends DefaultController
     /**
      * 连续3个月未进货的客户
      */
-    public function stockmonthAction()
+    public function stockmonth()
     {
         // 筛选专用函数
         $selects = regionCustomer('customer');

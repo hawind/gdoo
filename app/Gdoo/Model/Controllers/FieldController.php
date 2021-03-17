@@ -22,7 +22,7 @@ class FieldController extends DefaultController
 {
     public $permission = ['getColumns', 'getEnums'];
 
-    public function indexAction()
+    public function index()
     {
         $model_id = Request::get('model_id');
 
@@ -61,7 +61,7 @@ class FieldController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         $model_id = (int)Request::get('model_id');
         $id = (int)Request::get('id');
@@ -384,7 +384,7 @@ class FieldController extends DefaultController
     /**
      * 获取字段类型
      */
-    public function typeAction()
+    public function type()
     {
         $type = Request::get('type');
         $model_id = Request::get('model_id');
@@ -396,7 +396,7 @@ class FieldController extends DefaultController
     /**
      * 字段关联对象
      */
-    public function getColumnsAction()
+    public function getColumns()
     {
         $table = Request::get('table');
 
@@ -416,13 +416,13 @@ class FieldController extends DefaultController
         return $this->json($rows, true);
     }
 
-    public function getEnumsAction()
+    public function getEnums()
     {
         $enums = Option::where('parent_id', 0)->orderBy('sort', 'asc')->orderBy('id', 'asc')->get();
         return $enums;
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $model_id = Request::get('model_id');
         $id = Request::get('id');

@@ -14,7 +14,7 @@ class OptionController extends DefaultController
 {
     public $permission = ['category'];
     
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '枚举',
@@ -159,12 +159,12 @@ class OptionController extends DefaultController
         ]);
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function createAction()
+    public function create()
     {
         $id = (int)Request::get('id');
         $row = DB::table('option')->where('id', $id)->first();
@@ -177,7 +177,7 @@ class OptionController extends DefaultController
         ], 'edit');
     }
 
-    public function storeAction()
+    public function store()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -199,7 +199,7 @@ class OptionController extends DefaultController
         }
     }
 
-    public function categoryAction()
+    public function category()
     {
         if (Request::method() == 'POST') {
             $rows = Option::where('parent_id', 0)->orderBy('sort', 'asc')->orderBy('id', 'asc')->get();
@@ -208,7 +208,7 @@ class OptionController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

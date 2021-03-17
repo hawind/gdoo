@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class CertificateController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         $header = Grid::header([
             'code' => 'file_certificate',
@@ -67,7 +67,7 @@ class CertificateController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $file = Request::file('file');
@@ -104,7 +104,7 @@ class CertificateController extends DefaultController
         return $this->render();
     }
 
-    public function downloadAction()
+    public function download()
     {
         $id = (int) Request::get('id', 0);
         $row = DB::table('file_certificate')->where('id', $id)->first();
@@ -131,7 +131,7 @@ class CertificateController extends DefaultController
         }
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = (array)Request::get('id');
         $rows = DB::table('file_certificate')->whereIn('id', $id)->get();

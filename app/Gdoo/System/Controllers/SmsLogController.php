@@ -15,7 +15,7 @@ class SmsLogController extends DefaultController
     /**
      * 短信记录
      */
-    public function indexAction()
+    public function index()
     {
         $header = [
             'master_name' => '短信记录',
@@ -147,7 +147,7 @@ class SmsLogController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         if (Request::method() == 'POST') {
             $id = Request::get('id');

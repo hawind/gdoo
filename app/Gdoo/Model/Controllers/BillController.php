@@ -14,7 +14,7 @@ use Gdoo\Index\Controllers\DefaultController;
 
 class BillController extends DefaultController
 {
-    public function indexAction()
+    public function index()
     {
         $search = search_form([
             'advanced' => '',
@@ -211,7 +211,7 @@ class BillController extends DefaultController
         ]);
     }
 
-    public function createAction()
+    public function create()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -245,17 +245,17 @@ class BillController extends DefaultController
         ], 'create');
     }
 
-    public function editAction()
+    public function edit()
     {
-        return $this->createAction();
+        return $this->create();
     }
 
-    public function storeAction()
+    public function store()
     {
-        return $this->editAction();
+        return $this->edit();
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $ids = (array)Request::get('id');
         if (count($ids) > 0) {

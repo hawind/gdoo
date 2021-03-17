@@ -11,7 +11,7 @@ use Gdoo\Index\Controllers\DefaultController;
 class PostController extends DefaultController
 {
     // 板块列表
-    public function indexAction()
+    public function index()
     {
         $forum = Forum::where('forum.state', 1);
 
@@ -47,7 +47,7 @@ class PostController extends DefaultController
     }
 
     // 论坛类别帖子列表
-    public function forumAction()
+    public function forum()
     {
         $id = Request::get('id');
 
@@ -95,7 +95,7 @@ class PostController extends DefaultController
         ]);
     }
 
-    public function addAction()
+    public function add()
     {
         $id = Request::get('id');
         $forum_id = Request::get('forum_id');
@@ -140,7 +140,7 @@ class PostController extends DefaultController
         ]);
     }
 
-    public function commentAction()
+    public function comment()
     {
         $id = Request::get('id');
         $parent_id = Request::get('parent_id');
@@ -177,7 +177,7 @@ class PostController extends DefaultController
         ]);
     }
 
-    public function viewAction()
+    public function view()
     {
         $id = (int)Request::get('id');
 
@@ -211,7 +211,7 @@ class PostController extends DefaultController
         ]);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = (int)Request::get('id');
 

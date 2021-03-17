@@ -24,7 +24,7 @@ class TaskController extends DefaultController
 {
     public $permission = ['drag', 'sort'];
     
-    public function indexAction(Request $request)
+    public function index(Request $request)
     {
         $search = search_form([
             'project_id' => '',
@@ -76,7 +76,7 @@ class TaskController extends DefaultController
     }
 
     // 显示任务
-    public function showAction(Request $request)
+    public function show(Request $request)
     {
         $search = search_form([
             'project_id' => ''
@@ -95,7 +95,7 @@ class TaskController extends DefaultController
     }
 
     // 移动任务
-    public function dragAction(Request $request)
+    public function drag(Request $request)
     {
         $gets = $request->input();
 
@@ -110,7 +110,7 @@ class TaskController extends DefaultController
     }
 
     // 移动任务
-    public function sortAction(Request $request)
+    public function sort(Request $request)
     {
         $gets = $request->input();
 
@@ -129,7 +129,7 @@ class TaskController extends DefaultController
     }
 
     // 添加任务
-    public function addAction(Request $request)
+    public function add(Request $request)
     {
         if ($request->method() == 'POST') {
             $gets = $request->input();
@@ -189,7 +189,7 @@ class TaskController extends DefaultController
     }
 
     // 编辑任务
-    public function editAction(Request $request)
+    public function edit(Request $request)
     {
         if ($request->method() == 'POST') {
             $gets = $request->input();
@@ -311,7 +311,7 @@ class TaskController extends DefaultController
     }
 
     // 删除任务
-    public function deleteAction(Request $request)
+    public function delete(Request $request)
     {
         if ($request->method() == 'POST') {
             $id = $request->input('id');

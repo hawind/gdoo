@@ -3,7 +3,6 @@
 <p align="center">
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/version-beta2.2.x-%23ff0000" alt="Build Status" /></a>
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/laravel-8.0-%23ef3b2d" alt="laravel framework" /></a>
-<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/gdooFramework-1.0-%234c5ec2" alt="Gdoo快速开发框架" /></a>
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/MYSQL-8.0-%2300758f" alt="License" /></a>
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/Licence-Apache2.0-blue.svg?style=flat" /></a>
 </p>

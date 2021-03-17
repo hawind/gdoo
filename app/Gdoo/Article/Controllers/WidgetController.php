@@ -14,7 +14,7 @@ class WidgetController extends DefaultController
     /**
      * 公告部件
      */
-    public function indexAction()
+    public function index()
     {
         if (Request::isJson()) {
             $model = DB::table('article')
@@ -42,7 +42,7 @@ class WidgetController extends DefaultController
     /**
      * 公告信息
      */
-    public function infoAction()
+    public function info()
     {
         $config = InfoService::getInfo('article');
 

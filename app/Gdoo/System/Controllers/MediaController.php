@@ -17,7 +17,7 @@ class MediaController extends DefaultController
     /**
      * 二维码上传
      */
-    public function qrcodeAction()
+    public function qrcode()
     {
         $key = Request::get('key');
         list($table, $field) = explode('.', $key);
@@ -30,7 +30,7 @@ class MediaController extends DefaultController
         ], 'qrcode');
     }
 
-    public function createAction()
+    public function create()
     {
         $folderId = Request::get('folder_id');
         $file = Request::file('Filedata');
@@ -82,7 +82,7 @@ class MediaController extends DefaultController
         return $this->json('文件上传失败');
     }
     
-    public function dialogAction()
+    public function dialog()
     {
         if (Request::method() == 'POST') {
             $folder   = Request::get('folder');
@@ -120,7 +120,7 @@ class MediaController extends DefaultController
     /**
      * 新建文件夹
      */
-    public function folderAction()
+    public function folder()
     {
         if (Request::method() == 'POST') {
             $gets = Request::all();
@@ -134,7 +134,7 @@ class MediaController extends DefaultController
     /**
      * 下载文件
      */
-    public function downloadAction()
+    public function download()
     {
         $id = Request::get('id');
         if ($id) {
@@ -147,7 +147,7 @@ class MediaController extends DefaultController
     /**
      * 删除文件
      */
-    public function deleteAction()
+    public function delete()
     {
         $id = (array)Request::get('id');
         if (empty($id)) {

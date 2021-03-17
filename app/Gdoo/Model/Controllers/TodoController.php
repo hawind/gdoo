@@ -13,7 +13,7 @@ class TodoController extends DefaultController
     /**
      * 流程待办
      */
-    public function widgetAction(Request $request)
+    public function widget(Request $request)
     {
         if ($request->method() == 'POST') {
             $bill_id = $request->get('bill_id');

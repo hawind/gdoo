@@ -25,12 +25,12 @@ if (strpos($path, 'calendar/caldav') === 0) {
 }
 
 if (strpos($path, 'common') === 0) {
-    app('Gdoo\Index\Controllers\ApiController')->commonAction();
+    app('Gdoo\Index\Controllers\ApiController')->common();
 }
 
 // 首字母大写
 $controller = Str::studly($uris['controller']);
-$action = 'Gdoo\\'.ucfirst($uris['module']).'\\Controllers\\'.$controller.'Controller@'.$uris['action'].'Action';
+$action = 'Gdoo\\'.ucfirst($uris['module']).'\\Controllers\\'.$controller.'Controller@'.$uris['action'];
 
 $method = Request::method();
 
