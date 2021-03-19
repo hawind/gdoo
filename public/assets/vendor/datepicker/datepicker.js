@@ -13,17 +13,9 @@ var $dp, datePicker;
         {
             name: "zh-cn",
             charset: "UTF-8"
-        },
-        {
-            name: "zh-tw",
-            charset: "UTF-8"
         }],
         $skinList: [{
             name: "default",
-            charset: "UTF-8"
-        },
-        {
-            name: "wang",
             charset: "UTF-8"
         }],
         $wdate: true,
@@ -37,7 +29,7 @@ var $dp, datePicker;
         weekMethod: "ISO8601",
         position: {},
         lang: "auto",
-        skin: "wang",
+        skin: "default",
         dateFmt: "yyyy-MM-dd",
         realDateFmt: "yyyy-MM-dd",
         realTimeFmt: "HH:mm:ss",
@@ -110,7 +102,7 @@ var $dp, datePicker;
     else if (W == "Opera") a = true;
     else G = true;
     A = $.$dpPath || J();
-    if ($.$wdate) K(A + "skin/datePicker.css");
+    // if ($.$wdate) K(A + "skin/datePicker.css");
     U = X;
     if ($.$crossFrame) {
         try {
@@ -215,6 +207,7 @@ var $dp, datePicker;
             A.addEventListener(B, _._ieEmuEventHandler, false)
         }
     }
+
     function J() {
         var _, A, $ = X[M][C]("script");
         for (var B = 0; B < $.length; B++) {
@@ -226,6 +219,7 @@ var $dp, datePicker;
         }
         return _
     }
+
     function K(A, $, B) {
         var D = X[M][C]("HEAD").item(0),
         _ = X[M].createElement("link");
@@ -238,6 +232,7 @@ var $dp, datePicker;
             D.appendChild(_)
         }
     }
+
     function F($) {
         $ = $ || U;
         var A = 0,
@@ -419,8 +414,9 @@ var $dp, datePicker;
         if (G.lang == "auto") G.lang = R ? navigator.browserLanguage.toLowerCase() : navigator.language.toLowerCase();
         if (!G.eCont) for (var C in G) $dp[C] = G[C];
         if (!$dp.dd || G.eCont || ($dp.dd && (G.getRealLang().name != $dp.dd.lang || G.skin != $dp.dd.skin))) {
-            if (G.eCont) E(G.eCont, G);
-            else {
+            if (G.eCont) { 
+                E(G.eCont, G); 
+            } else {
                 $dp.dd = U[M].createElement("DIV");
                 $dp.dd.style.cssText = "position:absolute";
                 U[M].body.appendChild($dp.dd);
@@ -436,6 +432,7 @@ var $dp, datePicker;
             $dp.cal.init();
             if (!$dp.eCont) B($dp)
         }
+
         function E(I, H) {
             var G = X[M].domain,
             E = false;
@@ -466,6 +463,7 @@ var $dp, datePicker;
             F.write(J.join(""));
             F.close()
         }
+        
         function B(J) {
 
             var H = J.position.left,
