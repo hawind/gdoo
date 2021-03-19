@@ -462,7 +462,6 @@
             });
             content.html(iframe);
             
-            //layer.msg('页面加载中，请稍候...', {icon: 2,shade: 0, time: 1000 * 120});
             layer.load(2);
             iframe.load(function() {
                 layer.closeAll('loading');

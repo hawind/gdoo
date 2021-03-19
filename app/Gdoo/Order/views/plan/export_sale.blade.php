@@ -56,7 +56,7 @@
 
     gdoo.grids[table] = {grid: grid};
 
-    var action = new grid(table, '外销生产进度表');
+    var action = new gridAction(table, '外销生产进度表');
     var panel = $('#' + table + '-controller');
 
     // 过滤数据

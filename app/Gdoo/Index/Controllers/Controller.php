@@ -75,9 +75,9 @@ class Controller extends BaseController
             'upload_url' => URL::to('/uploads'),
             'static_url' => URL::to('/static'),
             'asset_url' => URL::to('/assets'),
-            'version' => $this->version,
             'licenseType' => env('LICENSE_TYPE'),
             'resVersion' => $this->resVersion,
+            'version' => $this->version,
         ]);
     }
 

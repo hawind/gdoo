@@ -36,6 +36,16 @@ class MessageController extends Controller
             'display' => 1,
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => 1],
+            ['action' => 'divider'],
+            ['name' => '标记已读', 'icon' => '', 'action' => 'read', 'display' => 1],
+            ['name' => '标记未读', 'icon' => '', 'action' => 'unread', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = Message::$tabs;
+        $header['bys'] = Message::$bys;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -64,17 +74,6 @@ class MessageController extends Controller
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => 1],
-            ['action' => 'divider'],
-            ['name' => '标记已读', 'icon' => '', 'action' => 'read', 'display' => 1],
-            ['name' => '标记未读', 'icon' => '', 'action' => 'unread', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = Message::$tabs;
-        $header['bys'] = Message::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

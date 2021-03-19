@@ -1,28 +1,41 @@
-{{$header["js"]}}
+<div class="gdoo-list-page" id="{{$header['master_table']}}-page">
 
-<div class="panel no-border" id="{{$header['master_table']}}-controller">
-    @include('headers')
-    <div class='gdoo-list-grid'>
-        <div id="{{$header['master_table']}}-grid" style="width:100%;" class="ag-theme-balham"></div>
+    <div class="gdoo-list panel">
+        <div class="gdoo-list-header">
+            <gdoo-grid-header :header="header" :grid="grid" :action="action" />
+        </div>
+
+        <div class='gdoo-list-grid'>
+            <div id="{{$header['master_table']}}-grid" class="ag-theme-balham"></div>
+        </div>
     </div>
-</div>
-<script>
-    (function ($) {
-        var table = '{{$header["master_table"]}}';
-        var config = gdoo.grids[table];
-        var action = config.action;
-        var search = config.search;
 
-        action.dialogType = 'dialog';
+</div>
+
+<script>
+Vue.createApp({
+    components: {
+        gdooGridHeader,
+    },
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
+
+        var config = new gdoo.grid(table);
+
+        var grid = config.grid;
+        grid.autoColumnsToFit = true;
+        grid.remoteDataUrl = '{{url()}}';
+
+        var action = config.action;
+        // 双击行执行的方法
+        action.rowDoubleClick = null;
 
         action.refresh = function() {
             var me = this;
-            var loading = layer.msg('模块更新中...', {
-                icon: 16, shade: 0.1, time: 1000 * 120
-            });
+            var loading = showLoading();
             $.post(app.url('model/module/refresh'), function(res) {
                 if (res.status) {
-                    options.remoteData({page: 1});
+                    grid.remoteData({page: 1});
                     toastrSuccess(res.data);
                 } else {
                     toastrError(res.data);
@@ -32,62 +45,16 @@
             });
         }
 
-        action.test = function() {
-            var me = this;
-            var grid = config.grid;
-            var rows = grid.api.getSelectedRows();
-            if (rows.length == 1) {
-                formDialog({
-                    title: '测试邮件',
-                    url: app.url('system/mail/test', {id: rows[0].id}),
-                    storeUrl: app.url('system/mail/test'),
-                    id: 'mail_test',
-                    dialogClass:'modal-sm',
-                    success: function(res) {
-                        toastrSuccess(res.data);
-                        $(this).dialog("close");
-                    },
-                    error: function(res) {
-                        toastrError(res.data);
-                    }
-                });
-            } else {
-                toastrError('只能选择一条数据。');
-            }
-        }
+        var setup = config.setup;
 
-        var options = new agGridOptions();
-        var gridDiv = document.querySelector("#{{$header['master_table']}}-grid");
-        gridDiv.style.height = getPanelHeight(48);
-
-        options.remoteDataUrl = '{{url()}}';
-        options.remoteParams = search.advanced.query;
-        options.columnDefs = config.cols;
-        options.onRowDoubleClicked = function (params) {
-            if (params.node.rowPinned) {
-                return;
-            }
-            if (params.data == undefined) {
-                return;
-            }
-            if (params.data.master_id > 0) {
-                action.show(params.data);
-            }
-        };
-
-        new agGrid.Grid(gridDiv, options);
-        options.remoteData({page: 1});
-
-        // 绑定自定义事件
-        var $gridDiv = $(gridDiv);
-        $gridDiv.on('click', '[data-toggle="event"]', function () {
-            var data = $(this).data();
-            if (data.master_id > 0) {
-                action[data.action](data);
-            }
+        Vue.onMounted(function() {
+            var gridDiv = config.div(136);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
         });
-        config.grid = options;
-    })(jQuery);
-
+        return setup;
+    }
+}).mount("#{{$header['master_table']}}-page");
 </script>
-@include('footers')

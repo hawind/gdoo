@@ -17,7 +17,7 @@ class ReportController extends DefaultController
         $sdate = date('Y-m-01');
         $edate = date('Y-m-d');
         $search = search_form([],  
-            [['form_type' => 'date2', 'name' => '日期', 'field' => 'date', 'value' => [$sdate, $edate], 'options' => []],
+            [['form_type' => 'date2', 'name' => '订单日期', 'field' => 'date', 'value' => [$sdate, $edate], 'options' => []],
             ['form_type' => 'text', 'name' => '订单编号', 'field' => 'm.sn', 'options' => []],
             ['form_type' => 'text', 'name' => '单据编号', 'field' => 'd.fee_src_sn', 'options' => []],
             [
@@ -52,10 +52,10 @@ class ReportController extends DefaultController
                 c.code as customer_code,
                 c.name as customer_name,
                 ccc.name as category_name,
-                ".sql_year_month('l.audit_date', 'ts')." as [ym]
+                ".sql_year_month('m.created_at', 'ts')." as [ym]
             ")
             ->whereRaw('d.fee_src_sn is not null')
-            ->groupBy(DB::raw('c.code,c.name,ccc.name,m.sn,d.fee_src_sn,d.fee_src_type_id,'.sql_year_month('l.audit_date', 'ts')));
+            ->groupBy(DB::raw('c.code,c.name,ccc.name,m.sn,d.fee_src_sn,d.fee_src_type_id,'.sql_year_month('m.created_at', 'ts')));
 
             foreach ($search['where'] as $where) {
                 if ($where['active']) {

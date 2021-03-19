@@ -1145,7 +1145,7 @@ class Grid
         ];
         
         $js = "gdoo.grids.$table = ".json_encode($search, JSON_UNESCAPED_UNICODE).";";
-        $js .= "gdoo.grids.$table.action = new grid('".$table."', '".$header['master_name']."');";
+        $js .= "gdoo.grids.$table.action = new gridAction('".$table."', '".$header['master_name']."');";
         $js .= "gdoo.grids.$table.action.routes = ".json_encode($routes, JSON_UNESCAPED_UNICODE).';';
         $js .= "gdoo.grids.$table.action.bill_url = '{$mc}';";
         $res = '<script>'.$js.'</script>';

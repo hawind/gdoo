@@ -88,7 +88,7 @@
 
     gdoo.grids[table] = {grid: grid};
 
-    var action = new grid(table, '客户销售进度');
+    var action = new gridAction(table, '客户销售进度');
     var panel = $('#' + table + '-controller');
 
     panel.on('click', '[data-toggle="' + table + '"]', function() {

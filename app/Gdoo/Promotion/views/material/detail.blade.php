@@ -210,15 +210,12 @@
                 return;
             }
 
-            var index = layer.msg('照片压缩中...', {
-                icon: 16,
-                shade: 0.1,
-                time: 6000 * 10
-            });
+            var loading = showLoading('照片压缩中...');
+            
             $.post('{{url("archive")}}', {
                 id: ids
             }, function(res) {
-                layer.close(index);
+                layer.close(loading);
                 if (res.status) {
                     $.messager.alert('照片下载', '<div class="text-center"><a href="' + app.url('promotion/material/download', {
                         sn: '{{$promotion->sn}}'

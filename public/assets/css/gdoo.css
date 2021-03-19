@@ -1883,12 +1883,6 @@ select.input-sm, select.form-group-sm .form-control {
 .gdoo-list-page {
     display: none;
 }    
-.gdoo-list-page .search-inline-form .form-group {
-    margin-left: 4px;
-}
-.gdoo-list-page .btn-group {
-    margin-left: 4px;
-}
 .gdoo-list {
     border-color: transparent;
     border-width: 0;

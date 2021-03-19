@@ -367,11 +367,11 @@ $(function () {
             }
         });
         var data = (data == '') ? '' : data;
-        var load = layer.load(2);
-        $.post('{{url("wechat/mp/menuedit")}}', {data: data}, function (res) {
-            layer.close(load);
+        var loading = showLoading();
+        $.post('{{url()}}', {data: data}, function (res) {
+            layer.close(loading);
             if (res.status) {
-                layer.msg(res.data, {time: 1000}, function () {});
+                layer.msg(res.data, {time: 1000});
             } else {
                 layer.alert(res.data);
             }

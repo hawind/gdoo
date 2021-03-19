@@ -32,9 +32,7 @@ function importExcel() {
             var file = document.querySelector("#import_file").files[0];
             var formData = new FormData();
             formData.append('file', file);
-            var loading = layer.msg('数据提交中...', {
-                icon: 16, shade: 0.1, time: 1000 * 120
-            });
+            var loading = showLoading();
             $.ajax(url, {
                 method: "post",
                 data: formData,

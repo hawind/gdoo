@@ -85,7 +85,7 @@
 
     gdoo.grids[table] = {grid: grid};
 
-    var action = new grid(table, '生产计划');
+    var action = new gridAction(table, '生产计划');
     var panel = $('#' + table + '-controller');
 
     var producePlan = function() {
@@ -103,9 +103,7 @@
                 onSubmit: function() {
                     var me = this;
                     var form = $('#plan_delivery_date').serialize();
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+                    var loading = showLoading();
                     $.post(app.url('order/order/deliveryPlanDate'), form, function(res) {
                         if (res.status) {
                             grid.remoteData();

@@ -22,11 +22,11 @@ class User extends BaseModel implements
     static public $tabs = [
         'name'  => 'tab',
         'items' => [
-            ['value' => 'user', 'url' => 'user/user/index', 'name' => '用户'],
-            ['value' => 'role', 'url' => 'user/role/index', 'name' => '角色'],
-            ['value' => 'department', 'url' => 'user/department/index', 'name' => '部门'],
-            ['value' => 'group', 'url' => 'user/group/index', 'name' => '用户组'],
-            ['value' => 'position', 'url' => 'user/position/index', 'name' => '职位'],
+            ['value' => 'user', 'type' => 'a', 'url' => 'user/user/index', 'name' => '用户'],
+            ['value' => 'role', 'type' => 'a', 'url' => 'user/role/index', 'name' => '角色'],
+            ['value' => 'department', 'type' => 'a', 'url' => 'user/department/index', 'name' => '部门'],
+            ['value' => 'group', 'type' => 'a', 'url' => 'user/group/index', 'name' => '用户组'],
+            ['value' => 'position', 'type' => 'a', 'url' => 'user/position/index', 'name' => '职位'],
         ]
     ];
 

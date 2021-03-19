@@ -243,9 +243,7 @@ var sampleDialog = function () {
                 }
             });
 
-            var loading = layer.msg('数据提交中...', {
-                icon: 16, shade: 0.1, time: 1000 * 120
-            });
+            var loading = showLoading();
             var warehouse_id = $('#stock_record09_warehouse_id').val();
             var rows = $ref_sample_apply_data.api.getSelectedRows();
             for (var i = 0; i < rows.length; i++) {

@@ -41,14 +41,32 @@ class UserController extends DefaultController
         }
 
         $cols['actions']['options'] = [[
-            'name'    => '显示',
-            'action'  => 'show',
+            'name' => '显示',
+            'action' => 'show',
             'display' => $this->access['show'],
         ],[
-            'name'    => '编辑',
-            'action'  => 'edit',
+            'name' => '编辑',
+            'action' => 'edit',
             'display' => $this->access['edit'],
         ]];
+
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+
+        $header['left_buttons'] = [
+            ['name' => '角色权限', 'color' => 'default', 'action' => 'user_role', 'display' => 1],
+            ['name' => '仓库权限', 'color' => 'default', 'action' => 'user_warehouse', 'display' => 1],
+        ];
+
+        $header['right_buttons'] = [
+            ['name' => '导入', 'color' => 'default', 'icon' => 'fa-mail-reply', 'action' => 'import', 'display' => $this->access['import']],
+        ];
+
+        $header['cols'] = $cols;
+        $header['tabs'] = User::$tabs;
+        $header['bys'] = User::$bys;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -73,25 +91,6 @@ class UserController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-
-        $header['left_buttons'] = [
-            ['name' => '角色权限', 'color' => 'default', 'action' => 'user_role', 'display' => 1],
-            ['name' => '仓库权限', 'color' => 'default', 'action' => 'user_warehouse', 'display' => 1],
-        ];
-
-        $header['right_buttons'] = [
-            ['name' => '导入', 'color' => 'default', 'icon' => 'fa-mail-reply', 'action' => 'import', 'display' => $this->access['import']],
-        ];
-
-        $header['cols'] = $cols;
-        $header['tabs'] = User::$tabs;
-        $header['bys']  = User::$bys;
-        $header['js']   = Grid::js($header);
 
         return $this->display([
             'header' => $header,

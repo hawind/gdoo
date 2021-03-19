@@ -29,9 +29,7 @@ Vue.createApp({
 
         action.refresh = function() {
             var me = this;
-            var loading = layer.msg('部件更新中...', {
-                icon: 16, shade: 0.1, time: 1000 * 120
-            });
+            var loading = showLoading('部件更新中...');
             $.post(app.url('system/widget/refresh'), function(res) {
                 if (res.status) {
                     grid.remoteData({page: 1});

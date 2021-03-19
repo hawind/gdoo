@@ -21,6 +21,7 @@ Vue.createApp({
 
         var grid = config.grid;
         grid.remoteDataUrl = '{{url()}}';
+        grid.autoColumnsToFit = true;
         
         var action = config.action;
         // 双击行执行的方法

@@ -166,9 +166,7 @@ var grid = null;
                         products[row.product_id] += parseFloat(row.wf_num);
                     }
 
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+                    var loading = showLoading();
 
                     var product_ids = Object.keys(products).join(',');
                     var batch_ids = Object.keys(batchs).join(',');

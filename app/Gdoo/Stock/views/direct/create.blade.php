@@ -47,9 +47,7 @@ var grid = null;
                 var formData = new FormData();
                 formData.append('file', file);
                 formData.append('customer_id', get_customer_id());
-                var loading = layer.msg('数据提交中...', {
-                    icon: 16, shade: 0.1, time: 1000 * 120
-                });
+                var loading = showLoading();
                 $.ajax(url, {
                     method: "post",
                     data: formData,
@@ -120,9 +118,7 @@ var grid = null;
 
         var warehouse_id = $('#stock_direct_warehouse_id').val();
 
-        var loading = layer.msg('数据提交中...', {
-            icon: 16, shade: 0.1, time: 1000 * 120
-        });
+        var loading = showLoading();
 
         var product_ids = Object.keys(product_ids).join(',');
         getBatchSelect(warehouse_id, product_ids, '', function(res) {

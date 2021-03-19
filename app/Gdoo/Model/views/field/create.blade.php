@@ -263,11 +263,7 @@ const vueData = {
   },mounted() {
     this.changeDataType();
     $('#form_type').off('change').on('change', function() {
-        var loading = layer.msg('数据提交中...', {
-            icon: 16, 
-            shade: 0.1,
-            time: 1000 * 30
-        });
+        var loading = showLoading();
         $.get("{{url('type')}}?type=" + this.value + '&model_id=' + model_id, function(data) {
             $("#content").html(data);
         }).complete(function() {

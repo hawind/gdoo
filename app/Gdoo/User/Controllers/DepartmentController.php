@@ -41,7 +41,19 @@ class DepartmentController extends DefaultController
             'display' => $display['edit'],
         ]];
         unset($cols['checkbox']);
+        unset($cols['seq_sn']);
         unset($cols['name']);
+
+        $header['buttons'] = [
+            ['name' => '删除','icon' => 'fa-remove','action' => 'delete','display' => $display['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = User::$tabs;
+        $header['bys'] = Department::$bys;
+
+        //config.cols[0]['hide'] = true;
+        //config.cols[1]['hide'] = true;
 
         $search = $header['search_form'];
         $query = $search['query'];
@@ -62,20 +74,10 @@ class DepartmentController extends DefaultController
             ->addSelect(DB::raw('(select count(id) from [user] where department_id = department.id) as user_count'));
 
             $items = $model->get()->toNested('name');
-            $items = Grid::dataFilters($items, $header, function($item) {
+            return Grid::dataFilters($items, $header, function($item) {
                 return $item;
             });
-            return $this->json($items, true);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除','icon' => 'fa-remove','action' => 'delete','display' => $display['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = User::$tabs;
-        $header['bys'] = Department::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

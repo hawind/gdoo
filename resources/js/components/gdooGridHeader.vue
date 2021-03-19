@@ -12,15 +12,15 @@
     <div class="wrapper-xs">
         <div class="pull-right">
             <template v-for="button in header.right_buttons">
-                <a v-if="button.display" @click="linkBtn(button)" :class="'btn btn-sm btn-' + button.color"><i :class="'fa ' + button.icon"></i> {{button.name}}</a>
+                <a v-if="button.display" @click="linkBtn(button)" :class="'btn btn-sm btn-r-line btn-' + button.color"><i :class="'fa ' + button.icon"></i> {{button.name}}</a>
             </template>
 
-            <a v-if="header.trash_btn" @click="actBtn('trash')" :class="'btn btn-sm btn-default ' + (header.search_form.query.by == 'trash' ? 'active' : '')"><i class="fa fa-trash"></i>回收站 ({{header.trash_count}})</a>
+            <a v-if="header.trash_btn" @click="actBtn('trash')" :class="'btn btn-sm btn-r-line btn-default ' + (header.search_form.query.by == 'trash' ? 'active' : '')"><i class="fa fa-trash"></i>回收站 ({{header.trash_count}})</a>
         </div>
 
-        <a v-if="header.access.create && header.create_btn" @click="actBtn('create')" class="btn btn-sm btn-success hinted" :title="'新建' + header.name"><i class="icon icon-plus"></i> 新建</a>
+        <a v-if="header.access.create && header.create_btn" @click="actBtn('create')" class="btn btn-sm btn-l-line btn-success hinted" :title="'新建' + header.name"><i class="icon icon-plus"></i> 新建</a>
         
-        <div class="btn-group">
+        <div class="btn-group btn-l-line">
             <a class="btn btn-info btn-sm" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-bars"></i> 操作 <span class="caret"></span></a>
             <ul class="dropdown-menu">
                 <template v-for="button in header.center_buttons">
@@ -31,14 +31,14 @@
         </div> 
 
         <span class="visible-xs">
-            <div class="btn-group">
+            <div class="btn-group btn-l-line">
             <a @click="actBtn('filter')" class="btn btn-sm btn-default"><i class="fa fa-search"></i> 搜索</a>
             </div>
         </span>
 
         <!-- 简单搜索表单 -->
         <form v-if="header.search_form.simple_search" :id="header.table + '-search-form'" class="search-inline-form form-inline hidden-xs" name="mysearch" method="get">
-            <div class="form-group search-group">
+            <div class="form-group search-group btn-l-line">
                 <select name="field_0" id="search-field-0" class="form-control input-sm">
                     <option data-type="empty" value="">筛选条件</option>
                     <template v-for="column in header.search_form.columns">
@@ -47,13 +47,13 @@
                 </select>
             </div>
             
-            <div class="form-group" style="display:none;">
+            <div class="form-group btn-l-line" style="display:none;">
                 <select name="condition_0" id="search-condition-0" class="form-control input-sm"></select> 
             </div> 
             
-            <div class="form-group" id="search-value-0"></div>
+            <div class="form-group btn-l-line" id="search-value-0"></div>
             
-            <div class="btn-group">
+            <div class="btn-group btn-l-line">
                 <button id="search-submit" type="submit" class="btn btn-sm btn-default">
                     <i class="fa fa-search"></i> 搜索</button>
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -65,9 +65,9 @@
                 </ul>
             </div>
         </form>
-        <a v-else class="btn btn-sm btn-default" @click="actBtn('filter')"><i class="fa fa-search"></i> 筛选</a>
+        <a v-else class="btn btn-sm btn-l-line btn-default" @click="actBtn('filter')"><i class="fa fa-search"></i> 筛选</a>
 
-        <div v-if="header.bys.items.length" class="btn-group" role="group">
+        <div v-if="header.bys.items.length" class="btn-group btn-l-line" role="group">
             <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="fa fa-filter"></span> {{header.by_title}}
                 <span class="caret"></span>
@@ -81,7 +81,7 @@
         </div>
 
         <template v-for="button in header.left_buttons">
-            <a v-if="button.display == 1" @click="linkBtn(button)" :class="'btn btn-sm btn-' + button.color"><i :class="'fa ' + button.icon"></i> {{button.name}}</a> 
+            <a v-if="button.display == 1" @click="linkBtn(button)" :class="'btn btn-sm btn-l-line btn-' + button.color"><i :class="'fa ' + button.icon"></i> {{button.name}}</a> 
         </template>
         
         <div style="display:none;">
@@ -131,7 +131,11 @@ export default defineComponent({
     setup(props) {
         let tabBtn = (btn) => {
             props.header.tabs.active = btn.value;
-            props.grid.remoteData({page:1, tab:btn.value});
+            if (btn.type == 'a') {
+                location.href = '/' + btn.url;
+            } else {
+                props.grid.remoteData({page:1, tab:btn.value});
+            }
         }
         let actBtn = (btn) => {
             props.action[btn]();
@@ -160,3 +164,12 @@ export default defineComponent({
     }
 });
 </script>
+
+<style scoped>
+.btn-r-line {
+    margin-left: 4px;
+}
+.btn-l-line {
+    margin-right: 4px;
+}
+</style>

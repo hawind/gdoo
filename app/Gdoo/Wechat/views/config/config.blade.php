@@ -84,7 +84,9 @@
         var form = layui.form;
         form.on('submit(sbm)', function () {
             var data = $('#myform').serialize();
+            var loading = showLoading();
             $.post('{{url()}}', data, function (res) {
+                layer.close(loading);
                 if (res.status == '1') {
                     toastrSuccess(res.data);
                 }

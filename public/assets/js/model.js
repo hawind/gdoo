@@ -98,9 +98,7 @@
                         if(gets === false) {
                             return;
                         }
-                        var loading = layer.msg('数据提交中...', {
-                            icon: 16, shade: 0.1, time: 1000 * 120
-                        });
+                        var loading = showLoading();
                         $.post(app.url(uri + '/flowAudit'), query + '&' + $.param(gets), function (res) {
                             if (res.status) {
                                 reloadGrid(table);
@@ -126,9 +124,7 @@
                 return;
             }
 
-            var loading = layer.msg('数据提交中...', {
-                icon: 16, shade: 0.1, time: 1000 * 120
-            });
+            var loading = showLoading();
 
             var event = gdoo.event.get('grid.' + table);
 
@@ -172,9 +168,9 @@
             if(gets === false) {
                 return;
             }
-            var loading = layer.msg('数据提交中...', {
-                icon: 16, shade: 0.1, time: 1000 * 120
-            });
+
+            var loading = showLoading();
+
             $.post(app.url(uri + '/store'), query + '&' + $.param(gets), function (res) {
                 if (res.status) {
                     reloadGrid(table);
@@ -192,9 +188,9 @@
         }, read: function (table) {
             var uri = $('#' + table).find('#master_uri').val();
             var query = $('#' + table).serialize();
-            var loading = layer.msg('数据提交中...', {
-                icon: 16, shade: 0.1
-            });
+
+            var loading = showLoading();
+
             $.post(app.url(uri + '/flowRead'), query, function (res) {
                 if (res.status) {
                     reloadGrid(table);
@@ -212,9 +208,9 @@
                 if (btn == true) {
                     var uri = $('#' + table).find('#master_uri').val();
                     var query = $('#' + table).serialize();
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1
-                    });
+                    
+                    var loading = showLoading();
+
                     $.post(app.url(uri + '/flowReset'), query, function (res) {
                         if (res.status) {
                             location.reload();
@@ -280,11 +276,10 @@
                 text: "提交",
                 'class': "btn-info",
                 click: function () {
-                    var me = this;
                     var query = $('#myrecall').serialize();
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+                    
+                    var loading = showLoading();
+
                     $.post(app.url(uri + '/recall'), query, function (res) {
                         if (res.status) {
                             reloadGrid(table);
@@ -319,11 +314,10 @@
                 text: "提交",
                 'class': "btn-info",
                 click: function () {
-                    var me = this;
                     var query = $('#myabort').serialize();
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+
+                    var loading = showLoading();
+
                     $.post(app.url(uri + '/abort'), query, function (res) {
                         if (res.status) {
                             reloadGrid(table);
@@ -346,9 +340,7 @@
         var uri = $('#' + table).find('#master_uri').val();
         $.messager.confirm('操作警告', '确定要审核单据吗', function(btn) {
             if (btn == true) {
-                var loading = layer.msg('数据提交中...', {
-                    icon: 16, shade: 0.1
-                });
+                var loading = showLoading();
                 $.post(app.url(uri + '/audit'), {key: key}, function (res) {
                     if (res.status) {
                         reloadGrid(table);
@@ -370,9 +362,7 @@
         var uri = $('#' + table).find('#master_uri').val();
         $.messager.confirm('操作警告', '确定要弃审单据吗', function(btn) {
             if (btn == true) {
-                var loading = layer.msg('数据提交中...', {
-                    icon: 16, shade: 0.1, time: 1000 * 30
-                });
+                var loading = showLoading();
                 $.post(app.url(uri + '/abort'), {key: key}, function (res) {
                     if (res.status) {
                         reloadGrid(table);
@@ -459,9 +449,7 @@
             var id = rows[0].id;
             top.$.messager.confirm('操作提醒', '是否要关闭选中的行数据?', function(btn) {
                 if (btn == true) {
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+                    var loading = showLoading();
                     $.post(app.url(me.bill_url + '/closeRow'), {table: table,id: id}, function(res) {
                         if (res.status) {
                             toastrSuccess(res.data);
@@ -490,9 +478,7 @@
         if (ids.length > 0) {
             top.$.messager.confirm('操作提醒', '是否要关闭所有行数据?', function(btn) {
                 if (btn == true) {
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+                    var loading = showLoading();
                     $.post(app.url(me.bill_url + '/closeAllRow'), {table: table,ids: ids}, function(res) {
                         if (res.status) {
                             toastrSuccess(res.data);
@@ -559,9 +545,7 @@
                 onSubmit: function() {
                     var fd = new FormData();
                     fd.append("file", $('#import_file')[0].files[0]);
-                    var loading = layer.msg('数据提交中...', {
-                        icon: 16, shade: 0.1, time: 1000 * 120
-                    });
+                    var loading = showLoading();
                     $.ajax({
                         url: app.url(me.bill_url + '/import'),
                         type: "POST",
@@ -598,9 +582,7 @@
                 var content = ids.length + '个' + me.name + '将被删除？';
                 top.$.messager.confirm('删除' + me.name, content, function(btn) {
                     if (btn == true) {
-                        var loading = layer.msg('数据提交中...', {
-                            icon: 16, shade: 0.1, time: 1000 * 120
-                        });
+                        var loading = showLoading();
                         $.post(app.url(me.bill_url + '/delete'), {id: ids}, function(res) {
                             if (res.status) {
                                 toastrSuccess(res.data);

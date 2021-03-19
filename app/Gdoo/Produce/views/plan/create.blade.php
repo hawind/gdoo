@@ -71,9 +71,7 @@ var planDialog = function () {
         toastrError('请选选择计划日期。');
         return;
     }
-    var loading = layer.msg('数据提取中...', {
-        icon: 16, shade: 0.1, time: 1000 * 120
-    });
+    var loading = showLoading('数据提取中...');
     $.get('{{url("produce/plan/orderPlan")}}', {plan_date: plan_date}, function(res) {
         layer.close(loading);
         if (res.status) {

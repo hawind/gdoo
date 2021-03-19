@@ -60,6 +60,12 @@ class RoleController extends DefaultController
             'display' => $this->access['edit'],
         ]];
 
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+        ];
+        $header['cols'] = $cols;
+        $header['tabs'] = User::$tabs;
+
         $search = $header['search_form'];
         $query = $search['query'];
 
@@ -82,14 +88,6 @@ class RoleController extends DefaultController
             $rows = $model->paginate($query['limit'])->appends($query);
             return Grid::dataFilters($rows, $header);
         }
-
-        $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-        ];
-        $header['cols'] = $cols;
-        $header['tabs'] = User::$tabs;
-        $header['bys'] = Role::$bys;
-        $header['js'] = Grid::js($header);
 
         return $this->display([
             'header' => $header,

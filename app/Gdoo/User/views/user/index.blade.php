@@ -1,18 +1,36 @@
-{{$header["js"]}}
-<div class="panel no-border" id="{{$header['table']}}-controller">
-    @include('headers')
-    <div class="gdoo-list-grid">
-        <div id="{{$header['table']}}-grid" class="ag-theme-balham"></div>
-    </div>
-</div>
-<script>
-    (function ($) {
-        var table = '{{$header["table"]}}';
-        var config = gdoo.grids[table];
-        var action = config.action;
-        var search = config.search;
+<div class="gdoo-list-page" id="{{$header['master_table']}}-page">
 
+    <div class="gdoo-list panel">
+        <div class="gdoo-list-header">
+            <gdoo-grid-header :header="header" :grid="grid" :action="action" />
+        </div>
+
+        <div class='gdoo-list-grid'>
+            <div id="{{$header['master_table']}}-grid" class="ag-theme-balham"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+Vue.createApp({
+    components: {
+        gdooGridHeader,
+    },
+    setup(props, ctx) {
+        var table = '{{$header["master_table"]}}';
+
+        var config = new gdoo.grid(table);
+
+        var grid = config.grid;
+        grid.autoColumnsToFit = true;
+        grid.remoteDataUrl = '{{url()}}';
+
+        var action = config.action;
+        // 详情页打开方式
         action.dialogType = 'layer';
+        // 双击行执行的方法
+        action.rowDoubleClick = action.show;
 
         action.user_warehouse = function(data) {
             var me = this;
@@ -30,9 +48,7 @@
                         var me = this;
                         var form = gdoo.dialogs['user_warehouse'];
                         var selectedRows = form.api.getSelectedRows();
-                        var loading = layer.msg('数据提交中...', {
-                            icon: 16, shade: 0.1, time: 1000 * 120
-                        });
+                        var loading = showLoading();
                         $.post(app.url('stock/warehouse/permission', {user_id: user_id}), {rows: selectedRows}, function(res) {
                             if (res.status) {
                                 toastrSuccess(res.data);
@@ -66,9 +82,7 @@
                         var me = this;
                         var form = gdoo.dialogs['user_role'];
                         var selectedRows = form.api.getSelectedRows();
-                        var loading = layer.msg('数据提交中...', {
-                            icon: 16, shade: 0.1, time: 1000 * 120
-                        });
+                        var loading = showLoading();
                         $.post(app.url('user/role/permission', {user_id: user_id}), {rows: selectedRows}, function(res) {
                             if (res.status) {
                                 toastrSuccess(res.data);
@@ -86,37 +100,16 @@
             }
         }
 
-        var grid = new agGridOptions();
-        grid.remoteDataUrl = '{{url()}}';
-        grid.remoteParams = search.advanced.query;
-        grid.columnDefs = config.cols;
-        grid.onRowDoubleClicked = function (params) {
-            if (params.node.rowPinned) {
-                return;
-            }
-            if (params.data == undefined) {
-                return;
-            }
-            if (params.data.master_id > 0) {
-                action.show(params.data);
-            }
-        };
+        var setup = config.setup;
 
-        var gridDiv = document.querySelector("#{{$header['table']}}-grid");
-        gridDiv.style.height = getPanelHeight(48);
-        new agGrid.Grid(gridDiv, grid);
-
-        grid.remoteData({page: 1});
-
-        // 绑定自定义事件
-        var $gridDiv = $(gridDiv);
-        $gridDiv.on('click', '[data-toggle="event"]', function () {
-            var data = $(this).data();
-            if (data.master_id > 0) {
-                action[data.action](data);
-            }
+        Vue.onMounted(function() {
+            var gridDiv = config.div(136);
+            // 初始化数据
+            grid.remoteData({page: 1}, function(res) {
+                config.init(res);
+            });
         });
-        config.grid = grid;
-    })(jQuery);
+        return setup;
+    }
+}).mount("#{{$header['master_table']}}-page");
 </script>
-@include('footers')

@@ -554,9 +554,7 @@ function formDialog(options)
                             return;
                         }
 
-                        var loading = layer.msg('数据提交中...', {
-                            icon: 16, shade: 0.1, time: 1000 * 120
-                        });
+                        var loading = showLoading();
 
                         $.post(action, query + '&' + $.param(gets), function(res) {
                             if (res.status) {
@@ -849,9 +847,7 @@ function ajaxSubmit(table, callback) {
         
         data = data +'&'+ $.param(rows);
 
-        var loading = layer.msg('数据提交中...', {
-            icon: 16, shade: 0.1, time: 1000 * 120
-        });
+        var loading = showLoading();
 
         $.post(url, data, function(res) {
             if (typeof callback === 'function') {
@@ -898,6 +894,18 @@ function getIframeDocument(iframe_id) {
         }
     }
     return null;
+}
+
+/**
+ * 数据加载提示
+ */
+function showLoading(msg) {
+    var loading = layer.msg(msg || '数据提交中...', {
+        icon: 16, 
+        shade: 0.1, 
+        time: 1000 * 120
+    });
+    return loading;
 }
 
 /**
