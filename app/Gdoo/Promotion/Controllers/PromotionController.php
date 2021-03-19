@@ -229,6 +229,7 @@ class PromotionController extends WorkflowController
                     }
                     return $row;
                 });
+                return $rows;
 
             } else {
  
@@ -309,8 +310,8 @@ class PromotionController extends WorkflowController
                     }
                     return $row;
                 });
+                return ['data' => $rows];
             }
-            return $this->json($rows, true);
         }
 
         return $this->render([
