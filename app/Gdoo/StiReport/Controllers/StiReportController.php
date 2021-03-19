@@ -29,11 +29,6 @@ class StiReportController extends DefaultController
         return $this->render();
     }
 
-    public function render()
-    {
-        return $this->render();
-    }
-
     public function saveReport()
     {
         $gets = Request::all();

@@ -3,10 +3,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{$setting['title']}}</title>
-<link rel="stylesheet" href="{{mix('/assets/dist/app.min.css')}}" type="text/css" />
-<script src="{{$public_url}}/common?v={{time()}}"></script>
-<script src="{{mix('/assets/dist/app.min.js')}}"></script>
-<script src="{{$asset_url}}/vendor/datepicker/datepicker.js"></script>
+<link href="{{mix('/assets/dist/vendor.min.css')}}" rel="stylesheet" type="text/css">
+<link href="{{mix('/assets/dist/gdoo.min.css')}}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{{mix('/assets/dist/vendor.min.js')}}"></script>
+<script type="text/javascript" src="{{$public_url}}/common?s={{time()}}"></script>
+<script type="text/javascript" src="{{mix('/assets/dist/gdoo.min.js')}}"></script>
 <style type="text/css">
 body {
     background: -webkit-linear-gradient(right, #198fb4, #0b6fab);
