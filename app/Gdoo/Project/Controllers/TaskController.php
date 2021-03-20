@@ -27,14 +27,29 @@ class TaskController extends DefaultController
     public function index(Request $request)
     {
         $search = search_form([
+            'advanced' => '',
             'project_id' => '',
-            'tpl' => 'gantt',
-            'referer' => '',
+            'tpl' => 'index',
         ], [
-            ['text','project_task.name','任务名称'],
-            ['text','project_task.user_id','执行者'],
-        ]);
+            ['form_type' => 'text', 'name' => '任务名称', 'field' => 'project_task.name', 'value' => '', 'options' => []],
+            ['form_type' => 'text', 'name' => '执行者', 'field' => 'project_task.user_id', 'value' => '', 'options' => []],
+        ], 'model');
 
+        $header = [
+            'master_name' => '项目任务',
+            'simple_search_form' => 1,
+            'table' => 'project_task',
+            'master_table' => 'project_task',
+        ];
+
+        /*
+        $header['buttons'] = [
+            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+        ];
+        */
+
+        $header['search_form'] = $search;
         $query = $search['query'];
 
         if ($request->ajax() && $request->wantsJson()) {
@@ -62,36 +77,12 @@ class TaskController extends DefaultController
             'add_task' => $project['user_id'] == $user_id,
         ];
 
-        // 返回页面
-        $referer = session()->get('referer_'.$request->module().'_project_index');
-
         return $this->display([
+            'header' => $header,
             'project' => $project,
-            'search' => $search,
-            'query' => $query,
-            'referer' => $referer,
             'permission' => $permission,
 
         ], 'index/'.$query['tpl']);
-    }
-
-    // 显示任务
-    public function show(Request $request)
-    {
-        $search = search_form([
-            'project_id' => ''
-        ], [
-            ['text','project.title','任务名称'],
-            ['text','project.created_at','执行者'],
-        ]);
-        
-        $project_id = $request->input('project_id');
-        $project = Project::find($project_id);
-
-        return $this->render([
-            'project' => $project,
-            'search' => $search,
-        ]);
     }
 
     // 移动任务
@@ -180,8 +171,11 @@ class TaskController extends DefaultController
         ->get();
 
         $tpl = $type == 'item' ? 'item/add' : 'add';
+
+        $attachment = AttachmentService::edit('', 'project_task', 'attachment', 'project');
         return $this->render([
             'items' => $items,
+            'attachment' => $attachment,
             'project_id' => $project_id,
             'parent_id' => $parent_id,
             'type' => $type,
@@ -300,12 +294,15 @@ class TaskController extends DefaultController
             ];
         }
         $tpl = $type == 'item' ? 'item/edit' : 'edit';
+
+        $attachment = AttachmentService::edit($task['attachment'], 'project_task', 'attachment', 'project');
         return $this->render([
             'task' => $task,
             'logs' => $logs,
             'items' => $items,
             'tasks' => $tasks,
             'type' => $type,
+            'attachment' => $attachment,
             'permission' => $permission,
         ], $tpl);
     }

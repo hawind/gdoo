@@ -297,7 +297,7 @@ class MaterialController extends DefaultController
                         if ($image->move($upload_path, $filename)) {
 
                             // 修改图片大小
-                            imageResize($upload_path.'/'.$filename, 1024, 1024);
+                            image_resize($upload_path.'/'.$filename, 1024, 1024);
 
                             $rows[] = DB::table('promotion_material_file')->insertGetId([
                                 'material_id' => $material_id,

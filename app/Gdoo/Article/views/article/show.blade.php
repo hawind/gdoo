@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="wrapper-sm">
-                    @include('attachment/view')
+                    @include('attachment/show')
                 </div>
             </div>
         </div>

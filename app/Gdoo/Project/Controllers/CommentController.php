@@ -13,6 +13,7 @@ use Gdoo\Project\Models\Task;
 use Gdoo\Project\Models\Log;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Gdoo\Index\Services\AttachmentService;
 
 class CommentController extends DefaultController
 {
@@ -43,7 +44,9 @@ class CommentController extends DefaultController
 
         $task_id = $request->input('task_id');
 
+        $attachment = AttachmentService::edit('', 'project_task_log', 'attachment', 'project');
         return $this->render([
+            'attachment' => $attachment,
             'task_id' => $task_id,
         ]);
     }
@@ -68,7 +71,9 @@ class CommentController extends DefaultController
         $id  = $request->input('id');
         $log = Log::find($id);
 
+        $attachment = AttachmentService::edit($log['attachment'], 'project_task_log', 'attachment', 'project');
         return $this->render([
+            'attachment' => $attachment,
             'log' => $log,
         ]);
     }
@@ -84,7 +89,12 @@ class CommentController extends DefaultController
                 return $this->json('请先选择数据。');
             }
 
+            $rows = Log::whereIn('id', $id)->get();
             Log::whereIn('id', $id)->delete();
+
+            foreach($rows as $row) {
+                AttachmentService::remove($row['attachment']);
+            }
 
             return $this->json('恭喜你，删除评论成功。', true);
         }

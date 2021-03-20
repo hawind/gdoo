@@ -10,6 +10,8 @@ use App\Illuminate\Database\MySqlConnection;
 use App\Illuminate\Database\SqlsrvConnection;
 use Illuminate\Database\Events\StatementPrepared;
 
+use Illuminate\Pagination\Paginator;
+
 use Event;
 use PDO;
 
@@ -47,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Paginator::defaultView('vendor/pagination/gdoo');
         Event::listen(StatementPrepared::class, function ($event) {
             $event->statement->setFetchMode(\PDO::FETCH_ASSOC);
         });

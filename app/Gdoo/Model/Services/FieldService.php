@@ -1343,6 +1343,38 @@ class FieldService
         return join(' ', $str);
     }
 
+    public static function content_location($field, $content = '', $row)
+    {
+        $field = static::content_field($field);
+        $setting = $field['setting'];
+
+        $attribute = $field['attribute'];
+        $id = $attribute['id'];
+        $name = $attribute['name'];
+
+        $attribute['readonly'] = 'readonly';
+
+        if ($field['is_show']) {
+            return '
+            <div id="'.$id.'-media" class="media-controller">
+                <i class="icon icon-map-marker text-info text-sm"></i><a href="javascript:;" data-location="'.$row['location'].'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-show">'.$content.'</a>
+            </div>';
+        } else {
+            $str = '
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <a href="javascript:;" data-location="'.$row['location'].'" data-name="'.$name.'" data-id="'.$id.'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-select" class="btn btn-sm btn-info"><i class="fa fa-map"></i> 选择位置</a>
+                </div>
+            </div>
+            <div id="'.$id.'-media" class="media-controller media-input">
+                <input type="text" class="form-control input-sm" autocomplete="off" id="'.$id.'" value="' .$content. '" name="' .$name. '">
+                <input type="hidden" id="'.$id.'_longitude" value="'.$row['longitude'].'" name="' .$field['table']. '[longitude]" />
+                <input type="hidden" id="'.$id.'_latitude" value="'.$row['latitude'].'" name="' .$field['table']. '[latitude]" />
+            </div>';
+        }
+        return $str;
+    }
+
     public static function content_image($field, $content = '')
     {
         $field = static::content_field($field);
@@ -1453,38 +1485,6 @@ class FieldService
         return $html;
     }
 
-    public static function content_location($field, $content = '', $row)
-    {
-        $field = static::content_field($field);
-        $setting = $field['setting'];
-
-        $attribute = $field['attribute'];
-        $id = $attribute['id'];
-        $name = $attribute['name'];
-
-        $attribute['readonly'] = 'readonly';
-
-        if ($field['is_show']) {
-            return '
-            <div id="'.$id.'-media" class="media-controller">
-                <i class="icon icon-map-marker text-info text-sm"></i><a href="javascript:;" data-location="'.$row['location'].'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-show">'.$content.'</a>
-            </div>';
-        } else {
-            $str = '
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <a href="javascript:;" data-location="'.$row['location'].'" data-name="'.$name.'" data-id="'.$id.'" data-longitude="'.$row['longitude'].'" data-latitude="'.$row['latitude'].'" data-toggle="map-select" class="btn btn-sm btn-info"><i class="fa fa-map"></i> 选择位置</a>
-                </div>
-            </div>
-            <div id="'.$id.'-media" class="media-controller media-input">
-                <input type="text" class="form-control input-sm" autocomplete="off" id="'.$id.'" value="' .$content. '" name="' .$name. '">
-                <input type="hidden" id="'.$id.'_longitude" value="'.$row['longitude'].'" name="' .$field['table']. '[longitude]" />
-                <input type="hidden" id="'.$id.'_latitude" value="'.$row['latitude'].'" name="' .$field['table']. '[latitude]" />
-            </div>';
-        }
-        return $str;
-    }
-
     public static function content_file($name, $content = '', $field = '')
     {
         // 配置
@@ -1502,140 +1502,100 @@ class FieldService
     {
         $field = static::content_field($field);
         $setting = $field['setting'];
-
         $attribute = $field['attribute'];
         $name = $attribute['name'];
-        $key = $attribute['key'];
+        $input_id = $attribute['id'];
 
         $config = Setting::where('type', 'system')->pluck('value', 'key');
 
-        $input_id = $attribute['id'];
+        $attachment = AttachmentService::edit($content, $field['table'], $field['field']);
 
-        $attachment = AttachmentService::edit($content, $key);
+        $str = '<div id="file_'.$input_id.'" class="uploadify-queue">';
 
-        if ($field['is_read'] || $field['is_show']) {
-            $str = '<div id="fileQueue_'.$input_id.'" class="uploadify-queue">';
+        if ($field['is_write']) {
+            $str .= '<a class="btn btn-sm btn-info hinted" title="文件大小限制: '.$config['upload_max'].'MB" href="javascript:viewBox(\'attachment\', \'上传\', \''.url('index/attachment/upload', ['path' => Request::module(), 'table' => $field['table'], 'field' => $field['field']]).'\');"><i class="fa fa-cloud-upload"></i> 文件上传</a>';
+            $str .= '<div class="clear"></div>';
+        }
 
-            if (count((array)$attachment['rows'])) {
-                foreach ($attachment['rows'] as $file) {
-                    $str .= '<div id="file_queue_'.$file['id'].'" class="uploadify-queue-item">
-                        <span class="file-name"><i class="icon icon-paperclip"></i> <a class="option" title="下载" download="'.$file['name'].'" href="'.URL::to('uploads').'/'.$file['path'].'">'.$file['name'].'</a></span>
-                        <input type="hidden" class="'.$input_id.' id" value="'.$file['id'].'">';
-                        
-                    if (in_array($file['type'], ['pdf'])) {
-                        $str .= '<a href="'.URL::to('uploads').'/'.$file['path'].'" class="btn btn-xs btn-default" target="_blank">[预览]</a>';
-                    } elseif (in_array($file['type'], ['jpg','png','gif','bmp'])) {
-                        // $str .= '<a data-toggle="dialog-image2" src="'.URL::to('uploads').'/'.$file['path'].'" data-original="'.URL::to('uploads').'/'.$file['path'].'" data-title="附件预览" class="option">[预览]</a>';
-                        $str .= '<img data-original="'.URL::to('uploads').'/'.$file['path'].'" /><a data-toggle="image-show" data-title="附件预览" class="option">[预览]</a>';
-                    }
-                    $str .= '<span class="file-size">('.human_filesize($file['size']).')</span> <span class="file-created_by"> '.$file['created_by'].' </span>';
-                    $str .= '</div><div class="clear"></div>';
+        if (count((array)$attachment['rows'])) {
+            foreach ($attachment['rows'] as $file) {
+                $str .= '<div id="file_queue_'.$file['id'].'" class="uploadify-queue-item">
+                <span class="file-name"><i class="icon icon-paperclip"></i> <a class="option" title="下载" download="'.$file['name'].'" href="'.URL::to('uploads').'/'.$file['path'].'">'.$file['name'].'</a></span>
+                <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="'.$file['id'].'">';
+                    
+                // pdf
+                if (in_array($file['type'], ['pdf'])) {
+                    $str .= '<a href="'.URL::to('uploads').'/'.$file['path'].'" class="btn btn-xs btn-default" target="_blank">[预览]</a>';
+                } 
+
+                // 图片
+                if (in_array($file['type'], ['jpg','png','gif','bmp'])) {
+                    $str .= '<img data-original="'.URL::to('uploads').'/'.$file['path'].'" /><a data-toggle="image-show" class="option">[预览]</a>';
                 }
+
+                // 删除
+                if ($field['is_write']) {
+                    $str .= '<span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'file_queue_'.$file['id'].'\');"><i class="fa fa-times-circle"></i></a></span>';
+                }
+
+                $str .= '<span class="file-size">('.human_filesize($file['size']).')</span> <span class="file-created_by"> '.$file['created_by'].' </span>';
+                $str .= '</div><div class="clear"></div>';
             }
-            $str .= '</div>';
-
-            $str .= '<script type="text/javascript">
-            (function($) {
-                var galley_id = "fileQueue_'.$input_id.'";
-                var galley = document.getElementById(galley_id);
-                var viewer = new Viewer(galley, {
-                    navbar: false,
-                    url: "data-original",
-                });
-                $("#" + galley_id).on("click", \'[data-toggle="image-show"]\', function() {
-                    $(this).prev().click();
-                });
-            })(jQuery);
-            </script>';
-
-            return $str;
-        } else {
-            //$qrcode = url('index/attachment/qrcode', ['path' => Request::module(), 'key' => $key, 'x-auth-token' => create_token(auth()->id(), 7)]);
-            $str = '<script id="uploader-item-tpl" type="text/html">
+        }
+        
+        if ($field['is_write']) {
+            $str .= '<script id="upload-item-tpl" type="text/html">
                 <div id="file_draft_<%=id%>" class="uploadify-queue-item">
                     <span class="file-name"><span class="text-danger hinted" title="草稿状态">!</span> <a class="option" href="javascript:uploader.file(\'file_draft_<%=id%>\', \''.URL::to('uploads').'/<%=path%>\');"><%=name%></a></span>
                     <span class="file-size">(<%=size%>)</span>
+                    
+                    <img data-original="'.URL::to('uploads').'/<%=path%>" /><a data-toggle="image-show" data-title="附件预览" class="option">[预览]</a>
+
                     <span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'file_draft_<%=id%>\');"><i class="fa fa-times-circle"></i></a></span>
                     <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="<%=id%>" />
                 </div>
                 <div class="clear"></div>
-            </script>
-            <div class="uploadify-queue">';
-            /*
-            <script src="'.URL::to('/assets').'/vendor/jquery.qrcode.min.js"></script>
-            <style>
-            .layui-layer-tips .layui-layer-content {
-                background-color: #eee;
-                padding: 8px;
-            }
-            .layui-layer-tips i.layui-layer-TipsL, .layui-layer-tips i.layui-layer-TipsR {
-                border-bottom-color: #eee;
-            }
-            </style>
-            */
-            $str .= '<a class="btn btn-sm btn-info hinted" title="文件大小限制: '.$config['upload_max'].'MB" href="javascript:viewBox(\'attachment\', \'上传\', \''.url('index/attachment/uploader', ['path' => Request::module(), 'key' => $key]).'\');"><i class="fa fa-cloud-upload"></i> 文件上传</a>';
-            /*
-            <a class="btn btn-sm btn-info" id="qrcode_'.$input_id.'_btn" href="javascript:;"><i class="fa fa-qrcode"></i> 扫码上传</a>
-            <div id="qrcode_'.$input_id.'" style="display:none;"></div>
-            */
-            $str .= '<div class="clear"></div>
-            <div id="fileQueue_'.$input_id.'" class="uploadify-queue">';
-                
-            if (count((array)$attachment['rows'])) {
-                foreach ($attachment['rows'] as $file) {
-                    $str .= '<div id="file_queue_'.$file['id'].'" class="uploadify-queue-item">
-                        <span class="file-name"><span class="icon icon-paperclip"></span> <a class="option" href="javascript:uploader.file(\'file_queue_'.$file['id'].'\', \''.URL::to('uploads').'/'.$file['path'].'\');">'.$file['name'].'</a></span>
-                        <span class="file-size">('.human_filesize($file['size']).')</span>
-                        <span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'file_queue_'.$file['id'].'\');"><i class="fa fa-times-circle"></i></a></span>
-                        <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="'.$file['id'].'">
-                    </div>
-                    <div class="clear"></div>';
-                }
-            }
+            </script>';
 
-            $str .= '</div><div id="fileDraft_'.$input_id.'">';
-
+            $str .= '<div id="fileDraft_'.$input_id.'">';
             if (count($attachment['draft'])) {
                 foreach ($attachment['draft'] as $file) {
                     $str .= '<div id="queue_draft_'.$file['id'].'" class="uploadify-queue-item">
                         <span class="file-name"><span class="text-danger hinted" title="草稿附件">!</span> <a class="option" href="javascript:uploader.file(\'queue_draft_'.$file['id'].'\', \''.URL::to('uploads').'/'.$file['path'].'\');">'.$file['name'].'</a></span>
-                        <span class="file-size">('.human_filesize($file['size']).')</span>
-                        <span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'queue_draft_'.$file['id'].'\');"><i class="fa fa-times-circle"></i></a></span>
+                        <span class="file-size">('.human_filesize($file['size']).')</span>';
+
+                        // pdf
+                        if (in_array($file['type'], ['pdf'])) {
+                            $str .= '<a href="'.URL::to('uploads').'/'.$file['path'].'" class="btn btn-xs btn-default" target="_blank">[预览]</a>';
+                        } 
+
+                        // 图片
+                        if (in_array($file['type'], ['jpg','png','gif','bmp'])) {
+                            $str .= '<img data-original="'.URL::to('uploads').'/'.$file['path'].'" /><a data-toggle="image-show" class="option">[预览]</a>';
+                        }
+
+                        $str .= '<span class="cancel"><a class="option gray hinted" title="删除文件" href="javascript:uploader.cancel(\'queue_draft_'.$file['id'].'\');"><i class="fa fa-times-circle"></i></a></span>
                         <input type="hidden" class="'.$input_id.' id" name="'. $name . '[]" value="'.$file['id'].'">
                     </div>
                     <div class="clear"></div>';
                 }
             }
-            $str .= '</div></div>';
-            
-            /*
-            $str .= '<script type="text/javascript">
-            (function($) {
-                $("#qrcode_'.$input_id.'").qrcode({
-                    render: "canvas",
-                    text: "'.$qrcode.'",
-                    width: 150,
-                    height: 150
-                });
-                var qr = $("#qrcode_'.$input_id.'").find("canvas")[0];
-                var qrimg = "<img src="+ qr.toDataURL() +" />";
-                var qrcode_index = 0;
-                var timer_'.$input_id.' = null;
-                $("#qrcode_'.$input_id.'_btn").on("mouseenter", function() {
-                    qrcode_index = layer.tips(qrimg, "#qrcode_'.$input_id.'_btn", {
-                        time: 0,
-                    });
-                    // 激活扫码上传功能
-                    if(timer_'.$input_id.' == null) {
-                        timer_'.$input_id.' = setInterval(\'FindFile("'.$input_id.'", "'.$key.'")\', 3000);
-                    }
-                }).on("mouseleave", function() {
-                    layer.close(qrcode_index);
-                });
-            })(jQuery);
-            </script>';
-            */
-            return $str;
+            $str .= '</div>';
         }
+
+        $str .= '</div><script type="text/javascript">
+        (function($) {
+            var galley_id = "file_'.$input_id.'";
+            var galley = document.getElementById(galley_id);
+            var viewer = new Viewer(galley, {
+                navbar: false,
+                url: "data-original",
+            });
+            $("#" + galley_id).on("click", \'[data-toggle="image-show"]\', function() {
+                $(this).prev().click();
+            });
+        })(jQuery);
+        </script>';
+        return $str;
     }
 }

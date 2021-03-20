@@ -1,6 +1,6 @@
 <div class="panel">
 
-    <div class="wrapper-sm">
+    <div class="wrapper-xs">
         @include('project/query')
     </div>
 
@@ -16,7 +16,7 @@
                             @if($row->tasks->count())
                                 <span class="text-base badge bg-danger">{{$row->tasks->count()}}</span>
                             @endif
-                            <a class="m-t-sm" href="{{url('task/index', ['project_id' => $row->id])}}">
+                            <a class="m-t-sm" data-toggle="tab-frame-url" data-name="项目任务详情" data-id="project_task_index" data-url="project/task/index?project_id={{$row->id}}" href="javascript:;">
                                 {{$row->name}}
                             </a>
                         </h4>
@@ -48,7 +48,7 @@
             <div class="col-sm-1 hidden-xs">
             </div>
             <div class="col-sm-11 text-right text-center-xs">
-                {{$rows->render()}}
+                {{$rows->links()}}
             </div>
         </div>
     </div>

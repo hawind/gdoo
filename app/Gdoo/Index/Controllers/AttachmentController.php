@@ -11,12 +11,22 @@ use URL;
 
 class AttachmentController extends DefaultController
 {
-    public $permission = ['list','view','preview','create','delete','download','show', 'uploader', 'draft', 'qrcode'];
+    public $permission = [
+        'list',
+        'preview',
+        'create',
+        'upload',
+        'delete',
+        'download',
+        'show',
+        'draft',
+        'qrcode'
+    ];
 
     /**
      * 上传文件
      */
-    public function uploader()
+    public function upload()
     {
         if (Request::method() == 'POST') {
             $file = Request::file('file');
@@ -34,7 +44,8 @@ class AttachmentController extends DefaultController
                 }
 
                 // 获取上传uri第一个目录
-                $key  = Request::get('key', 'default');
+                $table = Request::get('table');
+                $field = Request::get('field');
                 $node = Request::get('path', 'default');
                 $path = $node.date('/Ym/');
 
@@ -43,15 +54,16 @@ class AttachmentController extends DefaultController
                 // 文件新名字
                 $filename = date('dhis_').Str::random(4).'.'.$extension;
                 $filename = mb_strtolower($filename);
+                $filesize = $file->getSize();
 
                 if ($file->move($upload_path, $filename)) {
                     $data = [
                         'name' => mb_strtolower($file->getClientOriginalName()),
-                        'node' => $node,
+                        'table' => $table,
+                        'field' => $field,
                         'path' => $path.$filename,
                         'type' => $extension,
-                        'key'  => $key,
-                        'size' => $file->getClientSize(),
+                        'size' => $filesize,
                     ];
                     $insertId = DB::table('attachment')->insertGetId($data);
                     $data['id'] = $insertId;
@@ -61,67 +73,11 @@ class AttachmentController extends DefaultController
             }
         }
         $query = Request::all();
-        $SERVER_URL = url("index/attachment/uploader", $query);
+        $SERVER_URL = url("index/attachment/upload", $query);
         return $this->render([
             'SERVER_URL' => $SERVER_URL,
-            'key' => $query['key'],
+            'key' => $query['table'].'_'.$query['field'],
         ]);
-    }
-
-    /**
-     * 新建文件
-     */
-    public function create()
-    {
-        set_time_limit(0);
-
-        $file = Request::file('Filedata');
-
-        $rules = [
-            'file' => 'mimes:'.$this->setting['upload_type'],
-        ];
-        $v = Validator::make(['file' => $file], $rules);
-
-        if ($file->isValid() && $v->passes()) {
-            // 获取上传uri第一个目录
-            $path = Request::get('path', 'main').date('/Y/m/');
-
-            $upload_path = upload_path().'/'.$path;
-            
-            // 文件后缀名
-            $extension = $file->getClientOriginalExtension();
-
-            // 文件新名字
-            $filename = date('dhis_').Str::random(4).'.'.$extension;
-            $filename = mb_strtolower($filename);
-
-            if ($file->move($upload_path, $filename)) {
-                return DB::table('attachment')->insertGetId([
-                    'name' => mb_strtolower($file->getClientOriginalName()),
-                    'path' => $path.$filename,
-                    'type' => $extension,
-                    'size' => $file->getClientSize(),
-                ]);
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * 二维码上传
-     */
-    public function qrcode()
-    {
-        $key = Request::get('key');
-        $path = Request::get('path');
-        list($table, $field) = explode('.', $key);
-        $model = DB::table('model')->where('table', $table)->first();
-        $token = Request::get('x-auth-token');
-        return $this->render([
-            'model' => $model,
-            'token' => $token,
-            'key' => $key,
-        ], 'attachment.qrcode');
     }
     
     /**

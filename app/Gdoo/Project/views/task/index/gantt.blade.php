@@ -4,11 +4,9 @@
 <script src="{{$asset_url}}/vendor/dhtmlxgantt/locale_cn.js" type="text/javascript"></script>  
 <link rel="stylesheet" href="{{$asset_url}}/vendor/dhtmlxgantt/dhtmlxgantt.css" type="text/css">
 <style type="text/css">
-/* 新样式 */
 html, body { 
 	overflow: hidden;
 }
-
 .gantt_side_content.gantt_right {
     padding-left: 10px;
 }
@@ -18,7 +16,7 @@ html, body {
 }
 
 .gantt_container {
-	border: 1px solid #eee;
+	border: 1px solid #fff;
 	border-top: 1px solid #cecece;
 }
 
@@ -106,52 +104,8 @@ html, body {
 
 </style>
 
-<div class="panel">
-
-	<div class="wrapper-sm b-b">
-		<span class="text-md">{{$project['name']}}</span> <span class="text-muted">{{$project['description']}}</span>
-	</div>
-
-	<div class="wrapper-xs" id="gantt-wrapper">
-
-		<form id="search-task-form" class="form-inline" name="mytasksearch" method="get">
-		<div class="pull-right">
-			<div class="btn-group">
-				<a href="{{url('index', ['project_id' => $project['id'], 'tpl' => 'index'])}}" class="btn btn-sm btn-default @if($query['tpl'] == 'index') active @endif">列表</a>
-				<a href="{{url('index', ['project_id' => $project['id'], 'tpl' => 'gantt'])}}" class="btn btn-sm btn-default @if($query['tpl'] == 'gantt') active @endif">甘特图</a>
-				<!--
-				<a href="{{url('index', ['project_id' => $project['id'], 'tpl' => 'board'])}}" class="btn btn-sm btn-default @if($query['tpl'] == 'board') active @endif">看板</a>
-				-->
-			</div>
-		</div>
-
-		<a href="{{url($referer)}}" class="btn btn-sm btn-default"><i class="fa fa-reply"></i> 返回</a>
-		
-		@if(isset($access['add']))
-
-			@if($permission['add_item'])
-			<a href="javascript:addItem();" title="添加列表" class="hinted btn btn-sm btn-info"><i class="icon icon-plus"></i> 添加列表</a>
-			@endif
-			
-			@if($permission['add_task'])
-			<a href="javascript:addTask();" title="添加任务" class="hinted btn btn-sm btn-info"><i class="icon icon-plus"></i> 添加任务</a>
-			@endif
-
-		@endif
-
-		@include('searchForm')
-		<script type="text/javascript">
-		$(function() {
-			$('#search-task-form').searchForm({
-				data: {{json_encode($search['forms'])}},
-				init:function(e) {
-					var self = this;
-				}
-			});
-		});
-		</script>
-		</form>
-	</div>
+<div class="panel no-border" id="{{$header['master_table']}}-controller">
+	@include('task/index/header')
 	<div id="gantt-view"></div>
 </div>
 
@@ -163,7 +117,6 @@ var params = {project_id:project_id};
 gantt.config.columns = [
 	{name:"name", label:"任务列表", tree:true, width:'*', resize: true}
 ];
-
 gantt.config.scale_unit = 'month';
 gantt.config.date_scale = '%Y - %m';
 gantt.config.scale_height = 50;
@@ -284,7 +237,7 @@ gantt._do_autosize = function() {
 	// 设置高度
 	var height = $('#gantt-wrapper').outerHeight();
 	var iframeHeight = $(window).height();
-	$('#gantt-view').height(iframeHeight - height - 68 + 'px');
+	$('#gantt-view').height(iframeHeight - height - 102 + 'px');
 
 	var resize = this._get_resize_options();
 	var boxSizes = this._get_box_styles();
@@ -307,15 +260,6 @@ gantt._do_autosize = function() {
 
 gantt.init("gantt-view");
 gantt.load(app.url('project/task/index', params));
-
-$('#search-submit').on('click', function() {
-	var query = $('#search-task-form').serializeArray();
-	$.map(query, function(row) {
-		params[row.name] = row.value;
-	});
-	dataReload();
-	return false;
-});
 
 function dataReload() {
 	gantt.clearAll();

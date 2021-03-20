@@ -1,4 +1,59 @@
 <script>
+(function($) {
+	var table = '{{$header["master_table"]}}';
+	var search = JSON.parse('{{json_encode($header["search_form"])}}');
+	search.advanced = {};
+	search.simple = {};
+	search.advanced.el = $('#' + table + '-search-form-advanced').searchForm({
+		data: search.forms,
+		advanced: true
+	});
+	search.simple.el = $('#' + table + '-search-form').searchForm({
+		data: search.forms
+	});
+	search.simple.el.find('#search-submit').on('click', function() {
+		var query = search.simple.el.serializeArray();
+		search.queryType = 'simple';
+		$.map(query, function(row) {
+			params[row.name] = row.value;
+		});
+		dataReload();
+		return false;
+	});
+
+	// 过滤数据
+	var panel = $('#' + table + '-controller');
+    panel.on('click', '[data-toggle="' + table + '"]', function() {
+        var data = $(this).data();
+		if (data.action == 'filter') {
+			$(search.advanced.el).dialog({
+				title: '高级搜索',
+				modalClass: 'no-padder',
+				buttons: [{
+					text: "取消",
+					'class': "btn-default",
+					click: function() {
+						$(this).dialog("close");
+					}
+				},{
+					text: "确定",
+					'class': "btn-info",
+					click: function() {
+						var query = search.advanced.el.serializeArray();
+						search.queryType = 'advanced';
+						$.map(query, function(row) {
+							params[row.name] = row.value;
+						});
+						dataReload();
+						$(this).dialog("close");
+						return false;
+					}
+				}]
+			});
+		}
+    });
+})(jQuery);
+
 function formsBox(title, url, id, success, remove, error)
 {
 	var options = {
@@ -11,7 +66,7 @@ function formsBox(title, url, id, success, remove, error)
 
 	if (typeof success === 'function') {
 		options.buttons.push({
-			text: '<i class="fa fa-check"></i> 提交',
+			text: '<i class="fa fa-check"></i> 保存',
 			class: 'btn-info',
 			click: function() {
 				var me = this;

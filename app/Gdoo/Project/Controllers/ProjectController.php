@@ -23,8 +23,9 @@ class ProjectController extends DefaultController
     public function index()
     {
         $search = search_form([
+            'advanced' => '',
             'referer' => 1,
-            'status' => 0
+            'status' => 1
         ], [
             ['text', 'project.title', '名称'],
             ['text', 'project.user_id', '拥有者'],
@@ -62,23 +63,12 @@ class ProjectController extends DefaultController
 
         $rows = $model->paginate()->appends($query);
 
-        $tabs = [
-            'name' => 'status',
-            'items' => Project::$tabs
-        ];
-
         return $this->display([
             'auth_id' => $auth_id,
             'rows' => $rows,
-            'search' => $search,
-            'tabs' => $tabs,
+            'query' => $query,
+            'search' => $search
         ]);
-    }
-
-    // 项目详情
-    public function show(Request $request)
-    {
-        return $this->display([]);
     }
 
     // 添加项目

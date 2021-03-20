@@ -285,12 +285,9 @@ class EventController extends DefaultController
             $repeats['repeat_date'] = '';
             $repeats['repeat_year'] = 'bydate';
 
-            $attachment['model'] = 'calendar_attachment';
-            $attachment['path'] = 'calendar';
-            $attachment['draft'] = AttachmentService::draft(Auth::id());
-
+            $attachment = AttachmentService::edit('', 'calendar_object', 'attachment', 'calendar');
             return $this->render(array(
-                'attachList' => $attachment,
+                'attachment' => $attachment,
                 'options' => $options,
                 'repeats' => $repeats,
             ));
@@ -594,14 +591,10 @@ class EventController extends DefaultController
                 $repeats['repeat_year'] = 'bydate';
             }
 
-            $attachment['model'] = 'calendar_attachment';
-            $attachment['path'] = 'calendar';
-            $attachment['draft'] = AttachmentService::draft(Auth::id());
-            $attachment['queue'] = AttachmentService::get($event['attachment']);
-
+            $attachment = AttachmentService::edit($event['attachment'], 'calendar_object', 'attachment', 'calendar');
             $share = ShareService::getItem('event', $gets['id']);
             return $this->render(array(
-                'attachList' => $attachment,
+                'attachment' => $attachment,
                 'repeats' => $repeats,
                 'options' => $options,
                 'share' => $share,
@@ -673,7 +666,7 @@ class EventController extends DefaultController
 
         $attach['model'] = 'calendar_attachment';
         $attach['path'] = 'calendar';
-        $attach['main'] = AttachmentService::get($event['attachment']);
+        $attach['rows'] = AttachmentService::get($event['attachment']);
 
         $calendar = CalendarService::getCalendar($event['calendarid'], false);
         $share = ShareService::getItem('event', $id);
@@ -692,6 +685,7 @@ class EventController extends DefaultController
         if ($id > 0) {
             CalendarService::remove($id);
             ShareService::removeItem('event', $id);
+
             return $this->json('删除成功。', true);
         }
     }

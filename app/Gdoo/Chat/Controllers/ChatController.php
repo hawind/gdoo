@@ -16,6 +16,7 @@ use Gdoo\Chat\Models\Message;
 use Gdoo\Chat\Services\ChatService;
 
 use Gdoo\Index\Controllers\Controller;
+use Str;
 
 class ChatController extends Controller
 {
@@ -76,10 +77,10 @@ class ChatController extends Controller
             $upload_path = upload_path().'/'.$path;
 
             // 文件新名字
-            $filename = date('dhis_').str_random(4).'.'.$extension;
+            $filename = date('dhis_').Str::random(4).'.'.$extension;
             $filename = mb_strtolower($filename);
 
-            $size = $file->getClientSize();
+            $size = $file->getSize();
             $name = mb_strtolower($file->getClientOriginalName());
             $mime = $file->getMimeType();
 

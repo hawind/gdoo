@@ -20,8 +20,8 @@
 </div>
 
 <script>
-var BASE_URL    = '{{$asset_url}}/vendor/webuploader';
-var SERVER_URL  = '{{$SERVER_URL}}';
+var BASE_URL = '{{$asset_url}}/vendor/webuploader';
+var SERVER_URL = '{{$SERVER_URL}}';
 var UPLOADER_ID = '{{$key}}'.replace('.', '_');
 </script>
 <script type="text/javascript" src="{{$asset_url}}/vendor/webuploader/webuploader.nolog.min.js"></script>

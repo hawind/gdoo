@@ -135,7 +135,7 @@ class Image
     {
         // 原文件不存在
         if (!is_file($file)) {
-            throw new Exception('原文件不存在。');
+            throw new \Exception('原文件不存在。');
         }
         $temp = getimagesize($file);
         $this->srcw = $srcw = $temp[0];

@@ -3,8 +3,8 @@
 </style>
 
 <form method="post" action="{{url()}}" id="task-form" name="task-form">
-
 <input type="hidden" name="type" value="{{$type}}">
+
 @if($type == 'subtask')
 <input type="hidden" name="parent_id" value="{{$parent_id}}">
 @endif
@@ -72,7 +72,7 @@
         <tr>
             <td align="right">附件</td>
             <td align="left">
-                {{attachment_uploader('attachment', '', 'project_task')}}
+                @include('attachment/create')
             </td>
         </tr>
 

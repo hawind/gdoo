@@ -48,7 +48,7 @@ class AttachmentController extends DefaultController
             // 扩展名称
             $extension = $file->getClientOriginalExtension();
             // 附件新名字
-            $filename = date('dhis_').str_random(4).'.'.$extension;
+            $filename = date('dhis_').Str::random(4).'.'.$extension;
             $filename = mb_strtolower($filename);
 
             $uploadSuccess = $file->move($upload_path, $filename);
@@ -58,7 +58,7 @@ class AttachmentController extends DefaultController
                 $draft->name = mb_strtolower($file->getClientOriginalName());
                 $draft->path = $path.'/'.$filename;
                 $draft->type = $extension;
-                $draft->size = $file->getClientSize();
+                $draft->size = $file->getSize();
                 $draft->save();
                 return $draft->id;
             }

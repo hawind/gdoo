@@ -44,7 +44,9 @@
     @if(isset($access['create']) && $header['create_btn'])
         <a href="javascript:;" data-toggle="{{$header['master_table']}}" data-action="create" class="btn btn-sm btn-success hinted" title="新建{{$header['name']}}"><i class="icon icon-plus"></i> 新建</a>
     @endif
-    
+
+    @yield('left_buttons')
+
     {{:$button_count = 0}}
     @foreach($header['buttons'] as $button)
     @if($button['display'])
@@ -62,10 +64,6 @@
                     <li class="divider"></li>
                 @else
                     @if($button['display'])
-                    <!-- 此处跳过查询子表的删除按钮 -->
-                    @if($header['exist_sub_table'] == 1 && $button['action'] == 'delete')
-                    <?php continue; ?>
-                    @endif
                     <li><a data-toggle="{{$header['master_table']}}" data-action="{{$button['action']}}" href="javascript:;"><i class="fa {{$button['icon']}}"></i> {{$button['name']}}</a></li>
                     @endif
                 @endif
@@ -110,13 +108,6 @@
                 </li>
             </ul>
         </div>
-        <!--
-        @if($header['search_form']['params'])
-            @foreach($header['search_form']['params'] as $key => $param)
-            <input name="{{$key}}" type="hidden" value="{{$param}}"> 
-            @endforeach
-        @endif
-        -->
     </form>
     @else
         <a class="btn btn-sm btn-default" data-toggle="{{$header['master_table']}}" data-action="filter" href="javascript:;"><i class="fa fa-search"></i> 筛选</a>
@@ -147,11 +138,6 @@
                     <li class="@if($header['search_form']['query'][$header['bys']['name']] == $item['value']) active @endif"><a href="{{url('', $params)}}">{{$item['name']}}</a></li>
                 @endif
             @endforeach
-            <!--
-            <li>
-                <a href="javascript:;">添加自定义筛选</a>
-            </li>
-            -->
         </ul>
     </div>
     @endif
@@ -195,14 +181,6 @@
                     @endforeach
                 </div>
             </div>
-            <!--
-            @if($header['search_form']['params'])
-            @foreach($header['search_form']['params'] as $key => $param)
-                <input name="{{$key}}" type="hidden" value="{{$param}}">
-            @endforeach
-            @endif
-            -->
         </form>
     </div>
-
 </div>

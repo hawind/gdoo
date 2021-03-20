@@ -73,7 +73,7 @@
 				<tr>
 					<td align="right">附件列表</td>
 					<td align="left">
-						@include('attachment/add')
+						@include('attachment/create')
 					</td>
 				</tr>
 

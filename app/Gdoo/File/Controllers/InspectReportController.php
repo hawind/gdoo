@@ -85,6 +85,7 @@ class InspectReportController extends DefaultController
                 // 附件新名字
                 $filename = date('dhis_').Str::random(4).'.'.$extension;
                 $filename = mb_strtolower($filename);
+                $filesize = $file->getSize();
                 $uploadSuccess = $file->move($upload_path, $filename);
                 if ($uploadSuccess) {
                     // 数据库写入
@@ -92,7 +93,7 @@ class InspectReportController extends DefaultController
                     $draft->name = $name;
                     $draft->path = $path.'/'.$filename;
                     $draft->type = $extension;
-                    $draft->size = $file->getClientSize();
+                    $draft->size = $filesize;
                     $draft->save();
                     return $this->json('文件上传成功。', true);
                 }

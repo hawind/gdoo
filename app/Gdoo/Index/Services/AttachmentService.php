@@ -3,6 +3,7 @@
 use Request;
 use DB;
 use Auth;
+use Str;
 
 class AttachmentService
 {
@@ -26,15 +27,16 @@ class AttachmentService
                 }
 
                 // 文件新名字
-                $name = date('dhis_').str_random(4).'.'.$extension;
+                $name = date('dhis_').Str::random(4).'.'.$extension;
                 $name = mb_strtolower($name);
+                $size = $file->getSize();
 
                 if ($file->move($upload_path, $name)) {
                     $res[] = DB::table('attachment')->insertGetId([
                         'name' => $name,
                         'path' => $path.'/'.$name,
                         'type' => $extension,
-                        'size' => $file->getClientSize(),
+                        'size' => $size,
                         'status' => 1,
                     ]);
                 }
@@ -55,7 +57,7 @@ class AttachmentService
         $res = [];
 
         foreach ($images as $image) {
-            $name = date('dhis_').str_random(4).'.'.$extension;
+            $name = date('dhis_').Str::random(4).'.'.$extension;
             $name = mb_strtolower($name);
 
             $image = base64_decode(str_replace(' ', '+', $image));
@@ -81,8 +83,7 @@ class AttachmentService
         if (is_array($ids)) {
             return $ids;
         }
-        $ids = array_filter(explode("\n", $ids));
-
+        $ids = array_filter(explode(",", $ids));
         return (array)$ids;
     }
 
@@ -91,7 +92,7 @@ class AttachmentService
      */
     public static function get($ids)
     {
-        $ids = self::getIds($ids);
+        $ids = static::getIds($ids);
         return DB::table('attachment')
         ->whereIn('id', $ids)
         ->where('status', 1)->get();
@@ -100,10 +101,13 @@ class AttachmentService
     /**
      * 获取当前ID附件和草稿
      */
-    public static function edit($ids, $key)
+    public static function edit($ids, $table, $field, $path = 'default')
     {
-        $res['rows'] = self::get($ids);
-        $res['draft'] = self::draft($key);
+        $res['path'] = $path;
+        $res['table'] = $table;
+        $res['field'] = $field;
+        $res['rows'] = static::get($ids);
+        $res['draft'] = static::draft($table, $field);
         return $res;
     }
 
@@ -112,7 +116,7 @@ class AttachmentService
      */
     public static function show($ids)
     {
-        $res['rows'] = self::get($ids);
+        $res['rows'] = static::get($ids);
         return $res;
     }
 
@@ -121,7 +125,7 @@ class AttachmentService
      */
     public static function publish($ids)
     {
-        $ids = self::getIds($ids);
+        $ids = static::getIds($ids);
         $rows = DB::table('attachment')
         ->whereIn('id', $ids)
         ->where('status', 0)
@@ -137,9 +141,9 @@ class AttachmentService
     /**
      * 发布附件，改成状态为可用
      */
-    public static function store($key)
+    public static function store($table, $field)
     {
-        $rows = self::draft($key);
+        $rows = static::draft($table, $field);
         foreach ($rows as $row) {
             DB::table('attachment')->where('id', $row['id'])->update([
                 'status' => 1,
@@ -151,14 +155,15 @@ class AttachmentService
     /**
      * 获取草稿文件
      */
-    public static function draft($key, $user_id = 0)
+    public static function draft($table, $field, $user_id = 0)
     {
         if ($user_id == 0) {
             $user_id = auth()->id();
         }
         return DB::table('attachment')
         ->where('created_id', $user_id)
-        ->where('key', $key)
+        ->where('table', $table)
+        ->where('field', $field)
         ->where('status', '0')
         ->get();
     }

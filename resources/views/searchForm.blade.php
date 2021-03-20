@@ -63,6 +63,7 @@
 <div class="btn-group">
     <button id="search-submit" type="submit" class="btn btn-sm btn-default">
         <i class="fa fa-search"></i> 搜索</button>
+        
     @if(is_numeric($search['query']['advanced']))
     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
         <span class="caret"></span>
@@ -74,6 +75,7 @@
                 <i class="fa fa-search"></i> 高级搜索</a>
         </li>
     </ul>
+
     @endif
 </div>
 

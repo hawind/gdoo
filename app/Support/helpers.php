@@ -489,255 +489,72 @@ function authorise($action = null, $asset_name = null)
 }
 
 /**
- * 附件上传
- */
-function attachment_uploader($field, $ids, $key, $draft = true)
-{
-    $attachments = Gdoo\Index\Services\AttachmentService::edit($ids, $key . '.' . $field);
-    if ($draft == false) {
-        unset($attachments['draft']);
-    }
-    return view('attachment/create2', [
-        'field' => $field,
-        'key' => $key,
-        'attachments' => $attachments,
-    ]);
-}
-
-/**
- * 附件显示
- */
-function attachment_show($field, $ids = '')
-{
-    $attachments = Gdoo\Index\Services\AttachmentService::show($ids);
-    return view('attachment/show2', [
-        'attachments' => $attachments,
-    ]);
-}
-
-/**
- * 附件编辑
- */
-function attachment_edit($table, $id, $path = '')
-{
-    $attach['model'] = $table;
-    $attach['path'] = $path;
-    $attach['draft'] = DB::table($table)->where('created_id', Auth::id())->where('status', 0)->get();
-
-    $id = array_filter(explode(',', $id));
-    if ($id) {
-        $queue = DB::table($table)->whereIn('id', $id)->where('status', 1)->get();
-    }
-    $attach['queue'] = array_by($queue);
-    return $attach;
-}
-
-/**
- * 附件编辑
- */
-function attachment_view($table, $id)
-{
-    $attach['model'] = $table;
-    $id = array_filter(explode(',', $id));
-    if ($id) {
-        $queue = DB::table($table)->whereIn('id', $id)->where('status', 1)->get();
-    }
-    $attach['view'] = array_by($queue);
-
-    return $attach;
-}
-
-/**
- * 查询附件
- */
-function attachment_get($table, $id)
-{
-    $id = array_filter(explode(',', $id));
-    if ($id) {
-        return DB::table($table)->whereIn('id', $id)->get();
-    }
-    return [];
-}
-
-/**
- * 附件删除
- */
-function attachment_delete($table, $id)
-{
-    if ($id) {
-        $rows = DB::table($table)->whereIn('id', $id)->get();
-        foreach ($rows as $row) {
-            // 文件路径
-            $name = $row['path'] == '' ? $row['name'] : $row['path'];
-            $file = upload_path() . '/' . $name;
-
-            if (is_file($file)) {
-                unlink($file);
-            }
-
-            // 旧版文件删除
-            $old = upload_path() . '/' . $row['path'] . '/' . $row['name'];
-            if (is_file($old)) {
-                unlink($old);
-            }
-
-            DB::table($table)->where('id', $row['id'])->delete();
-        }
-    }
-    return true;
-}
-
-/**
- * 将草稿附件存储为可用
- */
-function attachment_store($table, $id)
-{
-    if (empty($id)) {
-        return '';
-    }
-
-    foreach ($id as $_id) {
-        DB::table($table)->where('id', $_id)->update([
-            'status' => 1,
-        ]);
-    }
-    return join(',', array_filter($id));
-}
-
-// 多图片base64上传保存
-function attachment_base64($table, $images, $path = 'default', $extension = 'jpg')
-{
-    $path = $path . '/' . date('Y/m');
-    $directory = upload_path() . '/' . $path;
-
-    if (!is_dir($directory)) {
-        @mkdir($directory, 0777, true);
-    }
-
-    $res = [];
-
-    foreach ($images as $image) {
-        $name = date('dhis_') . str_random(4) . '.' . $extension;
-        $name = mb_strtolower($name);
-
-        $image = base64_decode(str_replace(' ', '+', $image));
-        $size = file_put_contents($directory . '/' . $name, $image);
-        if ($size) {
-            $res[] = DB::table($table)->insertGetId([
-                'path' => $path,
-                'name' => $name,
-                'title' => $name,
-                'type' => $extension,
-                'status' => 1,
-                'size' => $size,
-                'created_id' => Auth::id(),
-                'created_at' => time(),
-            ]);
-        }
-    }
-    return join(',', array_filter($res));
-}
-
-// 多图片上传保存
-function attachment_images($table, $name, $path = 'default')
-{
-    $images = Request::file($name);
-
-    $path = $path . '/' . date('Y/m');
-    $upload_path = upload_path() . '/' . $path;
-
-    $res = [];
-
-    foreach ($images as $image) {
-        if ($image->isValid()) {
-            // 文件后缀名
-            $extension = $image->getClientOriginalExtension();
-
-            // 兼容do开发的客户端上传
-            if ($extension == 'do') {
-                $clientName = $image->getClientOriginalName();
-                $extension = pathinfo(substr($clientName, 0, -3), PATHINFO_EXTENSION);
-            }
-
-            // 文件新名字
-            $filename = date('dhis_') . str_random(4) . '.' . $extension;
-            $filename = mb_strtolower($filename);
-
-            if ($image->move($upload_path, $filename)) {
-                $res[] = DB::table($table)->insertGetId([
-                    'path' => $path,
-                    'name' => $filename,
-                    'title' => $filename,
-                    'type' => $extension,
-                    'status' => 1,
-                    'size' => $image->getClientSize(),
-                    'created_id' => Auth::id(),
-                    'created_at'    => time(),
-                ]);
-            }
-        }
-    }
-    return join(',', array_filter($res));
-}
-
-/**
- * 单图片上传，并删除旧图片
- */
-function image_create($path, $name = 'image', $oldfile = '')
-{
-    if (Request::hasFile($name)) {
-        $file = Request::file($name);
-
-        // 文件后缀名
-        $extension = $file->getClientOriginalExtension();
-
-        // 文件新名字
-        $filename = date('dhis_') . str_random(4) . '.' . $extension;
-        $filename = mb_strtolower($filename);
-
-        $path = $path . '/' . date('Y/m');
-
-        $upload_path = upload_path() . '/' . $path;
-
-        if ($file->move($upload_path, $filename)) {
-            // 上传成功删除旧文件
-            if ($oldfile) {
-                image_delete($oldfile);
-            }
-            return $path . '/' . $filename;
-        }
-    }
-    return null;
-}
-
-/**
- * 删除单个图片
- */
-function image_delete($file)
-{
-    $file = upload_path() . '/' . $file;
-    if (is_file($file)) {
-        unlink($file);
-    }
-}
-
-/**
  * 生成缩略图
  */
-function thumb($file, $width, $hight)
+function image_thumb($file, $width = 750)
 {
     $info = pathinfo($file);
-    $thumb = $info['dirname'] . '/thumb-' . $width . '-' . $info['basename'];
+    $thumb = $info['dirname'] . '/t' . $width . '_' . $info['basename'];
     if (is_file($thumb)) {
-        return 'thumb-' . $width . '-' . $info['basename'];
+        return 't' . $width . '_' . $info['basename'];
     }
 
-    $img = new App\Support\Image();
     if (is_file($file)) {
-        $img->crop($file, $width, $hight, 3, true);
-        $img->save($thumb);
+        $temp = getimagesize($file);
+        $srcw = $temp[0];
+        $srch = $temp[1];
+        $type = $temp[2];
+
+        if ($srcw > $width) {
+            // 1=gif 2=jpg 3=png
+            switch ($type) {
+                case 1:
+                $image = imagecreatefromgif($file);
+                break;
+                case 2:
+                $image = imagecreatefromjpeg($file);
+                break;
+                case 3:
+                $image = imagecreatefrompng($file);
+                break;
+            }
+
+            if (function_exists('imageantialias')) {
+                imageantialias($image, true);
+            }
+
+            // 计算绽放比例
+            $rate = $width / $srcw;
+            // 计算出缩放后的高度
+            $height = floor($srch * $rate);
+            // 创建一个缩放的画布
+            $dest = imagecreatetruecolor($width, $height);
+
+            // 处理png透明
+            imagealphablending($dest, false);
+            imagesavealpha($dest, true);
+
+            // 缩放
+            imagecopyresampled($dest, $image, 0, 0, 0, 0, $width, $height, $srcw, $srch);
+
+            switch ($type) {
+                case 1:
+                imagegif($dest, $thumb);
+                break;
+                case 2:
+                imagejpeg($dest, $thumb, 75);
+                break;
+                case 3:
+                imagepng($dest, $thumb);
+                break;
+            }
+            if ($image) {
+                imagedestroy($image);
+            }
+            return 't' . $width . '_' . $info['basename'];
+        }
+        return $info['basename'];
     }
-    return 'thumb-' . $width . '-' . $info['basename'];
 }
 
 /**
@@ -746,7 +563,7 @@ function thumb($file, $width, $hight)
  * $dst_w:目标输出的宽
  * $dst_h:目标输出的高
  */
-function imageResize($src_file, $dst_w, $dst_h)
+function image_resize($src_file, $dst_w, $dst_h)
 {
     # 获取图片信息
     $imarr = getimagesize($src_file);

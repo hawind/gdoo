@@ -469,10 +469,6 @@ class Form
 
                     $attribute = [];
 
-                    if ($action == 'show') {
-                        $field['is_show'] = true;
-                    }
-
                     $permission_table = $permission[$flow['table']];
                     $p = $permission_table[$field['field']];
                     $field['is_print'] = $action == 'print';
@@ -481,11 +477,12 @@ class Form
                     $field['is_auto'] = $p['m'] == 1 ? 1 : 0;
                     $field['is_hide'] = $p['s'] == 1 ? 1 : $field['is_hide'];
 
-                    $validate = (array) $p['v'];
-
-                    if ($action == 'print') {
-                        $field['is_show'] = true;
+                    if ($action == 'show' || $action == 'print') {
+                        $field['is_show'] = 1;
+                        $field['is_write'] = 0;
                     }
+
+                    $validate = (array) $p['v'];
 
                     if ($action == 'print') {
                     } else {
@@ -2000,7 +1997,7 @@ class Form
 
             // 权限可写
             if ($permission['w'] == 1) {
-                
+
                 // 自定义过滤器
                 $_field_data = Hook::fire($table.'.onFieldFilter', ['table' => $table, 'master' => $master, 'field' => $field, 'values' => $values]);
                 extract($_field_data);
@@ -2033,7 +2030,7 @@ class Form
                     case 'files':
                         $value = (array)$value;
                         $dataFiles = array_merge($dataFiles, $value);
-                        $value = join("\n", $value);
+                        $value = join(",", $value);
                         break;
                     case 'images':
                         $value = join("\n", (array)$value);

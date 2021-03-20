@@ -1,11 +1,10 @@
 <style>
-    .modal-body {
-        overflow: hidden;
-    }
-
-    .wrapper-sm {
-        background-color: #f0f3f4;
-    }
+.modal-body {
+    overflow: hidden;
+}
+.wrapper-sm {
+    background-color: #f0f3f4;
+}
 </style>
 <div class="wrapper-sm">
 
@@ -126,9 +125,9 @@
                     <td align="right">附件</td>
                     <td align="left">
                         @if($permission['attachment'])
-                        {{attachment_uploader('attachment', $task['attachment'], 'project_task')}}
+                            @include('attachment/create')
                         @else
-                        {{attachment_show('attachment', $task['attachment'], 'project_task')}}
+                            @include('attachment/show')
                         @endif
                     </td>
                 </tr>
@@ -179,9 +178,7 @@
 
                 </ul>
             </div>
-
         </div>
-
 
         <div class="task-log" id="task-log-{{$task->id}}">
 

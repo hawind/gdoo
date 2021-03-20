@@ -12,23 +12,7 @@ use Illuminate\Support\Str;
 
 class MediaController extends DefaultController
 {
-    public $permission = ['dialog', 'qrcode', 'create', 'delete', 'download', 'folder'];
-
-    /**
-     * 二维码上传
-     */
-    public function qrcode()
-    {
-        $key = Request::get('key');
-        list($table, $field) = explode('.', $key);
-        $model = DB::table('model')->where('table', $table)->first();
-        $token = Request::get('x-auth-token');
-        return $this->render([
-            'model' => $model,
-            'token' => $token,
-            'key'   => $key,
-        ], 'qrcode');
-    }
+    public $permission = ['dialog', 'create', 'delete', 'download', 'folder'];
 
     public function create()
     {
@@ -53,6 +37,7 @@ class MediaController extends DefaultController
 
             $fileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
             $mimeType = $file->getMimeType();
+            $filesize = $file->getSize();
 
             if ($file->move($upload_path, $filename)) {
                 $data = [
@@ -60,13 +45,12 @@ class MediaController extends DefaultController
                     'path' => $path.'/'.$filename,
                     'type' => $extension,
                     'folder_id' => $folderId,
-                    'size' => $file->getClientSize(),
+                    'size' => $filesize,
                 ];
 
                 if (in_array($mimeType, $fileTypes)) {
-                    thumb($upload_path.'/'.$filename, 420, 420);
                     $path = pathinfo($path.'/'.$filename);
-                    $thumb = $path['dirname'].'/thumb-420-'.$path['basename'];
+                    $thumb = $path['dirname'].'/'.thumb($upload_path.'/'.$filename, 750);
                     $data['thumb'] = $thumb;
                 }
 
@@ -85,7 +69,7 @@ class MediaController extends DefaultController
     public function dialog()
     {
         if (Request::method() == 'POST') {
-            $folder   = Request::get('folder');
+            $folder = Request::get('folder');
             $folderId = Request::get('folder_id');
             $userId = auth()->id();
 
@@ -103,9 +87,9 @@ class MediaController extends DefaultController
                 if (in_array($row['type'], ['png', 'jpg', 'jpeg'])) {
                     $file = $row['path'];
                     $path = pathinfo($file);
-                    $thumb = $path['dirname'].'/thumb-420-'.$path['basename'];
+                    $thumb = $path['dirname'].'/t750_'.$path['basename'];
                     if (!is_file(upload_path().'/'.$thumb)) {
-                        thumb(upload_path().'/'.$file, 420, 420);
+                        thumb(upload_path().'/'.$file, 750);
                     }
                     $row['path'] = $file;
                     $row['thumb'] = $thumb;

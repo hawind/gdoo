@@ -400,8 +400,8 @@ jQuery(function() {
     uploader.on('uploadSuccess', function(file, res) {
         res.fileId = file.id;
         res.size = WebUploader.formatSize(res.size);
-        var html = template('uploader-item-tpl', res);
-        $('#fileDraft_' + res.key.replace('.','_')).append(html);
+        var html = template('upload-item-tpl', res);
+        $('#fileDraft_' + res.table + '_' + res.field).append(html);
     });
 
     uploader.on('all', function(type) {
