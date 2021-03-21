@@ -57,19 +57,9 @@
 
 	<tr>
 		<td align="right">附件管理</td>
-		@if($attachList['main'])
-		    <td>
-		    	
-		        @if($attachList['main'])
-		        @foreach($attachList['main'] as $k => $v)
-		        <div class="uploadify-queue-item">
-		            <span class="fileName"><a href="{{url('file/attachment/file',['model'=>$attachList['model'],'id'=>$v['id']])}}">{{$v['title']}}</a></span>
-		            <span class="fileSize">&nbsp;({{human_filesize($v['size'])}})</span>
-		        </div><div class="clear"></div>
-		        @endforeach
-		        @endif
-		    </td>
-		@endif
+		<td>
+			@include('attachment/show')
+		</td>
 	</tr>
 
 	<tr>

@@ -664,15 +664,12 @@ class EventController extends DefaultController
         $options['accessclass'] = 'PUBLIC';
         $options['access_class_options'] = CalendarService::getAccessClassOptions();
 
-        $attach['model'] = 'calendar_attachment';
-        $attach['path'] = 'calendar';
-        $attach['rows'] = AttachmentService::get($event['attachment']);
-
+        $attachment['rows'] = AttachmentService::get($event['attachment']);
         $calendar = CalendarService::getCalendar($event['calendarid'], false);
         $share = ShareService::getItem('event', $id);
 
         return $this->render(array(
-            'attachList' => $attach,
+            'attachment' => $attachment,
             'options' => $options,
             'calendar' => $calendar,
             'share' => $share,
