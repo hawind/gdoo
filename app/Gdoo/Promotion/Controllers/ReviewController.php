@@ -120,7 +120,7 @@ class ReviewController extends WorkflowController
 
     public function print()
     {
-        $this->layout = 'layouts.print2';
+        $this->layout = 'layouts.print_html';
         print_prince($this->create('print'));
     }
 

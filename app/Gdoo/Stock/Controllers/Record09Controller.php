@@ -101,7 +101,7 @@ class Record09Controller extends WorkflowController
         $id = Request::get('id');
         $template_id = Request::get('template_id');
 
-        $this->layout = 'layouts.print3';
+        $this->layout = 'layouts.print_html';
         $master = DB::table('stock_record09 as m')->where('m.id', $id)
         ->leftJoin('stock_type as st', 'st.id', '=', 'm.type_id')
         ->leftJoin('department', 'department.id', '=', 'm.department_id')

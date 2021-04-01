@@ -7,6 +7,7 @@
 <link href="{{mix('/assets/dist/gdoo.min.css')}}" rel="stylesheet" type="text/css">
 <style type="text/css">
 .table {
+    border-collapse: collapse;
     border: 1px solid #000;
     color: #000;
     width: 100%;
@@ -51,7 +52,8 @@
 .table.table-grid>tfoot>tr>th, 
 .table.table-grid>thead>tr>td, 
 .table.table-grid>thead>tr>th {
-    display:table-cell; vertical-align:middle;
+    display:table-cell; 
+    vertical-align:middle;
 }
 
 .table>thead>tr>th {
@@ -97,11 +99,13 @@
     label {
         font:11pt 'SimSun', 'STXihei', sans-serif;
     }
-    .i-checks-sm>i {
+
+    .i-checks-sm > i {
+        display: inline-block;
         width: 14px;
         height: 14px;
         margin-right: 6px;
-        margin-left: -18px;
+        margin-bottom: -3px;
     }
 }
 

@@ -100,7 +100,7 @@ class DirectController extends WorkflowController
         $id = Request::get('id'); 
         $template_id = Request::get('template_id');
 
-        $this->layout = 'layouts.print3';
+        $this->layout = 'layouts.print_html';
 
         $master = DB::table('stock_direct as sd')
         ->leftJoin('customer as c', 'c.id', '=', 'sd.customer_id')

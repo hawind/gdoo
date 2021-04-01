@@ -105,7 +105,7 @@ class CancelController extends WorkflowController
         $id = Request::get('id'); 
         $template_id = Request::get('template_id');
 
-        $this->layout = 'layouts.print3';
+        $this->layout = 'layouts.print_html';
         $master = DB::table('stock_cancel as sd')
         ->leftJoin('customer as c', 'c.id', '=', 'sd.customer_id')
         ->leftJoin('customer_tax as ct', 'ct.id', '=', 'sd.tax_id')

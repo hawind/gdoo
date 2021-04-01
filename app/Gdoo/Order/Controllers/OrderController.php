@@ -748,6 +748,7 @@ class OrderController extends WorkflowController
             $data['form'] = $form;
             $data['template'] = $template;
             $tpl = $this->display($data, 'print/'.$template_id);
+            //return $tpl;
             return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
         }
 

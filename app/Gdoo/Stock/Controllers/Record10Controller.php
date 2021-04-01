@@ -99,7 +99,7 @@ class Record10Controller extends WorkflowController
 
     public function print2()
     {
-        $this->layout = 'layouts.print2';
+        $this->layout = 'layouts.print_html';
         $view = $this->create('print');
         $viewData = $view->getData();
         print_prince($this->create('print'));
@@ -111,7 +111,7 @@ class Record10Controller extends WorkflowController
         $template_id = Request::get('template_id');
         if ($template_id == 117) {
 
-            $this->layout = 'layouts.print3';
+            $this->layout = 'layouts.print_html';
 
             $master = DB::table('stock_record10 as m')->where('m.id', $id)
             ->leftJoin('stock_type as st', 'st.id', '=', 'm.type_id')
@@ -148,7 +148,7 @@ class Record10Controller extends WorkflowController
             return $tpl;
 
         } else {
-            $this->layout = 'layouts.print2';
+            $this->layout = 'layouts.print_html';
             $tpl = $this->create('print');
             print_prince($tpl);
         }

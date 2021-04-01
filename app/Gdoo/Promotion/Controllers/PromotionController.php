@@ -159,7 +159,7 @@ class PromotionController extends WorkflowController
         $header['code'] = 'promotion';
         $header['id'] = $id;
         $header['template_id'] = $template_id;
-        $this->layout = 'layouts.print2';
+        $this->layout = 'layouts.print_html';
         $form = Form::make($header);
         $form['template']['name'] = '促销申请';
         print_prince($this->display([

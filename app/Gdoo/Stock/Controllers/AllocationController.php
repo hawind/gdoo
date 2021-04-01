@@ -103,7 +103,7 @@ class AllocationController extends WorkflowController
         $id = Request::get('id');
         $template_id = Request::get('template_id');
 
-        $this->layout = 'layouts.print3';
+        $this->layout = 'layouts.print_html';
         $master = DB::table('stock_allocation as m')
         ->where('m.id', $id)
         ->leftJoin('warehouse as wo', 'wo.id', '=', 'm.out_warehouse_id')

@@ -96,7 +96,7 @@ class Record11Controller extends AuditController
         $template_id = Request::get('template_id');
         if ($template_id == 115) {
 
-            $this->layout = 'layouts.print3';
+            $this->layout = 'layouts.print_html';
 
             $master = DB::table('stock_record11 as m')->where('m.id', $id)
             ->leftJoin('stock_type as st', 'st.id', '=', 'm.type_id')
@@ -134,7 +134,7 @@ class Record11Controller extends AuditController
             return $tpl;
 
         } else {
-            $this->layout = 'layouts.print2';
+            $this->layout = 'layouts.print_html';
             $tpl = $this->create('print');
             print_prince($tpl);
         }
