@@ -269,6 +269,7 @@ class WorkflowController extends DefaultController
 
                 foreach ($next_logs as $next_log) {
                     if ($next_log['option'] > 0) {
+                        $next_log['status'] = 1;
                         $next_log['remark'] = $remark;
                         $next_log['run_status'] = 'recall';
                         $next_log['updated_id'] = $auth['id'];
@@ -720,6 +721,7 @@ class WorkflowController extends DefaultController
 
         $users = DB::table('user')->get(['id', 'name'])->keyBy('id');
         $res = [];
+
         foreach($rows as $row) {
 
             if (isset($step_ids[$row['step_id']])) {
@@ -729,16 +731,19 @@ class WorkflowController extends DefaultController
             }
 
             $user_ids = explode(',', $row['user_ids']);
+
             $unames = [];
             foreach($user_ids as $user_id) {
-                $unames[] = $users[$user_id]['name'];
+                if ($user_id > 0) {
+                    $unames[] = $users[$user_id]['name'];
+                }
             }
             $row['user_name'] = join(',', $unames);
             $res[] = $row;
         }
 
         return view('model/flowLog', [
-            'rows' => $rows,
+            'rows' => $res,
         ]);
     }
 

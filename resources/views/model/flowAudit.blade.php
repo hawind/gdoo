@@ -29,7 +29,7 @@
         <tr>
             <td align="right">审核人</td>
             <td align="left">
-                <div id="step_next_user"></div>
+                <div id="step_next_user_html"></div>
             </td>
         </tr>
 
@@ -74,7 +74,7 @@
     $me.on('click', '.step_next_type', function() {
         
         $('#step_next', $me).empty();
-        $('#step_next_user', $me).empty();
+        $('#step_next_user_html', $me).empty();
         $('#step_inform_user', $me).empty();
 
         if (this.value == 'reject') {
@@ -115,7 +115,7 @@
     function step_next_id(step_id) {
         if (step_id > 0) {
             // 审核人
-            $('#step_next_user', $me).html(users[step_id]);
+            $('#step_next_user_html', $me).html(users[step_id]);
             // 知会人
             $('#step_inform_user', $me).html(informs[step_id]);
             // 短信提醒

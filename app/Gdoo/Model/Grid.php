@@ -64,7 +64,7 @@ class Grid
                 $var1 = DB::table('model_run_log')
                 ->leftJoin('model_run', 'model_run.id', '=', 'model_run_log.run_id')
                 ->where('model_run_log.option', 1)
-                ->where('model_run_log.updated_id', 0)
+                ->where('model_run_log.status', 0)
                 ->where('model_run_log.bill_id', $header['bill_id'])
                 ->whereRaw('model_run.data_id in ('.$ids.')')
                 ->orderBy('model_run_log.option', 'desc')

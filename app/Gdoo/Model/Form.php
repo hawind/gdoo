@@ -2383,6 +2383,7 @@ class Form
                     'run_status' => $gets['step_next_type'],
                     'updated_id' => $auth['id'],
                     'updated_at' => time(),
+                    'run_index' => 0,
                     'status' => 1,
                 ];
 
@@ -2473,6 +2474,7 @@ class Form
             ->where('run_id', $run_id)
             ->where('id', $run_log['id'])
             ->update([
+                'status' => 1,
                 'run_status' => $gets['step_next_type'],
                 'remark' => $gets['remark'],
             ]);
@@ -2486,6 +2488,7 @@ class Form
                     ->where('option', 1)
                     ->where('id', $log['id'])
                     ->update([
+                        'status' => 1,
                         'run_status' => $gets['step_next_type'],
                         'remark' => $gets['remark'],
                     ]);
