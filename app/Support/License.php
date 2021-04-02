@@ -30,10 +30,9 @@ class License
      */
     public static function demoCheck()
     {
-        if ($_ENV['DEMO_VERSION'] == false) {
-            return;
+        if ($_ENV['DEMO_VERSION'] === 'true') {
+            abort_error('演示模式，不允许本操作。');
         }
-        abort_error('演示模式，不允许本操作。');
     }
 
     /**
@@ -41,6 +40,6 @@ class License
      */
     public static function demoClose()
     {
-        $_ENV['DEMO_VERSION'] = false;
+        $_ENV['DEMO_VERSION'] = 'false';
     }
 }
