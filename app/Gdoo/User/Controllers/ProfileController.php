@@ -28,6 +28,9 @@ class ProfileController extends DefaultController
     public function index()
     {
         if (Request::method() == 'POST') {
+            
+            License::demoCheck();
+
             $gets = Request::all();
 
             $user = User::find(Auth::id());
@@ -70,6 +73,9 @@ class ProfileController extends DefaultController
     public function secret()
     {
         if (Request::method() == 'POST') {
+
+            License::demoCheck();
+
             $id = Request::get('id');
             $t = new Totp();
             $secretKey = $t->generateSecret();
@@ -83,6 +89,9 @@ class ProfileController extends DefaultController
     public function password()
     {
         if (Request::method() == 'POST') {
+
+            License::demoCheck();
+
             $gets = Request::all();
 
             $user = User::find(Auth::id());
@@ -127,6 +136,8 @@ class ProfileController extends DefaultController
         $gets = Request::all();
 
         if (Request::method() == 'POST') {
+
+            License::demoCheck();
 
             if (Request::hasFile('image')) {
                 $rules = [

@@ -161,8 +161,7 @@ class AuthController extends Controller
      */
     public function qrcode()
     {
-        return $this->display([
-        ]);
+        return $this->display();
     }
 
     /**
