@@ -28,18 +28,19 @@ class License
     /**
      * 判断是否演示模式
      */
-    public static function demoCheck($table = null)
+    public static function demoCheck()
     {
-        if (env('DEMO_VERSION') == false) {
+        if ($_ENV['DEMO_VERSION'] == false) {
             return;
         }
-
-        $demoDatas = ['user','system_log'];
-
-        if (in_array($table, $demoDatas)) {
-            return;
-        }
-
         abort_error('演示模式，不允许本操作。');
+    }
+
+    /**
+     * 关闭演示模式检查
+     */
+    public static function demoClose()
+    {
+        $_ENV['DEMO_VERSION'] = false;
     }
 }

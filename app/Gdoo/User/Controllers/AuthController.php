@@ -6,7 +6,7 @@ use Request;
 
 use App\Support\Totp;
 use App\Support\Captcha;
-
+use App\Support\License;
 use Gdoo\User\Models\UserLog;
 use Gdoo\User\Models\User;
 
@@ -24,6 +24,9 @@ class AuthController extends Controller
      */
     public function totp()
     {
+        // 关闭演示模式
+        License::demoClose();
+
         // 时间验证密钥
         $t = new Totp();
         $gets = Request::all();
@@ -78,6 +81,10 @@ class AuthController extends Controller
         $this->ret->set('show_captcha', $this->setting['login_captcha'] <= $log->error_count);
 
         if (Request::method() == 'POST') {
+
+            // 关闭演示模式
+            License::demoClose();
+
             if (empty($gets['username'])) {
                 return $this->ret->error('用户名不能为空，请重新填写。');
             }
@@ -169,6 +176,9 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        // 关闭演示模式
+        License::demoClose();
+
         Auth::logout();
         Session::flush();
 

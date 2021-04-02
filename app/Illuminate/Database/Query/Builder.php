@@ -18,7 +18,7 @@ class Builder extends BaseBuilder
     public function insert(array $values)
     {
         // 判断演示模式
-        License::demoCheck($this->from);
+        License::demoCheck();
 
         $values = $this->checkColumnsValues($values);
 
@@ -40,7 +40,7 @@ class Builder extends BaseBuilder
     public function insertGetId(array $values, $sequence = null)
     {
         // 判断演示模式
-        License::demoCheck($this->from);
+        License::demoCheck();
 
         $values = $this->checkColumnsValues($values);
         // 空数据
@@ -60,7 +60,7 @@ class Builder extends BaseBuilder
     public function update(array $values)
     {
         // 判断演示模式
-        License::demoCheck($this->from);
+        License::demoCheck();
 
         $values = $this->checkColumnsValues($values, false);
 
@@ -81,7 +81,7 @@ class Builder extends BaseBuilder
     public function delete($id = null)
     {
         // 判断演示模式
-        License::demoCheck($this->from);
+        License::demoCheck();
 
         return parent::delete($id);
     }
