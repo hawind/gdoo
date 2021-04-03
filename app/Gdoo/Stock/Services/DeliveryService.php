@@ -53,9 +53,10 @@ class DeliveryService
 		->whereRaw("p.code = '99001'")
 		->sum("money");
 
+		$master['fee_money'] = $money;
+
 		return [
 			'master' => $master,
-			'money' => $money,
 			'rows' => $rows,
 		];
     }

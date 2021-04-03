@@ -737,36 +737,28 @@ class OrderController extends WorkflowController
         $template = DB::table('model_template')->where('id', $template_id)->first();
         $print_type = $template['print_type'];
         $this->layout = 'layouts.print_'.$print_type;
-        $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
-
-        $form = [
-            'template' => $template,
-        ];
-
-        if ($print_tpl) {
-            $data = OrderService::getPrintData($id);
-            $data['form'] = $form;
-            $data['template'] = $template;
-            $tpl = $this->display($data, 'print/'.$template_id);
-            //return $tpl;
-            return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
-        }
-
+        
         if ($print_type == 'stiReport') {
             $data = OrderService::getPrintData($id);
             $print_data = [
                 'master' => [$data['master']],
-                'money' => $data['money'],
                 'customer_order_data' => $data['rows'],
             ];
             return $this->display([
                 'template' => $template,
                 'print_data' => $print_data,
             ]);
+        } else {
+            $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
+            if ($print_tpl) {
+                $data = OrderService::getPrintData($id);
+                $data['template'] = $template;
+                $tpl = $this->display($data, 'print/'.$template_id);
+            } else {
+                $tpl = $this->create('print');
+            }
+            return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
         }
-
-        $tpl = $this->create('print');
-        return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
     public function dialog()

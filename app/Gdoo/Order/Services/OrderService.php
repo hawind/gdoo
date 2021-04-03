@@ -44,6 +44,7 @@ class OrderService
         ')
         ->get();
 
+        $master['fee_money'] = 0;
 		return [
 			'master' => $master,
 			'rows' => $rows,

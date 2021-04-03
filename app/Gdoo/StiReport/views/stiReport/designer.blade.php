@@ -50,6 +50,7 @@
 		// 加载数据
 		var dataSet = new Stimulsoft.System.Data.DataSet("data");
 		dataSet.readJson(printData);
+
 		report.dictionary.clear();
 		report.regData("data", "data", dataSet);
 		report.dictionary.synchronize();
