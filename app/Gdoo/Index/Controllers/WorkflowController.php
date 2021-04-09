@@ -558,7 +558,8 @@ class WorkflowController extends DefaultController
                 $next_steps = StepService::getNextSteps($steps, $run_step['step_id'], $gets);
                 break;
             case 'back':
-                $next_steps = StepService::getBackSteps($steps, $run_step['step_id'], $gets);
+                $next_steps = StepService::getBackStep($log, $run_step, $gets);
+                //$next_steps = StepService::getBackSteps($steps, $run_step['step_id'], $gets);
                 break;
         }
 

@@ -108,6 +108,47 @@ class StepService
     }
 
     /**
+     * 获取上一步审核节点(单节点)
+     */
+    public static function getBackStep($log, $run_step, $gets)
+    {
+        $run_id = $log['run_id'];
+
+        // 查找上级记录
+        $parent_log = DB::table('model_run_log')
+        ->where('run_id', $run_id)
+        ->where('id', $log['parent_id'])->first();
+
+        // 获取上级运行节点
+        $parent_run_step = DB::table('model_run_step')
+        ->where('run_id', $run_id)
+        ->where('id', $parent_log['run_step_id'])
+        ->first();
+
+        if ($parent_log['parent_id'] > 0) {
+            $parent_user_ids = DB::table('model_run_log')
+            ->where('run_id', $run_id)
+            ->where('parent_id', $parent_log['parent_id'])
+            ->get()->toArray();
+        } else {
+            // 退回到开始取最后一个开始节点
+            $parent_user_id = DB::table('model_run_log')
+            ->where('run_id', $run_id)
+            ->where('parent_id', $parent_log['parent_id'])
+            ->orderBy('id', 'desc')
+            ->value('user_id');
+            $parent_user_ids = [$parent_user_id];
+        }
+
+        // 上级记录的相关用户
+        $parent_run_step['user_ids'] = $parent_user_ids;
+        
+        $steps = [$parent_run_step['step_id'] => $parent_run_step];
+        return $steps;
+    }
+
+
+    /**
      * 匹配节点相关人员
      */
     public static function getStepUser($step, $params) {
