@@ -41,9 +41,9 @@ class StepService
                             $step_next = $step_user['step'];
                             $continue = $step_user['continue'];
                             $ret[$step_id] = $step_next;
-                            
+
                             // 节点是审核节点时不再获取下一个节点
-                            if ($step['option'] == 1) {
+                            if ($step_next['option'] == 1) {
                                 if ($continue) {
                                     continue;
                                 }
@@ -129,12 +129,14 @@ class StepService
             $parent_user_ids = DB::table('model_run_log')
             ->where('run_id', $run_id)
             ->where('parent_id', $parent_log['parent_id'])
-            ->get()->toArray();
+            ->where('option', 1)
+            ->pluck('user_id')->toArray();
         } else {
             // 退回到开始取最后一个开始节点
             $parent_user_id = DB::table('model_run_log')
             ->where('run_id', $run_id)
             ->where('parent_id', $parent_log['parent_id'])
+            ->where('option', 1)
             ->orderBy('id', 'desc')
             ->value('user_id');
             $parent_user_ids = [$parent_user_id];
