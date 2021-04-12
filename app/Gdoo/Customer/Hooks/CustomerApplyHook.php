@@ -110,11 +110,11 @@ class CustomerApplyHook
         $customer['department_code'] = $department['code'];
         $customer['headCode'] = $customer['code'];
 
-        $ret = plugin_sync_api('CustomerSync', $customer);
-        if ($ret['success'] == true) {
-            return $params;
+        $ret = plugin_sync_api('postCustomer', $customer);
+        if ($ret['error_code'] > 0) {
+            abort_error($ret['msg']);
         } 
-        abort_error($ret['msg']);
+        return $params;
     }
 
     public function onBeforeDelete($params) {

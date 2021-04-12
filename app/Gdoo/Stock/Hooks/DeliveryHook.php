@@ -133,10 +133,10 @@ class DeliveryHook
 
         // 同步数据到外部接口
         $ret = plugin_sync_api('postDelivery', ['master' => $master, 'rows' => $rows]);
-        if ($ret['success'] == true) {
-            return $params;
-        } 
-        abort_error($ret['msg']);
+        if ($ret['error_code'] > 0) {
+            abort_error($ret['msg']);
+        }
+        return $params;
     }
     
     public function onBeforeAbort($params) {
@@ -145,7 +145,7 @@ class DeliveryHook
         // 检查外部接口单据是否存在
         $ret = plugin_sync_api('getVouchExist', ['table' => 'DispatchList', 'field' => 'cDLCode', 'value' => $master['sn']]);
         if ($ret['msg'] > 0) {
-            abort_error('用友存在发货单['.$master['sn'].']无法弃审。');
+            abort_error('存在发货单['.$master['sn'].']无法弃审。');
         }
         return $params;
     }

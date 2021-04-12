@@ -1370,7 +1370,7 @@ function plugin_sync_api($uri, $data = [])
 {
     $base_url = env('PLUGIN_SYNC_API_URL');
     if (empty($base_url)) {
-        return ['success' => true];
+        return ['error_code' => 0];
     }
 
     $url = $base_url . '/' . $uri;
@@ -1419,7 +1419,7 @@ function plugin_sync_api($uri, $data = [])
     curl_close($ch);
 
     if ($error) {
-        return ['msg' => $error, 'success' => false];
+        return ['msg' => $error, 'error_code' => 1];
     }
 
     // 返回数据

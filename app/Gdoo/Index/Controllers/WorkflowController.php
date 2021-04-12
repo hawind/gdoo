@@ -106,10 +106,8 @@ class WorkflowController extends DefaultController
                 }
             }
 
-            // 执行模式
-            $run_mode = $step_next['run_mode'];
-
-            if ($run_mode == 1) {
+            // 判断单人执行模式
+            if ($step_next['run_mode'] == 1) {
                 if (count($step_user_ids) > 1) {
                     return $this->json('单人执行不能多个审核人。');
                 }
@@ -157,7 +155,7 @@ class WorkflowController extends DefaultController
                 }
             }
 
-            $gets['run_mode'] = $run_mode;
+            $gets['run_mode'] = $step['run_mode'];
             $gets['step_user_ids'] = $step_user_ids;
 
             $step_next_inform = array_filter((array)$gets['step_next_inform']);

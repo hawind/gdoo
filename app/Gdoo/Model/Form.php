@@ -2305,12 +2305,6 @@ class Form
         // 主表数据
         $master = $gets[$table];
 
-        // 审核完成时执行
-        if ($gets['step_next_type'] == 'end') {
-            $_data = Hook::fire($table.'.onBeforeAudit', ['table' => $table, 'master' => $master, 'id' => $master['id']]);
-            extract($_data);
-        }
-
         /*
         back 退回
         draft 草稿
@@ -2321,21 +2315,6 @@ class Form
         */
 
         if ($bill['audit_type'] == 1) {
-
-            if ($gets['step_next_type']) {
-                // 设置流程主表状态
-                switch ($gets['step_next_type']) {
-                    case 'next':
-                        $master['status'] = '2';
-                        break;
-                    case 'back':
-                        $master['status'] = '-2';
-                        break;
-                    case 'end':
-                        $master['status'] = '1';
-                        break;
-                }
-            }
 
             $run = DB::table('model_run')
             ->where('bill_id', $bill['id'])
@@ -2469,6 +2448,39 @@ class Form
                     break;
             }
 
+            if ($gets['step_next_type']) {
+                // 设置流程主表状态
+                switch ($gets['step_next_type']) {
+                    case 'next':
+                        $master['status'] = '2';
+                        break;
+                    case 'back':
+                        $master['status'] = '-2';
+                        break;
+                    case 'end':
+                        $master['status'] = '1';
+                        break;
+                }
+            }
+
+            // 结束节点时执行
+            if ($gets['step_next_type'] == 'end') {
+                // 结束流程时最后一个办理(针对多人执行)
+                if ($next_step_write) {
+                    // 设置生效数据
+                    $_run['actived_id'] = $auth['id'];
+                    $_run['actived_by'] = $auth['name'];
+                    $_run['actived_at'] = time();
+
+                    // 生效时执行事件
+                    $_data = Hook::fire($table.'.onBeforeAudit', ['table' => $table, 'master' => $master, 'id' => $master['id']]);
+                    extract($_data);
+                } else {
+                    // 结束节点不结束流程
+                    $master['status'] = '2';
+                }
+            }
+
             // 更新自己已办日志
             DB::table('model_run_log')
             ->where('run_id', $run_id)
@@ -2590,13 +2602,6 @@ class Form
             if ($master['supplier_id'] > 0) {
                 $_run['partner_id'] = $master['supplier_id'];
                 $_run['partner_type'] = 'supplier';
-            }
-
-            // 流程结束时设置运行主表
-            if ($gets['step_next_type'] == 'end') {
-                $_run['actived_id'] = $auth['id'];
-                $_run['actived_by'] = $auth['name'];
-                $_run['actived_at'] = time();
             }
 
             DB::table('model_run')
