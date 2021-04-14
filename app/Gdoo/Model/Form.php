@@ -843,7 +843,7 @@ class Form
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="javascript:;" onclick="flow.revise(\''.$key.'\');">流程修正</a></li>
+                    <!--<li><a href="javascript:;" onclick="flow.revise(\''.$key.'\');">流程修正</a></li>-->
                     <li><a href="javascript:;" onclick="flow.reset(\''.$table.'\');">流程重置</a></li>
                 </ul>
                 </div>';

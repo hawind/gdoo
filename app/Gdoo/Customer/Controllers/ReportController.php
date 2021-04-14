@@ -69,7 +69,7 @@ class ReportController extends DefaultController
 
                 // 获取外部接口数据
                 $res = plugin_sync_api('acclist/code/'.$taxs->implode('code', ',').'/start_dt/'.$start_dt.'/end_dt/'.$end_dt);
-                if (count($res['data'])) {
+                if ($res['data']) {
                     // 获取初期余额
                     $one = array_shift($res['data']);
                     foreach($res['data'] as $row) {
