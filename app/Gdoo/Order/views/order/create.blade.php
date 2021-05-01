@@ -98,7 +98,7 @@ var form_action = '{{$action}}';
         query(params) {
         },
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 $('#customer_order_type_id').val(row.type_id);
                 $('#customer_order_type_id_select').val(row.type_id);
                 $('#customer_region_region_id').val(row.region_id);
@@ -148,7 +148,7 @@ var form_action = '{{$action}}';
             query.customer_id = get_customer_id();
         },
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 if (row.id.indexOf('draft_') == 0) {
                     return true;
                 }
@@ -193,10 +193,11 @@ var form_action = '{{$action}}';
         editable: {
             product_name(params) {
                 var data = params.data;
-                // 费用不能编辑产品
+                // 费用不能编辑
                 if (data.product_code == '99001') {
                     return false;
                 }
+
                 var customer_id = get_customer_id();
                 if (customer_id.trim() == '') {
                     toastrError('请先选择客户');
@@ -249,7 +250,6 @@ var form_action = '{{$action}}';
             toastrError('请先选择客户');
             return;
         }
-
         var buttons = [{
             text: "取消",
             'class': "btn-default",
@@ -284,7 +284,6 @@ var form_action = '{{$action}}';
                 }
             });
         }
-
         $.dialog({
             title: '促销列表',
             url: '{{url("promotion/promotion/serviceSaleOrder")}}?customer_id=' + customer_id,

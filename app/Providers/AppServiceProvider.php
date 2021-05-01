@@ -49,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        require_once __DIR__.'/../gdoo.php';
+
         Paginator::defaultView('vendor/pagination/gdoo');
         Event::listen(StatementPrepared::class, function ($event) {
             $event->statement->setFetchMode(\PDO::FETCH_ASSOC);

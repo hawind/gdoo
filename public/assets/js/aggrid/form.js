@@ -39,7 +39,8 @@ function gridForm(table, options) {
 
     var event = gdoo.event.get('grid.' + table);
 
-    var editable = event.editable || {};
+    var editable = event.args.editable || {};
+
     grid.defaultColDef.editable = function(params) {
         if (params.node.rowPinned) {
             return false;
@@ -93,14 +94,14 @@ function gridForm(table, options) {
 
     new agGrid.Grid(gridDiv, grid);
 
-    grid.api.dialogSelected = function(query) {
+    grid.api.dialogSelected = function(query, selectedRows) {
 
         var dialogEvent = gdoo.event.get(query.form_id + '.' + query.id);
         var links = options.links[query.id];
 
-        var dialog = gdoo.dialogs[query.form_id + '_' + query.id];
+        //var dialogGrid = gdoo.dialogs[query.form_id + '_' + query.id];
+        //var selectedRows = dialogGrid.getSelectedRows();
 
-        var selectedRows = dialog.getSelectedRows();
         var store = grid.api.memoryStore;
         var rows = [];
         grid.api.forEachNode(function(rowNode, index) {

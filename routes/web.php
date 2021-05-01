@@ -7,8 +7,6 @@ function exception_error_handler($errno, $errstr, $errfile, $errline) {
 }
 set_error_handler("exception_error_handler");
 
-require __DIR__.'/../app/macros.php';
-
 $uris = [];
 
 foreach (['module', 'controller', 'action'] as $key => $uri) {

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{{$setting['title']}} - Powered By {{$setting['powered']}}</title>
+    <title>{{$setting['title']}} - {{$powered}}</title>
 
     <link href="{{mix('/assets/dist/vendor.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{mix('/assets/dist/gdoo.min.css')}}" rel="stylesheet" type="text/css" />

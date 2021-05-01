@@ -11,20 +11,14 @@
     var search = JSON.parse('{{json_encode($search)}}');
     var params = search.query;
 
-    var option = gdoo.formKey(params);
-    var event = gdoo.event.get(option.key);
-    event.trigger('query', params);
-
-    var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     var grid = new agGridOptions();
-    var multiple = false;
+    var option = gdoo.dialogInit(params, grid);
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = params;
-    grid.suppressRowClickSelection = true;
-    grid.rowSelection = multiple ? 'multiple' : 'single';
+    grid.rowSelection = 'single';
     
     grid.columnDefs = [
-        {suppressMenu: true, cellClass:'text-center', checkboxSelection: true, headerCheckboxSelection: multiple, suppressSizeToFit: true, sortable: false, width: 40},
+        {suppressMenu: true, cellClass:'text-center', checkboxSelection: true, headerCheckboxSelection: false, suppressSizeToFit: true, sortable: false, width: 40},
         {suppressMenu: true, cellClass:'text-center', sortable: false, field: 'sn', type:'sn', suppressSizeToFit: true, headerName: '', width: 40},
         {suppressMenu: true, cellClass:'text-center', sortable: false, field: 'warehouse_code', headerName: '仓库编码', width: 60},
         {suppressMenu: true, cellClass:'text-left', sortable: false, field: 'warehouse_name', headerName: '仓库名称', width: 100},
@@ -39,27 +33,10 @@
         {suppressMenu: true, cellClass:'text-right', sortable: false, field: 'ky_num', type:'number', headerName: '可用数量', width: 80},
     ];
 
-    grid.onRowClicked = function(row) {
-        var selected = row.node.isSelected();
-        if (selected === false) {
-            row.node.setSelected(true, true);
-        }
-    };
-
-    grid.onRowDoubleClicked = function (row) {
-        var ret = gdoo.writeSelected(event, params, option, grid);
-        if (ret == true) {
-            $('#gdoo-dialog-' + params.dialog_index).dialog('close');
-        }
-    };
-
-    gdoo.dialogs[option.id] = grid;
+    var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     new agGrid.Grid(gridDiv, grid);
 
     grid.remoteData({page: 1});
-    grid.remoteAfterSuccess = function() {
-        gdoo.initSelected(params, option, grid);
-    }
 
     var data = search.forms;
     var search = $("#dialog-{{$search['query']['id']}}-search-form").searchForm({

@@ -11,17 +11,12 @@
     var search = JSON.parse('{{json_encode($search)}}');
     var params = search.query;
 
-    var option = gdoo.formKey(params);
-    var event = gdoo.event.get(option.key);
-    event.trigger('query', params);
-
-    var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     var grid = new agGridOptions();
-    var multiple = params.multi == 0 ? false : true;
+    var option = gdoo.dialogInit(params, grid);
+
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = params;
-    grid.suppressRowClickSelection = true;
-    grid.rowSelection = multiple ? 'multiple' : 'single';
+
     grid.columnDefs = [
         {field:'product_id', hide: true},
         {suppressMenu: true, cellClass:'text-center', checkboxSelection: true, headerCheckboxSelection: true, suppressSizeToFit: true, sortable: false, width: 40},
@@ -34,21 +29,7 @@
         {headerName:'备注', field:'remark', width: 200},
     ];
 
-    grid.onRowClicked = function(row) {
-        var selected = row.node.isSelected();
-        if (selected === false) {
-            row.node.setSelected(true, true);
-        }
-    };
-
-    grid.onRowDoubleClicked = function (row) {
-        var ret = gdoo.writeSelected(event, params, option, grid);
-        if (ret == true) {
-            $('#aike-dialog-' + params.dialog_index).dialog('close');
-        }
-    };
-
-    gdoo.dialogs[option.id] = grid;
+    var gridDiv = document.querySelector("#dialog-{{$search['query']['id']}}");
     new agGrid.Grid(gridDiv, grid);
     
     grid.remoteData();

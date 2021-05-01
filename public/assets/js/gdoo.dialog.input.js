@@ -91,7 +91,7 @@
         ];
 
         grid.onRowClicked = function (row) {
-            var ret = grid.writeSelected([row.data]);
+            var ret = grid.dialogSelected([row.data]);
             if (ret) {
                 hideSuggest($input, options);
             }
@@ -100,7 +100,7 @@
         /**
         * 写入选中
         */
-        grid.writeSelected = function(rows) {
+        grid.dialogSelected = function(rows) {
             var params = grid.remoteParams;
             var sid = params.prefix == 1 ? 'sid' : 'id';
             var id = [];

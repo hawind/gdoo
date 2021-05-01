@@ -27,7 +27,6 @@ var params = JSON.parse('{{json_encode($query)}}');
     var event = gdoo.event.get(option.key);
     event.trigger('query', params);
 
-    var mGridDiv = document.querySelector("#ref_promotion");
     var mGrid = new agGridOptions();
     mGrid.remoteDataUrl = '{{url()}}';
     mGrid.remoteParams = params;
@@ -64,20 +63,20 @@ var params = JSON.parse('{{json_encode($query)}}');
     };
 
     mGrid.onRowDoubleClicked = function (row) {
-        var ret = gdoo.writeSelected(event, params, option, mGrid);
+        var ret = gdoo.dialogSelected(event, params, option, mGrid);
         if (ret == true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
     gdoo.dialogs[option.id] = mGrid;
+    var mGridDiv = document.querySelector("#ref_promotion");
     new agGrid.Grid(mGridDiv, mGrid);
 
     mGrid.remoteData();
     $ref_promotion = mGrid;
 
     params['master'] = 0;
-    var sGridDiv = document.querySelector("#ref_promotion_data");
     var sGrid = new agGridOptions();
     sGrid.remoteDataUrl = '{{url()}}';
     sGrid.remoteParams = params;
@@ -108,7 +107,9 @@ var params = JSON.parse('{{json_encode($query)}}');
         }
     };
 
+    var sGridDiv = document.querySelector("#ref_promotion_data");
     new agGrid.Grid(sGridDiv, sGrid);
+    
     sGrid.remoteData();
     $ref_promotion_data = sGrid;
 

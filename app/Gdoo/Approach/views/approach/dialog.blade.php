@@ -68,7 +68,7 @@ var params = JSON.parse('{{json_encode($query)}}');
     };
 
     mGrid.onRowDoubleClicked = function (row) {
-        var ret = gdoo.writeSelected(event, params, option, mGrid);
+        var ret = gdoo.dialogSelected(event, params, option, mGrid);
         if (ret === true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }

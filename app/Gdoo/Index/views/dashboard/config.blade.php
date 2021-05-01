@@ -114,7 +114,7 @@
         <form method="post" id="widget-edit" name="widget_edit">
         <div class="quick-edit">
             <div class="row row-sm">
-                <gdooDraggable
+                <gdoo-draggable
                     v-model="menus"
                     item-key="id"
                     group="menus"
@@ -131,7 +131,7 @@
                             <div class="title">{{element.name}}</div>
                         </div>
                     </template>
-                </gdooDraggable>
+                </gdoo-draggable>
                 <div class="quick-edit-text">
                     <a href="javascript:;" @click="quickAdd">
                         <div class="quick-icon quick-edit-add">
@@ -143,7 +143,7 @@
             </div>
         </div>
         
-        <gdooDraggable 
+        <gdoo-draggable 
             class="row row-sm todo-edit"
             v-model="infos"
             handle=".todo-edit-l-t"
@@ -176,10 +176,10 @@
                 </div>
             </div>
             </template>
-        </gdooDraggable>
+        </gdoo-draggable>
         
         <div class="row row-sm widget-edit">
-            <gdooDraggable
+            <gdoo-draggable
                 class="col-xs-12 col-sm-8"
                 v-model="leftWidgets"
                 handle=".panel-heading"
@@ -207,9 +207,9 @@
                         </div>
                     </div>
                 </template>
-            </gdooDraggable>
+            </gdoo-draggable>
 
-            <gdooDraggable
+            <gdoo-draggable
                 class="col-xs-12 col-sm-4"
                 v-model="rightWidgets"
                 handle=".panel-heading"
@@ -237,17 +237,18 @@
                         </div>
                     </div>
                 </template>
-            </gdooDraggable>
+            </gdoo-draggable>
         </div>
     </div>
 </div>
 @endverbatim
 
 <script>
+
 var configData = {{$json}};
 var settingWidget = Vue.createApp({
     components: {
-        gdooDraggable
+        gdooDraggable,
     },
     data() {
         return {

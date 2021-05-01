@@ -169,7 +169,7 @@ gdoo.event.set('promotion.order_id', {
 // 选择客户事件
 gdoo.event.set('promotion.customer_id', {
     onSelect(row) {
-        if (row.id) {
+        if (row) {
             $('#customer_region_region_id').val(row.region_id);
             $('#customer_region_region_id_text').val(row.region_id_name || '');
             $('#promotion_phone').val(row.tel);

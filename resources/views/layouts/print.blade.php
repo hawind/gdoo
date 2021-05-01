@@ -238,7 +238,7 @@ body {
     <div class="main">
 
         <div class="main-container">
-            <div class="title">{{$setting['print_title']}}{{$form['template']['name']}}</div>
+            <div class="title">{{$setting['print_title']}}{{$form['template']['name'] ? $form['template']['name'] : $template['name']}}</div>
             <div>
                 {{$content}}
             </div>

@@ -172,7 +172,7 @@ gdoo.event.set('stock_cancel_data.poscode', {
 // 选择客户事件
 gdoo.event.set('stock_cancel.customer_id', {
     onSelect(row) {
-        if (row.id) {
+        if (row) {
             $('#stock_cancel_order_type_id').val(row.type_id);
             $('#stock_cancel_order_type_id_select').val(row.type_id);
 

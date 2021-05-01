@@ -436,7 +436,7 @@ var grid = null;
     // 选择客户事件
     gdoo.event.set('stock_delivery.customer_id', {
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 $('#stock_delivery_order_type_id').val(row.type_id);
                 $('#stock_delivery_order_type_id_select').val(row.type_id);
 
@@ -455,7 +455,7 @@ var grid = null;
         query(query) {
         },
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 $('#stock_delivery_freight_short_car').val(row.short_car_sn);
                 return true;
             }
@@ -467,7 +467,7 @@ var grid = null;
         query(query) {
         },
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 $('#stock_delivery_freight_logistics_phone').val(row.business_phone);
                 return true;
             }

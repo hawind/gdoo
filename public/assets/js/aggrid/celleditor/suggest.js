@@ -100,7 +100,7 @@
         ];
 
         grid.onRowClicked = function (row) {
-            var ret = grid.writeSelected(row.data);
+            var ret = grid.dialogSelected(row.data);
             if (ret) {
                 hideDropMenu($input, options);
             }
@@ -109,7 +109,7 @@
         /**
         * 写入选中
         */
-        grid.writeSelected = function(selectedRow) {
+        grid.dialogSelected = function(selectedRow) {
             var ret = true;
             var list = gdoo.forms[params.form_id];
             var links = list.links[params.id];

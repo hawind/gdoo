@@ -1,5 +1,4 @@
 <div id="div1">
-    <div style="line-height:40px;font-size:14pt;" align=center><strong><font>{{$setting['print_title']}}发货单</font></strong></div>
     <table width="100%">
         <tbody>
         <tr>
@@ -102,62 +101,9 @@
     <table width="100%">
         <tr>
             <td width="25%">制单：{{$master['created_by']}}</td>
-            <td width="25%">财务：李彩</td>
+            <td width="25%">财务：</td>
             <td width="25%">发货：</td>
             <td width="25%">仓管：</td>
         </tr>
     </table>
     </div>
-    
-    <div id="div4">
-        <div align="center">第<font tdata="PageNO">##</font>页，<font tdata="PageCount">##</font></span>页</div>
-     </div>
-    
-    <script language="javascript" src="{{$asset_url}}/vendor/LodopFuncs.js"></script>
-    <script language="javascript" type="text/javascript"> 
-        var LODOP;
-        function print280() {
-            LODOP = getLodop();
-            LODOP.PRINT_INIT("{{$form['template']['name']}}");
-            LODOP.SET_PRINT_PAGESIZE(0, 2100, 2700, "CreateCustomPage");
-    
-            var strStyle = "<style> table,td,th {border-width:1px;border-style:solid;border-collapse:collapse}</style>";
-    
-            LODOP.ADD_PRINT_TABLE(125, "4%", "92%", 400, strStyle + document.getElementById("div2").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0,"Vorient", 3);
-    
-            LODOP.ADD_PRINT_HTM(10, "4%", "92%", 120, document.getElementById("div1").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-            LODOP.SET_PRINT_STYLEA(0, "LinkedItem", 1);
-    
-            LODOP.ADD_PRINT_HTM(10, 0, "92%", 54, document.getElementById("div3").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0,"LinkedItem", -2);
-    
-            LODOP.ADD_PRINT_HTM('96%', "4%","92%", 22, document.getElementById("div4").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-            LODOP.PREVIEW();			
-        };
-    
-        function print140() {
-            LODOP = getLodop();
-            LODOP.PRINT_INIT("{{$form['template']['name']}}");
-            LODOP.SET_PRINT_PAGESIZE(0, 2100, 1400, "CreateCustomPage");
-    
-            var strStyle = "<style> table,td,th {border-width:1px;border-style:solid;border-collapse:collapse}</style>";
-    
-            LODOP.ADD_PRINT_TABLE(125, "4%", "92%", 400, strStyle + document.getElementById("div2").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0,"Vorient", 3);
-    
-            LODOP.ADD_PRINT_HTM(10, "4%", "92%", 120, document.getElementById("div1").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-            LODOP.SET_PRINT_STYLEA(0, "LinkedItem", 1);
-    
-            LODOP.ADD_PRINT_HTM(10, 0, "92%", 54, document.getElementById("div3").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0,"LinkedItem", -2);
-    
-            LODOP.ADD_PRINT_HTM('93%', "4%","92%", 22, document.getElementById("div4").innerHTML);
-            LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-            LODOP.PREVIEW();
-        };
-    
-    </script>

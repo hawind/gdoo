@@ -31,8 +31,6 @@ if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
 |
 */
 
-require __DIR__.'/../app/helpers.php';
-require __DIR__.'/../app/sql.php';
 require __DIR__.'/../app/Support/helpers.php';
 
 require __DIR__.'/../vendor/autoload.php';

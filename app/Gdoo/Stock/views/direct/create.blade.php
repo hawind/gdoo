@@ -273,7 +273,7 @@ var grid = null;
         query(query) {
         },
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 $('#stock_direct_order_type_id').val(row.type_id);
                 $('#stock_direct_order_type_id_select').val(row.type_id);
 

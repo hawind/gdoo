@@ -1,5 +1,4 @@
 <div id="div1">
-    <div style="line-height:40px;font-size:14pt;" align=center><strong><font>{{$setting['print_title']}}产成品调拨单</font></strong></div>   
     <table border=0 cellspacing=0 cellpadding=0 width="100%" style="font-size:11pt;">
         <tbody>
         <tr>
@@ -46,7 +45,7 @@
     <td></td>        
     <td></td>
     <td></td>
-    <td tdata="Sum" format="#,##0.00" align="right"><font id="id01">###</font></td>
+    <td tdata="Sum" format="#,##0.00" align="right"><font id="id01">@number($rows->sum('quantity'), 2)</font></td>
     <td></td>
     <td></td>
 </tfoot>
@@ -60,49 +59,6 @@
         <tr>
             <td width="40%">制单人：{{$master['created_by']}}</td>
             <td width="40%">库管员：</td>
-            <td width="20%" align="right">第<font tdata="PageNO">##</font>页，<font tdata="PageCount">##</font></span>页</td>
         </tr>
     </table>
  </div>
-
-<script type="text/javascript" src="{{$asset_url}}/vendor/LodopFuncs.js"></script>
-<script type="text/javascript"> 
-	var LODOP;
-    function print280() {
-		LODOP = getLodop();
-		LODOP.PRINT_INIT("{{$form['template']['name']}}");
-        LODOP.SET_PRINT_PAGESIZE(0, 2100, 2700, "CreateCustomPage");
-		LODOP.ADD_PRINT_TABLE(90, "4%", "92%", 460, document.getElementById("div2").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0,"Vorient", 3);
-
-		LODOP.ADD_PRINT_HTM(10, "4%", "92%", 115, document.getElementById("div1").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-		LODOP.SET_PRINT_STYLEA(0, "LinkedItem", 1);
-
-	    LODOP.ADD_PRINT_HTM(555, "4%","92%", 54, document.getElementById("div3").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0,"ItemType", 1);
-		LODOP.SET_PRINT_STYLEA(0,"LinkedItem", 1);
-		LODOP.PREVIEW();
-	};
-	function print93() {
-		LODOP = getLodop();
-  
-		LODOP.PRINT_INIT("{{$form['template']['name']}}");
-        
-        LODOP.SET_PRINT_PAGESIZE(0, 2100, 930, "CreateCustomPage");
-
-		LODOP.ADD_PRINT_TABLE(85, "4%", "92%", 465, document.getElementById("div2").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0,"Vorient", 3);
-
-		LODOP.ADD_PRINT_HTM(10, "4%", "92%", 115, document.getElementById("div1").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-		LODOP.SET_PRINT_STYLEA(0, "LinkedItem", 1);
-
-	    LODOP.ADD_PRINT_HTM(550, "4%","92%", 54, document.getElementById("div3").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0,"ItemType", 1);
-		LODOP.SET_PRINT_STYLEA(0,"LinkedItem", 1);
-
-		LODOP.PREVIEW();			
-	};
-
-</script>

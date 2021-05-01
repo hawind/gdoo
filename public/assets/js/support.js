@@ -1,4 +1,5 @@
 var select2List = {};
+var dialogCacheSelected = {};
 
 $(function() {
 
@@ -127,12 +128,19 @@ $(function() {
             url: url,
             dialogClass: 'modal-lg',
             buttons: [{
-                text: "确定",
-                'class': "btn-default",
+                text: '取消',
+                class: 'btn-default',
                 click: function() {
-                    var list = gdoo.dialogs[option.id];
-                    if (list) {
-                        var ret = gdoo.writeSelected(event, params, option, list);
+                    var me = this;
+                    $(me).dialog("close");
+                }
+            },{
+                text: "确定",
+                'class': "btn-info",
+                click: function() {
+                    var grid = gdoo.dialogs[option.id];
+                    if (grid) {
+                        var ret = gdoo.dialogSelected(event, params, option, grid);
                         if (ret === true) {
                             $(this).dialog("close");
                         }

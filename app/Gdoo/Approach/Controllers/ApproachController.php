@@ -129,7 +129,7 @@ class ApproachController extends WorkflowController
     public function print()
     {
         $this->layout = 'layouts.print_html';
-        print_prince($this->create('print'));
+        return $this->create('print');
     }
 
     // 关闭操作
@@ -205,8 +205,8 @@ class ApproachController extends WorkflowController
                 ');
                 $rows = $model->get();
                 $rows = Grid::dataFilters($rows, $header);
+                return $rows;
             } else {
-
                 $model = DB::table('approach_data')
                 ->leftJoin('product', 'product.id', '=', 'approach_data.product_id')
                 ->leftJoin('approach', 'approach.id', '=', 'approach_data.approach_id')
@@ -234,8 +234,8 @@ class ApproachController extends WorkflowController
                     product.weight
                 ");
                 $rows = $model->get();
+                return ['data' => $rows];
             }
-            return $this->json($rows, true);
         }
 
         return $this->render([

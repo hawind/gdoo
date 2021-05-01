@@ -48,23 +48,94 @@
     };
 
     /**
+     * 对话框初始化
+     */
+    gdoo.dialogInit = function(params, grid) {
+
+        var option = gdoo.formKey(params);
+        var event = gdoo.event.get(option.key);
+        event.trigger('query', params);
+
+        // 键盘按下和弹起事件
+        var ctrlNotActive = true;
+        document.onkeydown = function (event) {
+            event = event || window.event;
+            if (event.keyCode == 17) {
+                ctrlNotActive = false;
+            }
+        }
+        document.onkeyup = function (event) {
+            event = event || window.event;
+            if (event.keyCode == 17) {
+                ctrlNotActive = true;
+            }
+        }
+
+        var multiple = params.multi == 0 ? false : true;
+
+        // 点击行不勾选
+        grid.suppressRowClickSelection = true;
+        // 多选还是单选
+        grid.rowSelection = multiple ? 'multiple' : 'single';
+        grid.multiple = multiple;
+
+        grid.onRowClicked = function(row) {
+            var selected = row.node.isSelected();
+            if (multiple) {
+                if (selected === false) {
+                    row.node.setSelected(true, ctrlNotActive);
+                }
+                if (selected === true && ctrlNotActive === false) {
+                    row.node.setSelected(false, false);
+                }
+            } else {
+                if (selected === false) {
+                    row.node.setSelected(true, true);
+                }
+            }
+        };
+
+        grid.onRowSelected = function(row) {
+            if (params.is_grid) {
+            } else {
+                var sid = params.prefix == 1 ? 'sid' : 'id';
+                var res = dialogCacheSelected[option.id];
+                if (row.node.isSelected()) {
+                    res[row.data[sid]] = row.data.name;
+                } else {
+                    delete res[row.data[sid]];
+                }
+                dialogCacheSelected[option.id] = res;
+            }
+        }
+    
+        grid.onRowDoubleClicked = function () {
+            var ret = gdoo.dialogSelected(event, params, option, grid);
+            if (ret == true) {
+                $('#gdoo-dialog-' + params.dialog_index).dialog('close');
+            }
+        };
+
+        // 数据加载后执行
+        grid.remoteAfterSuccess = function() {
+            gdoo.dialogInitSelected(params, option, grid);
+        }
+
+        gdoo.dialogs[option.id] = grid;
+        return option;
+    }
+
+    /**
      * 对话框字段写入选中
      */
-    gdoo.writeSelected = function(event, params, option, grid) {
+    gdoo.dialogSelected = function(event, params, option, grid) {
         var rows = grid.api.getSelectedRows();
         if (params.is_grid) {
             var list = gdoo.forms[params.form_id];
-            list.api.dialogSelected(params);
+            list.api.dialogSelected(params, rows);
         } else {
             var sid = params.prefix == 1 ? 'sid' : 'id';
             var multiple = params.multi == 0 ? false : true;
-
-            var id = [];
-            var text = [];
-            $.each(rows, function(k, row) {
-                id.push(row[sid]);
-                text.push(row.name);
-            });
 
             var doc = getIframeDocument(params.iframe_id);
             if (doc) {
@@ -75,8 +146,14 @@
                 var $option_text = $('#' + option.id + '_text');
             }
 
-            $option_id.val(id.join(','));
-            $option_text.val(text.join(','));
+            var res = dialogCacheSelected[option.id] || {};
+
+            $.each(rows, function(k, row) {
+                res[row[sid]] = row.name;
+            });
+
+            $option_id.val(Object.keys(res).join(','));
+            $option_text.val(Object.values(res).join(','));
 
             if (event.exist('onSelect')) {
                 return event.trigger('onSelect', multiple ? rows : rows[0]);
@@ -88,29 +165,38 @@
     /**
      * 初始化选择
      */
-    gdoo.initSelected = function(params, option, grid) {
+    gdoo.dialogInitSelected = function(params, option, grid) {
         if (params.is_grid) {
         } else {
+            var sid = params.prefix == 1 ? 'sid' : 'id';
             var doc = getIframeDocument(params.iframe_id);
             if (doc) {
                 var $option_id = $('#' + option.id, doc);
+                var $option_text = $('#'+option.id + '_text', doc);
             } else {
                 var $option_id = $('#' + option.id);
+                var $option_text = $('#' + option.id + '_text');
             }
 
-            var sid = params.prefix == 1 ? 'sid' : 'id';
-            var id = $option_id.val();
-            var rows = {};
-            if (id) {
-                var ids = id.split(',');
-                for (var i = 0; i < ids.length; i++) {
-                    rows[ids[i]] = ids[i];
+            if (params.is_org) {
+                var res = dialogCacheSelected[option.id];
+            } else {
+                var id = $option_id.val();
+                var text = $option_text.val();
+                var res = {};
+                if (id) {
+                    var ids = id.split(',');
+                    var texts = text.split(',');
+                    for (var i = 0; i < ids.length; i++) {
+                        res[ids[i]] = texts[i];
+                    }
                 }
+                dialogCacheSelected[option.id] = res;
             }
 
             grid.api.forEachNode(function(node) {
                 var key = node.data[sid];
-                if (rows[key] != undefined) {
+                if (res[key] != undefined) {
                     node.setSelected(true);
                 }
             });

@@ -17,7 +17,7 @@
         query(params) {
         },
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 $('#customer_tax_class_id').val(row.class_id);
                 $('#customer_tax_class_id_text').val(row.class_id_name);
 

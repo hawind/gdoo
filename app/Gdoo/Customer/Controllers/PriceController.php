@@ -126,7 +126,7 @@ class PriceController extends DefaultController
         } else {
             $rows = [];
         }
-        return $this->json($rows, true);
+        return $rows;
     }
 
     public function referCustomer()

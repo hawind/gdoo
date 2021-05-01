@@ -83,7 +83,7 @@ var params = {customer_id: customer_id};
     // 选择客户事件
     gdoo.event.set('customer_price.customer_id', {
         onSelect(row) {
-            if (row.id) {
+            if (row) {
                 params['customer_id'] = row.id;
                 $.post(app.url('customer/price/list'), params, function(res) {
                     if (res.data.length > 0) {

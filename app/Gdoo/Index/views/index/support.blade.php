@@ -5,7 +5,7 @@
             软件版本
         </td>
         <td align="left" style="border-top:0;">
-            {{$version}} {{$licenseType ? $licenseType : '开源版'}}
+            {{$version}}
         </td>
     </tr>
     <tr>

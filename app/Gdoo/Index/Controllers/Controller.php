@@ -15,12 +15,7 @@ class Controller extends BaseController
     /**
      * @var 程序版本
      */
-    public $version = '<a target="_blank" href="http://www.gdoo.net">Gdoo</a> 2.2.2';
-
-    /**
-     * @var 开发商名称
-     */
-    public $powered = 'Gdoo';
+    public $version = '2.3.1';
 
     /**
      * @var 配置参数
@@ -62,22 +57,18 @@ class Controller extends BaseController
 
         // 获取配置数据
         $this->setting = Setting::where('type', 'system')->pluck('value', 'key');
-        $this->setting['powered'] = $this->powered;
 
         $this->dbType = env('DB_CONNECTION');
 
         $this->ret = RetService::make();
 
         View::share([
-            'title' => 'Gdoo',
+            'version' => $this->version,
             'setting' => $this->setting,
             'public_url' => URL::to('/'),
             'upload_url' => URL::to('/uploads'),
             'static_url' => URL::to('/static'),
             'asset_url' => URL::to('/assets'),
-            'licenseType' => env('LICENSE_TYPE'),
-            'resVersion' => $this->resVersion,
-            'version' => $this->version,
         ]);
     }
 

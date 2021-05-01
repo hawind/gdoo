@@ -55,7 +55,7 @@ var $promotion_customer_order_data = null;
     };
 
     mGrid.onRowDoubleClicked = function (row) {
-        var ret = gdoo.writeSelected(event, params, option, mGrid);
+        var ret = gdoo.dialogSelected(event, params, option, mGrid);
         if (ret == true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
@@ -67,7 +67,7 @@ var $promotion_customer_order_data = null;
     
     mGrid.remoteData();
     mGrid.remoteAfterSuccess = function() {
-        gdoo.initSelected(params, option, mGrid);
+        gdoo.dialogInitSelected(params, option, mGrid);
     }
 
     params['master'] = 0;

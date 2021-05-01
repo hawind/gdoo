@@ -1,5 +1,4 @@
 <div id="div1">
-    <div style="line-height:40px;font-size:14pt;" align=center><strong><font>{{$setting['print_title']}}{{$form['template']['name']}}</font></strong></div>   
     <table border=0 cellspacing=0 cellpadding=0 width="100%" style="font-size:11pt;">
         <tbody>
         <tr>
@@ -57,31 +56,8 @@ td { padding: 2px; }
 <div id="div3">
     <table width="100%" style="LINE-HEIGHT:30px;font-size:11pt;" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
         <tr>
-            <td width="40%">制单人：{{auth()->user()->name}}</td>
-            <td width="40%">交货人：</td>       
-            <td width="20%" align="right">第<font tdata="PageNO">##</font>页，<font tdata="PageCount">##</font></span>页</td>
+            <td width="40%">制单人：{{$master['created_by']}}</td>
+            <td width="40%">交货人：</td>
         </tr>
     </table>
  </div>
-
-<script language="javascript" src="{{$asset_url}}/vendor/LodopFuncs.js"></script>
-<script language="javascript" type="text/javascript"> 
-	var LODOP;
-	function print93() {
-		LODOP = getLodop();
-  
-		LODOP.PRINT_INIT("{{$form['template']['name']}}");
-        LODOP.SET_PRINT_PAGESIZE(0, 2100, 930, "CreateCustomPage");
-		var strStyle="<style> table,td,th {border-width:1px;border-style:solid;border-collapse:collapse}</style>"
-		LODOP.ADD_PRINT_TABLE(75, "6%", "88%", 475, strStyle + document.getElementById("div2").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0,"Vorient", 3);		
-		LODOP.ADD_PRINT_HTM(0, "6%", "88%", 109, document.getElementById("div1").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
-		LODOP.SET_PRINT_STYLEA(0, "LinkedItem", 1);
-	    LODOP.ADD_PRINT_HTM(555, "6%","88%", 54, document.getElementById("div3").innerHTML);
-		LODOP.SET_PRINT_STYLEA(0,"ItemType", 1);
-		LODOP.SET_PRINT_STYLEA(0,"LinkedItem", 1);
-		LODOP.PREVIEW();			
-	};
-
-</script>

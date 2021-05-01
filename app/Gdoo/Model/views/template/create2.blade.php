@@ -19,7 +19,7 @@
             <div class="panel-heading">
                 <div>字段列表</div>
             </div>
-            <gdooDraggable class="list-group"
+            <gdoo-draggable class="list-group"
                 v-model="listLeft"
                 item-key="name"
                 group="people"
@@ -31,7 +31,7 @@
                         {{element.name}}
                     </a>
                 </template>
-            </gdooDraggable>
+            </gdoo-draggable>
 
         </div>
     </div>
@@ -41,7 +41,7 @@
                 <div>字段列表</div>
             </div>
 
-            <gdooDraggable class="list-group"
+            <gdoo-draggable class="list-group"
                 v-model="listRight"
                 item-key="name"
                 group="people"
@@ -52,7 +52,7 @@
                         {{element.name}}
                     </a>
                 </template>
-            </gdooDraggable>
+            </gdoo-draggable>
         </div>
     </div>
     </div>
@@ -68,29 +68,29 @@
 
                     <div class="panel-body">
                         <div class="form-group">
-                            <label>视图名称 <span class="red">*</span></label>
+                            <label><span class="red">*</span> 名称</label>
                             <input type="text" id="name" name="name" value="{{$template['name']}}" class="form-control input-sm">
                         </div>
 
                         <div class="form-group">
-                            <label for="set_col">视图编码 <span class="red">*</span></label>
+                            <label for="set_col">
+                            <span class="red">*</span> 编码
+                            <a class="hinted" href="javascript:;" title="视图前缀:{{$master_model['table']}}_"><i class="fa fa-question-circle"></i></a>
+                            </label>
                             <div class="form-text">
-                                <div class="input-group">
-                                    <span class="input-group-addon">{{$model['table']}}_</span>
-                                    <input type="text" id="code" name="code" value="{{$template['code']}}" class="form-control input-sm">
-                                </div>
+                                <input type="text" id="code" name="code" value="{{$template['code']}}" class="form-control input-sm">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>视图类型</label>
+                            <label>类型</label>
                             <select multiple="multiple" class="input-select2 form-control input-sm" id="type" name="type[]" data-width="100%">
                                 <option value="list" @if(in_array('list', $template['type'])) selected @endif>列表</option>
                                 <option value="dialog" @if(in_array('dialog', $template['type'])) selected @endif>对话框</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>权限范围 <span class="red">*</span></label>
+                            <label>权限<span class="red">*</span></label>
                             {{App\Support\Dialog::search($template, 'id=receive_id&name=receive_name&multi=1')}}
                         </div>
                         <div class="form-group">
@@ -139,7 +139,6 @@
 }
 </style>
 <script>
-
 var template = JSON.parse('{{json_encode($template, JSON_UNESCAPED_UNICODE)}}');
 var rightIndex = -1;
 var vueData = {

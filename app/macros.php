@@ -158,15 +158,7 @@ Builder::macro('search', function ($search) {
     if (strpos($search['field'], '.status') !== false && $value == '-4') {
         $this->where($this->from.'.is_close', 1);
     }
-
-    elseif (strpos($search['field'], 'tax_id') !== false) {
-        if ($this->from == 'customer_order' || $this->from == 'stock_delivery' || $this->from == 'stock_direct') {
-            $this->where($search['field'], $value);
-        } else {
-            $customer_ids = DB::table('customer_tax')->where('id', $value)->pluck('customer_id');
-            $this->whereIn($this->from.'.customer_id', $customer_ids);
-        }
-    } elseif ($condition == 'between') {
+    elseif ($condition == 'between') {
         $this->whereBetween($search['field'], $value);
 
     } elseif ($search['condition'] == 'date2') {

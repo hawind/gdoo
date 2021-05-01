@@ -151,6 +151,7 @@ class AuthController extends Controller
         }
         return $this->display([
             'log' => $log,
+            'version' => '121212121',
             'show_captcha' => $show_captcha,
         ]);
     }

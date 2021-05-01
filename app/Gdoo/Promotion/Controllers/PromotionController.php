@@ -162,9 +162,9 @@ class PromotionController extends WorkflowController
         $this->layout = 'layouts.print_html';
         $form = Form::make($header);
         $form['template']['name'] = '促销申请';
-        print_prince($this->display([
+        return $this->display([
             'form' => $form,
-        ], 'print'));
+        ], 'print');
     }
 
     // 赠品促销参照到订单
@@ -433,7 +433,7 @@ class PromotionController extends WorkflowController
 
                 $rows = $model->get();
                 $rows = Grid::dataFilters($rows, $header);
-                
+                return $rows;
             } else {
 
                 $model = DB::table('promotion_data')
@@ -464,8 +464,8 @@ class PromotionController extends WorkflowController
                     promotion_data.id as apply_data_id
                 ");
                 $rows = $model->get();
+                return ['data' => $rows];
             }
-            return $this->json($rows, true);
         }
 
         return $this->render([

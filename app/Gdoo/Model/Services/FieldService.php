@@ -1074,7 +1074,7 @@ class FieldService
             'multi' => $multi, 
             'prefix' => 1, 
             'name' => $key_name, 
-            'title' => '',
+            'title' => '组织架构',
             'url' => 'index/api/dialog',
             'id' => $attr_id,
             'toggle' => 'dialog-view'

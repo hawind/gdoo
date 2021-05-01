@@ -135,7 +135,7 @@ gdoo.event.set('approach_data.product_id', {
 // 选择客户事件
 gdoo.event.set('approach.customer_id', {
     onSelect(row) {
-        if (row.id) {
+        if (row) {
             $('#customer_region_region_id').val(row.region_id);
             $('#customer_region_region_id_text').val(row.region_id_name || '');
             $('#approach_phone').val(row.tel);
@@ -157,7 +157,7 @@ gdoo.event.set('approach.market_name', {
         query.customer_id = customer_id;
     },
     onSelect(row) {
-        if (row.id) {
+        if (row) {
             $('#approach_market_fax').val(row.fax);
             $('#approach_market_totol').val(row.market_count);
             $('#approach_single_cast').val(row.single_cast);

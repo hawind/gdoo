@@ -41,7 +41,7 @@ var $ref_stock_select = null;
     };
 
     grid.onRowDoubleClicked = function (row) {
-        var ret = writeSelected();
+        var ret = dialogSelected();
         if (ret == true) {
             $('#gdoo-dialog-stock_select').dialog('close');
         }
@@ -50,7 +50,7 @@ var $ref_stock_select = null;
     /**
      * 写入选中
      */
-    function writeSelected() {
+    function dialogSelected() {
         var rows = grid.api.getSelectedRows();
         if (typeof window.stockRowsSelected == 'function') {
             return window.stockRowsSelected.call(grid, rows);

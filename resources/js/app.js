@@ -5,6 +5,7 @@ window.Vue = Vue;
 
 // 第三方全局模块
 import draggable from 'vuedraggable';
+draggable.name = 'gdoo-draggable';
 window.gdooDraggable = draggable;
 
 // 自定义全局模块

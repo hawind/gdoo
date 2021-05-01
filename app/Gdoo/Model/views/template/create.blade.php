@@ -53,14 +53,7 @@
                                     @endif
                                 </div>
                             @endforeach
-                            
                         @endforeach
-                        <div class="list-group-item fld field" data-col="12" data-hidden="0" data-readonly="0" data-role_name="" data-role_id="" data-id="0" data-type="0" data-field="{flowlog}">
-                            <div class="title">流程记录</div>
-                            <i class="move fa fa-w fa-arrows"></i>
-                            <i class="remove fa fa-w fa-remove" title="删除"></i>
-                            <div class="desc"></div>
-                        </div>
                     </ul>
                 </div>
                 <div class="tab-pane" id="2">
@@ -186,24 +179,24 @@
                     <div class="panel-body field-attr">
                         <form method="post" id="myform" name="myform">
                         <div class="form-group">
-                            <label for="set_col">视图名称 <span class="red">*</span></label>
+                            <label for="set_col"><span class="red">*</span> 名称</label>
                             <div class="form-text">
                                 <input type="text" id="name" name="name" value="{{$template['name']}}" class="form-control input-sm">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="set_col">视图编码 <span class="red">*</span></label>
+                            <label for="set_col">
+                                <span class="red">*</span> 编码
+                                <a class="hinted" href="javascript:;" title="视图前缀:{{$master_model['table']}}_"><i class="fa fa-question-circle"></i></a>
+                            </label>
                             <div class="form-text">
-                                <div class="input-group">
-                                    <span class="input-group-addon" style="display:inline-block;overflow:hidden;white-space:nowrap;width:100px;text-overflow:ellipsis;">{{$master_model['table']}}_</span>
-                                    <input type="text" id="code" name="code" value="{{$template['code']}}" class="form-control input-sm">
-                                </div>
+                                <input type="text" id="code" name="code" value="{{$template['code']}}" class="form-control input-sm">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="set_col">视图类型 <span class="red">*</span></label>
+                            <label for="set_col"><span class="red">*</span> 类型</label>
                             <div class="form-text">
                                 <select multiple="multiple" class="input-select2 form-control input-sm" id="type" name="type[]" data-width="100%">
                                     <option value="create" @if(in_array('create', $template['type'])) selected @endif>新增</option>
@@ -215,7 +208,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="set_col">权限范围</label>
+                            <label for="set_col">权限</label>
                             <div class="form-text">
                                 {{App\Support\Dialog::search($template, 'id=receive_id&name=receive_name&multi=1')}}
                             </div>
@@ -472,7 +465,7 @@
 @verbatim
 <div id="app">
     <div class="dragDemo">
-        <gdooDraggable class="list-group"
+        <gdoo-draggable class="list-group"
             element="div"
             v-model="listLeft"
             :move="onMove"
@@ -482,8 +475,8 @@
             <div v-for="(item, key) in listLeft" :key="key">
                 {{item.name}}-{{item.value}}
             </div>
-        </gdooDraggable>
-        <gdooDraggable class="list-group"
+        </gdoo-draggable>
+        <gdoo-draggable class="list-group"
             element="div"
             v-model="listLeft1"
             :move="onMove"
@@ -493,8 +486,8 @@
             <div v-for="(item, key) in listLeft1" :key="key">
                 {{item.name}}-{{item.value}}
             </div>
-        </gdooDraggable>
-        <gdooDraggable class="list-group"
+        </gdoo-draggable>
+        <gdoo-draggable class="list-group"
             element="div"
             v-model="listRight"
             :move="onMove"
@@ -581,7 +574,8 @@ color: #555;
 
 <script>
 
-var fields = JSON.parse('{{$template["tpl"]}}');
+var fields = '{{$template["tpl"]}}';
+fields = fields ? JSON.parse(fields) : {};
 
 var activeField = null;
 
@@ -594,7 +588,9 @@ function setCol(v) {
 
 function setField(f, v) {
     if (f == 'title') {
-        activeField.find('.title').text(v);
+        if (v) {
+            activeField.find('.title').text(v);
+        }
     }
     activeField.attr('data-' + f, v);
 }
@@ -629,7 +625,6 @@ var sortableOptions = {
         if(ui.item.data('type') == 1) {
             droppedFieldsBox.find('.desc-sublist:not(.ui-sortable)').sortable(sortableOptions);
         }
-
     }, 
     start: function (event, ui) {
         ui.item.removeClass('list-group-item');
@@ -928,6 +923,8 @@ function getColumns() {
 
 function getColumn(me) {
     var column = {};
+    me.find('.model-title').remove();
+
     column.field = me.attr('data-field');
     column.css = me.attr('data-css');
     column.hidden = me.attr('data-hidden');

@@ -1,9 +1,3 @@
-<style>
-.close-header { margin: 0 15px 0; }
-</style>
-
-<button type="button" data-dismiss="dialog" class="close close-header">&times;</button>
-
 <ul class="nav nav-tabs padder m-t" id="api-dialog">
     <li class="active"><a href="#modal-department" data-toggle="tab">部门</a></li>
     <li><a href="#modal-role" data-toggle="tab">角色</a></li>
@@ -15,7 +9,29 @@
 
 <script>
 (function($) {
-    var params = {{json_encode($gets)}};
+    var params = JSON.parse('{{json_encode($gets)}}');
+
+    var option = gdoo.formKey(params);
+    var doc = getIframeDocument(params.iframe_id);
+    if (doc) {
+        var $option_id = $('#' + option.id, doc);
+        var $option_text = $('#'+option.id + '_text', doc);
+    } else {
+        var $option_id = $('#' + option.id);
+        var $option_text = $('#' + option.id + '_text');
+    }
+    var id = $option_id.val();
+    var text = $option_text.val();
+    var res = {};
+    if (id) {
+        var ids = id.split(',');
+        var texts = text.split(',');
+        for (var i = 0; i < ids.length; i++) {
+            res[ids[i]] = texts[i];
+        }
+    }
+    dialogCacheSelected[option.id] = res;
+
     var routes = {
         '#modal-user': 'user/user/dialog',
         '#modal-role': 'user/role/dialog',
@@ -28,6 +44,7 @@
 
     function loadData(target) {
         params['prefix'] = 1;
+        params['is_org'] = 1;
         $.get(app.url(routes[target], params), function(html) {
             $('#tab-content').html(html);
         });

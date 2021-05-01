@@ -110,19 +110,17 @@
         <input type="checkbox" @if($permission['data'][$submodel->table][$field->field]['s'] == 1) checked @endif class="field-secret" data-key="{{$submodel->table}}_{{$field->field}}" id="{{$submodel->table}}_{{$field->field}}_secret" name="data[{{$submodel->table}}][{{$field->field}}][s]" value="1">
     </td>
     <td>
-        @if($field['form_type'] == 'auto' || $field['form_type'] == 'date')
-            <label title="锁定将不允许修改宏控件的值">
-                <input type="checkbox" value="1" @if($permission['data'][$submodel->table][$field->field]['m'] == 1) checked @endif name="data[{{$submodel->table}}][{{$field->field}}][m]"> 锁定
-            </label>
-        @else
         <select multiple data-placeholder="选择验证规则" class="form-control input-sm input-inline input-select2" name="data[{{$submodel->table}}][{{$field->field}}][v][]">
             <option value=""></option>
             @foreach($regulars as $key => $regular)
                 <option @if(in_array($key, (array)$permission['data'][$submodel->table][$field->field]['v'])) selected @endif value="{{$key}}">{{$regular}}</option>
             @endforeach
         </select>
-        @endif
-
+        @if($field['form_type'] == 'auto' || $field['form_type'] == 'date')
+            <label title="锁定将不允许修改宏控件的值">
+                <input type="checkbox" value="1" @if($permission['data'][$submodel->table][$field->field]['m'] == 1) checked @endif name="data[{{$submodel->table}}][{{$field->field}}][m]"> 锁定
+            </label>
+        @else
     </td>
 </tr>
 

@@ -18,7 +18,7 @@ var $ref_approach_data = null;
 var params = JSON.parse('{{json_encode($query)}}');
 (function($) {
     params['master'] = 1;
-    var mGridDiv = document.querySelector("#ref_approach");
+
     var mGrid = new agGridOptions();
     mGrid.remoteDataUrl = '{{url()}}';
 
@@ -59,16 +59,19 @@ var params = JSON.parse('{{json_encode($query)}}');
     };
 
     mGrid.onRowDoubleClicked = function (row) {
-        var ret = gdoo.writeSelected(event, params, option, mGrid);
+        var ret = gdoo.dialogSelected(event, params, option, mGrid);
         if (ret == true) {
             $('#gdoo-dialog-' + params.dialog_index).dialog('close');
         }
     };
 
-    gdoo.dialogs[option.id] = mGrid;
-    new agGrid.Grid(mGridDiv, mGrid);
-    mGrid.remoteData();
     $ref_approach = mGrid;
+    gdoo.dialogs[option.id] = mGrid;
+
+    var mGridDiv = document.querySelector("#ref_approach");
+    new agGrid.Grid(mGridDiv, mGrid);
+
+    mGrid.remoteData();
 
     params['master'] = 0;
     var sGridDiv = document.querySelector("#ref_approach_data");
@@ -101,9 +104,10 @@ var params = JSON.parse('{{json_encode($query)}}');
         }
     };
 
-    new agGrid.Grid(sGridDiv, sGrid);
-    sGrid.remoteData();
     $ref_approach_data = sGrid;
+    new agGrid.Grid(sGridDiv, sGrid);
+
+    sGrid.remoteData();
 
     var data = JSON.parse('{{json_encode($search["forms"])}}');
     var search = $('#dialog-approach-search-form').searchForm({

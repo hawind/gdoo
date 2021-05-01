@@ -9,10 +9,10 @@ class JsonResponse
 {
     public function handle(Request $request, Closure $next)
     {
-        $data = $next($request);
-        if ($data instanceof \Illuminate\Http\JsonResponse) {
-            $data->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        $response = $next($request);
+        if ($response instanceof \Illuminate\Http\JsonResponse) {
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }
-        return $data;
+        return $response;
     }
 }
