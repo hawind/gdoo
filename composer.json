@@ -14,7 +14,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "barryvdh/laravel-ide-helper": "^2.9.0"
+        "barryvdh/laravel-ide-helper": "^2.9.0",
+        "mitloshuk/laravel-cycle-orm": "^0.0.8"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

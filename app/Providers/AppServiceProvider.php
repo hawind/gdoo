@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         
         // 开发环境开启ide辅助插件
         if ($this->app->environment() == 'development') {
-            //$this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
     }
 
