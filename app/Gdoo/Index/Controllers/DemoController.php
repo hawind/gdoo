@@ -6,7 +6,7 @@ use Request;
 
 class DemoController extends Controller
 {
-    #[Attribute(Attribute::TARGET_FUNCTION)]
+    //#[Attribute(Attribute::TARGET_FUNCTION)]
     public function vouch()
     {
         return $this->display();

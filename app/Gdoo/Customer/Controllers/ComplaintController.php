@@ -105,6 +105,11 @@ class ComplaintController extends WorkflowController
         return $this->create();
     }
 
+    public function audit()
+    {
+        return $this->create('audit');
+    }
+
     public function show()
     {
         return $this->create('show');
