@@ -28,6 +28,7 @@ class BillController extends DefaultController
             'table' => 'model_bill',
             'master_table' => 'model_bill',
             'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $header['cols'] = [

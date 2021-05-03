@@ -28,6 +28,7 @@ class ModelController extends DefaultController
             'table' => 'model',
             'master_table' => 'model',
             'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $search = search_form([
@@ -163,7 +164,7 @@ class ModelController extends DefaultController
             $ret['header'] = Grid::getColumns($header);
             return $ret;
         }
-
+        
         return $this->display([
             'header' => $header,
         ]);
