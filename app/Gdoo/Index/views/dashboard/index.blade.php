@@ -291,7 +291,7 @@ a { outline: none; }
 
 <div class="dashboard-footer">
     <div class="box">
-    {{$version}}
+    {{$edition}} {{$version}}
     </div>
 </div>
 
