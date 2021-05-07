@@ -24,7 +24,8 @@ class SmsController extends DefaultController
             'simple_search_form' => 1,
             'table' => 'sms',
             'master_table' => 'sms',
-            'create_btn' => 0,
+            'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $search = search_form([

@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        require_once __DIR__.'/../gdoo.php';
+        require app_path('gdoo.php');
 
         Paginator::defaultView('vendor/pagination/gdoo');
         Event::listen(StatementPrepared::class, function ($event) {

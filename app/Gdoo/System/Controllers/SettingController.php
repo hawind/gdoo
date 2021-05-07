@@ -24,6 +24,7 @@ class SettingController extends DefaultController
             'table' => 'setting',
             'master_table' => 'setting',
             'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $search = search_form([

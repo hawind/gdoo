@@ -22,6 +22,7 @@ class OptionController extends DefaultController
             'table' => 'option',
             'master_table' => 'option',
             'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $search = search_form([

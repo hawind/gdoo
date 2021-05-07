@@ -20,6 +20,7 @@ class MenuController extends DefaultController
             'table' => 'menu',
             'master_table' => 'menu',
             'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $search = search_form([

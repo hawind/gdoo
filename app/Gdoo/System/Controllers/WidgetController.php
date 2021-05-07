@@ -24,7 +24,7 @@ class WidgetController extends DefaultController
             'simple_search_form' => 1,
             'table' => 'widget',
             'master_table' => 'widget',
-            'create_btn' => 1,
+            'create_btn' => 0,
         ];
 
         $search = search_form([

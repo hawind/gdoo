@@ -25,7 +25,8 @@ class MailController extends DefaultController
             'simple_search_form' => 1,
             'table' => 'mail',
             'master_table' => 'mail',
-            'create_btn' => 0,
+            'create_btn' => 1,
+            'access' => $this->access,
         ];
 
         $search = search_form([
