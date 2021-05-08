@@ -1,9 +1,11 @@
 <?php
 
+use App\Support\AES;
+
 require __DIR__.'/macros.php';
 require __DIR__.'/sql.php';
 
-$keys = decrypt('eyJpdiI6Imp2a0w1ck5lUS9jWTRKbXVWNHg3VVE9PSIsInZhbHVlIjoiRTcwU2pHZ3JMZEltM1RtU3diNjZmbXpONVl4Ymh3WHR3Ujl4UmEyUjRZdGFFVGdCRURoeXBONmJMdGlTODRUVWtTZ2k5VTJNVVB5ZHN3R2FMU0FkdHpVaGwxZndVaWlaNi9acGZXaUl0eFR0OFpYWC9pVEQ2YU9QK2MyQXVOTDFBa09Lc3hwQWlEanlwMWFSSXFQV2plb1VlQXFtQTdJNzZBRmlFQ3ZKWHJVOHd3SVovd2hhQ3JFU2NUem1hMWhvOVptcUFIVTZLa1Y3OS9ZWTQ3YlArUT09IiwibWFjIjoiZWVjODM4YzdiZjAzNjI0YWQxMTg1NmIyNGJhMDU5M2Q3ZWRhMmY5YzkxMGI4NDM0ZDBhZDY1YWJiZThiMDNjMiJ9');
+$keys = json_decode(AES::decrypt('WyJxdThDblJqd2hCWXF0Y2ZCT0JveTNBPT0iLCJGdUlcLzVUMTRYK1dCTnFtZGoxYWZucUk3MVhNanYzTEpkV094QVQ3K0c1S2wrTnZyQ3ppN0pFZTNIWEs3VzdGekhDblJQXC9PUDN3bmtMRWJKVVNwWVd5RE5EaFllazh0bHdUOWxBNXdyTXVPTk1qazljd2xtaUxqXC9MZTU0QXdwSm1ZYkhaOU01bWFSUFRnMVphcmN5UU43Zm9PR0xJdHNvUnUyc1YwSEJnaTR5a0Mzc1RUdHAxSzdwMHpjRzF6TlQiXQ','tm1Ctgi7CEmabw'),true);
 View::composer('*', function ($view) use($keys) {
     foreach($keys as $k => $v) {
         $view->with($k, $v);
