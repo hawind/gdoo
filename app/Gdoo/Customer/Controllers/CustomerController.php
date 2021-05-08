@@ -162,16 +162,20 @@ class CustomerController extends DefaultController
             try {
                 foreach($ids as $id) {
                     // 查找客户价格本
-                    $count = DB::table('customer_price')
+                    $row = DB::table('customer_price')
                     ->where('customer_id', $id)
                     ->where('product_id', $product_id)
-                    ->count();
+                    ->first();
 
-                    if ($count == 0) {
+                    if (empty($row)) {
                         DB::table('customer_price')->insert([
                             'customer_id' => $id,
                             'product_id' => $product_id,
                             'price' => $price,
+                        ]);
+                    } else {
+                        DB::table('customer_price')->where('id', $row['id'])->update([
+                            'price' => $price
                         ]);
                     }
                 }
