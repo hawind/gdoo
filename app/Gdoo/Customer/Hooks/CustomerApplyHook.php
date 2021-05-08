@@ -5,6 +5,7 @@ use Gdoo\User\Models\User;
 use Gdoo\Customer\Models\CustomerApply;
 use Gdoo\Customer\Models\Customer;
 use Gdoo\Customer\Models\CustomerTax;
+use Gdoo\User\Services\UserService;
 
 class CustomerApplyHook
 {
@@ -27,8 +28,12 @@ class CustomerApplyHook
 
     public function onBeforeAudit($params) {
         $id = $params['id'];
-        $apply = DB::table('customer_apply')->where('id', $id)
+
+        $apply = DB::table('customer_apply')
+        ->where('id', $id)
         ->selectRaw('
+            code,
+            name,
             type_id,
             department_id,
             remark,
@@ -39,7 +44,7 @@ class CustomerApplyHook
             city_id,
             county_id,
             address,
-            name,
+            status,
             warehouse_address,
             warehouse_contact,
             warehouse_phone,
@@ -60,37 +65,32 @@ class CustomerApplyHook
             bank_address
         ')->first();
 
+        // 新建用户
+        $_user = [
+            'role_id' => 2,
+            'group_id' => 2,
+            'username' => $apply['code'],
+            'name' => $apply['name'],
+            'department_id' => $apply['department_id'],
+            'phone' => $apply['head_phone'],
+            'password' => '123456',
+            'status' => 1,
+        ];
+        $user = UserService::updateData(0, $_user);
+        $apply['user_id'] = $user->id;
+
         // 新建客户
         $customer = new Customer;
         $customer->fill($apply);
         $customer->save();
 
-        // 新建用户
-        $_user = [
-            'role_id' => 2,
-            'group_id' => 2,
-            'username' => $customer['id'],
-            'name' => $customer['name'],
-            'department_id' => $customer['department_id'],
-            'phone' => $customer['head_phone'],
-            'password' => bcrypt('123456'),
-            'status' => 1,
-        ];
-        $user = new User;
-        $user->fill($_user)->save();
-        $customer['user_id'] = $user->id;
-
-        // 重新更新客户数据
-        $customer->code = $customer['id'];
-        $customer->save();
-
-        // 自动新建开票单位
+        // 新建开票单位
         CustomerTax::insert([
+            'code' => $customer->code,
+            'name' => $customer->name,
             'customer_id' => $customer->id,
             'class_id' => $customer->class_id,
             'department_id' => $customer->department_id,
-            'code' => $customer->code,
-            'name' => $customer->name,
             'bank_name' => $apply['bank_name'],
             'tax_number' => $apply['tax_number'],
             'bank_account' => $apply['bank_account'],
@@ -98,18 +98,11 @@ class CustomerApplyHook
             'status' => 1,
         ]);
 
-        // 回写申请的客户编码
-        $_apply = CustomerApply::find($id);
-        $_apply->code = $customer['code'];
-        $_apply->save();
-
-        // 客户档案写入外部接口
+        // 客户档案同步外部接口
         $department = DB::table('department')->where('id', $customer['department_id'])->first();
         $class = DB::table('customer_class')->where('id', $customer['class_id'])->first();
         $customer['class_code'] = $class['code'];
         $customer['department_code'] = $department['code'];
-        $customer['headCode'] = $customer['code'];
-
         $ret = plugin_sync_api('postCustomer', $customer);
         if ($ret['error_code'] > 0) {
             abort_error($ret['msg']);

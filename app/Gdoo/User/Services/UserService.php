@@ -14,6 +14,37 @@ use Gdoo\System\Models\SystemLog;
 
 class UserService
 {
+    /**
+     * 写入或者更新用户
+     */
+    public static function updateData($user_id, $data)
+    {
+        $user = User::findOrNew($user_id);
+
+        // 密码处理
+        $password = '';
+        if ($user->exists) {
+            if (not_empty($data['password'])) {
+                $password = $data['password'];
+            }
+        } else {
+            if (empty($data['password'])) {
+                $password = '123456';
+            } else {
+                $password = $data['password'];
+            }
+        }
+        if ($password) {
+            $user->password = bcrypt($password);
+            $user->password_text = $password;
+        }
+        unset($data['password']);
+
+        $user->fill($data)->save();
+        
+        return $user;
+    }
+
     public static function getUser($user_id = 0) {
         $user = null;
         if ($user_id == 0) {

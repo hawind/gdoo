@@ -69,13 +69,13 @@
 
         <div v-if="header.bys.items.length" class="btn-group btn-l-line" role="group">
             <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="fa fa-filter"></span> {{header.by_title}}
+                <span class="fa fa-filter"></span> {{header.bys.name}}
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
                 <template v-for="item in header.bys.items">
                     <li v-if="item.value == 'divider'" class="divider"></li>
-                    <li v-else :class="item.value == header.bys.value ? 'active' : ''"><a @click="byBtn(item)">{{item.name}}</a></li>
+                    <li v-else :class="item.value == header.bys.active ? 'active' : ''"><a @click="byBtn(item)">{{item.name}}</a></li>
                 </template>
             </ul>
         </div>
@@ -146,7 +146,8 @@ export default defineComponent({
             }
         }
         let byBtn = (btn) => {
-            props.header.by_title = btn.name;
+            props.header.bys.name = btn.name;
+            props.header.bys.active = btn.value;
             props.grid.remoteData({page:1, by:btn.value});
         }
         /*

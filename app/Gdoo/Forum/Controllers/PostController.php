@@ -7,9 +7,12 @@ use Request;
 use Gdoo\Forum\Models\Forum;
 use Gdoo\Forum\Models\ForumPost;
 use Gdoo\Index\Controllers\DefaultController;
+use Gdoo\Index\Services\AttachmentService;
 
 class PostController extends DefaultController
 {
+    public $permission = ['forum', 'comment'];
+
     // 板块列表
     public function index()
     {
@@ -105,37 +108,37 @@ class PostController extends DefaultController
         $row['forum_id'] = empty($row['forum_id']) ? $forum_id : $row['forum_id'];
 
         // 更新数据
-        if ($post = $this->post()) {
-            if (empty($post['title'])) {
+        if (Request::method() == 'POST') {
+            $gets = Request::all();
+            if (empty($gets['title'])) {
                 return $this->error('主题必须填写。');
             }
 
-            if (empty($post['content'])) {
+            if (empty($gets['content'])) {
                 return $this->error('正文必须填写。');
             }
 
-            $post['content'] = $_POST['content'];
-            $post['attachment'] = join(',', (array)$post['attachment']);
+            $gets['content'] = $_POST['content'];
+            $gets['attachment'] = join(',', (array)$gets['attachment']);
 
             // 更新数据库
-            if ($post['id'] > 0) {
-                DB::table('forum_post')->where('id', $post['id'])->update($post);
+            if ($gets['id'] > 0) {
+                DB::table('forum_post')->where('id', $gets['id'])->update($gets);
             } else {
-                $post['add_time'] = time();
-                $post['add_user_id'] = Auth::id();
-                $post['id'] = DB::table('forum_post')->insertGetId($post);
+                $gets['add_time'] = time();
+                $gets['add_user_id'] = Auth::id();
+                $gets['id'] = DB::table('forum_post')->insertGetId($gets);
             }
 
             // 设置附件为已经使用
-            attachment_store('forum_attachment', $_POST['attachment']);
+            AttachmentService::publish($_POST['attachment']);
 
-            return $this->success('view', ['id' => $post['id']], '帖子发表成功。');
+            return $this->success('view', ['id' => $gets['id']], '帖子发表成功。');
         }
 
-        $attachList = attachment_edit('forum_attachment', $row['attachment'], 'forum');
-
+        $attachment = AttachmentService::edit($row['attachment'], 'forum', 'attachment', 'forum');
         return $this->display([
-            'attachList' => $attachList,
+            'attachment' => $attachment,
             'row' => $row,
         ]);
     }
@@ -146,33 +149,32 @@ class PostController extends DefaultController
         $parent_id = Request::get('parent_id');
 
         // 更新数据
-        if ($post = $this->post()) {
-            if (empty($post['content'])) {
+        if (Request::method() == 'POST') {
+            $gets = Request::all();
+            if (empty($gets['content'])) {
                 return $this->error('正文必须填写。');
             }
 
-            $post['content'] = $_POST['content'];
-            $post['attachment'] = join(',', (array)$post['attachment']);
+            $gets['content'] = $_POST['content'];
+            $gets['attachment'] = join(',', (array)$gets['attachment']);
 
             // 更新数据库
-            if ($post['id']) {
-                DB::table('forum_post')->where('id', $post['id'])->update($post);
+            if ($gets['id']) {
+                DB::table('forum_post')->where('id', $gets['id'])->update($gets);
             } else {
-                $post['add_time'] = time();
-                $post['add_user_id'] = Auth::id();
-                DB::table('forum_post')->insert($post);
+                $gets['add_time'] = time();
+                $gets['add_user_id'] = Auth::id();
+                DB::table('forum_post')->insert($gets);
             }
-
             // 设置附件为已经使用
-            attachment_store('forum_attachment', $_POST['attachment']);
-            return $this->success('view', ['id' => $post['parent_id']], '帖子回复保存成功。');
+            AttachmentService::publish($_POST['attachment']);
+            return $this->success('view', ['id' => $gets['parent_id']], '帖子回复保存成功。');
         }
 
         $row = DB::table('forum_post')->where('id', $id)->first();
-        $attachList = attachment_edit('forum_attachment', $row['attachment'], 'forum');
-
+        $attachment = AttachmentService::edit($row['attachment'], 'forum', 'attachment', 'forum');
         return $this->display([
-            'attachList' => $attachList,
+            'attachment' => $attachment,
             'row' => $row,
         ]);
     }
@@ -188,7 +190,7 @@ class PostController extends DefaultController
         $rows = ForumPost::where('parent_id', $id)->get();
         if ($rows->count()) {
             foreach ($rows as $key => $row) {
-                $row->attach = attachment_get('forum_attachment', $row['attachment']);
+                $row->attachment = AttachmentService::show($row['attachment']);
                 $rows->put($key, $row);
             }
         }
@@ -200,12 +202,11 @@ class PostController extends DefaultController
         // 更新点击率
         $post->increment('hit');
 
-        $attachList = attachment_view('forum_attachment', $post['attachment']);
-        $attachment = attachment_edit('forum_attachment', '', 'forum');
-
+        $attachment = AttachmentService::edit($post['attachment'], 'forum', 'attachment', 'forum');
+        $attachment_comment = AttachmentService::edit('', 'forum', 'attachment', 'forum');
         return $this->display([
-            'attachList' => $attachList,
             'attachment' => $attachment,
+            'attachment_comment' => $attachment_comment,
             'post' => $post,
             'rows' => $rows,
         ]);
@@ -222,7 +223,7 @@ class PostController extends DefaultController
         }
 
         // 删除帖子附件
-        attachment_delete('forum_attachment', $post['attachment']);
+        AttachmentService::remove($post['attachment']);
 
         // 删除帖子
         $post->delete();
@@ -234,7 +235,7 @@ class PostController extends DefaultController
             if ($rows->count()) {
                 foreach ($rows as $row) {
                     $row->delete();
-                    attachment_delete('forum_attachment', $row['attachment']);
+                    AttachmentService::remove($row['attachment']);
                 }
             }
             return $this->success('forum', ['id' => $post->forum_id], '帖子删除成功。');

@@ -4,6 +4,7 @@ use DB;
 use Gdoo\User\Models\User;
 use Gdoo\Customer\Models\Customer;
 use Gdoo\Customer\Models\CustomerTax;
+use Gdoo\User\Services\UserService;
 
 class CustomerHook
 {
@@ -18,28 +19,20 @@ class CustomerHook
     public function onBeforeStore($params) 
     {
         $master = $params['master'];
-
+        
         $_user = [
             'role_id' => 2,
             'group_id' => 2,
-            'username' => $master['code'],
             'name' => $master['name'],
+            'username' => $master['code'],
+            'password' => $master['password'],
             'department_id' => $master['department_id'],
             'phone' => $master['head_phone'],
             'status' => $master['status'],
         ];
-
-        // 更新用户表
-        $user = User::findOrNew($master['user_id']);
-        // 密码处理
-        if (empty($master['password'])) {
-            unset($master['password']);
-        } else {
-            $user['password'] = bcrypt($master['password']);
-            $master['password'] = $user['password'];
-        }
-        $user->fill($_user)->save();
+        $user = UserService::updateData($master['user_id'], $_user);
         $master['user_id'] = $user->id;
+
         $params['master'] = $master;
 
         return $params;
@@ -47,39 +40,29 @@ class CustomerHook
 
     public function onAfterStore($params) {
         $master = $params['master'];
-        if (empty($master['code'])) {
-            // 自动设置客户编码
-            $customer = Customer::find($master['id']);
-            $customer->code = $customer['id'];
-            $customer->save();
-
-            // 自动设置用户名
-            $user = User::find($customer['user_id']);
-            $user->username = $customer['id'];
-            $user->save();
-
+        // 客户开票单位为空
+        $count = CustomerTax::where('customer_id', $master['id'])->count();
+        if ($count == 0) {
             // 自动新建开票单位
             CustomerTax::insert([
-                'customer_id' => $customer->id,
-                'class_id' => $customer->class_id,
-                'department_id' => $customer->department_id,
-                'code' => $customer->code,
-                'name' => $customer->name,
+                'code' => $master['code'],
+                'name' => $master['name'],
+                'customer_id' => $master['id'],
+                'class_id' => $master['class_id'],
+                'department_id' => $master['department_id'],
                 'status' => 1,
             ]);
-
-            // 客户档案写入外部接口
-            $department = DB::table('department')->where('id', $master['department_id'])->first();
-            $class = DB::table('customer_class')->where('id', $customer['class_id'])->first();
-            $customer['class_code'] = $class['code'];
-            $customer['department_code'] = $department['code'];
-            $customer['headCode'] = $customer->code;
-            $ret = plugin_sync_api('CustomerSync', $customer);
-            if ($ret['success'] == true) {
-                return $params;
-            } 
-            abort_error($ret['msg']);
         }
+
+        // 客户档案同步外部接口
+        $department = DB::table('department')->where('id', $master['department_id'])->first();
+        $class = DB::table('customer_class')->where('id', $master['class_id'])->first();
+        $master['class_code'] = $class['code'];
+        $master['department_code'] = $department['code'];
+        $ret = plugin_sync_api('postCustomer', $master);
+        if ($ret['error_code'] > 0) {
+            abort_error($ret['msg']);
+        } 
         return $params;
     }
 

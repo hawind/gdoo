@@ -31,6 +31,8 @@ Vue.createApp({
 
         var setup = config.setup;
 
+        console.log(setup);
+
         Vue.onMounted(function() {
             var gridDiv = config.div(136);
             // 初始化数据

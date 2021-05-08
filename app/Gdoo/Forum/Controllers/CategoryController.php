@@ -4,14 +4,16 @@ use DB;
 use Request;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Symfony\Component\Console\Input\Input;
 
 class CategoryController extends DefaultController
 {
     public function index()
     {
         // 更新排序
-        if ($post = $this->post('sort')) {
-            foreach ($post as $k => $v) {
+        if (Request::method() == 'POST') {
+            $gets = Request::all();
+            foreach ($gets as $k => $v) {
                 $data['sort'] = $v;
                 DB::table('forum')->where('id', $k)->update($data);
             }
@@ -33,23 +35,21 @@ class CategoryController extends DefaultController
     {
         $id = (int)Request::get('id');
 
-        if ($post = $this->post()) {
-            if (empty($post['name'])) {
+        if (Request::method() == 'POST') {
+            $gets = Request::all();
+            if (empty($gets['name'])) {
                 return $this->error('类别名称必须填写。');
             }
+            unset($gets['past_parent_id']);
 
-            unset($post['past_parent_id']);
-
-            if ($post['id'] > 0) {
-                DB::table('forum')->where('id', $post['id'])->update($post);
+            if ($gets['id'] > 0) {
+                DB::table('forum')->where('id', $gets['id'])->update($gets);
             } else {
-                DB::table('forum')->insert($post);
+                DB::table('forum')->insert($gets);
             }
             return $this->success('index', '类别更新成功。');
         }
-
         $row = DB::table('forum')->where('id', $id)->first();
-
         return $this->display(array(
             'row' => $row,
         ));

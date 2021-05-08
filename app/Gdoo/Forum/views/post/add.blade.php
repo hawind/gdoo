@@ -9,7 +9,7 @@
             </div>
 
             <div class="form-group">
-                @include('attachment/add')
+                @include('attachment/create')
             </div>
 
             <div class="form-group">

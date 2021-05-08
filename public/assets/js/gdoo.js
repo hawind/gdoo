@@ -225,8 +225,7 @@
             buttons: [],
             tabs: {items:[], active:''},
             search_form:{columns:[]},
-            by_title: '全部',
-            bys: {items:[]}
+            bys: {name:'全部',items:[]}
         });
 
         this.search = {
@@ -321,6 +320,18 @@
                 // bys
                 if (header.bys) {
                     me.header.bys = header.bys;
+                    if (search_form.params['by']) {
+                        me.header.bys.active = search_form.params['by'];
+                        for (let i = 0; i < header.bys.items.length; i++) {
+                            const item = header.bys.items[i];
+                            if (item.value == search_form.params['by']) {
+                                me.header.bys.name = item.name;
+                            }
+                        }
+                    } else {
+                        me.header.bys.active = header.bys.items[0].value;
+                        me.header.bys.name = header.bys.items[0].name;
+                    }
                 }
 
                 // tabs

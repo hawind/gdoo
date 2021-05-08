@@ -29,10 +29,9 @@
 
         <div class="wrapper-xs padder">
             {{$post->content}}
-
-            @if($attachList['view'])
+            @if($attachment['rows'])
                 <div class="b-a b-light wrapper-sm">
-                    @include('attachment/view')
+                    @include('attachment/show')
                 </div>
             @endif
 
@@ -69,12 +68,13 @@
 
             {{$row->content}}
 
-            @if($row['attach'])
+            @if($row['attachment'])
+            {{'';$attachment = $row['attachment']}}
             <div class="b-a b-light wrapper-sm">
-                {{'';$attachList['view'] = $row['attach']}}
-                @include('attachment/view')
+                @include('attachment/show')
             </div>
             @endif
+
         </div>
         @endforeach
     </div>
@@ -91,8 +91,8 @@
         <form method="post" action="{{url('comment')}}" id="myform" name="myform">
 
             <div class="form-group">
-                {{'';$attachList = $attachment}}
-                @include('attachment/add')
+                {{'';$attachment = $attachment_comment}}
+                @include('attachment/create')
             </div>
 
             <div class="form-group">
