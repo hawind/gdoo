@@ -26,7 +26,8 @@ class CustomerApplyHook
         return $params;
     }
 
-    public function onBeforeAudit($params) {
+    public function onBeforeAudit($params) 
+    {
         $id = $params['id'];
 
         $apply = DB::table('customer_apply')
@@ -98,7 +99,7 @@ class CustomerApplyHook
             'status' => 1,
         ]);
 
-        // 客户档案同步外部接口
+        // 客户档案同步接口
         $department = DB::table('department')->where('id', $customer['department_id'])->first();
         $class = DB::table('customer_class')->where('id', $customer['class_id'])->first();
         $customer['class_code'] = $class['code'];
@@ -106,7 +107,7 @@ class CustomerApplyHook
         $ret = plugin_sync_api('postCustomer', $customer);
         if ($ret['error_code'] > 0) {
             abort_error($ret['msg']);
-        } 
+        }
         return $params;
     }
 

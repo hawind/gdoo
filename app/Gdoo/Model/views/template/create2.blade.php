@@ -75,7 +75,7 @@
                         <div class="form-group">
                             <label for="set_col">
                             <span class="red">*</span> 编码
-                            <a class="hinted" href="javascript:;" title="视图前缀:{{$master_model['table']}}_"><i class="fa fa-question-circle"></i></a>
+                            <a class="hinted" href="javascript:;" title="视图前缀:{{$model['table']}}_"><i class="fa fa-question-circle"></i></a>
                             </label>
                             <div class="form-text">
                                 <input type="text" id="code" name="code" value="{{$template['code']}}" class="form-control input-sm">

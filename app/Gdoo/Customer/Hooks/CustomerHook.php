@@ -38,8 +38,10 @@ class CustomerHook
         return $params;
     }
 
-    public function onAfterStore($params) {
+    public function onAfterStore($params) 
+    {
         $master = $params['master'];
+
         // 客户开票单位为空
         $count = CustomerTax::where('customer_id', $master['id'])->count();
         if ($count == 0) {
@@ -62,7 +64,7 @@ class CustomerHook
         $ret = plugin_sync_api('postCustomer', $master);
         if ($ret['error_code'] > 0) {
             abort_error($ret['msg']);
-        } 
+        }
         return $params;
     }
 
