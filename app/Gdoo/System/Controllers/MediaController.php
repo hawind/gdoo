@@ -50,7 +50,7 @@ class MediaController extends DefaultController
 
                 if (in_array($mimeType, $fileTypes)) {
                     $path = pathinfo($path.'/'.$filename);
-                    $thumb = $path['dirname'].'/'.thumb($upload_path.'/'.$filename, 750);
+                    $thumb = $path['dirname'].'/'. image_thumb($upload_path.'/'.$filename, 750);
                     $data['thumb'] = $thumb;
                 }
 
@@ -89,7 +89,7 @@ class MediaController extends DefaultController
                     $path = pathinfo($file);
                     $thumb = $path['dirname'].'/t750_'.$path['basename'];
                     if (!is_file(upload_path().'/'.$thumb)) {
-                        thumb(upload_path().'/'.$file, 750);
+                        image_thumb(upload_path().'/'.$file, 750);
                     }
                     $row['path'] = $file;
                     $row['thumb'] = $thumb;
