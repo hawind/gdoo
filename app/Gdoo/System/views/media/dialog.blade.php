@@ -123,7 +123,7 @@
 </style>
 
 @verbatim
-<div id="vue-app">
+<div id="file-browser">
     <div class="media-controller">
         <div class="media-tool">
             <div class="pull-right">
@@ -134,7 +134,7 @@
                 <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i> 删除文件</button>
                 -->
             </div>
-            <a @click="folder" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> 添加文件夹</a>
+            <a @click="folder(0)" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> 添加文件夹</a>
             <div class="clearfix"></div>
         </div>
         <div id="media-navigator">
@@ -146,9 +146,7 @@
                 </li>
                 <li v-bind:class="{active:folderId == item.id}" v-for="(item, index) in folders" :key="item.id">
                     <span class="pull-right folder-tool">
-                        <!--
-                        <a class="hinted" title="修改"><i class="fa fa-pencil"></i></a>
-                        -->
+                        <a @click="folder(item.id)" class="hinted" title="修改"><i class="fa fa-pencil"></i></a>
                         <a @click="onDelete(index, 1)" class="hinted" title="删除"><i class="fa fa-times"></i></a>
                     </span>
                     <a @click="onFolder(item.id)" class="node"><i class="fa fa-folder-o"></i> {{item.name}}</a>
@@ -231,22 +229,27 @@ var vueApp = Vue.createApp({
         download: function(id) {
             return app.url('system/media/download', {id: id});
         },
-        folder: function() {
+        folder: function(id) {
             let me = this;
             $.dialog({
-                title: '文件夹管理',
-                url: app.url('system/media/folder'),
-                dialogClass: 'modal-md',
+                title: '文件夹',
+                url: app.url('system/media/folder', {id: id}),
+                dialogClass: 'modal-sm',
                 buttons: [{
-                    text: '提交',
-                    'class': 'btn-success',
+                    text: '保存',
+                    'class': 'btn-info',
                     click: function() {
                         let modal = this;
                         let form = $('#myfolder').serialize();
                         axios.post(app.url('system/media/folder'), form)
                         .then(function(response) {
-                            me.getMedia(1, 0);
-                            $(modal).dialog('close');
+                            let res = response.data;
+                            if (res.status) {
+                                me.getMedia(1, 0);
+                                $(modal).dialog('close');
+                            } else {
+                                toastrError(res.data);
+                            }
                         }).catch(function(error) {
                             console.log(error);
                         });
@@ -282,11 +285,17 @@ var vueApp = Vue.createApp({
                 if (btn == true) {
                     axios.post(app.url('system/media/delete'), {
                         id: [id],
+                        folder: folder,
                     }).then(function(response) {
-                        if (folder) {
-                            me.folders.splice(index, 1);
+                        let res = response.data;
+                        if (res.status) {
+                            if (folder) {
+                                me.folders.splice(index, 1);
+                            } else {
+                                me.files.splice(index, 1);
+                            }
                         } else {
-                            me.files.splice(index, 1);
+                            toastrError(res.data);
                         }
                     }).catch(function(error) {
                         console.log(error);
@@ -313,8 +322,11 @@ var vueApp = Vue.createApp({
                     },
                 }).then(function(response) {
                     let res = response.data;
-                    me.files.unshift(res.data);
-                    console.log(res.data);
+                    if (res.status) {
+                        me.files.unshift(res.data);
+                    } else {
+                        toastrError(res.data);
+                    }
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -323,7 +335,7 @@ var vueApp = Vue.createApp({
         }
     }
 });
-var vm = vueApp.mount('#vue-app');
+var vm = vueApp.mount('#file-browser');
 
 function saveMedia(params) {
     var files =[];
@@ -341,12 +353,12 @@ function saveMedia(params) {
         if (params['multi'] == 0) {
             let file = files[0];
             var name = params['name'];
-            media.append('<div class="media-item"><input type="hidden" value="' + file.path + '" name="' + name + '" /><img class="img-responsive img-thumbnail" src="'+ app.url('uploads/' + file.path) +'" /><a class="close" title="删除这张图片" data-toggle="media-delete">×</a></div>');
+            media.append('<div class="media-item"><input type="hidden" value="' + file.path + '" name="' + name + '" /><img class="img-responsive img-thumbnail" src="'+ app.url('uploads/' + file.thumb) +'" /><a class="close" title="删除这张图片" data-toggle="media-delete">×</a></div>');
         } else {
             var name = params['name'] + '[]';
             for (var i = 0; i < files.length; i++) {
                 let file = files[i];
-                media.append('<div class="media-item"><input type="hidden" value="' + file.path + '" name="' + name + '" /><img class="img-responsive img-thumbnail" src="'+ app.url('uploads/' + file.path) +'" /><a class="close" title="删除这张图片" data-toggle="media-delete">×</a></div>');
+                media.append('<div class="media-item"><input type="hidden" value="' + file.path + '" name="' + name + '" /><img class="img-responsive img-thumbnail" src="'+ app.url('uploads/' + file.thumb) +'" /><a class="close" title="删除这张图片" data-toggle="media-delete">×</a></div>');
             }
         }
     }

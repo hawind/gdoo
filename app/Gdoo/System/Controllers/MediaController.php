@@ -26,7 +26,8 @@ class MediaController extends DefaultController
         if ($file->isValid() && $v->passes()) {
             // 获取上传uri第一个目录
             $path = 'media/'.date('Y/m');
-            $upload_path = upload_path().'/'.$path;
+            $upload_path = upload_path();
+            $file_path = $upload_path.'/'.$path;
             
             // 文件后缀名
             $extension = $file->getClientOriginalExtension();
@@ -39,7 +40,7 @@ class MediaController extends DefaultController
             $mimeType = $file->getMimeType();
             $filesize = $file->getSize();
 
-            if ($file->move($upload_path, $filename)) {
+            if ($file->move($file_path, $filename)) {
                 $data = [
                     'name' => mb_strtolower($file->getClientOriginalName()),
                     'path' => $path.'/'.$filename,
@@ -49,9 +50,13 @@ class MediaController extends DefaultController
                 ];
 
                 if (in_array($mimeType, $fileTypes)) {
-                    $path = pathinfo($path.'/'.$filename);
-                    $thumb = $path['dirname'].'/'. image_thumb($upload_path.'/'.$filename, 750);
-                    $data['thumb'] = $thumb;
+                    // 生成缩略图，图片小于750px就不生成了
+                    $thumb = $path. '/thumb_' . $filename;
+                    if (image_thumb($file_path.'/'.$filename, $upload_path.'/'.$thumb, 750)) {
+                        $data['thumb'] = $thumb;
+                    } else {
+                        $data['thumb'] = $path.'/'.$filename;
+                    }
                 }
 
                 $id = Media::insertGetId($data);
@@ -85,17 +90,11 @@ class MediaController extends DefaultController
             $rows = $model->orderBy('id', 'desc')->get()->toArray();
             foreach($rows as &$row) {
                 if (in_array($row['type'], ['png', 'jpg', 'jpeg'])) {
-                    $file = $row['path'];
-                    $path = pathinfo($file);
-                    $thumb = $path['dirname'].'/t750_'.$path['basename'];
-                    if (!is_file(upload_path().'/'.$thumb)) {
-                        image_thumb(upload_path().'/'.$file, 750);
+                    if (empty($row['thumb'])) {
+                        $row['thumb'] = $row['path'];
                     }
-                    $row['path'] = $file;
-                    $row['thumb'] = $thumb;
                 }
             }
-
             return $this->json($rows, true);
         }
         return $this->render();
@@ -106,13 +105,19 @@ class MediaController extends DefaultController
      */
     public function folder()
     {
+        $gets = Request::all();
         if (Request::method() == 'POST') {
-            $gets = Request::all();
-            $gets['folder'] = 1;
-            Media::insertGetId($gets);
+            if (empty($gets['name'])) {
+                return $this->json('名称不能为空。');
+            }
+            $model = Media::findOrNew($gets['id']);
+            $model->folder = 1;
+            $model->name = $gets['name'];
+            $model->save();
             return $this->json('操作成功', true);
         }
-        return $this->render();
+        $folder = Media::where('id', $gets['id'])->first();
+        return $this->render(['folder' => $folder]);
     }
 
     /**
@@ -134,18 +139,37 @@ class MediaController extends DefaultController
     public function delete()
     {
         $id = (array)Request::get('id');
+        $folder = Request::get('folder');
+
         if (empty($id)) {
-            return $this->json('删除失败');
+            return $this->json('删除失败。');
+        }
+
+        // 判断删除的文件夹是否有文件
+        if ($folder) {
+            $count = Media::whereIn('folder_id', $id)->count();
+            if ($count) {
+                return $this->json('文件夹不为空，删除失败。');
+            }
         }
         
         $rows = Media::whereIn('id', $id)->get();
         foreach ($rows as $row) {
+            // 删除原文件
             $file = upload_path().'/'.$row['path'];
             if (is_file($file)) {
                 unlink($file);
             }
+            // 删除缩略图
+            if ($row['thumb']) {
+                $thumb = upload_path().'/'.$row['thumb'];
+                if (is_file($thumb)) {
+                    unlink($thumb);
+                }
+            }
         }
         Media::whereIn('id', $id)->delete();
-        return $this->json('删除成功', true);
+
+        return $this->json('删除成功。', true);
     }
 }

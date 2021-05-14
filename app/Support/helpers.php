@@ -507,12 +507,10 @@ function authorise($action = null, $asset_name = null)
 /**
  * 生成缩略图
  */
-function image_thumb($file, $width = 750)
+function image_thumb($file, $thumb_file, $width = 750)
 {
-    $info = pathinfo($file);
-    $thumb = $info['dirname'] . '/t' . $width . '_' . $info['basename'];
-    if (is_file($thumb)) {
-        return 't' . $width . '_' . $info['basename'];
+    if (is_file($thumb_file)) {
+        return true;
     }
 
     if (is_file($file)) {
@@ -522,7 +520,6 @@ function image_thumb($file, $width = 750)
         $type = $temp[2];
 
         if ($srcw > $width) {
-            // 1=gif 2=jpg 3=png
             switch ($type) {
                 case 1:
                 $image = imagecreatefromgif($file);
@@ -555,21 +552,21 @@ function image_thumb($file, $width = 750)
 
             switch ($type) {
                 case 1:
-                imagegif($dest, $thumb);
+                imagegif($dest, $thumb_file);
                 break;
                 case 2:
-                imagejpeg($dest, $thumb, 75);
+                imagejpeg($dest, $thumb_file, 75);
                 break;
                 case 3:
-                imagepng($dest, $thumb);
+                imagepng($dest, $thumb_file);
                 break;
             }
             if ($image) {
                 imagedestroy($image);
             }
-            return 't' . $width . '_' . $info['basename'];
+            return true;
         }
-        return $info['basename'];
+        return false;
     }
 }
 

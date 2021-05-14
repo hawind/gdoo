@@ -2033,7 +2033,7 @@ class Form
                         $value = join(",", $value);
                         break;
                     case 'images':
-                        $value = join("\n", (array)$value);
+                        $value = join(",", (array)$value);
                         break;
                     case 'date':
                         if ($setting['save'] == 'u') {

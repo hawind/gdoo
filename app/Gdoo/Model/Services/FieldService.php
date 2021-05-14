@@ -1461,7 +1461,7 @@ class FieldService
                     <input type="hidden" value="" name="' .$name. '[]" />
                     </div>';
             } else {
-                $srcs = explode("\n", $content);
+                $srcs = explode(",", $content);
                 foreach($srcs as $src) {
                     $items .= '<div class="media-item">
                     <img class="img-responsive img-thumbnail" src="'.url('uploads/'.$src).'" />
