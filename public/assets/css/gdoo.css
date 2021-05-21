@@ -1734,28 +1734,50 @@ select.input-sm, select.form-group-sm .form-control {
 .media-controller {
     padding: 0;
 }
-
 .media-input {
     margin-top: 5px;
 }
-.media-controller .media-item {
+.media-item {
     position: relative;
-    /*
-    width: 150px;
-    */
     float: left;
-    margin-right: 25px;
+    margin-right: 10px;
+    cursor: pointer;
 }
-.media-controller .media-item img {
-    height: 92px;
+.media-item:last-child {
+    margin-right: 0;
+}
+.media-item img {
+    height: 108px;
     max-width: 100%;
 }
-.media-controller .media-item .close {
+.media-item .close {
     position: absolute;
-    top: 0px;
-    right: -14px;
-    font-style: italic;
-    font-weight: normal;
+    top: -8px;
+    right: -8px;
+    border-radius: 50%;
+    z-index: 999;
+    opacity: 1;
+    width: 22px;
+    height: 22px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+.media-item .close:hover {
+    background-color: #ff0000;
+    border: 1px solid #ff0000;
+}
+.media-item .close::before {
+    font-weight: 400;
+    font-size: 18px;
+    content: '×';
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    color: #999;
+}
+.media-item .close:hover::before {
+    color: #fff;
 }
 
 .layui-layer-gdoo .layui-layer-title {

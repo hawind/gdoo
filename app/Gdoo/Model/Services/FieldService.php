@@ -1466,7 +1466,7 @@ class FieldService
                     $items .= '<div class="media-item">
                     <img class="img-responsive img-thumbnail" src="'.url('uploads/'.$src).'" />
                     <input type="hidden" value="' .$src. '" name="' .$name. '[]" />
-                    <a class="close" title="删除这张图片" data-toggle="media-delete">×</a>
+                    <a class="close" title="删除这张图片" data-toggle="media-delete"></a>
                     </div>';
                 }
             }
