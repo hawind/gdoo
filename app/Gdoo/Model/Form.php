@@ -2138,25 +2138,6 @@ class Form
 
             if ($terminate == true) {
 
-                // 更新表单的流程意见
-                $step_remark = $gets['step_remark'];
-                if (not_empty($step_remark)) {
-                    foreach ($step_remark as $step_id => $remark) {
-
-                        // 审核操作无审核意见
-                        if ($remark == '') {
-                            $remark = $gets['step_next_type'] == 'back' ? '退回' : '同意';
-                        }
-
-                        RunStep::where('run_id', $run_id)->where('step_id', $step_id)->update([
-                            'run_remark' => $remark,
-                            'run_updated_id' => $auth['id'],
-                            'run_updated_by' => $auth['name'],
-                            'run_updated_at' => time(),
-                        ]);
-                    }
-                }
-
                 // 更新主表
                 if ($id) {
                     DB::table($table)->where('id', $id)->update($master);
@@ -2589,6 +2570,25 @@ class Form
                 // 退回流程删除知会记录
                 $step_back_inform = array_values((array)$gets['step_back_inform']);
                 DB::table('model_run_log')->whereIn('id', $step_back_inform)->delete();
+            }
+
+            // 更新表单的流程意见
+            $step_remark = $gets['step_remark'];
+            if (not_empty($step_remark)) {
+                foreach ($step_remark as $step_id => $remark) {
+
+                    // 审核操作无审核意见
+                    if ($remark == '') {
+                        $remark = $gets['step_next_type'] == 'back' ? '退回' : '同意';
+                    }
+
+                    RunStep::where('run_id', $run_id)->where('step_id', $step_id)->update([
+                        'run_remark' => $remark,
+                        'run_updated_id' => $auth['id'],
+                        'run_updated_by' => $auth['name'],
+                        'run_updated_at' => time(),
+                    ]);
+                }
             }
 
             // 更新办理序号

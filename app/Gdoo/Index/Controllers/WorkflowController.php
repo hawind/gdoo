@@ -126,9 +126,7 @@ class WorkflowController extends DefaultController
                     }
                 }
             } else {
-                if ($gets['remark'] != '') {
-                    $gets['step_remark'][$step_id] = $gets['remark'];
-                }
+                $gets['step_remark'][$step_id] = $gets['remark'];
             }
 
             // 转到步骤条件检查
