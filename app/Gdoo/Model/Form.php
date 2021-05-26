@@ -2213,6 +2213,9 @@ class Form
             $gets[$table] = $master;
             if ($store_type == 'audit') {
                 static::storeFlowStep($bill, $models, $gets, $id);
+            } else {
+                // 更新表单的流程意见
+                static::storeStepRemark($gets, $run_id, $auth);
             }
 
             // 提交事务
@@ -2573,23 +2576,7 @@ class Form
             }
 
             // 更新表单的流程意见
-            $step_remark = $gets['step_remark'];
-            if (not_empty($step_remark)) {
-                foreach ($step_remark as $step_id => $remark) {
-
-                    // 审核操作无审核意见
-                    if ($remark == '') {
-                        $remark = $gets['step_next_type'] == 'back' ? '退回' : '同意';
-                    }
-
-                    RunStep::where('run_id', $run_id)->where('step_id', $step_id)->update([
-                        'run_remark' => $remark,
-                        'run_updated_id' => $auth['id'],
-                        'run_updated_by' => $auth['name'],
-                        'run_updated_at' => time(),
-                    ]);
-                }
-            }
+            static::storeStepRemark($gets, $run_id, $auth);
 
             // 更新办理序号
             $_run['index'] = $run_index;
@@ -2618,6 +2605,31 @@ class Form
         static::notification($bill, $messages);
 
         return $master['id'];
+    }
+
+    /**
+     * 保存流程审核意见
+     */
+    public static function storeStepRemark($gets, $run_id, $auth)
+    {
+        // 更新表单的流程意见
+        $step_remark = $gets['step_remark'];
+        if (not_empty($step_remark)) {
+            foreach ($step_remark as $step_id => $remark) {
+
+                // 审核操作无审核意见
+                if ($remark == '') {
+                    $remark = $gets['step_next_type'] == 'back' ? '退回' : '同意';
+                }
+
+                RunStep::where('run_id', $run_id)->where('step_id', $step_id)->update([
+                    'run_remark' => $remark,
+                    'run_updated_id' => $auth['id'],
+                    'run_updated_by' => $auth['name'],
+                    'run_updated_at' => time(),
+                ]);
+            }
+        }
     }
 
     /**
