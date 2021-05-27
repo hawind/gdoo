@@ -226,6 +226,9 @@ var grid = null;
                             return;
                         }
 
+                        layer.close(loading);
+
+                        /*
                         var loading = showLoading();
                         $.post(app.url('stock/delivery/autoSave'), query + '&' + $.param(gets), function (res) {
                             if (res.status) {
@@ -239,7 +242,8 @@ var grid = null;
                         }, 'json').complete(function() {
                             layer.close(loading);
                         });
-
+                        */
+                        
                     });
                     
                 } else {
