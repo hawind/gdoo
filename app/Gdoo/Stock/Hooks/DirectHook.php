@@ -63,8 +63,6 @@ class DirectHook
             'warehouse.code as warehouse_code',
             'customer.region_id',
             'customer_region.owner_user_id as salesman_id',
-            'customer.region2_id', 
-            'customer.region3_id'
         ]);
 
         $sql = DB::table('stock_direct_data')

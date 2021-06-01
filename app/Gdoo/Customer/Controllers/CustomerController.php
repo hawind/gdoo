@@ -142,7 +142,7 @@ class CustomerController extends DefaultController
         }
         $header = Grid::batchEdit([
             'code' => 'customer',
-            'columns' => ['region3_id', 'region2_id', 'region_id', 'grade_id', 'type_id', 'class2_id', 'class_id', 'department_id', 'status'],
+            'columns' => ['region_id', 'grade_id', 'type_id', 'class2_id', 'class_id', 'department_id', 'status'],
         ]);
         return view('batchEdit', [
             'gets' => $gets,

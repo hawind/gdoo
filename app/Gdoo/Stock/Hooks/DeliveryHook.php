@@ -57,9 +57,7 @@ class DeliveryHook
             'department.code as department_code',
             'customer_tax.code as customer_code',
             'customer.region_id',
-            'customer_region.owner_user_id as salesman_id',
-            'customer.region2_id', 
-            'customer.region3_id'
+            'customer_region.owner_user_id as salesman_id'
         ]);
 
         $sql = "select sdd.id,sdd.type_id,sdd.price,sdd.quantity,sdd.money,sdd.other_money,
