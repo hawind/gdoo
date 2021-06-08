@@ -306,27 +306,15 @@ class DeliveryController extends WorkflowController
         $this->layout = 'layouts.print_'.$print_type;
 
         // 打印插件
-        if ($print_type == 'stiReport') {
+        $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
+        if ($print_tpl) {
             $data = DeliveryService::getPrintData($id);
-            $print_data = [
-                'master' => [$data['master']],
-                'stock_delivery_data' => $data['rows'],
-            ];
-            return $this->display([
-                'template' => $template,
-                'print_data' => $print_data,
-            ]);
+            $data['template'] = $template;
+            $tpl = $this->display($data, 'print/'.$template_id);
         } else {
-            $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
-            if ($print_tpl) {
-                $data = DeliveryService::getPrintData($id);
-                $data['template'] = $template;
-                $tpl = $this->display($data, 'print/'.$template_id);
-            } else {
-                $tpl = $this->create('print');
-            }
-            return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
+            $tpl = $this->create('print');
         }
+        return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
     // 物流信息
