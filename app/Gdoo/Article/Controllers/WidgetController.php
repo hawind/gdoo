@@ -16,7 +16,7 @@ class WidgetController extends DefaultController
      */
     public function index()
     {
-        if (Request::isJson()) {
+        if (Request::method() == 'POST') {
             $model = DB::table('article')
             ->permission('receive_id')
             ->orderBy('created_at', 'desc');

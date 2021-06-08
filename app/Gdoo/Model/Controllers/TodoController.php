@@ -23,7 +23,7 @@ class TodoController extends DefaultController
             ->leftJoin('user as run_log_user', 'run_log_user.id', '=', 'model_run_log.created_id')
             ->leftJoin('customer', 'customer.id', '=', DB::raw("model_run.partner_id and model_run.partner_type = 'customer'"))
             ->leftJoin('supplier', 'supplier.id', '=', DB::raw("model_run.partner_id and model_run.partner_type = 'supplier'"))
-            ->where('model_run_log.updated_id', 0)
+            ->where('model_run_log.status', 0)
             ->where('model_run_log.user_id', auth()->id())
             ->orderBy('model_run.id', 'desc')
             ->selectRaw("

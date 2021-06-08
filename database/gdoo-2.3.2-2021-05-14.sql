@@ -1,1 +1,0 @@
-ALTER TABLE `media` ADD COLUMN `thumb` varchar(255) DEFAULT NULL COMMENT '缩略图路径' AFTER `path`;

@@ -318,6 +318,13 @@ class FieldController extends DefaultController
             // 写入模型数据
             $gets['setting'] = json_encode($gets['setting'], JSON_UNESCAPED_UNICODE);
 
+            // 去掉关联字段
+            if (empty($gets['data_type'])) {
+                $gets['data_type'] = '';
+                $gets['data_field'] = '';
+                $gets['data_link'] = '';
+            }
+
             $model = Field::findOrNew((int)$gets['id']);
             $model->fill($gets);
             $model->save();

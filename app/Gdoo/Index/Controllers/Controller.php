@@ -15,7 +15,7 @@ class Controller extends BaseController
     /**
      * @var 程序版本
      */
-    public $version = '2.3.2';
+    public $version = '2.3.3';
 
     /**
      * @var 配置参数

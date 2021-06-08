@@ -47,8 +47,8 @@ class ProjectController extends DefaultController
 
         $auth_id = auth()->id();
 
-        // 不是全部权限
-        if ($this->access['index'] < 4) {
+        // 临时修改(管理员显示所有项目)
+        if ($auth_id > 1) {
             $sql = "(permission = 0
             or (permission = 1 
             and (

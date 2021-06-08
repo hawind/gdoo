@@ -8,12 +8,12 @@
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = {};
     var columnDefs = [
-        {suppressMenu: true, field: "code", headerName: '客户编码', width: 120},
-        {suppressMenu: true, field: "name", headerName: '客户名称', minWidth: 160},
-        {suppressMenu: true, field: "head_name", headerName: '法人', width: 120},
-        {suppressMenu: true, field: "head_phone", headerName: '法人手机', width: 120},
-        {suppressMenu: true, field: "head_birthday", headerName: '法人生日', width: 120},
-        {suppressMenu: true, field: "id", headerName: 'ID', width: 80}
+        {suppressMenu: true, cellClass:'text-center', field: "code", headerName: '客户编码', width: 120},
+        {suppressMenu: true, cellClass:'text-center', field: "name", headerName: '客户名称', minWidth: 160},
+        {suppressMenu: true, cellClass:'text-center', field: "head_name", headerName: '法人', width: 120},
+        {suppressMenu: true, cellClass:'text-center', field: "head_phone", headerName: '法人手机', width: 120},
+        {suppressMenu: true, cellClass:'text-center', field: "head_birthday", headerName: '法人生日', width: 120},
+        {suppressMenu: true, cellClass:'text-center', field: "id", headerName: 'ID', width: 80}
     ];
 
     grid.onRowDoubleClicked = function(row) {
