@@ -16,8 +16,8 @@
             <td align="right">项目权限 <a href="javascript:;" class="fa fa-question-circle hinted" title="公开：所有人可以访问，成员编辑。私有：成员访问和编辑。"></a></td>
             <td align="left">
                 <select class="form-control input-sm" name="permission">
-                    <option value="0" @if($project['permission'] == '0') selected="selected" @endif>公开</option>
                     <option value="1" @if($project['permission'] == '1') selected="selected" @endif>私有</option>
+                    <option value="0" @if($project['permission'] == '0') selected="selected" @endif>公开</option>
                 </select>
             </td>
         </tr>

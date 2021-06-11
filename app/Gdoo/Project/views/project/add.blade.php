@@ -16,8 +16,8 @@
                 <td align="right">项目权限</td>
                 <td align="left">
                     <select class="form-control input-sm" name="permission">
-                        <option value="0">公开</option>
                         <option value="1">私有</option>
+                        <option value="0">公开</option>
                     </select>
                 </td>
             </tr>

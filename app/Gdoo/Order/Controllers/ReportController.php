@@ -1190,8 +1190,8 @@ class ReportController extends DefaultController
         '))
         ->selectRaw('
             m.customer_id,
-            product_category.code as category_code,
-            product.code as product_code,
+            product_category.code category_code,
+            product.code product_code,
             customer.name customer_name,
             product.name product_name,
             product.spec product_spec,
@@ -1224,8 +1224,8 @@ class ReportController extends DefaultController
         '))
         ->selectRaw('
             m.customer_id,
-            product_category.code as category_code,
-            product.code as product_code,
+            product_category.code category_code,
+            product.code product_code,
             customer.name customer_name,
             product.name product_name,
             product.spec product_spec,
@@ -1237,7 +1237,7 @@ class ReportController extends DefaultController
             '.sql_month('m.invoice_dt').' [month]
         ');
         // 直营
-        $cancel = DB::table('stock_direct_data as d')
+        $direct = DB::table('stock_direct_data as d')
         ->leftJoin('stock_direct as m', 'm.id', '=', 'd.direct_id')
         ->leftJoin('product', 'product.id', '=', 'd.product_id')
         ->leftJoin('product_category', 'product_category.id', '=', 'product.category_id')
@@ -1259,8 +1259,8 @@ class ReportController extends DefaultController
         ->selectRaw('
             m.customer_id,
             customer.name customer_name,
-            product_category.code as category_code,
-            product.code as product_code,
+            product_category.code category_code,
+            product.code product_code,
             product.name product_name,
             product.spec product_spec,
             d.product_id,
@@ -1273,31 +1273,32 @@ class ReportController extends DefaultController
         // 客户圈权限
         if ($selects['authorise']) {
             foreach ($selects['whereIn'] as $k => $v) {
+                $direct->whereIn($k, $v);
                 $cancel->whereIn($k, $v);
                 $delivery->whereIn($k, $v);
             }
         }
         if ($category_id) {
+            $direct->whereIn('product.category_id', $category);
             $delivery->whereIn('product.category_id', $category);
             $cancel->whereIn('product.category_id', $category);
         }
-        $rows = $cancel->unionAll($delivery)
+        $rows = $cancel->unionAll($delivery)->unionAll($direct)
         ->orderBy('category_code', 'ASC')
         ->get();
         
-        if ($rows->count()) {
-            $single = [];
-            foreach ($rows as $v) {
-                if ($v['product_id'] > 0) {
-                    $month = $v['month'];
-                    $product_id = $v['product_id'];
+        $single = [];
+        foreach ($rows as $v) {
+            if ($v['product_id'] > 0) {
+                $month = $v['month'];
+                $product_id = $v['product_id'];
 
-                    $single['product'][$product_id] = $v;
-                    $single['category'][$product_id] = $v['category_id'];
-                    $single['customer'][$v['customer_id']] = $v['customer_id'];
-                    $single['all'][$product_id][$v['customer_id']] = $v['customer_id'];
-                    $single['sum'][$product_id][$month][$v['customer_id']] = $v['customer_id'];
-                }
+                $single['product'][$product_id] = $v;
+                $single['category'][$product_id] = $v['category_id'];
+                $single['customer'][$v['customer_id']] = $v['customer_id'];
+                $single['all'][$product_id][$v['customer_id']] = $v['customer_id'];
+                $single['sum'][$product_id][$month][$v['customer_id']] = $v['customer_id'];
+                $single['sum_money'][$product_id][$month] += $v['money'];
             }
         }
 
@@ -1324,80 +1325,173 @@ class ReportController extends DefaultController
     {
         $year = Request::get('year');
         $product_id = Request::get('product_id');
-        $query = select::head1();
+
+        // 筛选专用函数
+        $selects = regionCustomer('customer');
 
         $n = date("n", time());
 
         if ($product_id > 0) {
-            $rows = DB::table('order_data as i')
-            ->leftJoin('order_type as t', 't.id', '=', 'i.type')
-            ->leftJoin('order as o', 'o.id', '=', 'i.order_id')
-            ->leftJoin('user as c', 'c.id', '=', 'o.client_id')
-            ->leftJoin('client', 'client.user_id', '=', 'c.id')
-            ->leftJoin('region as r', 'r.id', '=', 'c.city_id')
-            ->leftJoin('product as p', 'p.id', '=', 'i.product_id')
-            ->leftJoin('product_category as pc', 'pc.id', '=', 'p.category_id')
-            ->where('i.deleted', 0)
-            ->where('o.add_time', '>', 0)
-            ->where('p.id', $product_id)
-            ->whereRaw('FROM_UNIXTIME(o.add_time,"%Y")=?', [$year])
-            //->whereRaw($sql, $params)
-            ->where('t.type', 1)
-            //->groupBy('month')
-            ->groupBy('o.client_id')
-            ->orderBy('pc.lft', 'ASC')
-            ->orderBy('p.sort', 'ASC')
-            ->selectRaw('r.name city_name,client.circle_id,o.client_id,c.nickname company_name,p.name product_name,p.spec product_spec,i.product_id,p.category_id,SUM(i.amount * i.price) money,SUM(i.amount) amount,FROM_UNIXTIME(o.add_time,"%Y") year,FROM_UNIXTIME(o.add_time,"%c") month, pc.name category_name');
-            
-            if ($query['whereIn']) {
-                foreach ($query['whereIn'] as $key => $whereIn) {
-                    if ($whereIn) {
-                        $rows->whereIn($key, $whereIn);
-                    }
+            // 发货
+            $delivery = DB::table('stock_delivery_data as d')
+            ->leftJoin('stock_delivery as m', 'm.id', '=', 'd.delivery_id')
+            ->leftJoin('product', 'product.id', '=', 'd.product_id')
+            ->leftJoin('product_category', 'product_category.id', '=', 'product.category_id')
+            ->leftJoin('customer', 'customer.id', '=', 'm.customer_id')
+            ->whereRaw('d.product_id <> 20226 and isnull(product.product_type, 0) = 1')
+            ->whereRaw('year(m.invoice_dt)=?', [$year])
+            ->groupBy(DB::raw('
+                customer.name,
+                product.name,
+                product.spec,
+                product.category_id,
+                year(m.invoice_dt),
+                month(m.invoice_dt),
+                m.customer_id,
+                d.product_id,
+                product_category.code,
+                product.code,
+                customer.region_id
+            '))
+            ->selectRaw('
+                product_category.code category_code,
+                product.code,
+                m.customer_id,
+                customer.name customer_name,
+                product.name product_name,
+                product.spec product_spec,
+                d.product_id,
+                product.category_id,
+                sum(isnull(d.money, 0) - isnull(d.other_money, 0)) money,
+                SUM(d.quantity) quantity,
+                year(m.invoice_dt) [year],
+                month(m.invoice_dt) [month],
+                customer.region_id
+            ');
+            // 退货
+            $cancel = DB::table('stock_cancel_data as d')
+            ->leftJoin('stock_cancel as m', 'm.id', '=', 'd.cancel_id')
+            ->leftJoin('product', 'product.id', '=', 'd.product_id')
+            ->leftJoin('product_category', 'product_category.id', '=', 'product.category_id')
+            ->leftJoin('customer', 'customer.id', '=', 'm.customer_id')
+            ->whereRaw('d.product_id <> 20226 and isnull(product.product_type, 0) = 1')
+            ->whereRaw('year(m.invoice_dt)=?', [$year])
+            ->groupBy(DB::raw('
+                customer.name,
+                product.name,
+                product.spec,
+                product.category_id,
+                year(m.invoice_dt),
+                month(m.invoice_dt),
+                m.customer_id,
+                d.product_id,
+                product_category.code,
+                product.code,
+                customer.region_id
+            '))
+            ->selectRaw('
+                product_category.code category_code,
+                product.code,
+                m.customer_id,
+                customer.name customer_name,
+                product.name product_name,
+                product.spec product_spec,
+                d.product_id,
+                product.category_id,
+                sum(isnull(d.money, 0) - isnull(d.other_money, 0)) money,
+                SUM(d.quantity) quantity,
+                year(m.invoice_dt) [year],
+                month(m.invoice_dt) [month],
+                customer.region_id
+            ');
+            // 直营
+            $direct = DB::table('stock_direct_data as d')
+            ->leftJoin('stock_direct as m', 'm.id', '=', 'd.direct_id')
+            ->leftJoin('product', 'product.id', '=', 'd.product_id')
+            ->leftJoin('product_category', 'product_category.id', '=', 'product.category_id')
+            ->leftJoin('customer', 'customer.id', '=', 'm.customer_id')
+            ->whereRaw('d.product_id <> 20226 and isnull(product.product_type, 0) = 1')
+            ->whereRaw('year(m.invoice_dt)=?', [$year])
+            ->groupBy(DB::raw('
+                customer.name,
+                product.name,
+                product.spec,
+                product.category_id,
+                year(m.invoice_dt),
+                month(m.invoice_dt),
+                m.customer_id,
+                d.product_id,
+                product_category.code,
+                product.code,
+                customer.region_id
+            '))
+            ->selectRaw('
+                product_category.code category_code,
+                product.code,
+                m.customer_id,
+                customer.name customer_name,
+                product.name product_name,
+                product.spec product_spec,
+                d.product_id,
+                product.category_id,
+                sum(isnull(d.money, 0) - isnull(d.other_money, 0)) money,
+                SUM(d.quantity) quantity,
+                year(m.invoice_dt) [year],
+                month(m.invoice_dt) [month],
+                customer.region_id
+            ');
+            // 客户圈权限
+            if ($selects['authorise']) {
+                foreach ($selects['whereIn'] as $k => $v) {
+                    $delivery->whereIn($k, $v);
+                    $direct->whereIn($k, $v);
+                    $cancel->whereIn($k, $v);
                 }
             }
 
-            $rows = $rows->get();
+            $delivery->where('product.id', $product_id);
+            $cancel->where('product.id', $product_id);
+            $direct->where('product.id', $product_id);
+            
+            $rows = $cancel->unionAll($delivery)->unionAll($direct)
+            ->orderBy('category_code', 'ASC')
+            ->get();
 
-            $circles = DB::table('customer_circle')->get()->pluck('name', 'id');
+            $regions = DB::table('customer_region')->get()->pluck('name', 'id');
+            $customers = [];
 
-            $single = array();
-            foreach ($rows as $key => $value) {
+            $single = [];
+            foreach ($rows as $row) {
                 //如何当前月存在数据
-                $client_id = $value['client_id'];
+                $customer_id = $row['customer_id'];
                 //客户编号公司名称
-                $clients[$client_id] = array(
-                    'client_id' => $value['company_name'],
-                    'area' => $value['city_name'],
-                    'circle_name' => $circles[$value['circle_id']],
-                );
+                $customers[$customer_id] = [
+                    'customer_id' => $row['customer_name'],
+                    'region_name' => $regions[$row['region_id']],
+                ];
 
-                if ($value['money'] > 0) {
-                    $single['all'][$client_id] += $value['money'];
-                    $single['cat'] = $value['category_name'];
-                    $single['name'] = $value['product_name'];
-                    $single['spec'] = $value['product_spec'];
+                if ($row['money'] > 0) {
+                    $single['all'][$customer_id] += $row['money'];
+                    $single['product_code'] = $row['product_code'];
+                    $single['product_name'] = $row['product_name'];
+                    $single['product_spec'] = $row['product_spec'];
                 }
-                if ($value['month'] == $n) {
+                if ($row['month'] == $n) {
                     //筛选本月没有数量的客户
-                    $notpurchase[$client_id] = $value;
+                    $notpurchase[$customer_id] = $row;
                 }
             }
         }
 
         arsort($single['all']);
 
-        return $this->display(array(
+        return $this->display([
             'single' => $single,
-            'years' => $years,
             'year' => $year,
-            'year_id' => $year_id,
-            'code_id' => $code_id,
             'month' => $n,
-            'clients' => $clients,
+            'customers' => $customers,
             'notpurchase'=> $notpurchase,
-            'assess' => $assess,
-        ));
+        ]);
     }
 
     /**

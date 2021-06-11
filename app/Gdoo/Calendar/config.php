@@ -28,9 +28,6 @@ return [
                 ],
                 "delete" => [
                     "name" => "删除"
-                ],
-                "help" => [
-                    "name" => "帮助"
                 ]
             ]
         ],

@@ -1,27 +1,25 @@
 <div class="panel">
 
-    <div class="wrapper b-b b-light">
-        <div class='h5'>{{$single['cat']}} * ({{$single['name']}} - {{$single['spec']}}) - {{$year}}年度({{$month}}月)未进货经销商列表</div>
+    <div class="wrapper-xs b-b b-light">
+        <div class='h5'>{{$single['product_name']}} - {{$single['product_spec']}} - {{$year}}年{{$month}}月无数据的客户列表</div>
     </div>
 
-    <table class="table">
+    <table class="table table-bordered">
         <tr>
-            <th width="40">序号</th>
-            <th width="100">区域</th>
-            <th width="100">客户圈</th>
+            <th width="60">序号</th>
+            <th width="160">销售组</th>
             <th width="280">客户名称</th>
-            <th align="left">单品</th>
+            <th width="100"></th>
         </tr>
-        @if(count($clients))
+        @if($customers)
         <?php $i = 0; ?>
-        @foreach($clients as $key => $value)
+        @foreach($customers as $key => $value)
         @if(empty($notpurchase[$key]))
         <tr>
             <td align="center">{{$i + 1}}</td>
-            <td align="center">{{$value['area']}}</td>
-            <td align="center">{{$value['circle_name']}}</td>
-            <td align="left">{{$value['client_id']}}</td>
-            <td align="left">{{$single['name']}} - {{$single['spec']}}</td>
+            <td align="center">{{$value['region_name']}}</td>
+            <td align="left">{{$value['customer_id']}}</td>
+            <td align="left"></td>
         </tr>
         @endif
         <?php $i++; ?>
@@ -33,28 +31,24 @@
 
 <div class="panel">
 
-    <div class="wrapper b-b b-light">
-        <div class='h5'>{{$single['cat']}} * ({{$single['name']}} - {{$single['spec']}}) - {{$year}}度年经销商销售分析</div>
+    <div class="wrapper-xs b-b b-light">
+        <div class='h5'>{{$single['product_name']}} - {{$single['product_spec']}} - {{$year}}年客户销售统计</div>
     </div>
 
-    <table class="table">
+    <table class="table table-bordered">
         <tr>
-            <th width="40">序号</th>
-            <th width="100">区域</th>
-            <th width="100">客户圈</th>
+            <th width="60">序号</th>
+            <th width="160">销售组</th>
             <th width="280">客户名称</th>
-            <th align="left">单品</th>
             <th width="100">金额</th>
         </tr>
     <?php $i = 0; ?>
-    @if(count($single['all'])) 
+    @if($single['all'])
     @foreach($single['all'] as $key => $value)
     <tr>
       <td align="center">{{$i + 1}}</td>
-        <td align="center">{{$clients[$key]['area']}}</td>
-        <td align="center">{{$clients[$key]['circle_name']}}</td>
-        <td align="left">{{$clients[$key]['client_id']}}</td>
-    	<td align="left">{{$single['name']}} - {{$single['spec']}}</td>
+        <td align="center">{{$customers[$key]['region_name']}}</td>
+        <td align="left">{{$customers[$key]['customer_id']}}</td>
     	<td align="right">{{$value}}</td>
     </tr>
     <?php $i++; ?>
