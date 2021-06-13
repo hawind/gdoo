@@ -42,12 +42,10 @@ class TaskController extends DefaultController
             'master_table' => 'project_task',
         ];
 
-        /*
         $header['buttons'] = [
-            ['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
-            ['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
+            //['name' => '删除', 'icon' => 'fa-remove', 'action' => 'delete', 'display' => $this->access['delete']],
+            //['name' => '导出', 'icon' => 'fa-share', 'action' => 'export', 'display' => 1],
         ];
-        */
 
         $header['search_form'] = $search;
         $query = $search['query'];
@@ -130,7 +128,7 @@ class TaskController extends DefaultController
             }
 
             if ($gets['start_at'] == '') {
-                $gets['start_at'] = time();
+                $gets['start_at'] = date('Y-m-d H:i:s');
             }
 
             $attachment = $gets['attachment'];
@@ -154,7 +152,7 @@ class TaskController extends DefaultController
             if ($gets['is_item'] == '0') {
                 $task = Task::find($task->id);
                 $task->created_at = format_datetime($task->created_at);
-                $task->user_name  = get_user($task->user_id, 'name', false);
+                $task->user_name = get_user($task->user_id, 'name', false);
                 return $this->json($task, true);
             } else {
                 return $this->json('恭喜你，添加任务成功。', true);

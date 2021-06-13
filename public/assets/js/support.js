@@ -243,7 +243,7 @@ $(function() {
     $document.on('click.datetime', '[data-toggle="datetime"]', function() {
         var data = $(this).data();
         var ops = {};
-        ops['dateFmt'] = data['format'] || 'yyyy-MM-dd';
+        ops['dateFmt'] = data['format'] || 'yyyy-MM-dd HH:mm';
         if  (data['dchanging']) {
             ops['dchanging'] = data['dchanging'];
         }

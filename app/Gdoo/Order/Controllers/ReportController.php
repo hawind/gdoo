@@ -13,7 +13,6 @@ use Gdoo\Index\Controllers\DefaultController;
 class ReportController extends DefaultController
 {
     public $permission = [
-        'citydata',
         'clientdata'
     ];
 
@@ -1057,84 +1056,6 @@ class ReportController extends DefaultController
             'query' => $query,
             'promotions' => $promotions,
             'regions' => $regions,
-        ));
-    }
-
-    // 单区域数据分析
-    public function citydata()
-    {
-        // 获得销售员登录名
-        $year = Request::get('year');
-        $circle_id  = Request::get('circle_id');
-
-        $rows = $model = DB::table('order_data as i')
-        ->leftJoin('order_type as t', 't.id', '=', 'i.type')
-        ->leftJoin('order as o', 'o.id', '=', 'i.order_id')
-        ->leftJoin('user as c', 'c.id', '=', 'o.client_id')
-        ->leftJoin('client', 'client.user_id', '=', 'c.id')
-        ->leftJoin('region as r', 'r.id', '=', 'c.city_id')
-        ->leftJoin('product as p', 'p.id', '=', 'i.product_id')
-        ->where('i.deleted', 0)
-        ->where('o.pay_time', '>', 0)
-        ->where('client.circle_id', $circle_id)
-        ->whereRaw('FROM_UNIXTIME(o.pay_time,"%Y")=?', [$year])
-        ->where('t.type', 1)
-        ->groupBy('p.category_id')
-        ->groupBy('o.client_id')
-        //->groupBy('r.id')
-        ->groupBy('month')
-        ->orderBy('month', 'ASC')
-        ->selectRaw('c.city_id,client.circle_id,o.client_id,c.nickname company_name,r.name city_name,c.salesman_id,p.category_id,i.product_id,SUM(i.fact_amount * i.price) money,FROM_UNIXTIME(o.pay_time,"%Y") year,FROM_UNIXTIME(o.pay_time,"%c") month');
-        $rows = $model->get();
-
-        if ($rows->count()) {
-            $single = array();
-            foreach ($rows as $v) {
-                if ($v['circle_id'] > 0) {
-                    //循环产品
-                    $single['money'][$v['month']][$v['category_en']] += $v['money'];
-                    $single['cat'][$v['month']] += $v['money'];
-                    $single['category'][$v['category_en']] = $v['category'];
-                }
-            }
-        }
-
-        //促销计算
-        $_promotions = DB::table('promotion as p')
-        ->leftJoin('user as c', 'c.id', '=', 'p.customer_id')
-        ->leftJoin('client', 'client.user_id', '=', 'c.id')
-        ->leftJoin('region as r', 'r.id', '=', 'c.city_id')
-        ->where('p.deleted_by', 0)
-        ->where('client.circle_id', $circle_id)
-        ->whereRaw("DATE_FORMAT(p.data_30, '%Y')=?", [$year])
-        ->groupBy('p.customer_id')
-        //->groupBy('r.id')
-        ->groupBy('month')
-        ->selectRaw('r.id,c.salesman_id,client.circle_id,p.customer_id, DATE_FORMAT(p.end_at, "%c") as month, SUM(p.data_amount) as bd_sum, p.type_id')
-        ->get();
-        
-        if ($_promotions->count()) {
-            foreach ($_promotions as $v) {
-                if ($v['circle_id']) {
-                    //促销分类金额
-                    $promotions['month'][$v['month']][$v['type_id']] += $v['bd_sum'];
-                    $promotions['month1'][$v['month']] += $v['bd_sum'];
-                }
-            }
-        }
-        unset($_promotions);
-
-        $circle = DB::table('customer_circle')->where('id', $circle_id)->first();
-
-        return $this->display(array(
-            'single'    => $single,
-            'year'      => $year,
-            'categorys' => $categorys,
-            'promotions'=> $promotions,
-            'select'    => $selects,
-            'query'     => $query,
-            'assess'    => $assess,
-            'circle'    => $circle,
         ));
     }
 
