@@ -29,6 +29,7 @@ function gridForm(table, options) {
 
     grid.tableTitle = options.title;
     grid.tableKey = options.table;
+    grid.tableSaveDataNotEmpty = options.saveDataNotEmpty;
 
     grid.defaultColDef.sortable = false;
     grid.defaultColDef.filter = false;

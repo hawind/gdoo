@@ -117,13 +117,6 @@ class RoleController extends DefaultController
 
                 $rules = json_decode($assets[$asset]['rules'], true);
 
-                // 清除旧权限
-                foreach ((array)$rules as $key => $rule) {
-                    if (empty($controllers[$key])) {
-                        unset($rules[$key]);
-                    }
-                }
-
                 foreach ($controllers as $key => $actions) {
                     unset($rules[$key][$id]);
                     if ($actions['action']) {

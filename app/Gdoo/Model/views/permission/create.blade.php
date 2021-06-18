@@ -80,12 +80,10 @@
         <td>
             {{$submodel->table}}@option
         </td>
+        <td></td>
+        <td></td>
         <td>
-        </td>
-        <td>
-        </td>
-        <td>
-            <select multiple data-placeholder="选择验证规则" class="form-control input-sm input-inline input-select2" name="data[{{$submodel->table}}][{{$field->field}}][v][]">
+            <select multiple data-placeholder="选择验证规则" class="form-control input-sm input-inline input-select2" name="data[{{$submodel->table}}][@option][v][]">
                 <option value=""></option>
                 <option @if(in_array('required', (array)$permission['data'][$submodel->table]['@option']['v'])) selected @endif value="required">必填</option>
             </select>

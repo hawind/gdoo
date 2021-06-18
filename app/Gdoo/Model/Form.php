@@ -1472,12 +1472,16 @@ class Form
                 $tabContent .= '</tbody></table>';
             }
 
+            // 保存时数据不能为空
+            $saveDataNotEmpty = in_array('required', (array)$permission_option['v']);
+
             $_options = [
                 'columns' => $columns,
                 'data' => $rows,
                 'links' => $links,
                 'table' => $model['table'],
                 'title' => $model['name'],
+                'saveDataNotEmpty' => $saveDataNotEmpty,
             ];
 
             $js = 'gdoo.forms["'.$model['table'].'"] = gridForms("' . $table . '","' . $model['table'] . '", ' . json_encode($_options, JSON_UNESCAPED_UNICODE) . ');';
@@ -1718,7 +1722,20 @@ class Form
                 $field = $fields[$key];
                 $_rules = (array)$row['v'];
                 if ($_rules) {
-                    $t = $model['type'] == 1 ?  $table . '.rows.*.' . $key : $table . '.' . $key;
+
+                    $field_name = $fields[$key]['name'];
+
+                    if ($model['type'] == 1) {
+                        if ($key == '@option') {
+                            $t = $table . '.rows';
+                            $field_name = $model->name;
+                        } else {
+                            $t = $table . '.rows.*.' . $key;
+                        }
+                    } else {
+                        $t = $table . '.' . $key;
+                    }
+
                     $data_type = $field['data_type'];
                     $data_field = $field['data_field'];
                     $data_link = $field['data_link'];
@@ -1740,7 +1757,7 @@ class Form
                         }
                     }
                     $rules[$t] = join('|', $_rules);
-                    $attributes[$t] = $fields[$key]['name'];
+                    $attributes[$t] = $field_name;
                 }
             }
         }

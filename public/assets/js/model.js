@@ -32,8 +32,8 @@
                     }
                 }
 
-                if (rows.length == 0) {
-                    toastrError(t.tableTitle + '不能为空。');
+                if (rows.length == 0 && t.tableSaveDataNotEmpty === true) {
+                    toastrError(t.tableTitle + ' 不能为空。');
                     return false;
                 } else {
                     gets[t.tableKey] = {rows: rows, deleteds: store.deleted};

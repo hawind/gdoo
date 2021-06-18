@@ -125,6 +125,8 @@ var form_action = '{{$action}}';
             query.customer_id = customer_id;
         },
         onSelect(row, selected) {
+            row.is_gift_name = '否';
+            row.is_gift = 0;
             if (row.product_code == '99001') {
                 row.type_id_name = '费用';
                 row.type_id = 5;
@@ -270,6 +272,8 @@ var form_action = '{{$action}}';
                         var rows = $ref_promotion_data.api.getSelectedRows();
                         for (let i = 0; i < rows.length; i++) {
                             var row = rows[i];
+                            row.is_gift_name = '是';
+                            row.is_gift = 1;
                             row.quantity = row.wsy_num;
                             row.delivery_quantity = row.quantity;
                             row.total_weight = row.quantity * row.weight;

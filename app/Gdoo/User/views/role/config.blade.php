@@ -110,6 +110,7 @@
                                                     {{'';$selected = $assets[$menuKey][$groupKey.'.'.$childKey]}}
                                                     <label title="{{$childKey}}" class="checkbox-inline">
                                                         <input type="checkbox" class="action-check" name="assets[{{$menuKey}}][{{$groupKey}}.{{$childKey}}][action]" value="1" @if(isset($selected)) checked @endif>
+                                                        <input type="hidden" name="assets[{{$menuKey}}][{{$groupKey}}.{{$childKey}}][access]" value="1">
                                                         {{$childValue['name']}}
                                                     </label>
                                                 </div>

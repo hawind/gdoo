@@ -21,7 +21,7 @@
 
 <th style="white-space:nowrap"></th>
 
-@if(count($categorys))
+@if($categorys)
     @foreach($categorys as $k => $v)
         @if($v['parent_id'] == 226)
             <th nowrap="nowrap">{{$v['name']}}</th>
@@ -39,7 +39,7 @@
 -->
 </tr>
 
-@if(count($now_year_single['money']))
+@if($now_year_single['money'])
 @foreach($now_year_single['money'] as $key => $value)
 
 <tr>
@@ -50,7 +50,7 @@
 
 <td align="center" style="vertical-align:middle;color:#999;">销售金额(元)</td>
 
-@if(count($categorys)) 
+@if($categorys)
 @foreach($categorys as $k => $v)
     @if($v['parent_id'] == 226)
 	   <td align="right">
@@ -96,7 +96,7 @@
 
 <td align="center" style="vertical-align:middle;color:#999;">去年同期增长率</td>
 
-@if(count($categorys))
+@if($categorys)
     @foreach($categorys as $category_id => $category)
         @if($category['parent_id'] == 226)
         <td align="right" title="去年同期增长率" nowrap="nowrap">
@@ -133,7 +133,7 @@
 
 <tr>
     <td align="center" style="vertical-align:middle;color:#999;">占区域该品类百分比</td>
-	@if(count($categorys)) 
+	@if($categorys)
     @foreach($categorys as $k => $v)
         @if($v['parent_id'] == 226)
     		<td align="right" title="占区域该品类百分比">

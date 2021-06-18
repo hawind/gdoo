@@ -89,7 +89,7 @@ QQ交流群: 79446405
 </p>
 
 ## 安装
-1. 推荐使用宝塔面板，安装nginx 1.18.x、php-8.x(需要扩展：fileinfo)、mysql-8.x(mariaDB 10.4.x)，如果你使用win请自行安装相关环境
+1. 推荐使用宝塔面板，安装nginx 1.18.x、php-8.x(需要扩展：fileinfo)、mysql-8.x(mariaDB 10.4.x)，如果你使用win请自行安装相关环境，修改php参数max_input_vars = 100000 (避免变量部分丢失)
 2. 创建网站和数据库, 数据库字符utf8mb4, 在网站目录中设置PHP命令行版本为php-80
 3. 下载gdoo: https://gitee.com/hawind/gdoo 上传至宝塔网站根目录并解压
 4. 打开Xshell并登录, 执行 <code>composer -v</code> 查看composer版本, 执行 <code>composer self-update</code> 升级composer至最新版本
