@@ -10,6 +10,9 @@ return [
             'url' => 'system/region/dialog',
         ],
     ],
+    "listens" => [
+        'region' => 'Gdoo\System\Hooks\RegionHook',
+    ],
     "controllers" => [
         "setting" => [
             "name" => "基础设置",
