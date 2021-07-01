@@ -8,7 +8,7 @@ class CustomerTaskDataHook
 
     public function onQueryForm($params) {
         $q = $params['q'];
-        $q->orderByRaw('cast(customer_task_data.code as int) asc');
+        $q->orderByRaw('customer_task_data.code asc');
 
         $params['q'] = $q;
         return $params;

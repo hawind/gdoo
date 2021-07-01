@@ -1,0 +1,1 @@
+ALTER TABLE `customer_task_data` ADD INDEX `idx_code`(`code`);
