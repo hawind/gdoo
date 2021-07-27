@@ -14,7 +14,7 @@ return [
             'more_url' => 'article/article/index',
         ],
         'info_article_index' => [
-            'name' => '新增公告',
+            'name' => '未读公告',
             'type' => 2,
             'url' => 'article/widget/info',
             'more_url' => 'article/article/index',

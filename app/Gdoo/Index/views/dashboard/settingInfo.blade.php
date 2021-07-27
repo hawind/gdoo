@@ -17,7 +17,7 @@
             <td>
                 <select class="form-control input-sm" name="permission" id="permission">
                     @foreach($permissions as $key => $permission)
-                    <option value="{{$key}}" @if($row['permission'] == $key) selected="selected" @endif>{{$permission}}</option>
+                    <option value="{{$key}}" @if($row['params']['permission'] == $key) selected="selected" @endif>{{$permission}}</option>
                     @endforeach
                 </select>
             </td>
@@ -27,7 +27,7 @@
             <td>
             <select class="form-control input-sm" name="date" id="date">
                     @foreach($dates as $key => $date)
-                    <option value="{{$key}}" @if($row['date'] == $key) selected="selected" @endif>{{$date}}</option>
+                    <option value="{{$key}}" @if($row['params']['date'] == $key) selected="selected" @endif>{{$date}}</option>
                     @endforeach
                 </select>
             </td>

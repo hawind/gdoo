@@ -11,7 +11,7 @@
  Target Server Version : 100508
  File Encoding         : 65001
 
- Date: 18/06/2021 17:27:53
+ Date: 28/07/2021 04:54:05
 */
 
 SET NAMES utf8mb4;
@@ -351,7 +351,7 @@ CREATE TABLE `article_reader`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_article_reader_article_id`(`article_id`) USING BTREE,
   INDEX `idx_article_reader_created_id`(`created_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of article_reader
@@ -359,6 +359,7 @@ CREATE TABLE `article_reader`  (
 INSERT INTO `article_reader` VALUES (10, 23, '系统管理员', 1602514708, 1);
 INSERT INTO `article_reader` VALUES (11, 24, '系统管理员', 1605481210, 1);
 INSERT INTO `article_reader` VALUES (12, 22, '系统管理员', 1614291097, 1);
+INSERT INTO `article_reader` VALUES (13, 24, '赵云', 1625349843, 3);
 
 -- ----------------------------
 -- Table structure for attachment
@@ -1851,12 +1852,13 @@ CREATE TABLE `customer_task`  (
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_customer_task_sn`(`sn`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户联系人' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户联系人' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_task
 -- ----------------------------
 INSERT INTO `customer_task` VALUES (1, 2020, 0, '2020-10-12', 1602516750, '系统管理员', '系统管理员', 1615845758, 1, 1, '202010120001', NULL);
+INSERT INTO `customer_task` VALUES (2, 2022, NULL, '2021-06-28', 1624882518, '系统管理员', NULL, NULL, 1, NULL, '202106280001', '212');
 
 -- ----------------------------
 -- Table structure for customer_task_data
@@ -1887,13 +1889,15 @@ CREATE TABLE `customer_task_data`  (
   `total` decimal(10, 2) NULL DEFAULT NULL COMMENT '合计(万)',
   `code` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '编号',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_customer_task_data_customer_id`(`customer_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户联系人' ROW_FORMAT = Dynamic;
+  INDEX `idx_customer_task_data_customer_id`(`customer_id`) USING BTREE,
+  INDEX `idx_code`(`code`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户联系人' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_task_data
 -- ----------------------------
 INSERT INTO `customer_task_data` VALUES (1, 1, 1, 1602516750, '系统管理员', '系统管理员', 1615845758, 1, 1, 1.00, 2.00, 3.00, 2.00, 3.00, 3.00, 32.00, 3.00, 3.00, 3.00, 213.00, 3.00, 271.00, '123');
+INSERT INTO `customer_task_data` VALUES (2, 2, 2, 1624882518, '系统管理员', NULL, NULL, 1, NULL, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 120.00, '12');
 
 -- ----------------------------
 -- Table structure for customer_tax
@@ -5072,7 +5076,7 @@ CREATE TABLE `product_formula`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_formula_product_id`(`product_id`) USING BTREE,
   INDEX `idx_product_formula_material_id`(`material_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1097 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1098 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of product_formula
@@ -5887,7 +5891,7 @@ INSERT INTO `product_formula` VALUES (1080, 20327, 16, 3.26, 1, NULL, 0.000, 100
 INSERT INTO `product_formula` VALUES (1081, 20327, 18, 0.47, 1, NULL, 0.000, 10002, '甘小艳', 0);
 INSERT INTO `product_formula` VALUES (1082, 20356, 19, 4.66, 1, NULL, NULL, 10002, '甘小艳', NULL);
 INSERT INTO `product_formula` VALUES (1083, 20385, 12, 8.49, 1, NULL, NULL, 10002, '甘小艳', NULL);
-INSERT INTO `product_formula` VALUES (1084, 20364, 54, 2.75, 1, '', 0.000, 10002, '甘小艳', 0);
+INSERT INTO `product_formula` VALUES (1084, 20410, 54, 2.75, 1, '', 0.000, 10002, '甘小艳', 0);
 INSERT INTO `product_formula` VALUES (1085, 20362, 54, 2.25, 1, '', 0.000, 10002, '甘小艳', 0);
 INSERT INTO `product_formula` VALUES (1087, 20409, 3, 6.32, 1, NULL, 0.000, 2079, '甘小艳', 1586326241);
 INSERT INTO `product_formula` VALUES (1088, 20410, 3, 6.32, 1, NULL, 0.000, 2079, '甘小艳', 1586326241);
@@ -5899,6 +5903,7 @@ INSERT INTO `product_formula` VALUES (1093, 1456, 36, 0.04, 1, NULL, NULL, 2079,
 INSERT INTO `product_formula` VALUES (1094, 1465, 36, 0.04, 1, NULL, NULL, 2079, '甘小艳', 1593501092);
 INSERT INTO `product_formula` VALUES (1095, 1465, 18, 0.28, 1, NULL, NULL, 2079, '甘小艳', 1593501184);
 INSERT INTO `product_formula` VALUES (1096, 1456, 18, 0.28, 1, NULL, NULL, 2079, '甘小艳', 1593501184);
+INSERT INTO `product_formula` VALUES (1097, 20410, 54, NULL, NULL, NULL, NULL, 1, '系统管理员', 1624571443);
 
 -- ----------------------------
 -- Table structure for product_material
@@ -6600,7 +6605,7 @@ INSERT INTO `purchase_order_data` VALUES (3, 2, NULL, NULL, NULL, NULL, 16141917
 DROP TABLE IF EXISTS `region`;
 CREATE TABLE `region`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `parent_id` int(11) NULL DEFAULT NULL COMMENT '上级',
+  `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '上级',
   `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `code` int(11) NULL DEFAULT NULL,
   `layer` tinyint(4) NULL DEFAULT NULL,
@@ -6614,7 +6619,7 @@ CREATE TABLE `region`  (
   INDEX `idx_region_code`(`code`) USING BTREE,
   INDEX `idx_region_layer`(`layer`) USING BTREE,
   INDEX `idx_region_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3194 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3196 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of region
@@ -10063,6 +10068,7 @@ CREATE TABLE `share`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `source_id` int(11) NOT NULL,
   `source_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_repeat` tinyint(3) NOT NULL DEFAULT 0 COMMENT '重复标记',
   `receive_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '共享编号',
   `receive_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '共享名称',
   `permissions` smallint(6) NULL DEFAULT NULL,
@@ -10070,8 +10076,11 @@ CREATE TABLE `share`  (
   `end_at` int(11) NULL DEFAULT NULL COMMENT '结束时间',
   `created_by` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `created_id` int(11) NULL DEFAULT NULL,
+  `created_at` int(10) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_share_source_id`(`source_id`) USING BTREE
+  INDEX `idx_source_id`(`source_id`) USING BTREE,
+  INDEX `idx_source_type`(`source_type`) USING BTREE,
+  INDEX `idx_is_repeat`(`is_repeat`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -11063,7 +11072,7 @@ CREATE TABLE `system_log`  (
   `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '日志类型',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_action_log_created_id`(`created_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of system_log
@@ -11135,10 +11144,10 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '系统管理员', 20, 1, 3, 0, 0, 1, 0, '', 0, NULL, '18vYWCCr4QiK2fTooowr5iWw9A70Ui6fQSTHs5ZAJzxbZuwSnbmH8f1Gr0Cn', 1, 1, '2020-10-05', 0, '', '', 3, '028-12345678', '', '', '24', '', 1, '$2y$10$DFN0jlZa0x3IGcZAkolJTuYMnJpOnX78L9XG2Q5N2Y32FuAST8UwO', '123456', 'fvzone@qq.com', 0, '0', 0, 'blue2', '系统管理员', 1623574074, 0, '', 0, NULL, '', '15182223008', 24);
+INSERT INTO `user` VALUES (1, 'admin', '系统管理员', 20, 1, 3, 0, 0, 1, 0, '', 0, NULL, 'u8iVSaXR8r9ItU4asOXqjpjzDsGrZANdGVd4zVkPiOXgWTvQW4WuxND7WanI', 1, 1, '2020-10-05', 0, '', '', 3, '028-12345678', '', '', '24', '', 1, '$2y$10$DFN0jlZa0x3IGcZAkolJTuYMnJpOnX78L9XG2Q5N2Y32FuAST8UwO', '123456', 'fvzone@qq.com', 0, '0', 0, 'blue2', '系统管理员', 1625352318, 0, '', 0, NULL, '', '15182223008', 24);
 INSERT INTO `user` VALUES (2, '01001', '王二小食品有限公司', 1, 2, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1594147787, '系统管理员', NULL, NULL, '系统管理员', 1615757797, NULL, NULL, 1, NULL, NULL, '213', NULL);
-INSERT INTO `user` VALUES (3, '赵云', '赵云', 3, 1, 0, NULL, NULL, 1, NULL, NULL, 0, NULL, 'jzzOIclqiE5180Lj27Ir8fEkP7THFHhHKDuzj8IlYWd8025ROeDJRCflDZAs', 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$qkonB.DXNaXvAzNQinz9UeXLAmIybudyYCN4FWiTf6JyeQk4BXT8W', '123456', NULL, 1601234908, '系统管理员', NULL, 'blue2', '赵云', 1623574086, NULL, NULL, 0, NULL, NULL, '15182223008', 0);
-INSERT INTO `user` VALUES (4, '关羽', '关羽', 19, 83, 0, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$a/sqD3GeTkC5UkB4BDyOvu67uQIoGm1sRLVS5TFyQsePC0qm0cT8m', '123456', NULL, 1601369401, '系统管理员', NULL, NULL, '系统管理员', 1614397204, NULL, NULL, 1, NULL, NULL, '15182223008', 0);
+INSERT INTO `user` VALUES (3, '赵云', '赵云', 3, 1, 0, NULL, NULL, 1, NULL, NULL, 0, NULL, 'wcKgC2FORgT0LKm5hC5vgCTvrrgZqhT2BcNUfvFW8xqAS82SBmRFzwgkuD2o', 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$qkonB.DXNaXvAzNQinz9UeXLAmIybudyYCN4FWiTf6JyeQk4BXT8W', '123456', NULL, 1601234908, '系统管理员', NULL, 'blue2', '赵云', 1625352333, NULL, NULL, 0, NULL, NULL, '15182223008', 0);
+INSERT INTO `user` VALUES (4, '关羽', '关羽', 19, 83, 0, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$a/sqD3GeTkC5UkB4BDyOvu67uQIoGm1sRLVS5TFyQsePC0qm0cT8m', '123456', NULL, 1601369401, '系统管理员', NULL, 'lilac', '关羽', 1625351486, NULL, NULL, 0, NULL, NULL, '15182223008', 0);
 INSERT INTO `user` VALUES (5, '52347', '刘洋', NULL, 95, NULL, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1603204082, '系统管理员', NULL, NULL, '系统管理员', 1612575522, NULL, NULL, NULL, NULL, NULL, '15879653821', NULL);
 INSERT INTO `user` VALUES (6, '100002', '四川幺麻子食品公司', 17, 2, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$Gb4n4ea3nlMGxJsPKSWBUug8hZFLj4xI831Gru.s78ZX314UwyEOm', '123456', NULL, 1620468708, '系统管理员', NULL, NULL, '系统管理员', 1620470105, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `user` VALUES (7, '100003', '百家食品有限公司', 17, 2, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '123456', '123456', NULL, 1620469893, '系统管理员', NULL, NULL, '系统管理员', 1620470124, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -11338,7 +11347,7 @@ CREATE TABLE `user_warehouse`  (
   PRIMARY KEY (`id`, `user_id`, `warehouse_id`) USING BTREE,
   INDEX `idx_user_warehouse_user_id`(`user_id`) USING BTREE,
   INDEX `idx_user_warehouse_id`(`warehouse_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_warehouse
@@ -11355,6 +11364,7 @@ INSERT INTO `user_warehouse` VALUES (9, 1, 20048);
 INSERT INTO `user_warehouse` VALUES (10, 1, 20051);
 INSERT INTO `user_warehouse` VALUES (11, 1, 20053);
 INSERT INTO `user_warehouse` VALUES (12, 1, 20054);
+INSERT INTO `user_warehouse` VALUES (13, 1, 20056);
 
 -- ----------------------------
 -- Table structure for user_widget
@@ -11378,32 +11388,11 @@ CREATE TABLE `user_widget`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_node_id`(`node_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 57 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_widget
 -- ----------------------------
-INSERT INTO `user_widget` VALUES (1, 1, '待办事项', 1, 'default', NULL, NULL, 'fa-ambulance', '8', 1, NULL, 1, 34, NULL);
-INSERT INTO `user_widget` VALUES (2, 1, '待办流程', 2, 'info', NULL, NULL, 'fa-pencil', '8', 1, NULL, 1, 2, NULL);
-INSERT INTO `user_widget` VALUES (3, 1, '订单统计', 3, 'info', NULL, NULL, 'fa-file-text', '4', 1, NULL, 1, 1, NULL);
-INSERT INTO `user_widget` VALUES (4, 1, '明日预计到货', 5, 'info', NULL, NULL, 'fa-lightbulb', '4', 1, NULL, 1, 4, NULL);
-INSERT INTO `user_widget` VALUES (5, 1, '项目任务', 1, '#23b7e5', NULL, NULL, 'fa-cubes', '', 2, NULL, 1, 3, '{\"permission\":\"department\",\"date\":\"year\"}');
-INSERT INTO `user_widget` VALUES (18, 1, '未读公告', 2, '#7266ba', NULL, NULL, 'fa-bell-o', NULL, 2, NULL, 1, 44, '{\"permission\":\"department\",\"date\":\"month\"}');
-INSERT INTO `user_widget` VALUES (21, 1, '新闻公告', 1, '#0066FF', 'article/article/index', NULL, 'fa-bell-o', NULL, 3, NULL, NULL, 6, NULL);
-INSERT INTO `user_widget` VALUES (22, 1, '日程管理', 2, '#33CC33', 'calendar/calendar/index', NULL, 'fa-calendar', NULL, 3, NULL, NULL, 57, NULL);
-INSERT INTO `user_widget` VALUES (23, 1, '项目管理', 3, '#6666FF', 'project/project/index', NULL, 'fa-cube', NULL, 3, NULL, NULL, 224, NULL);
-INSERT INTO `user_widget` VALUES (24, 1, '应用管理', 4, '#FF3399', 'model/bill/index', NULL, 'fa-cubes', NULL, 3, NULL, NULL, 1293, NULL);
-INSERT INTO `user_widget` VALUES (25, 6, '待办事项', 1, 'default', NULL, NULL, NULL, '8', 1, NULL, 1, 34, NULL);
-INSERT INTO `user_widget` VALUES (26, 6, '待办流程', 2, 'info', NULL, NULL, 'fa-pencil', '8', 1, NULL, 1, 2, NULL);
-INSERT INTO `user_widget` VALUES (27, 6, '订单统计', 3, 'info', NULL, NULL, 'fa-file-text', '4', 1, NULL, 1, 1, NULL);
-INSERT INTO `user_widget` VALUES (28, 6, '项目任务', 1, 'info', NULL, NULL, 'fa-cubes', NULL, 2, NULL, 1, 3, '{\"permission\":\"dept\",\"date\":\"month\"}');
-INSERT INTO `user_widget` VALUES (29, 6, '新增公告', 2, 'primary', NULL, NULL, 'fa-bell-o', NULL, 2, NULL, 1, 44, '{\"permission\":\"dept\",\"date\":\"month\"}');
-INSERT INTO `user_widget` VALUES (30, 8, '待办事项', 1, 'default', NULL, NULL, NULL, '8', 1, NULL, 1, 34, NULL);
-INSERT INTO `user_widget` VALUES (31, 8, '待办流程', 2, 'info', NULL, NULL, 'fa-pencil', '4', 1, NULL, 1, 2, NULL);
-INSERT INTO `user_widget` VALUES (32, 8, '项目任务', 1, 'info', NULL, NULL, 'fa-cubes', NULL, 2, NULL, 1, 3, NULL);
-INSERT INTO `user_widget` VALUES (33, 8, '新增公告', 2, 'primary', NULL, NULL, 'fa-bell-o', NULL, 2, NULL, 1, 44, NULL);
-INSERT INTO `user_widget` VALUES (34, 1, '客户生日', 2, 'info', NULL, NULL, 'fa-email', '8', 1, NULL, 1, 25, NULL);
-INSERT INTO `user_widget` VALUES (35, 1, '最新公告', 4, 'info', NULL, NULL, 'fa-sound_none', '4', 1, NULL, 1, 5, NULL);
 
 -- ----------------------------
 -- Table structure for warehouse
@@ -11434,7 +11423,7 @@ CREATE TABLE `warehouse`  (
   INDEX `idx_warehouse_parent_id`(`parent_id`) USING BTREE,
   INDEX `idx_warehouse_status`(`status`) USING BTREE,
   INDEX `idx_warehouse_name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20056 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品分类表名' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20057 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品分类表名' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of warehouse
@@ -11452,6 +11441,7 @@ INSERT INTO `warehouse` VALUES (20051, '79', 0, 0, 0, 0, 1, '特价库', NULL, 1
 INSERT INTO `warehouse` VALUES (20053, '02', NULL, NULL, NULL, NULL, NULL, '辅料库', NULL, NULL, 1587584650, '系统管理员', '系统管理员', 1587584729, 1, NULL, 1, 1);
 INSERT INTO `warehouse` VALUES (20054, '82', NULL, NULL, NULL, NULL, NULL, '样品库', NULL, NULL, 1589868753, '系统管理员', '系统管理员', 1612835832, 1, NULL, 1, 1);
 INSERT INTO `warehouse` VALUES (20055, '25', NULL, NULL, NULL, NULL, NULL, '成品待检验库', NULL, NULL, 1614448583, '系统管理员', NULL, NULL, 1, NULL, 1, NULL);
+INSERT INTO `warehouse` VALUES (20056, '01', NULL, NULL, NULL, NULL, NULL, '123', NULL, NULL, 1624570903, '系统管理员', NULL, NULL, 1, NULL, 1, NULL);
 
 -- ----------------------------
 -- Table structure for warehouse_location
@@ -11713,11 +11703,11 @@ CREATE TABLE `widget`  (
 -- Records of widget
 -- ----------------------------
 INSERT INTO `widget` VALUES (1, '订单统计', 'info', 1, 2, 'order/widget/index', 'order/order/index', 'd27,d28,d3,d6,d9,d1,d17,d20,d18,d21,d2,d16,d11,d4,d7,d19,d10', '运营采购部,原辅料采购部,采购部,公共关系部,技术中心,董事办,营销中心,销售部,客服部,市场部,财务部,生产部,品管部,仓储物流部,国际贸易部,网络营销部,研发部', 1, 1, 'fa-file-text', '系统管理员', 1613203955, NULL, NULL, 1, NULL, 'widget_order_index', 4);
-INSERT INTO `widget` VALUES (3, '项目任务', 'info', 2, 10, 'project/widget/info', 'project/project/index', 'all', '全体人员', 1, 1, 'fa-cubes', '系统管理员', 1613209678, NULL, NULL, 1, NULL, 'info_project_task', NULL);
+INSERT INTO `widget` VALUES (3, '项目任务', '#0066FF', 2, 10, 'project/widget/info', 'project/project/index', 'all', '全体人员', 1, 1, 'fa-cubes', '赵云', 1625350331, NULL, NULL, 3, NULL, 'info_project_task', 8);
 INSERT INTO `widget` VALUES (4, '明日预计到货', 'info', 1, 4, 'order/widget/goods', 'order/order/delivery', 'd27,d28,d3,d9,d1,d20,d18,d21,d2,d16,d11,d4,d7,d19,d10', '运营采购部,原辅料采购部,采购部,技术中心,董事办,销售部,客服部,市场部,财务部,生产部,品管部,仓储物流部,国际贸易部,网络营销部,研发部', 1, 1, 'fa-lightbulb', '系统管理员', 1613203955, NULL, NULL, 1, NULL, 'widget_order_goods', 4);
-INSERT INTO `widget` VALUES (5, '最新公告', 'info', 1, 5, 'article/widget/index', 'article/article/index', 'all', '全体人员', 1, 1, 'fa-sound_none', '系统管理员', 1623146465, NULL, NULL, 1, NULL, 'widget_article_index', 8);
+INSERT INTO `widget` VALUES (5, '最新公告', 'info', 1, 5, 'article/widget/index', 'article/article/index', 'all', '全体人员', 1, 1, 'fa-sound_none', '赵云', 1625351430, NULL, NULL, 3, NULL, 'widget_article_index', 8);
 INSERT INTO `widget` VALUES (25, '客户生日', 'info', 1, 9, 'customer/widget/birthday', 'customer/customer/birthday', 'all', '全体人员', 1, 1, 'fa-email', '系统管理员', 1623146458, NULL, NULL, 1, NULL, 'widget_customer_birthday', 8);
 INSERT INTO `widget` VALUES (34, '待办事项', 'default', 1, 0, 'model/todo/widget', 'model/todo/index', 'all', '全体人员', 1, 1, NULL, '系统管理员', 1613203955, NULL, NULL, 1, NULL, 'widget_model_todo', 8);
-INSERT INTO `widget` VALUES (44, '新增公告', 'primary', 2, 10, 'article/widget/info', 'article/article/index', 'all', '全体人员', 1, 1, 'fa-bell-o', '系统管理员', 1613209050, NULL, NULL, 1, NULL, 'info_article_index', NULL);
+INSERT INTO `widget` VALUES (44, '未读公告', '#FF9900', 2, 10, 'article/widget/info', 'article/article/index', 'all', '全体人员', 1, 1, 'fa-bell-o', '赵云', 1625350931, NULL, NULL, 3, NULL, 'info_article_index', 8);
 
 SET FOREIGN_KEY_CHECKS = 1;

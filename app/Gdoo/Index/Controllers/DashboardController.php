@@ -17,7 +17,6 @@ class DashboardController extends DefaultController
         $widgets = DB::table('widget')
         ->where('type', 1)
         ->where('status', 1)
-        ->where('default', 1)
         ->permission('receive_id')
         ->orderBy('sort', 'asc')
         ->get();
@@ -30,7 +29,6 @@ class DashboardController extends DefaultController
         $widgets->transform(function ($row) use($user_widgets) {
             $user_widget = $user_widgets[$row['id']];
             if (not_empty($user_widget)) {
-                $row['id'] = $user_widget['id'];
                 $row['status'] = $user_widget['status'];
                 $row['grid'] = $user_widget['grid'];
                 $row['sort'] = $user_widget['sort'];
@@ -44,15 +42,16 @@ class DashboardController extends DefaultController
                     $row['icon'] = $user_widget['icon'];
                 }
                 $row['params'] = json_decode($user_widget['params'], true);
-                return $row;
+            } else {
+                $row['status'] = $row['default'] == 1;
             }
+            return $row;
         });
-        $widgets = $widgets->sortBy('sort');
+        $widgets = $widgets->sortBy('sort')->values();
 
         $infos = DB::table('widget')
         ->where('type', 2)
         ->where('status', 1)
-        ->where('default', 1)
         ->permission('receive_id')
         ->orderBy('sort', 'asc')
         ->get();
@@ -65,7 +64,6 @@ class DashboardController extends DefaultController
         $infos->transform(function ($row) use($user_infos) {
             $user_info = $user_infos[$row['id']];
             if (not_empty($user_info)) {
-                $row['id'] = $user_info['id'];
                 $row['status'] = $user_info['status'];
                 $row['sort'] = $user_info['sort'];
                 if ($user_info['name']) {
@@ -78,10 +76,12 @@ class DashboardController extends DefaultController
                     $row['icon'] = $user_info['icon'];
                 }
                 $row['params'] = json_decode($user_info['params'], true);
-                return $row;
+            } else {
+                $row['status'] = $row['default'] == 1;
             }
+            return $row;
         });
-        $infos = $infos->sortBy('sort');
+        $infos = $infos->sortBy('sort')->values();
 
         $quicks = Menu::leftJoin('user_widget', 'user_widget.node_id', '=', 'menu.id')
         ->where('user_widget.user_id', $auth['id'])
@@ -159,15 +159,14 @@ class DashboardController extends DefaultController
         $widgets = DB::table('widget')
         ->where('type', 1)
         ->where('status', 1)
-        ->where('default', 1)
         ->permission('receive_id')
         ->orderBy('sort', 'asc')
-        ->get(['id', 'name', 'color', 'icon', 'grid', 'status']);
+        ->get();
 
         $user_widgets = UserWidget::where('user_id', $auth['id'])
         ->where('type', 1)
         ->orderBy('sort', 'asc')
-        ->get(['id', 'name', 'color', 'icon', 'grid', 'node_id', 'status'])->keyBy('node_id');
+        ->get()->keyBy('node_id');
 
         $widgets->transform(function ($row) use($user_widgets) {
             $user_widget = $user_widgets[$row['id']];
@@ -189,20 +188,19 @@ class DashboardController extends DefaultController
             }
             return $row;
         });
-        $widgets = $widgets->sortBy('sort');
+        $widgets = $widgets->sortBy('sort')->values();
 
         $infos = DB::table('widget')
         ->where('type', 2)
         ->where('status', 1)
-        ->where('default', 1)
         ->permission('receive_id')
         ->orderBy('sort', 'asc')
-        ->get(['id', 'name', 'color', 'icon', 'grid', 'status']);
+        ->get();
 
         $user_infos = UserWidget::where('user_id', $auth['id'])
         ->where('type', 2)
         ->orderBy('sort', 'asc')
-        ->get(['id', 'name', 'color', 'icon', 'grid', 'node_id', 'status', 'params'])->keyBy('node_id');
+        ->get()->keyBy('node_id');
 
         $infos->transform(function ($row) use($user_infos) {
             $user_info = $user_infos[$row['id']];
@@ -224,7 +222,7 @@ class DashboardController extends DefaultController
             }
             return $row;
         });
-        $infos = $infos->sortBy('sort');
+        $infos = $infos->sortBy('sort')->values();
 
         $menus = UserWidget::where('user_id', $auth['id'])
         ->where('type', 3)
@@ -281,13 +279,16 @@ class DashboardController extends DefaultController
         $info_id = Request::input('info_id');
         $row = UserWidget::where('id', $info_id)->first();
         $widget = Widget::where('id', $row['node_id'])->first();
+        $params = json_decode($row['params'], true);
 
-        if (empty($row['date'])) {
-            $row['date'] = 'month';
+        if (empty($params['date'])) {
+            $params['date'] = 'month';
         }
-        if (empty($row['permission'])) {
-            $row['permission'] = 'dept';
+        if (empty($params['permission'])) {
+            $params['permission'] = 'dept';
         }
+        $row['params'] = $params;
+
         $row['widget_name'] = $widget['name'];
 
         return $this->render([
@@ -303,12 +304,16 @@ class DashboardController extends DefaultController
         $widget_id = Request::input('widget_id');
         $row = UserWidget::where('id', $widget_id)->first();
         $widget = Widget::where('id', $row['node_id'])->first();
-        if (empty($row['date'])) {
-            $row['date'] = 'month';
+        $params = json_decode($row['params'], true);
+
+        if (empty($params['date'])) {
+            $params['date'] = 'month';
         }
-        if (empty($row['permission'])) {
-            $row['permission'] = 'dept';
+        if (empty($params['permission'])) {
+            $params['permission'] = 'dept';
         }
+        $row['params'] = $params;
+
         $row['widget_name'] = $widget['name'];
 
         return $this->render([

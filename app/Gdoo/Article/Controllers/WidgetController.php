@@ -21,17 +21,7 @@ class WidgetController extends DefaultController
             ->permission('receive_id')
             ->orderBy('created_at', 'desc');
 
-            // 查询是否已经阅读
-            $reader = function ($q) {
-                $q->selectRaw('1')
-                ->from('article_reader')
-                ->whereRaw('article_reader.article_id = article.id')
-                ->where('article_reader.created_id', auth()->id());
-            };
-            $model->whereNotExists($reader);
-
-            $rows = $model->get(['id', 'name', 'created_at']);
-            
+            $rows = $model->limit(15)->get(['id', 'name', 'created_at']);
             $json['total'] = sizeof($rows);
             $json['data'] = $rows;
             return $json;
@@ -73,6 +63,7 @@ class WidgetController extends DefaultController
             'count2' => $count2,
             'rate' => $rate,
         ];
+
         return $this->render([
             'dates' => $config['dates'],
             'info' => $config['info'],

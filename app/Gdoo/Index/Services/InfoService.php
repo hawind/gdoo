@@ -36,11 +36,11 @@ class InfoService
             'year2' => '前年',
         ];
 
-        $user_info = UserWidget::where('user_id', $auth['id'])
-        ->where('id', $gets['id'])->first();
-
-        $info = Widget::where('id', $user_info['node_id'])
+        $info = Widget::where('id', $gets['id'])
         ->first();
+
+        $user_info = UserWidget::where('user_id', $auth['id'])
+        ->where('node_id', $gets['id'])->first();
 
         if (not_empty($user_info)) {
             $info['id'] = $user_info['id'];
@@ -59,6 +59,9 @@ class InfoService
 
         $permission = empty($params['permission']) ? 'department' : $params['permission'];
         $date = empty($params['date']) ? 'month' : $params['date'];
+        $params['permission'] = $permission;
+        $params['date'] = $date;
+        $info['params'] = $params;
 
         switch ($date) {
             case 'day':
@@ -104,8 +107,8 @@ class InfoService
         $sql = $sql2 = '';
         switch ($date) {
             case 'day':
-                $sql = sql_year_month_day($table.'created_at','ts')."='$day'";
-                $sql2 = sql_year_month_day($table.'created_at','ts')."='$day2'";
+                $sql = sql_year_month_day($table.'.created_at','ts')."='$day'";
+                $sql2 = sql_year_month_day($table.'.created_at','ts')."='$day2'";
                 break;
             case 'day2':
                 $sql = sql_year_month_day($table.'.created_at','ts')."='$day2'";

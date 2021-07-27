@@ -114,7 +114,7 @@ class Builder extends BaseBuilder
                 if ($column['is_identity'] == 1) {
                     continue;
                 }
-                if (isset($values[$k])) {
+                if (array_key_exists($k, $values)) {
                     $v = $values[$k];
                     // 数字类型格式化
                     if (isset($numbers[$column['data_type']])) {

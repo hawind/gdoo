@@ -8,13 +8,24 @@ class ShareService
     /**
      * 获取分享数据
      */
-    public static function getItemsSourceBy(array $source_type, $user_id)
+    public static function getItemsSourceBy(array $source_type, $user_id, $start_at = null, $end_at = null)
     {
         $user = User::find($user_id);
-        return Share::leftJoin('user', 'share.created_id', '=', 'user.id')
+
+        $model = Share::leftJoin('user', 'share.created_id', '=', 'user.id')
         ->permission('share.receive_id', $user)
-        ->whereIn('share.source_type', $source_type)
-        ->get(['share.*', 'user.name', 'user.username']);
+        ->whereIn('share.source_type', $source_type);
+
+        $start_at = strtotime($start_at);
+        $end_at = strtotime($end_at) + 86400;
+        if ($start_at > 0 && $end_at > 0) {
+            $model->whereRaw('
+                (share.start_at between '.$start_at.' and '.$end_at.' or share.end_at between '.$start_at.' and '.$end_at.')
+                or (share.is_repeat = 1 and share.start_at <= '.$end_at.')
+            ');
+        }
+
+        return $model->get(['share.*', 'user.name', 'user.username']);
     }
 
     /**

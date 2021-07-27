@@ -44,7 +44,7 @@ class EventController extends DefaultController
         }
 
         // 获取共享事件
-        $shared = ShareService::getItemsSourceBy(['event'], $gets['user_id']);
+        $shared = ShareService::getItemsSourceBy(['event'], $gets['user_id'], $gets['start'], $gets['end']);
         $share_id = Arr::pluck($shared, 'source_id');
         if (count($share_id)) {
             $share = Arr::pluck($shared, 'name', 'source_id');

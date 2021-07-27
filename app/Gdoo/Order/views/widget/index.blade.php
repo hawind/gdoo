@@ -2,6 +2,9 @@
 #order-index-widget .ag-header-cell-label { 
     justify-content: left !important;
 }
+#order-index-widget .ag-header {
+    border-bottom: 0;
+}
 </style>
 <div class="wrapper-sm p-t-none">
     <div class="gdoo-list-grid">
@@ -14,6 +17,7 @@
     var options = new agGridOptions();
     options.remoteDataUrl = '{{url()}}';
     options.remoteParams = {};
+    options.headerHeight = 0;
     var columnDefs = [{
         field: 'title', 
         cellClass:'text-left',

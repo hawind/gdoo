@@ -286,7 +286,7 @@ var settingWidget = Vue.createApp({
             var me = this;
             formDialog({
                 title: '配置',
-                url: app.url('index/dashboard/settingInfo', {info_id:item.info_id}),
+                url: app.url('index/dashboard/settingInfo', {id:item.id}),
                 id: 'setting-info',
                 dialogClass:'modal-sm',
                 onSubmit: function() {
@@ -303,7 +303,7 @@ var settingWidget = Vue.createApp({
             var me = this;
             formDialog({
                 title: '配置',
-                url: app.url('index/dashboard/settingWidget', {widget_id:item.widget_id}),
+                url: app.url('index/dashboard/settingWidget', {id:item.id}),
                 id: 'setting-widget',
                 dialogClass:'modal-sm',
                 onSubmit: function() {

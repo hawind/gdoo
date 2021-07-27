@@ -9,7 +9,7 @@
         </a>
     </div>
     <div class="info-r">
-        <div>较{{$dates[$info['params']['date']]}}</div>
+        <div>比{{$dates[$info['params']['date']]}}</div>
         <div class="rate @if($res['rate'] > 100) red @endif">{{$res['rate']}}%</div>
     </div>
 </div>
