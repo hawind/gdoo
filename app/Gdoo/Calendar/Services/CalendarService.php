@@ -1,15 +1,6 @@
 <?php namespace Gdoo\Calendar\Services;
 
 /**
- * Copyright (c) 2011 Jakob Sack <mail@jakobsack.de>
- * Copyright (c) 2012 Bart Visscher <bartv@thisnet.nl>
- * Copyright (c) 2012 Georg Ehrke <ownclouddev at georgswebsite dot de>
- * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
- */
-
-/**
  * This class manages our calendar objects
  */
 
@@ -183,9 +174,9 @@ class CalendarService
 
     /**
      * @brief Returns all objects of a calendar between $start and $end
-     * @param integer $id
-     * @param DateTime $start
-     * @param DateTime $end
+     * @param array $id
+     * @param int $start
+     * @param int $end
      * @return array
      *
      * The objects are associative arrays. You'll find the original vObject
@@ -194,7 +185,7 @@ class CalendarService
     public static function getRangeEvents($id, $start, $end, $shared = false)
     {
         $start = strtotime($start);
-        $end   = strtotime($end);
+        $end = strtotime($end);
 
         /*
         $model = CalendarObject::where(function ($q) use ($start, $end) {
@@ -240,13 +231,13 @@ class CalendarService
             $allday = ($vcalendar->VEVENT->DTSTART->getDateType() == \Sabre\VObject\Property\DateTime::DATE) ? true : false;
 
             $output = array(
-                'id'           => (int)$row->id,
-                'calendarid'   => (int)$row->calendarid,
-                'title'        => (isset($vevent->SUMMARY) && $vevent->SUMMARY->value) ? strtr($vevent->SUMMARY->value, array('\,' => ',', '\;' => ';')) : 'unnamed',
-                'description'  => (isset($vevent->DESCRIPTION) && $vevent->DESCRIPTION->value) ? strtr($vevent->DESCRIPTION->value, array('\,' => ',', '\;' => ';')) : '',
-                'location'     => (isset($vevent->LOCATION) && $vevent->LOCATION->value) ? strtr($vevent->LOCATION->value, array('\,' => ',', '\;' => ';')) : '',
+                'id' => (int)$row->id,
+                'calendarid' => (int)$row->calendarid,
+                'title' => (isset($vevent->SUMMARY) && $vevent->SUMMARY->value) ? strtr($vevent->SUMMARY->value, array('\,' => ',', '\;' => ';')) : 'unnamed',
+                'description' => (isset($vevent->DESCRIPTION) && $vevent->DESCRIPTION->value) ? strtr($vevent->DESCRIPTION->value, array('\,' => ',', '\;' => ';')) : '',
+                'location' => (isset($vevent->LOCATION) && $vevent->LOCATION->value) ? strtr($vevent->LOCATION->value, array('\,' => ',', '\;' => ';')) : '',
                 'lastmodified' => $row->lastmodified,
-                'allDay'       => $allday,
+                'allDay' => $allday,
             );
 
             if ($vcalendar->VEVENT->RRULE) {
@@ -296,19 +287,19 @@ class CalendarService
 
         $extraData = self::getDenormalizedData($calendardata);
         $uri = self::createURI().'.ics';
-        $data = array(
-            'calendarid'     => $id,
-            'uri'            => $uri,
-            'calendardata'   => $calendardata,
-            'lastmodified'   => time(),
-            'attachment'     => $attachment,
-            'rrule'          => $extraData['rrule'],
-            'etag'           => $extraData['etag'],
-            'size'           => $extraData['size'],
-            'componenttype'  => $extraData['componentType'],
+        $data = [
+            'calendarid' => $id,
+            'calendardata' => $calendardata,
+            'attachment' => $attachment,
+            'rrule' => $extraData['rrule'],
+            'etag' => $extraData['etag'],
+            'size' => $extraData['size'],
+            'uri' => $uri,
+            'componenttype' => $extraData['componentType'],
             'firstoccurence' => $extraData['firstOccurence'],
-            'lastoccurence'  => $extraData['lastOccurence'],
-        );
+            'lastoccurence' => $extraData['lastOccurence'],
+            'lastmodified' => time(),
+        ];
         $objectId = CalendarObject::insertGetId($data);
         self::touchCalendar($id);
         return $objectId;
@@ -334,17 +325,17 @@ class CalendarService
         }
 
         $extraData = self::getDenormalizedData($calendardata);
-        $data = array(
-            'calendardata'   => $calendardata,
-            'lastmodified'   => time(),
-            'attachment'     => $attachment,
-            'rrule'          => $extraData['rrule'],
-            'etag'           => $extraData['etag'],
-            'size'           => $extraData['size'],
-            'componenttype'  => $extraData['componentType'],
+        $data = [
+            'calendardata' => $calendardata,
+            'attachment' => $attachment,
+            'rrule' => $extraData['rrule'],
+            'etag' => $extraData['etag'],
+            'size' => $extraData['size'],
+            'componenttype' => $extraData['componentType'],
             'firstoccurence' => $extraData['firstOccurence'],
-            'lastoccurence'  => $extraData['lastOccurence'],
-        );
+            'lastoccurence' => $extraData['lastOccurence'],
+            'lastmodified' => time(),
+        ];
         CalendarObject::where('id', $id)->update($data);
         self::touchCalendar($event['calendarid']);
         return true;
@@ -449,14 +440,14 @@ class CalendarService
             }
         }
 
-        return array(
-            'etag'           => md5($calendarData),
-            'size'           => strlen($calendarData),
-            'rrule'          => $rrule,
-            'componentType'  => $componentType,
+        return [
+            'etag' => md5($calendarData),
+            'size' => strlen($calendarData),
+            'rrule' => $rrule,
+            'componentType' => $componentType,
             'firstOccurence' => $firstOccurence,
-            'lastOccurence'  => $lastOccurence,
-        );
+            'lastOccurence' => $lastOccurence,
+        ];
     }
 
     /**
@@ -1112,7 +1103,6 @@ class CalendarService
 
         if ($allday) {
             $return['start'] = $start_dt->format('Y-m-d');
-            //$end_dt->modify('-1 minute');
             while ($start_dt >= $end_dt) {
                 $end_dt->modify('+1 day');
             }
