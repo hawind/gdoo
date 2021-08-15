@@ -24,10 +24,9 @@ Vue.createApp({
         grid.autoColumnsToFit = true;
 
         var action = config.action;
-        // 详情页打开方式
-        action.dialogType = 'layer';
+        
         // 双击行执行的方法
-        action.rowDoubleClick = action.show;
+        action.rowDoubleClick = action.edit;
 
         action.config = function() {
             var me = this;
