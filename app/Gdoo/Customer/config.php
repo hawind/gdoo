@@ -52,6 +52,18 @@ return [
             'url' => 'customer/widget/birthday',
             'more_url' => 'customer/customer/birthday',
         ],
+        'info_customer_count' => [
+            'name' => '客户',
+            'type' => 2,
+            'url' => 'customer/widget/customerCount',
+            'more_url' => 'customer/customer/index',
+        ],
+        'info_customer_contact_count' => [
+            'name' => '客户联系人',
+            'type' => 2,
+            'url' => 'customer/widget/customerContactCount',
+            'more_url' => 'customer/contact/index',
+        ],
     ],
     "listens" => [
         'customer' => 'Gdoo\Customer\Hooks\CustomerHook',

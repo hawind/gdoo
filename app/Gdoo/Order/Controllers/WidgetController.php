@@ -3,12 +3,13 @@
 use DB;
 use Request;
 use Auth;
+use Gdoo\Index\Services\InfoService;
 
 use Gdoo\Index\Controllers\DefaultController;
 
 class WidgetController extends DefaultController
 {
-    public $permission = ['index', 'goods'];
+    public $permission = ['index', 'goods', 'orderCount'];
 
     public function index()
     {
@@ -228,5 +229,49 @@ class WidgetController extends DefaultController
             return $json;
         }
         return $this->render();
+    }
+
+    /**
+     * 订单数量
+     */
+    public function orderCount()
+    {
+        $config = InfoService::getInfo('customer_order');
+
+        $model = DB::table('customer_order')
+        ->leftJoin('customer_order_data','customer_order_data.order_id', '=', 'customer_order.id')
+        ->whereRaw('('.$config['sql'].')');
+
+        $model2 = DB::table('customer_order')
+        ->leftJoin('customer_order_data','customer_order_data.order_id', '=', 'customer_order.id')
+        ->whereRaw('('.$config['sql2'].')');
+
+        $region = regionCustomer();
+        if ($region['authorise']) {
+            foreach ($region['whereIn'] as $key => $where) {
+                $model->whereIn($key, $where);
+                $model2->whereIn($key, $where);
+            }
+        }
+
+        $count = $model->sum('customer_order_data.money');
+        $count2 = $model2->sum('customer_order_data.money');
+
+        $rate = 0;
+        if ($count2 > 0) {
+            $rate = ($count - $count2) / $count2 * 100;
+            $rate = number_format($rate, 2);
+        }
+        $res = [
+            'count' => $count,
+            'count2' => $count2,
+            'rate' => $rate,
+        ];
+        
+        return $this->render([
+            'dates' => $config['dates'],
+            'info' => $config['info'],
+            'res' => $res,
+        ]);
     }
 }

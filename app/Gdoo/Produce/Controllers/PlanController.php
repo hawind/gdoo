@@ -10,7 +10,6 @@ use Gdoo\Model\Grid;
 
 use Gdoo\User\Models\User;
 use Gdoo\Produce\Models\Plan;
-use Gdoo\Produce\Models\Formula;
 
 use Gdoo\Produce\Services\ProduceService;
 

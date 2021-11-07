@@ -978,7 +978,7 @@ class FieldService
         $attribute = $field['attribute'];
         $id = $attribute['id'];
         $name = $attribute['name'];
-
+        
         $rows = '';
         if ($value) {
             if ($field['type']) {

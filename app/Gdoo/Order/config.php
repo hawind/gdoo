@@ -40,6 +40,12 @@ return [
             'url' => 'order/widget/goods',
             'more_url' => 'order/order/delivery',
         ],
+        'info_order_count' => [
+            'name' => '销售订单(元)',
+            'type' => 2,
+            'url' => 'order/widget/orderCount',
+            'more_url' => 'order/order/index',
+        ],
     ],
     "controllers" => [
         "order" => [

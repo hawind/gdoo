@@ -39,4 +39,9 @@ class Product extends BaseModel
     {
         return $this->belongsTo('Gdoo\Product\Models\Warehouse');
     }
+
+    public function scopeDialog($q, $value)
+    {
+        return $q->whereIn('id', $value)->pluck('name', 'id');
+    }
 }

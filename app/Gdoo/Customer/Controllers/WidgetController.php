@@ -2,12 +2,13 @@
 
 use DB;
 use Request;
+use Gdoo\Index\Services\InfoService;
 
 use Gdoo\Index\Controllers\DefaultController;
 
 class WidgetController extends DefaultController
 {
-    public $permission = ['birthday'];
+    public $permission = ['birthday', 'customerCount', 'customerContactCount'];
 
     // 生日提醒
     public function birthday()
@@ -45,5 +46,72 @@ class WidgetController extends DefaultController
             return $json;
         }
         return $this->render();
+    }
+
+    /**
+     * 客户(个)
+     */
+    public function customerCount()
+    {
+        $config = InfoService::getInfo('customer');
+
+        $model = DB::table('customer')->whereRaw('('.$config['sql'].')');
+        $model2 = DB::table('customer')->whereRaw('('.$config['sql2'].')');
+        $region = regionCustomer();
+        if ($region['authorise']) {
+            foreach ($region['whereIn'] as $key => $where) {
+                $model->whereIn($key, $where);
+                $model2->whereIn($key, $where);
+            }
+        }
+
+        $count = $model->count();
+        $count2 = $model2->count();
+
+        $rate = 0;
+        if ($count2 > 0) {
+            $rate = ($count - $count2) / $count2 * 100;
+            $rate = number_format($rate, 2);
+        }
+        $res = [
+            'count' => $count,
+            'count2' => $count2,
+            'rate' => $rate,
+        ];
+
+        return $this->render([
+            'dates' => $config['dates'],
+            'info' => $config['info'],
+            'res' => $res,
+        ]);
+    }
+
+    /**
+     * 客户联系人(个)
+     */
+    public function customerContactCount()
+    {
+        $config = InfoService::getInfo('customer_contact');
+        $model = DB::table('customer_contact')->whereRaw('('.$config['sql'].')');
+        $model2 = DB::table('customer_contact')->whereRaw('('.$config['sql2'].')');
+        $count = $model->count();
+        $count2 = $model2->count();
+
+        $rate = 0;
+        if ($count2 > 0) {
+            $rate = ($count - $count2) / $count2 * 100;
+            $rate = number_format($rate, 2);
+        }
+        $res = [
+            'count' => $count,
+            'count2' => $count2,
+            'rate' => $rate,
+        ];
+        
+        return $this->render([
+            'dates' => $config['dates'],
+            'info' => $config['info'],
+            'res' => $res,
+        ]);
     }
 }

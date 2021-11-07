@@ -25,7 +25,7 @@ class ProduceService
         if ($date) {
             if ($isCalAgain) {
                 // 删除先有计划
-                DB::delete("delete FROM material_plan_day where date = '$date' and Dept_Id=$department_id");
+                DB::delete("delete FROM material_plan_day where date = '$date' and dept_id = $department_id");
 
                 // 获取生产计划
                 $items = DB::select("
@@ -35,11 +35,11 @@ class ProduceService
 					c.quantity as material_num,
                     c.material_id,
                     d.department_id,
-                    case when ISNULL(c.ratio, 1) = 0 then 0 else ISNULL(d.plan_num, 0) * ISNULL(c.quantity, 0) / ISNULL(c.ratio, 1) end as total_num
+                    ISNULL(d.plan_num, 0) * ISNULL(c.quantity, 0) + (ISNULL(c.quantity, 0) * ISNULL(c.loss_rate, 0)) AS total_num
                     FROM produce_plan m, produce_plan_data d 
                     left join(
-                        select a.product_id, a.material_id, a.quantity, b.ratio
-                        from product_formula a left join product_material b on a.material_id = b.id
+                        select product_id, material_id, quantity, loss_rate
+                        from product_material
                     ) c on c.product_id = d.product_id
                     WHERE m.id = d.plan_id
                     AND isnull(department_id, 0) = $department_id
@@ -47,7 +47,7 @@ class ProduceService
                     AND plan_num IS NOT NULL
                     AND m.date = '$date'
                 ");
-                
+
                 foreach($items as $item) {
                     DB::table("material_plan_day")->insert([
                         'date' => $date, 
@@ -76,7 +76,7 @@ class ProduceService
                 c.name as product_unit,
                 a.product_num,
                 a.material_id,
-                d.category as category_name,
+                dc.name as category_name,
                 d.name as material_name,
                 a.material_num,
                 a.total_num,
@@ -87,9 +87,10 @@ class ProduceService
                 from material_plan_day a
                 left join product b on a.product_id = b.id
                 left join product_unit AS c ON b.unit_id = c.id
-                left join product_material d on a.Material_Id = d.id
-                left join department e on a.Dept_Id = e.id
-                where a.date = '$date' and a.Dept_Id = $department_id
+                left join product d on a.material_id = d.id
+                left join product_category dc on dc.id = d.category_id
+                left join department e on a.dept_id = e.id
+                where a.date = '$date' and a.dept_Id = $department_id
             ");
         }
         return $rows;
@@ -1021,21 +1022,21 @@ class ProduceService
         }
 	
         $sql2[] = "select p.id,
-        pc.id as category_id, 
-        pc.code as category_code, 
-        pc.name as category_name, 
+        pc.id as category_id,
+        pc.code as category_code,
+        pc.name as category_name,
         p.id as product_id,
-        p.code as product_code, 
-        p.name as product_name, 
-        p.spec as product_spec, 
-        Concat(p.name,' ', isnull(p.spec,'')) as product_name_spec, 
+        p.code as product_code,
+        p.name as product_name,
+        p.spec as product_spec,
+        Concat(p.name,' ', isnull(p.spec,'')) as product_name_spec,
         isnull(batch_sn,'') as batch_sn,
         pu.name as product_unit,
         sum(wf_num) dphz_num,
         sum(wf_num_ydk) ydk_num,
         sum(wf_num_wdk) wdk_num, 
         sum(kc_num) kc_num,
-        ISNULL(sum(wf_num), 0) - ISNULL(sum(kc_num), 0) as xqzc_num, 
+        ISNULL(sum(wf_num), 0) - ISNULL(sum(kc_num), 0) as xqzc_num,
         ISNULL(sum(wf_num_ydk) ,0) as yhk_num,
         ISNULL(sum(wf_num_ydk), 0) - ISNULL(sum(kc_num), 0) as kfzc_num,
         ISNULL(sum(wfhjh_num), 0) - ISNULL(sum(kc_num), 0) as kfjh_num,
@@ -1057,8 +1058,7 @@ class ProduceService
             $sql2[] = "and p.is_export = 1";
         }
 
-        $sql2[] = "group by pc.id,pc.name,pc.code,p.id,p.code,p.name,isnull(batch_sn,''),p.spec,pu.name
-        order by p.code";
+        $sql2[] = "group by pc.id,pc.name,pc.code,p.id,p.code,p.name,isnull(batch_sn,''),p.spec,pu.name order by p.code";
         $rows = DB::select(join(' ', $sql2));
         return $rows;
     }

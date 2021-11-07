@@ -5,6 +5,7 @@ return [
     "description" => "产品列表,产品类别,库存类型,仓库类别,库存管理,仓库列表。",
     "listens" => [
         'product_category' => 'Gdoo\Product\Hooks\CategoryHook',
+        'product_material' => 'Gdoo\Product\Hooks\MaterialHook',
     ],
     'dialogs' => [
         'product' => [
@@ -62,7 +63,7 @@ return [
             ]
         ],
         "material" => [
-            "name" => "原材料清单",
+            "name" => "物料清单",
             "actions" => [
                 "index" => [
                     "name" => "列表"
@@ -73,9 +74,15 @@ return [
                 "edit" => [
                     "name" => "编辑"
                 ],
+                "show" => [
+                    "name" => "显示"
+                ],
+                "import" => [
+                    "name" => "导入"
+                ],
                 "delete" => [
                     "name" => "删除"
-                ],
+                ]
             ]
         ],
         "category" => [
