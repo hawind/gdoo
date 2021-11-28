@@ -738,15 +738,27 @@ class OrderController extends WorkflowController
         $print_type = $template['print_type'];
         $this->layout = 'layouts.print_'.$print_type;
         
-        $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
-        if ($print_tpl) {
+        if ($print_type == 'stiReport') {
             $data = OrderService::getPrintData($id);
-            $data['template'] = $template;
-            $tpl = $this->display($data, 'print/'.$template_id);
+            $print_data = [
+                'master' => [$data['master']],
+                'customer_order_data' => $data['rows'],
+            ];
+            return $this->display([
+                'template' => $template,
+                'print_data' => $print_data,
+            ]);
         } else {
-            $tpl = $this->create('print');
+            $print_tpl = view()->exists(Request::controller().'.print.'.$template_id);
+            if ($print_tpl) {
+                $data = OrderService::getPrintData($id);
+                $data['template'] = $template;
+                $tpl = $this->display($data, 'print/'.$template_id);
+            } else {
+                $tpl = $this->create('print');
+            }
+            return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
         }
-        return $print_type == 'pdf' ? print_prince($tpl) : $tpl;
     }
 
     public function dialog()

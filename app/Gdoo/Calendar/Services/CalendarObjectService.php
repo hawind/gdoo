@@ -26,6 +26,8 @@ class CalendarObjectService
         if ($data['allday']) {
             foreach ($ranges as $date) {
                 $item['date'] = $date->format($format);
+                $item['_start'] = $start->format($format);
+                $item['_end'] = $end->format($format);
                 $items[] = $item;
             }
         } else {

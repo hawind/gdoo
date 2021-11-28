@@ -65,6 +65,8 @@ class CustomerApplyHook
             bank_account,
             bank_address
         ')->first();
+        
+        $apply['status'] = 1;
 
         // 新建用户
         $_user = [

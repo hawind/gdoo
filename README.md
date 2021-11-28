@@ -1,7 +1,7 @@
 # Gdoo协同办公
 
 <p align="center">
-<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/version-beta2.3.x-%23ff0000" alt="Build Status" /></a>
+<a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/version-beta2.5.x-%23ff0000" alt="Build Status" /></a>
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/laravel-8.0-%23ef3b2d" alt="laravel framework" /></a>
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/MYSQL-8.0-%2300758f" alt="License" /></a>
 <a href="http://www.gdoo.net"><img src="https://img.shields.io/badge/Licence-Apache2.0-blue.svg?style=flat" /></a>
@@ -89,7 +89,7 @@ QQ交流群: 79446405
 </p>
 
 ## 安装
-1. 推荐使用宝塔面板，安装nginx 1.18.x、php-8.x(需要扩展：fileinfo)、mysql-8.x(mariaDB 10.4.x)，如果你使用win请自行安装相关环境，修改php参数max_input_vars = 100000 (避免变量部分丢失)
+1. 推荐使用宝塔面板，安装nginx 1.18.x、php-8.x(需要扩展：fileinfo)、mysql-8.x(mariaDB 10.4.x)，如果你使用win请自行安装相关环境
 2. 创建网站和数据库, 数据库字符utf8mb4, 在网站目录中设置PHP命令行版本为php-80
 3. 下载gdoo: https://gitee.com/hawind/gdoo 上传至宝塔网站根目录并解压
 4. 打开Xshell并登录, 执行 <code>composer -v</code> 查看composer版本, 执行 <code>composer self-update</code> 升级composer至最新版本
@@ -98,7 +98,7 @@ QQ交流群: 79446405
 7. 执行 <code>cp .env.example .env</code> 并修改相关配置
 8. 执行 <code>php artisan key:generate</code>
 9. 打开宝塔数据库管理：
-    1. 将项目database目录中的 gdoo-2.2.sql 文件上传并导入到数据库
+    1. 将项目database目录中的 gdoo-2.5.0.sql 文件上传并导入到数据库
 10. 打开宝塔网站管理：
     1. 设置运行目录为public
     2. 设置伪静态为laravel5

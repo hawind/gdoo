@@ -16,99 +16,6 @@
         
     </div>
 
-    <script src="{{$asset_url}}/vendor/highcharts/highcharts.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-    var data = {{$json}};
-    $(function() {
-
-        Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-            return {
-                radialGradient: {cx:0.9,cy:0.9,r: 0.9},
-                stops: [
-                    [0, color],
-                    [1, Highcharts.Color(color).brighten(-0.1).get('rgb')] // darken
-                ]
-            };
-        });
-
-        $.each(data.pie,function(year)
-        {
-            var piediv = "<div id='container_pie_"+year+"' style='height:300px;'></div>";
-            var columndiv = "<div id='container_column_"+year+"' style='height:300px;'></div>";
-            $('#container_pie').append(piediv);
-            $('#container_column').append(columndiv);
-            pie(year);
-            column(year);
-        });
-    });
-
-    function pie(year)
-    {
-        $('#container_pie_'+year).highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false
-            },
-            title: {
-                text: year+'年品类构成分析(金额)'
-            },
-            tooltip: {
-              pointFormat: '{series.name}: <b>{point.y}￥</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: '金额',
-                data: data.pie[year]
-            }]
-        });
-    }
-
-    function column(year)
-    {
-        $('#container_column_'+year).highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: year+'年品类销售额柱体分析(金额)'
-            },
-            xAxis: {
-                categories: data.column.categories
-            },
-            yAxis: {
-                allowDecimals: false,
-                min: 0,
-                title: {
-                    text: '类别'
-                }
-            },
-            tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.x +'</b><br/>'+
-                        this.series.name +': '+ this.y +'<br/>'+
-                        '合计: '+ this.point.stackTotal;
-                }
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal'
-                }
-            },
-            series:data.column.series[year]
-        });
-    }
-    </script>
 
     <table class="table table-bordered" id="report_category">
         <tr>
@@ -171,17 +78,107 @@
 </div>
 
 <div class="panel">
-    <table class="table">
-        <tr>
-            <td id="container_pie"></td>
-        </tr>
-    </table>
+    <div class="panel-heading b-b">品类销售额(占比)</div>
+    <div class="panel-body">
+        <div id="container_pie"></div>
+    </div>
 </div>
 
 <div class="panel">
-    <table class="table">
-        <tr>
-            <td id="container_column"></td>
-        </tr>
-    </table>
+<div class="panel-heading b-b">品类月销售额</div>
+    <div class="panel-body">
+        <div id="container_column"></div>
+    </div>
 </div>
+
+<script src="{{$asset_url}}/vendor/echarts/echarts.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var data = {{$json}};
+$(function() {
+    $.each(data.pie,function(year) {
+        var piediv = "<div class='col-sm-3 col-xs-6' id='container_pie_"+year+"' style='height:240px;'></div>";
+        var columndiv = "<div class='col-sm-6 col-xs-12' id='container_column_"+year+"' style='height:280px;'></div>";
+        $('#container_pie').append(piediv);
+        $('#container_column').append(columndiv);
+        pie(year);
+        column(year);
+    });
+});
+
+function pie(year)
+{
+    var myChart = echarts.init(document.getElementById('container_pie_' + year));
+    myChart.setOption({
+        legend: {show:false},
+        tooltip: {
+            trigger: 'item',
+            formatter: '{c} ({d}%)'},
+        title: [{
+            text: year + '年',
+            left: '50%',
+            textAlign: 'center'
+        }],
+        dataset: {
+            source: data.pie[year]
+        },
+        series: [{
+            type: 'pie',
+            radius: '70%',
+            itemStyle: {
+                borderColor: '#fff',
+                borderWidth: 1
+            }
+        }]
+    });
+}
+
+function column(year)
+{
+    var myChart = echarts.init(document.getElementById('container_column_' + year));
+    myChart.setOption({
+        title: {
+            text: year + '年',
+            x:'center',
+            left:'50%',
+            textAlign:'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            transitionDuration: 0,
+        },
+        legend: {
+            left: "center",
+            bottom:"bottom",
+            align: "left",
+            textStyle: {
+                lineHeight: 16,
+                padding: 5, 
+                borderColor: "#999",
+                borderWidth: 1,
+                borderRadius: 5,
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '3%',
+            bottom: '60',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                magicType: {type: ['line', 'bar']},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: data.column.categories,
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: data.column.series[year]
+    });
+}
+</script>

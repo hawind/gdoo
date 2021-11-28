@@ -21,6 +21,7 @@ class TaxHook
     }
 
     public function onAfterStore($params) {
+
         $master = $params['master'];
 
         // 开票单位同步外部接口

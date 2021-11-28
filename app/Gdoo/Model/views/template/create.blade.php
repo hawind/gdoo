@@ -789,7 +789,7 @@ $(function() {
         
         });
 
-        droppedFieldsBox.append('<div class="panel b-a"><div class="panel-heading b-b"><span class="pull-right"><i class="fa fa-fw fa-pencil"></i><i class="fa fa-fw fa-remove"></i></span><span class="label bg-light panel-type">' +  type + '</span> <span class="panel-title">' + title + '</span></div><div data-type="' + type + '" data-border="'+border+'" data-title="' + title + '" data-column="' + size + '" id="selected-column-' + size + '" class="droppedFields">' + _fields.join('') + '</div></div>');
+        droppedFieldsBox.append('<div class="panel b-a"><div class="panel-heading b-b"><span class="pull-right"><i class="fa fa-fw fa-pencil"></i><i class="fa fa-fw fa-remove"></i></span><span class="label bg-light panel-type">' + type + '</span> <span class="panel-title">' + title + '</span></div><div data-type="' + type + '" data-border="'+border+'" data-title="' + title + '" data-column="' + size + '" id="selected-column-' + size + '" class="droppedFields">' + _fields.join('') + '</div></div>');
 
     });
 

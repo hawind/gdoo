@@ -124,7 +124,7 @@ class MaterialController extends DefaultController
                 return $row;
             });
         } else {
-            $rows = ['data' =>[], 'header' => []];
+            $rows = [];
         }
         return $rows;
     }

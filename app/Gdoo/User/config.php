@@ -20,7 +20,7 @@ return [
             'url' => 'user/role/dialog',
         ],
         'position' => [
-            'name' => '职位',
+            'name' => '岗位',
             'model' => 'Gdoo\User\Models\UserPosition::Dialog',
             'url' => 'user/position/dialog',
         ],
@@ -28,6 +28,15 @@ return [
             'name' => '用户',
             'model' => 'Gdoo\User\Models\User::Dialog',
             'url' => 'user/user/dialog',
+        ],
+    ],
+    'widgets' => [
+        'info_user_count' => [
+            'name' => '用户',
+            'type' => 2,
+            'url' => 'user/widget/userCount',
+            'more_url' => 'user/user/index',
+            'params' => ['permission' => 'dept2', 'date' => 'month'],
         ],
     ],
     "controllers" => [

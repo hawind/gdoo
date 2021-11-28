@@ -12,7 +12,7 @@
                 <div class="thumbnail" style="{{$upload_url}}/{{$row->image}}">
                     <div class="caption">
                         <h4 class="m-t-none">
-                            <span class="pull-right text-muted text-xs hinted" title="项目拥有者">{{get_user($row->user_id, 'name', false)}} @if($row->permission)<span class="label label-info">私有</span> @else <span class="label label-success">公开</span> @endif</span>
+                        <span class="pull-right text-muted text-xs hinted" title="项目拥有者">{{get_user($row->user_id, 'name', false)}} @if($row->permission)<span class="label label-info">私有</span> @else <span class="label label-success">公开</span> @endif</span>
                             @if($row->tasks->count())
                                 <span class="text-base badge bg-danger">{{$row->tasks->count()}}</span>
                             @endif

@@ -34,7 +34,7 @@
         var search = JSON.parse('{{json_encode($search)}}');
         var cols = [ 
             {field: "sn", cellClass: "text-center", suppressSizeToFit: true, headerName: "", type: 'sn', width: 40}, 
-            {field: "product_name", headerName: "成品品种", sortable: false, suppressMenu: true, width: 140}, 
+            {field: "product_name", headerName: "成品名称", sortable: false, suppressMenu: true, width: 140}, 
             {field: "product_spec", headerName: "规格型号", sortable: false, suppressMenu: true, cellClass: "text-center", width: 120}, 
             {field: "product_unit", headerName: "计量单位", sortable: false, suppressMenu: true, cellClass: "text-center", width: 60}, 
             {field: "plan_num", headerName: "计划数量", sortable: false, suppressMenu: true, cellClass: "text-right",  width: 80}, 
@@ -46,7 +46,7 @@
         var grid = new agGridOptions();
         grid.suppressRowTransform = true;
         var gridDiv = document.querySelector("#material_plan-grid");
-        gridDiv.style.height = getPanelHeight(48);
+        gridDiv.style.height = getPanelHeight(12);
 
         grid.remoteDataUrl = '{{url()}}';
         grid.remoteParams = search.query;

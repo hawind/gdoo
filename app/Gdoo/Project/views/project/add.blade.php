@@ -13,7 +13,7 @@
             </tr>
 
             <tr>
-                <td align="right">项目权限</td>
+                <td align="right">项目权限  <a href="javascript:;" class="fa fa-question-circle hinted" title="公开：所有人可以访问，成员编辑。<br>私有：成员访问和编辑。"></a></td>
                 <td align="left">
                     <select class="form-control input-sm" name="permission">
                         <option value="1">私有</option>

@@ -34,7 +34,8 @@ Vue.createApp({
         Vue.onMounted(function() {
             var gridDiv = config.div(136);
             // 初始化数据
-            grid.remoteData({page: 1}, function(res) {
+            grid.remoteData({page: 1}, function(res)
+             {
                 config.init(res);
             });
         });

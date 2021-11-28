@@ -19,7 +19,7 @@ class CustomerHook
     public function onBeforeStore($params) 
     {
         $master = $params['master'];
-        
+
         $_user = [
             'role_id' => 2,
             'group_id' => 2,
@@ -45,7 +45,7 @@ class CustomerHook
         // 客户开票单位为空
         $count = CustomerTax::where('customer_id', $master['id'])->count();
         if ($count == 0) {
-            // 自动新建开票单位
+            // 新建开票单位
             CustomerTax::insert([
                 'code' => $master['code'],
                 'name' => $master['name'],
@@ -65,6 +65,7 @@ class CustomerHook
         if ($ret['error_code'] > 0) {
             abort_error($ret['msg']);
         }
+
         return $params;
     }
 

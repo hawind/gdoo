@@ -329,6 +329,12 @@ class FieldController extends DefaultController
             $model->fill($gets);
             $model->save();
 
+            $_model = DB::table('model')->where('id', $model_id)->first();
+            $_model['fields'] = DB::table('model_field')->where('model_id', $model_id)->get();
+            $abc = json_encode($_model, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            
+            file_put_contents('model_'.$_model['table'].'.json', $abc);
+
             return $this->json('恭喜你，操作成功。', url('index', ['model_id' => $gets['model_id']]));
         }
 

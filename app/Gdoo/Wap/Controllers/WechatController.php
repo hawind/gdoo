@@ -60,7 +60,7 @@ class WechatController extends Controller
     /**
      * 获取微信登录数据
      */
-    public function authorize()
+    public function wxAuthorize()
     {
         try {
             $app = WechatService::getApp();

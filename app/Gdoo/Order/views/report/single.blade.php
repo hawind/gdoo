@@ -24,7 +24,7 @@
             </select>
 
             &nbsp;年份
-            <input type="text" id="year" name="year" autocomplete="off" onclick="datePicker({dateFmt:'yyyy'});" value="{{$select['query']['year']}}" class="form-control input-sm">
+            <input type="text" id="year" name="year" onclick="datePicker({dateFmt:'yyyy'});" value="{{$select['select']['year']}}" class="form-control input-sm">
 
             <button type="submit" class="btn btn-default btn-sm">筛选</button>
         </form>

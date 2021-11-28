@@ -56,7 +56,7 @@ body {
         <div class="line line-dashed"></div>
 
         <div class="text-center">
-            <small class="text-muted">© {{date('Y')}} {{$edition}} {{$version}}</small>
+            <small class="text-muted">© {{date('Y')}} {{$version}}</small>
         </div>
 
         <div class="line line-dashed"></div>

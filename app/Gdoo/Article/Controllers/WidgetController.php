@@ -22,6 +22,7 @@ class WidgetController extends DefaultController
             ->orderBy('created_at', 'desc');
 
             $rows = $model->limit(15)->get(['id', 'name', 'created_at']);
+            
             $json['total'] = sizeof($rows);
             $json['data'] = $rows;
             return $json;
@@ -44,7 +45,7 @@ class WidgetController extends DefaultController
             ->whereRaw('article_reader.article_id = article.id')
             ->where('article_reader.created_id', auth()->id());
         })->whereRaw('('.$config['sql'].')')->count();
-
+        
         $count2 = DB::table('article')
         ->permission('receive_id')
         ->whereNotExists(function ($q) {
@@ -56,18 +57,14 @@ class WidgetController extends DefaultController
 
         $rate = 0;
         if ($count2 > 0) {
-            $rate = $count / $count2 * 100;
+            $rate = ($count - $count2) / $count2 * 100;
+            $rate = number_format($rate, 2);
         }
         $res = [
             'count' => $count,
             'count2' => $count2,
             'rate' => $rate,
         ];
-
-        return $this->render([
-            'dates' => $config['dates'],
-            'info' => $config['info'],
-            'res' => $res,
-        ]);
+        return $this->json($res, true);
     }
 }

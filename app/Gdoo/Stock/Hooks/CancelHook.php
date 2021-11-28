@@ -51,7 +51,7 @@ class CancelHook
             'department.code as department_code',
             'customer_tax.code as customer_code',
             'customer.region_id', 
-            'customer_region.owner_user_id as salesman_id',
+            'customer_region.owner_user_id as salesman_id'
         ]);
         
         $sql = "select d.id,d.type_id,d.price,d.quantity,d.money,d.other_money,

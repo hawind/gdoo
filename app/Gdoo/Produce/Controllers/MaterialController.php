@@ -9,6 +9,8 @@ use Gdoo\Model\Form;
 use Gdoo\Model\Grid;
 
 use Gdoo\User\Models\User;
+use Gdoo\Produce\Models\Material;
+use Gdoo\Produce\Models\Formula;
 
 use Gdoo\Produce\Services\ProduceService;
 

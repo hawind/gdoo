@@ -114,6 +114,7 @@ class Builder extends BaseBuilder
                 if ($column['is_identity'] == 1) {
                     continue;
                 }
+
                 if (array_key_exists($k, $values)) {
                     $v = $values[$k];
                     // 数字类型格式化
@@ -135,6 +136,7 @@ class Builder extends BaseBuilder
                     $data[$k] = $v;
                 }
             }
+
             // 设置操作相关数据
             $data = $this->setAutoData($columns, $data, $insert);
         }

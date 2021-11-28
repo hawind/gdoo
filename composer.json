@@ -9,12 +9,14 @@
     "license": "Apache",
     "require": {
         "php": "^8.0",
+        "barryvdh/laravel-ide-helper": "^2.9.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "overtrue/wechat": "~4.1",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "barryvdh/laravel-ide-helper": "^2.9.0"
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -64,10 +66,8 @@
             "@php artisan key:generate --ansi"
         ]
     },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer"
-        }
-    }
+    "repositories": [{
+        "type": "composer",
+        "url": "https://mirrors.aliyun.com/composer"
+    }]
 }

@@ -18,64 +18,10 @@
         
     </div>
 
-<script src="{{$asset_url}}/vendor/highcharts/highcharts.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-var data = {{$json}};
-$(function () {
-    $('#container').highcharts({
-        title: {
-            text: '历史年度销售分析',
-            x: -20 //center
-        },
-        subtitle: {
-            text: 'Historical Annual Sales Analysis',
-            x: -20
-        },
-        xAxis: {
-            categories: data.categories
-        },
-        yAxis: {
-            title: {
-                text: '销售汇总'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        tooltip: {
-            valueSuffix: '￥'
-        },
-        legend: {
-            //layout: 'vertical',
-            //align: 'right',
-            //verticalAlign: 'middle',
-            //borderWidth: 0,
-            useHTML:true,
-            labelFormatter: function() {
-              return this.name + '<br/><span style="font-size:10px;color:#666666;">合计: '+ data.total[this.name] +'￥</span>';
-              //return '<div class="' + this.name + '-arrow"></div><span style="font-family: \'Advent Pro\', sans-serif; font-size:16px">' + this.name +'</span><br/><span style="font-size:10px; color:#ababaa">(合计: 12345)</span>';
-            }
-        },
-        plotOptions: {
-            line: {
-                dataLabels: {
-                    enabled: true
-                },
-                //enableMouseTracking: false
-            }
-        },
-        total: data.total,
-        series: data.series
-    });
-});
-</script>
-
     <table class="table">
     <tr>
     	<td>
-    		<div id="container" style="height:320px"></div>
+    		<div id="container" style="height:360px"></div>
     	</td>
     </tr>
     </table>
@@ -126,3 +72,60 @@ $(function () {
 -->
 
 @endif
+
+<script src="{{$asset_url}}/vendor/echarts/echarts.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var data = {{$json}};
+$(function () {
+    var myChart = echarts.init(document.getElementById('container'));
+    myChart.setOption({
+        title: {
+            text: '历史年度销售金额',
+            subtext: "Historical Annual Sales",
+            x:'center',
+            y:'top',
+            textAlign:'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            transitionDuration: 0,
+        },
+        legend: {
+            formatter: function(key, avb) {
+                return key + "年\n" + data.total[key] + '￥';
+            },
+            left: "center",
+            bottom:"bottom",
+            align: "left",
+            textStyle: {
+                lineHeight: 16,
+                padding: 5, 
+                borderColor: "#999",
+                borderWidth: 1,
+                borderRadius: 5,
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '3%',
+            bottom: '60',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                magicType: {type: ['line', 'bar']},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: data.categories,
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: data.series
+    });
+});
+</script>

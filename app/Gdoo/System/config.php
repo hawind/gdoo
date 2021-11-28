@@ -144,6 +144,23 @@ return [
                 ]
             ]
         ],
+        "cron" => [
+            "name" => "定时任务",
+            "actions" => [
+                "index" => [
+                    "name" => "列表"
+                ],
+                "create" => [
+                    "name" => "新建"
+                ],
+                "edit" => [
+                    "name" => "编辑"
+                ],
+                "delete" => [
+                    "name" => "删除"
+                ]
+            ]
+        ],
         "option" => [
             "name" => "枚举管理",
             "actions" => [

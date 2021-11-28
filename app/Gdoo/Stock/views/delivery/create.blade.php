@@ -227,7 +227,6 @@ var grid = null;
                         }
 
                         layer.close(loading);
-
                         /*
                         var loading = showLoading();
                         $.post(app.url('stock/delivery/autoSave'), query + '&' + $.param(gets), function (res) {
@@ -243,7 +242,6 @@ var grid = null;
                             layer.close(loading);
                         });
                         */
-                        
                     });
                     
                 } else {

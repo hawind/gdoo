@@ -3,11 +3,11 @@
 require __DIR__.'/macros.php';
 require __DIR__.'/sql.php';
 
-$keys = get_gdoo_var();
-View::composer('*', function ($view) use($keys) {
-    foreach($keys as $k => $v) {
-        $view->with($k, $v);
-    }
+View::composer('*', function ($view) {
+    $shared = View::getShared();
+    $view->with('title', 'Gdoo');
+    $view->with('powered', 'Powered By Gdoo');
+    $view->with('version', '<a target="_blank" href="http://www.gdoo.net">Gdoo</a> 开源版 '.$shared['version']);
 });
 
 /*

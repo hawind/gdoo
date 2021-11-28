@@ -553,6 +553,21 @@ body.theme-purple {
     left: 17px;
 }
 
+.navbar-header .navbar-brand-title,
+.navbar-header .navbar-brand-min-title {
+    font-weight: normal;
+    font-size: 20px;
+    text-shadow: 0 0 1px rgb(0 0 0 / 10%);
+}
+
+.navbar-header .navbar-brand-title {
+    padding-left: 5px;
+}
+
+.navbar-header .navbar-brand-min-title {
+    display: none;
+}
+
 @media only screen and (min-width: 768px) {
     /* reset style */
     .side-nav {
@@ -667,6 +682,10 @@ body.theme-purple {
 
     .side-folded .navbar-header .navbar-brand-title {
         display: none;
+    }
+
+    .side-folded .navbar-header .navbar-brand-min-title {
+        display: block;
     }
 
     .side-folded .main-content {

@@ -55,11 +55,7 @@
 
                 <div class="form-group">
                     <label class="control-label">安全密钥</label>
-                    <strong>{{$user->auth_secret}}</strong>
-                    <span class="qrcodeTotp" style="display:none;">
-                        <div id="qrcode_canvas"></div>
-                        <div id="qrcode_img"></div>
-                    </span>
+                    <code>{{$user->auth_secret}}</code>
                     <a href="javascript:;" onclick="qrcodeTotp();">
                         <i class="fa fa-qrcode"></i>
                     </a>
@@ -82,27 +78,18 @@
 <script type="text/javascript" src="{{$asset_url}}/vendor/jquery.qrcode.min.js"></script>
 <script>
 function qrcodeTotp() {
-    $.messager.alert("二次验证二维码", '<div align="center">' + $("#qrcode_img").prop("outerHTML") + '</div>');
-}
-
-function qrcodeMake(qrcode_canvas, qrcode_image) {
-    $("#" + qrcode_canvas).qrcode({
+    $.messager.alert("二次验证二维码", '<div align="center" id="secret-qrcode"></div>');
+    $("#secret-qrcode").qrcode({
         render: "canvas",
         text: "{{$secretURL}}",
         correctLevel: 1,
-        width: 220,
-        height: 220
+        width: 200,
+        height: 200
     });
-    var canvas = $('#' + qrcode_canvas).find('canvas')[0];
-    var image = new Image();
-    image.src = canvas.toDataURL("image/png");
-    $('#' + qrcode_image).append(image);    
 }
 
 $(function() {
 
-    // 生成二维码
-    qrcodeMake('qrcode_canvas', 'qrcode_img');
     // 主题修改
     $('#change-theme').on('change', function() {
         var e = $(this).val();

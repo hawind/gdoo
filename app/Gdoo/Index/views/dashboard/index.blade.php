@@ -1,3 +1,6 @@
+<link href="{{$asset_url}}/vendor/element-plus/index.css" rel="stylesheet" type="text/css" />
+<script src="{{$asset_url}}/vendor/element-plus/index.js" type="text/javascript"></script>
+
 <style type="text/css">
 html {
     overflow: hidden;
@@ -85,17 +88,23 @@ a { outline: none; }
     text-align: center; 
 }
 
-.row-info .panel { display: flex; padding-bottom: 10px; position: relative; text-align: center; border-radius: 4px !important; }
-.info-skin1 .info-l { color: #fff; margin-top:16px; margin-left: 15px; border-radius: 50%; width: 50px; height:50px; line-height:58px; vertical-align: middle; }
+.info-skin1 { padding-bottom: 10px; display: flex; position: relative; text-align: center; border-radius: 4px !important; }
+.info-skin1 .info-l { color: #fff; margin-top:18px; margin-left: 15px; border-radius: 50%; width: 50px; height:50px; line-height:55px; vertical-align: middle; }
+.info-skin1 .info-l .fa { font-size: 19px; }
 
-.info-skin1 .info-c { flex:1; margin-left: 15px; text-align: left; }
-.info-skin1 .info-c .info-name { margin-top:18px; font-size: 14px; color: #666; }
-.info-skin1 .info-c .info-item { font-size: 24px; color: #333; }
+.info-skin1 .info-r {
+    flex:1;
+    padding-right:5px;
+}
+.info-skin1 .info-a { display: flex; align-items:center; justify-content:space-between; padding-left: 15px; text-align: left; }
+.info-skin1 .info-a .info-name { padding-top:15px; font-size: 14px; color: #666; }
+.info-skin1 .info-a .el-input__inner { border: 0; text-align: right; }
 
-.info-skin1 .info-r { margin-left: auto; margin-top:18px; width: 70px; line-height:22px; }
-.info-skin1 .info-r .rate { color: #2bbf24; }
-.info-skin1 .info-r .red { color:#f00; }
-.info-skin1 .info-r::before { position:absolute;top:22px;content:"";width:1px;height:40px;background-color:#e6e6e6;display:block; }
+.info-skin1 .info-b { padding-right:10px; display: flex; align-items:center; justify-content:space-between; padding-left: 15px; padding-top:5px; }
+.info-skin1 .info-b .info-item { font-size: 24px; color: #333; }
+.info-skin1 .info-b .rate { color: #999; }
+.info-skin1 .info-b .red { color:#f00; }
+.info-skin1 .info-b .green { color: #39c15b; }
 .info-items { height: 94px; }
 
 .app-title {
@@ -119,16 +128,21 @@ a { outline: none; }
 }
 
 .row-widget .panel-heading { 
-    padding: 10px;
+    padding: 8px;
+    height: 45px;
     color: #2490f8;
-    font-size: 14px;
     text-align: left;
+}
+.row-widget .panel-heading .widget_name {
+    font-size: 15px;
+    padding-top: 4px;
+    padding-left: 5px;
 }
 .row-widget .widget-item {
     text-align: left;
 }
 .row-widget .widget-item .red {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: bold;
     color: #333;
 }
@@ -173,7 +187,6 @@ a { outline: none; }
 }
 
 .row-quick {
-    margin-bottom: 10px;
     padding: 10px;
 }
 .quick-text {
@@ -200,7 +213,6 @@ a { outline: none; }
     background: #f00;
     border-radius: 100%;
     border: solid 1px #f05050;
-    display: none;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -222,76 +234,145 @@ a { outline: none; }
 .dropdown-toggle {
     border: solid 1px rgba(0, 0, 0, 0.1);
 }
+
+[v-cloak] {
+  display: none;
+}
+
+.gd-el-card { margin-left: 0; margin-right: 0; }
+.gd-el-card .el-col { padding: 5px; }
+.gd-el-card-header {
+    display:flex; align-items:center; justify-content:space-between; padding: 10px 0px;
+}
+.gd-el-card-header .gd-el-left {
+    font-size: 16px;
+    margin-left: 10px;
+}
+.gd-el-card-header .gd-el-right {
+    margin-right: 10px;
+}
+
 </style>
 
 <div class="dashboard-widget">
 
+    @verbatim
+    <div id="gdoo-app" v-cloak>
+
     <div class="pull-right hidden-xs">
-        <a class="dashboard-config" data-toggle="dashboard-config" title="仪表盘设置">
+        <a href="javascript:;" class="dashboard-config" @click="dashboardConfig" title="仪表盘设置">
             <i class="fa fa-gear"></i>
         </a>
     </div>
 
     <div class="row-quick">
         <div class="row row-sm">
-            @forelse($quicks as $quick)
-                <div class="quick-text">
-                    <a href="javascript:;" data-toggle="addtab" data-url="{{$quick['url']}}" data-id="{{$quick['key']}}" data-name="{{$quick['name']}}">
-                        <div class="quick-icon quick-item" style="background-color:{{$quick['color']}}" data-url="{{$quick['url']}}" data-key="{{$quick['key']}}">
-                            <i class="fa fa-3x {{$quick['icon']}}"></i>
-                            <span class="quick-num">0</span>
-                        </div>
-                        <div class="title">{{$quick['name']}}</div>
-                    </a>
-                </div>
-            @empty
-            <div class="quick-text">
-                <a href="javascript:;" data-toggle="dashboard-config">
+            <div class="quick-text" v-for="quick in dashboard.quicks">
+                <a href="javascript:;" data-toggle="addtab" :data-url="quick.url" :data-id="quick.key" :data-name="quick.name">
+                    <div class="quick-icon quick-item" :style="'background-color:' + quick.color" :data-url="quick.url" :data-key="quick.key">
+                        <i :class="'fa fa-3x ' + quick.icon"></i>
+                        <span class="quick-num" v-if="quick.total > 0">{{quick.total}}</span>
+                    </div>
+                    <div class="title">{{quick.name}}</div>
+                </a>
+            </div>
+            <div class="quick-text" v-if="dashboard.add_quick">
+                <a href="javascript:;" @click="dashboardConfig">
                     <div class="quick-icon" style="background-color:#13D06C;">
                     <i class="fa fa-3x fa-plus"></i>
                     </div>
                     <div class="title">添加快捷</div>
                 </a>
             </div>
-            @endforelse
         </div>
     </div>
 
-    <div class="row row-sm row-info">
-        @foreach($infos as $info)
-        @if($info['status'])
-        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-            <div class="info-items" data-id="{{$info['id']}}" data-url="{{$info['url']}}" data-more_url="{{$info['more_url']}}"></div>
-        </div>
-        @endif
-        @endforeach
-    </div>
-
-    <div class="row row-sm row-widget">
-        @foreach($grids as $grid)
-            <div class="col-xs-12 col-sm-{{$grid}}">
-                @foreach($widgets as $widget)
-                    @if($widget['status'])
-                        @if($widget['grid'] == $grid)
-                            <div class="panel panel-shadow">
-                                <div class="panel-heading text-base b-b">
-                                    <div class="pull-right"></div>
-                                    <a data-toggle='widget-refresh' data-url="{{$widget['url']}}" data-key="{{str_replace(['/', '?', '='], ['_', '_', '_'], $widget['url'])}}" data-id="{{$widget['id']}}">{{$widget['name']}}</a>
+    <div class="row row-sm gd-el-card">
+        <el-row>
+            <template v-for="info in dashboard.infos">
+            <el-col :xs="24" :sm="12" :md="8" :lg="6" v-if="info.status">
+                <el-card class="box-card panel-shadow" shadow="hover" body-style="padding:0px;">
+                    <div class="info-skin1">
+                        <div class="info-l" :style="'background-color:' + info.color">
+                            <i :class="'fa fa-2x ' + info.icon"></i>
+                        </div>
+                        <div class="info-r">
+                            <div class="info-a">
+                                <div class="info-name">{{info.name}}</div>
+                                <div>
+                                <el-select @change="getInfoData(info)" style="width:90px;padding-top:10px;" v-model="info.params.date" size="mini" placeholder="请选择">
+                                    <el-option v-for="(v, k) in dashboard.dates" :key="k" :label="v" :value="k">
+                                    </el-option>
+                                </el-select>
                                 </div>
-                                <div class="widget-item" id="widget_item_{{$widget['id']}}" data-id="{{$widget['id']}}" data-url="{{$widget['url']}}">
+                            </div>
+                            <div class="info-b">
+                                <div>
+                                    <a href="javascript:;" data-toggle="addtab" :data-url="info.more_url" :data-id="info.key" :data-name="info.name">
+                                        <div class="text-info info-item">{{info.res.count || 0}}</div>
+                                    </a>
+                                </div>
+                                <div class="rate" v-if="info.params.date">
+                                    <span>比{{dashboard.dates2[info.params.date]}}:</span>
+                                    <span :class="info.res.rate > 0 ? 'red' : 'green'">
+                                        {{info.res.rate}}%<i :class="info.res.rate > 0 ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        @endif
-                    @endif
-                @endforeach
-            </div>
-        @endforeach
+                    </div>
+                </el-card>
+            </el-col>
+            </template>
+        </el-row>
     </div>
+
+    <div class="row row-sm gd-el-card">
+        <el-row>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" v-for="card in dashboard.cards">
+                <el-card class="box-card panel-shadow" shadow="hover" body-style="padding:0px;">
+                    <div class="gd-el-card-header">
+                    <span class="gd-el-left">名称</span>
+                    <span class="gd-el-right">
+                        <el-select style="width:90px;" v-model="value" size="mini" placeholder="请选择">
+                            <el-option v-for="(v, k) in dashboard.dates" :key="k" :label="v" :value="k"></el-option>
+                        </el-select>
+                    </span>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
+    </div>
+
+    <div class="row row-sm row-widget m-t-xs">
+        <div :class="'col-xs-12 col-sm-' + grid" v-for="grid in dashboard.grids">
+            <template v-for="widget in dashboard.widgets">
+                <div class="panel panel-shadow" v-if="widget.status && widget.grid == grid">
+                    <div class="panel-heading text-base b-b">
+                        <div class="pull-right">
+                            <el-select @change="getWidgetData(widget)" style="width:100px;" v-if="widget.params && widget.params.date" v-model="widget.params.date" size="mini" placeholder="请选择">
+                                <el-option v-for="(v, k) in dashboard.dates3" :key="k" :label="v" :value="k">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div class="widget_name">
+                            <a @click="widgetRefresh(widget.key)">{{widget.name}}</a>
+                        </div>
+                    </div>
+                    <div class="widget-item" :id="'widget_item_' + widget.id"></div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    </div>
+    @endverbatim
+
 </div>
 
 <div class="dashboard-footer">
     <div class="box">
-    {{$edition}} {{$version}}
+    {{$version}}
     </div>
 </div>
 
@@ -318,28 +399,117 @@ a { outline: none; }
 </style>
 
 <script>
-(function($) {
-    var $document = $(document);
+(function(window, undefined) {
 
     var myProcess = null;
 
-    function widgetRefresh() {
-        if (myProcess) {
-            var items = $('.widget-item');
-            items.each(function(index, item) {
-                var data = $(item).data();
-                if (data.key) {
-                    gdoo.widgets[data.key].remoteData({page: 1});
-                    console.log('refresh item:' + data.key);
+    const GdooApp = {
+        data() {
+            return {
+                dashboard: {
+                    add_quick: 0,
+                    infos: [],
+                    quicks: [],
+                    widgets: [],
+                    cards: [],
+                    grids: [],
+                    dates: {},
+                    dates2: {}
+                },
+            };
+        },
+        created() {
+            var me = this;
+            $.post('index/dashboard/index', function(res) {
+                if (res.status) {
+                    me.dashboard = res.data;
+
+                    me.dashboard.add_quick = me.dashboard.quicks.length > 0 ? 0 : 1;
+                    me.dashboard.quicks.forEach((quick) => {
+                        me.getBadge(quick);
+                    });
+
+                    me.dashboard.infos.forEach((info) => {
+                        me.getInfoData(info);
+                    });
+
+                    me.dashboard.widgets.forEach((widget) => {
+                        me.getWidgetData(widget);
+                    });
+                } else {
+                    toastrError(res.data);
                 }
             });
+            me.widgetsRefresh();
+        },
+        methods: {
+            dashboardConfig() {
+                formDialog({
+                    title: '仪表盘设置',
+                    url: '/index/dashboard/config',
+                    id: 'widget-edit',
+                    dialogClass:'modal-lg',
+                    onSubmit: function() {
+                        var me = this;
+                        var data = settingWidget.save();
+                        $.post('/index/dashboard/config', data, function(res) {
+                            if (res.status) {
+                                location.reload();
+                                toastrSuccess(res.data);
+                                $(me).dialog("close");
+                            } else {
+                                toastrError(res.data);
+                            }
+                        });
+                    }
+                });
+            },
+            getBadge(quick) {
+                $.get('/index/index/badge', {key: quick.key}, function(res) {
+                    quick.total = res.total;
+                });
+            },
+            getInfoData(info) {
+                info.res = {};
+                $.post('/' + info.url, info, function(res) {
+                    info.res = res.data;
+                });
+            },
+            getWidgetData(widget) {
+                if (widget.url) {
+                    $.get('/' + widget.url, {id: widget.id}, function(res) {
+                        $('#widget_item_' + widget.id).html(res);
+                    });
+                }
+            },
+            widgetRefresh(key) {
+                if (key) {
+                    gdoo.widgets[key].remoteData({page: 1});
+                }
+            },
+            widgetsRefresh() {
+                var me = this;
+                if (myProcess) {
+                    me.dashboard.widgets.forEach((widget) => {
+                        me.widgetRefresh(widget.key);
+                    });
+                }
+                myProcess = setTimeout(function() {
+                    me.widgetsRefresh();
+                }, 1000 * 60 * 3);
+            }
         }
-        myProcess = setTimeout(function() {
-            widgetRefresh();
-        }, 1000 * 60 * 5);
-    }
+    };
+    const app = Vue.createApp(GdooApp);
+    app.use(ElementPlus);
+    app.mount("#gdoo-app");
+})(window);
+</script>
 
-    widgetRefresh();
+<script>
+
+(function($) {
+    var $document = $(document);
 
     $document.on('click', '[data-toggle="addtab"]', function(event) {
         event.preventDefault();
@@ -357,69 +527,5 @@ a { outline: none; }
         }
         top.addTab(data.url, data.id, data.name);
     });
-
-    $('[data-toggle="dashboard-config"]').on('click', function() {
-        formDialog({
-            title: '仪表盘设置',
-            url: app.url('index/dashboard/config'),
-            id: 'widget-edit',
-            dialogClass:'modal-lg',
-            onSubmit: function() {
-                var me = this;
-                var data = settingWidget.save();
-                $.post(app.url('index/dashboard/config'), data, function(res) {
-                    if (res.status) {
-                        location.reload();
-                        toastrSuccess(res.data);
-                        $(me).dialog("close");
-                    } else {
-                        toastrError(res.data);
-                    }
-                });
-            }
-        });
-    });
-
-    $('[data-toggle="widget-refresh"]').on('click', function() {
-        var data = $(this).data();
-        if (data.key) {
-            gdoo.widgets[data.key].remoteData({page: 1});
-        }
-    });
-
-    function widgetInit() {
-        var items = $('.widget-item');
-        items.each(function(index, item) {
-            var data = $(item).data();
-            if (data == undefined) {
-                return false;
-            }
-            if (data.url) {
-                $(item).load(app.url(data.url, {id: data.id}));
-            }
-        });
-
-        var items = $('.info-items');
-        items.each(function(index, item) {
-            var me = $(item);
-            var data = me.data();
-            if (data.url) {
-                $(item).load(app.url(data.url, {id: data.id}));
-            }
-        });
-
-        var items = $('.quick-item');
-        items.each(function(index, item) {
-            var me = $(item);
-            var data = me.data();
-            $.get(app.url('index/index/badge', {key: data.key}), function(res) {
-                if(res.total > 0) {
-                    me.find('.quick-num').show().text(res.total);
-                }
-            });
-        });
-    }
-    widgetInit();
-
 })(jQuery);
 </script>

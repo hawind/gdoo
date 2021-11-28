@@ -6,12 +6,15 @@ mix.js(
 ).vue();
 
 mix.babel([
+    'public/assets/libs/moment.min.js',
     'public/assets/vendor/template.min.js',
     'public/assets/vendor/jquery.js',
     'public/assets/vendor/jquery-ui.min.js',
     'public/assets/vendor/bootstrap/js/bootstrap.js',
     'public/assets/vendor/contextmenu/bootstrap-contextmenu.js',
-
+    'public/assets/vendor/tempusdominus/tempusdominus-bootstrap.js',
+    'public/assets/vendor/jquery.qrcode.min.js',
+    
     'public/assets/vendor/jquery.colorpicker.js',
     'public/assets/vendor/jquery.table2excel.js',
     'public/assets/vendor/viewerjs/viewer.js',
@@ -54,10 +57,13 @@ mix.combine([
     'public/assets/vendor/ag-grid/ag-grid.css',
     'public/assets/vendor/ag-grid/ag-theme-balham.css',
 
+    'public/assets/vendor/tempusdominus/tempusdominus-bootstrap.css',
+
     'public/assets/vendor/bootstrap/css/font-awesome.min.css',
     'public/assets/vendor/bootstrap/css/animate.css',
     'public/assets/vendor/bootstrap/css/bootstrap.css',
     'public/assets/vendor/bootstrap/css/glyphicon.css',
+    'public/assets/vendor/bootstrap/css/bootstrap-icons.css',
     'public/assets/vendor/toastr/toastr.css',
 
     'public/assets/vendor/viewerjs/viewer.css',

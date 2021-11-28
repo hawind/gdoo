@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +25,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // */1 * * * * /www/web/php70/bin/php /www/htdocs/shenghua.app/artisan schedule:run --env=production 1>> /dev/null 2>&1
+        
+        $rows = DB::table('cron')->where('status', 1)->get();
+        if ($rows) {
+            foreach ($rows as $row) {
+                if ($row['expression'] && $row['command']) {
+                    $schedule->command($row['command'])->cron($row['expression']);
+                }
+            }
+        }
+        
     }
 
     /**

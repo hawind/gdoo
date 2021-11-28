@@ -29,6 +29,7 @@ class DashboardController extends DefaultController
         $widgets->transform(function ($row) use($user_widgets) {
             $user_widget = $user_widgets[$row['id']];
             if (not_empty($user_widget)) {
+                $row['id'] = $user_widget['id'];
                 $row['status'] = $user_widget['status'];
                 $row['grid'] = $user_widget['grid'];
                 $row['sort'] = $user_widget['sort'];
@@ -41,10 +42,11 @@ class DashboardController extends DefaultController
                 if ($user_widget['icon']) {
                     $row['icon'] = $user_widget['icon'];
                 }
-                $row['params'] = json_decode($user_widget['params'], true);
             } else {
                 $row['status'] = $row['default'] == 1;
             }
+            $row['params'] = json_decode($user_widget['params'], true);
+            $row['key'] = str_replace(['/', '?', '='], ['_', '_', '_'], $row['url']);
             return $row;
         });
         $widgets = $widgets->sortBy('sort')->values();
@@ -64,6 +66,7 @@ class DashboardController extends DefaultController
         $infos->transform(function ($row) use($user_infos) {
             $user_info = $user_infos[$row['id']];
             if (not_empty($user_info)) {
+                $row['id'] = $user_info['id'];
                 $row['status'] = $user_info['status'];
                 $row['sort'] = $user_info['sort'];
                 if ($user_info['name']) {
@@ -75,10 +78,13 @@ class DashboardController extends DefaultController
                 if ($user_info['icon']) {
                     $row['icon'] = $user_info['icon'];
                 }
-                $row['params'] = json_decode($user_info['params'], true);
+                $params = $user_info['params'];
             } else {
                 $row['status'] = $row['default'] == 1;
+                $params = $row['params'];
             }
+            $row['params'] = json_decode($params, true);
+            $row['key'] = str_replace(['/', '?', '='], ['_', '_', '_'], $row['more_url']);
             return $row;
         });
         $infos = $infos->sortBy('sort')->values();
@@ -99,14 +105,57 @@ class DashboardController extends DefaultController
             return $row;
         });
         
+        $dates = [
+            'day' => '今天',
+            'day2' => '昨天',
+            'week' => '本周',
+            'week2' => '上周',
+            'month' => '本月',
+            'month2' => '上月',
+            'season' => '本季度',
+            'season2' => '上季度',
+            'year' => '本年',
+            'year2' => '去年',
+        ];
+        $dates2 = [
+            'day' => '昨天',
+            'day2' => '前天',
+            'week' => '上周',
+            'week2' => '前周',
+            'month' => '上月',
+            'month2' => '前月',
+            'season' => '上季度',
+            'season2' => '前季度',
+            'year' => '去年',
+            'year2' => '前年',
+        ];
+
+        $dates3 = [
+            'last_day7' => '最近7天',
+            'last_day28' => '最近28天',
+            'last_month' => '上个月',
+            'last_year' => '去年',
+        ];
+
+        $cards = [];
         $grids = ['8', '4'];
 
-        return $this->display([
+        $vars = [
+            'dates' => $dates,
+            'dates2' => $dates2,
+            'dates3' => $dates3,
+            'cards' => $cards,
             'widgets' => $widgets,
             'infos' => $infos,
             'grids' => $grids,
             'quicks' => $quicks,
-        ]);
+        ];
+
+        if (Request::method() == 'POST') {
+            return $this->json($vars, true);
+        }
+
+        return $this->display($vars);
     }
 
     // 仪表板设置
@@ -120,6 +169,9 @@ class DashboardController extends DefaultController
             $sort = 1;
             foreach($widgets as $widget) {
                 $widget['sort'] = $sort;
+                if ($widget['permission'] && $widget['date']) {
+                    $widget['params'] = json_encode(['permission' => $widget['permission'], 'date' => $widget['date']], JSON_UNESCAPED_UNICODE);
+                }
                 $sort ++;
                 $model = UserWidget::firstOrNew(['type' => 1, 'node_id' => $widget['id'], 'user_id' => $auth['id']]);
                 $model->fill($widget);
@@ -185,6 +237,8 @@ class DashboardController extends DefaultController
                 if ($user_widget['icon']) {
                     $row['icon'] = $user_widget['icon'];
                 }
+            } else {
+                $row['status'] = 0;
             }
             return $row;
         });
@@ -219,6 +273,8 @@ class DashboardController extends DefaultController
                     $row['icon'] = $user_info['icon'];
                 }
                 $row['params'] = json_decode($user_info['params'], true);
+            } else {
+                $row['status'] = 0;
             }
             return $row;
         });
@@ -261,6 +317,41 @@ class DashboardController extends DefaultController
     // 设置单个组件
     public function settingInfo()
     {
+        $auth = auth()->user();
+        
+        $id = Request::input('id');
+
+        $info = Widget::where('id', $id)
+        ->selectRaw('*,name as info_name')
+        ->first();
+
+        $user_info = UserWidget::where('user_id', $auth['id'])
+        ->where('node_id', $info['id'])
+        ->first();
+
+        $params = json_decode($info['params'], true);
+        $user_params = json_decode($user_info['params'], true);
+
+        $params['date'] = not_empty($params['date']) ? $params['date'] : 'month';
+        $params['permission'] = not_empty($params['permission']) ? $params['permission'] : 'dept2';
+
+        if ($user_info['name']) {
+            $info['name'] = $user_info['name'];
+        }
+        if ($user_info['icon']) {
+            $info['icon'] = $user_info['icon'];
+        }
+        if ($user_info['color']) {
+            $info['color'] = $user_info['color'];
+        }
+        if ($user_params['date']) {
+            $params['date'] = $user_params['date'];
+        }
+        if ($user_params['permission']) {
+            $params['permission'] = $user_params['permission'];
+        }
+        $info['params'] = $params;
+
         // 定义权限
         $permissions = option('role.access')->pluck('name', 'id');
         $dates = [
@@ -275,49 +366,68 @@ class DashboardController extends DefaultController
             'year' => '本年',
             'year2' => '去年',
         ];
-        
-        $info_id = Request::input('info_id');
-        $row = UserWidget::where('id', $info_id)->first();
-        $widget = Widget::where('id', $row['node_id'])->first();
-        $params = json_decode($row['params'], true);
-
-        if (empty($params['date'])) {
-            $params['date'] = 'month';
-        }
-        if (empty($params['permission'])) {
-            $params['permission'] = 'dept';
-        }
-        $row['params'] = $params;
-
-        $row['widget_name'] = $widget['name'];
 
         return $this->render([
             'permissions' => $permissions,
             'dates' => $dates,
-            'row' => $row,
+            'info' => $info,
         ]);
     }
 
     // 设置单个组件
     public function settingWidget()
     {
-        $widget_id = Request::input('widget_id');
-        $row = UserWidget::where('id', $widget_id)->first();
-        $widget = Widget::where('id', $row['node_id'])->first();
-        $params = json_decode($row['params'], true);
+        $auth = auth()->user();
+        
+        $id = Request::input('id');
 
-        if (empty($params['date'])) {
-            $params['date'] = 'month';
+        $widget = Widget::where('id', $id)
+        ->selectRaw('*,name as widget_name')
+        ->first();
+
+        $user_widget = UserWidget::where('user_id', $auth['id'])
+        ->where('node_id', $widget['id'])
+        ->first();
+
+        $params = json_decode($widget['params'], true);
+        $user_params = json_decode($user_widget['params'], true);
+
+        if ($params['date']) {
+            if ($user_params['date']) {
+                $params['date'] = $user_params['date'];
+            }
         }
-        if (empty($params['permission'])) {
-            $params['permission'] = 'dept';
+
+        if ($params['permission']) {
+            if ($user_params['permission']) {
+                $params['permission'] = $user_params['permission'];
+            }
         }
-        $row['params'] = $params;
 
-        $row['widget_name'] = $widget['name'];
+        if ($user_widget['name']) {
+            $info['name'] = $user_widget['name'];
+        }
+        if ($user_widget['icon']) {
+            $widget['icon'] = $user_widget['icon'];
+        }
+        if ($user_widget['color']) {
+            $widget['color'] = $user_widget['color'];
+        }
 
+        $widget['params'] = $params;
+
+        // 定义权限
+        $permissions = option('role.access')->pluck('name', 'id');
+        $dates = [
+            'last_day7' => '最近7天',
+            'last_day28' => '最近28天',
+            'last_month' => '上个月',
+            'last_year' => '去年',
+        ];
         return $this->render([
-            'row' => $row,
+            'permissions' => $permissions,
+            'dates' => $dates,
+            'widget' => $widget,
         ]);
     }
 }

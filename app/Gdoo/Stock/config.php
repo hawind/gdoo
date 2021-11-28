@@ -18,6 +18,9 @@ return [
         'stock_cancel' => 'Gdoo\Stock\Hooks\CancelHook',
         'stock_allocation' => 'Gdoo\Stock\Hooks\AllocationHook',
     ],
+    'badges' => [
+        'stock_delivery_index' => 'Gdoo\Stock\Services\DeliveryService::getBadge',
+    ],
     'dialogs' => [
         'warehouse' => [
             'name' => '仓库',

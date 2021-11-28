@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "vue": "^3.0.5",
+        "vue2-datepicker": "^3.9.0",
         "vuedraggable": "^4.0.1"
     }
 }

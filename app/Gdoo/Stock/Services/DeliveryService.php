@@ -1,9 +1,18 @@
 <?php namespace Gdoo\Stock\Services;
 
 use DB;
+use Gdoo\Index\Services\BadgeService;
 
 class DeliveryService
 {
+	/**
+     * 获取待审发货
+     */
+    public static function getBadge()
+    {
+        return BadgeService::getModelTodo('stock_delivery');
+    }
+
 	/**
 	 * 自定义查询打印数据
 	 */

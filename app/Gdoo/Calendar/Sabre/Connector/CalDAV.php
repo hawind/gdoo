@@ -392,15 +392,15 @@ class CalDAV extends \Sabre\CalDAV\Backend\AbstractBackend
     {
         $extraData = $this->getDenormalizedData($calendarData);
         $data = array(
-            'calendarid' => $calendarId,
-            'calendardata' => $calendarData,
-            'uri' => $objectUri,
-            'etag' => $extraData['etag'],
-            'size' => $extraData['size'],
-            'componenttype' => $extraData['componentType'],
+            'calendarid'     => $calendarId,
+            'uri'            => $objectUri,
+            'calendardata'   => $calendarData,
+            'lastmodified'   => time(),
+            'etag'           => $extraData['etag'],
+            'size'           => $extraData['size'],
+            'componenttype'  => $extraData['componentType'],
             'firstoccurence' => $extraData['firstOccurence'],
-            'lastoccurence' => $extraData['lastOccurence'],
-            'lastmodified' => time(),
+            'lastoccurence'  => $extraData['lastOccurence'],
         );
         CalendarObject::insert($data);
         CalendarService::touchCalendar($calendarId);
@@ -427,13 +427,13 @@ class CalDAV extends \Sabre\CalDAV\Backend\AbstractBackend
     {
         $extraData = $this->getDenormalizedData($calendarData);
         $update = array(
-            'calendardata' => $calendarData,
-            'etag' => $extraData['etag'],
-            'size' => $extraData['size'],
-            'componenttype' => $extraData['componentType'],
+            'calendardata'   => $calendarData,
+            'lastmodified'   => time(),
+            'etag'           => $extraData['etag'],
+            'size'           => $extraData['size'],
+            'componenttype'  => $extraData['componentType'],
             'firstoccurence' => $extraData['firstOccurence'],
-            'lastoccurence' => $extraData['lastOccurence'],
-            'lastmodified' => time(),
+            'lastoccurence'  => $extraData['lastOccurence'],
         );
         CalendarObject::where('calendarid', $calendarId)->where('uri', $objectUri)->update($update);
         CalendarService::touchCalendar($calendarId);

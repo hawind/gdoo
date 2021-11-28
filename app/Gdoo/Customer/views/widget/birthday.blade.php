@@ -8,12 +8,12 @@
     grid.remoteDataUrl = '{{url()}}';
     grid.remoteParams = {};
     var columnDefs = [
-        {suppressMenu: true, cellClass:'text-center', field: "code", headerName: '客户编码', width: 120},
-        {suppressMenu: true, cellClass:'text-center', field: "name", headerName: '客户名称', minWidth: 160},
-        {suppressMenu: true, cellClass:'text-center', field: "head_name", headerName: '法人', width: 120},
-        {suppressMenu: true, cellClass:'text-center', field: "head_phone", headerName: '法人手机', width: 120},
-        {suppressMenu: true, cellClass:'text-center', field: "head_birthday", headerName: '法人生日', width: 120},
-        {suppressMenu: true, cellClass:'text-center', field: "id", headerName: 'ID', width: 80}
+        {suppressMenu: true, type:'sn', cellClass:'text-center', headerName: '序号', width: 60},
+        {suppressMenu: true, field: "code", cellClass:'text-center', headerName: '客户编码', width: 120},
+        {suppressMenu: true, field: "name", cellClass:'text-center', headerName: '客户名称', minWidth: 260},
+        {suppressMenu: true, field: "head_name", cellClass:'text-center', headerName: '法人', width: 120},
+        {suppressMenu: true, field: "head_phone", cellClass:'text-center', headerName: '法人手机', width: 120},
+        {suppressMenu: true, field: "head_birthday", cellClass:'text-center', headerName: '法人生日', width: 120},
     ];
 
     grid.onRowDoubleClicked = function(row) {

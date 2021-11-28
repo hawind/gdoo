@@ -92,6 +92,7 @@ var params = {product_id: product_id};
     grid.dataKey = 'material_id';
 
     $.post(app.url('product/material/list'), params, function(res) {
+        console.log(res.data);
         if (res.data.length > 0) {
             grid.api.setRowData(res.data);
         }

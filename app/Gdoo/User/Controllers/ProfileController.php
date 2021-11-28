@@ -47,10 +47,8 @@ class ProfileController extends DefaultController
         }
 
         $t = new Totp();
-        $secretURL = $t->getURL(Auth::user()->login, Request::server('HTTP_HOST'), Auth::user()->auth_secret);
-
+        $secretURL = Totp::getURL(Auth::user()->username, Request::server('HTTP_HOST'), Auth::user()->auth_secret, Auth::user()->name);
         $user = User::find(Auth::id());
-
         return $this->display([
             'user' => $user,
             'secretURL' => $secretURL,

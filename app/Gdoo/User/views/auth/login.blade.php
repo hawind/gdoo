@@ -185,7 +185,7 @@ body {
     -->
 
     <div class="footer">
-        <small class="text-muted">© {{date('Y')}} {{$edition}} {{$version}}</small>
+        <small class="text-muted">© {{date('Y')}} {{$version}}</small>
     </div>
 </div>
 </div>

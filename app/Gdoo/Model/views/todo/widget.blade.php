@@ -4,7 +4,7 @@
         @foreach($selects as $select)
         <option value="{{$select['id']}}">{{$select['name']}}</option>
         @endforeach
-    </select> 
+    </select>
 </div>
 
 <div class="todo-grid-box">
@@ -49,7 +49,6 @@
         {suppressMenu: true, field: 'run_name', cellClass:'text-center',  headerName: '状态', width: 160},
         {suppressMenu: true, field: 'user_name', cellClass:'text-center',  headerName: '转交人', width: 160},
         {suppressMenu: true, type: 'datetime', cellClass:'text-center',  field: 'created_at', headerName: '转交时间', width: 160},
-        //{suppressMenu: true, field: 'id', cellClass:'text-center',  headerName: 'ID', width: 80},
         {suppressMenu: true, field: 'link', cellClass:'text-center',  sortable: false, cellRenderer: 'link', headerName: '', width: 60},
     ];
 

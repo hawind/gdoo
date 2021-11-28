@@ -17,7 +17,7 @@ use Illuminate\Support\Arr;
 
 class EventController extends DefaultController
 {
-    public $permission = ['share', 'items'];
+    public $permission = ['data'];
 
     // 事件列表
     public function index()
@@ -60,8 +60,8 @@ class EventController extends DefaultController
         return $events;
     }
 
-    // 客户端显示事件列表
-    public function items()
+    // 客户端获取数据
+    public function data()
     {
         $gets = Request::all();
         $start = strtotime($gets['start']);
@@ -89,7 +89,7 @@ class EventController extends DefaultController
                 ],
             ];
 
-            $repeat = CalendarObjectService::getEventRepeat($master, '1D', 'Y-n-j');
+            $repeat = CalendarObjectService::getEventRepeat($master, '1D', 'Y-m-d');
             $items = array_merge($items, $repeat);
         }
         
@@ -117,7 +117,7 @@ class EventController extends DefaultController
                     'name' => $row['displayname'],
                 ],
             ];
-            $repeat = CalendarObjectService::getEventRepeat($master, '1D', 'Y-n-j');
+            $repeat = CalendarObjectService::getEventRepeat($master, '1D', 'Y-m-d');
             $items = array_merge($items, $repeat);
         }
         return $items;
@@ -148,7 +148,7 @@ class EventController extends DefaultController
             $vevent->setDateTime('LAST-MODIFIED', 'now', \Sabre\VObject\Property\DateTime::UTC);
             $vevent->setDateTime('DTSTAMP', 'now', \Sabre\VObject\Property\DateTime::UTC);
 
-            CalendarService::edit($gets['id'], $vcalendar->serialize());
+            CalendarService::edit($gets, $vcalendar);
             
             $lastmodified = $vevent->__get('LAST-MODIFIED')->getDateTime();
             return $this->json(['lastmodified' => $lastmodified->format('U')], true);
@@ -195,7 +195,7 @@ class EventController extends DefaultController
             $vevent->setDateTime('DTSTAMP', 'now', \Sabre\VObject\Property\DateTime::UTC);
 
             try {
-                CalendarService::edit($gets['id'], $vcalendar->serialize());
+                CalendarService::edit($gets, $vcalendar);
             } catch (\Exception $e) {
                 return $this->json($e->getMessage());
             }
@@ -216,18 +216,10 @@ class EventController extends DefaultController
             $vcalendar = CalendarService::createVCalendarFromRequest($gets);
             try {
                 $attachment = join(',', array_filter((array)$gets['attachment']));
-                $id = CalendarService::add($gets['calendarid'], $vcalendar->serialize(), $attachment);
+                $id = CalendarService::add($gets, $vcalendar);
                 AttachmentService::publish($gets['attachment']);
 
-                // 写入共享数据
-                ShareService::addItem(array(
-                    'source_id' => $id,
-                    'source_type' => 'event',
-                    'receive_id' => $gets['receive_id'],
-                    'receive_name' => $gets['receive_name'],
-                ));
-                
-                return $this->json(['id'=>$id], true);
+                return $this->json(['id' => $id], true);
             } catch (\Exception $e) {
                 return $this->json($e->getMessage());
             }
@@ -316,27 +308,9 @@ class EventController extends DefaultController
             CalendarService::updateVCalendarFromRequest($gets, $vcalendar);
             try {
                 $attachment = join(',', array_filter((array)$gets['attachment']));
-                CalendarService::edit($gets['id'], $vcalendar->serialize(), $attachment);
+                CalendarService::edit($gets, $vcalendar);
                 AttachmentService::publish($gets['attachment']);
 
-                $start_at = strtotime($gets['from'].' '.$gets['fromtime']);
-                $end_at   = strtotime($gets['to'].' '.$gets['totime']);
-
-                $share_data = array(
-                    'source_id' => $gets['id'],
-                    'source_type' => 'event',
-                    'receive_id' => $gets['receive_id'],
-                    'receive_name' => $gets['receive_name'],
-                    'start_at' => $start_at,
-                    'end_at' => $end_at,
-                );
-
-                $share = ShareService::getItem('event', $gets['id']);
-                if (empty($share)) {
-                    ShareService::addItem($share_data);
-                } else {
-                    ShareService::editItem('event', $gets['id'], $share_data);
-                }
             } catch (\Exception $e) {
                 return $this->json($e->getMessage());
             }
@@ -352,254 +326,252 @@ class EventController extends DefaultController
         }
 
         // 新增表单
-        if (Request::method() == 'GET') {
-            $event = CalendarService::getEvent($gets['id']);
+        $event = CalendarService::getEvent($gets['id']);
 
-            if (empty($event)) {
-                return $this->json('事件数据不正确。');
-            }
-
-            $object = VObject::parse($event['calendardata']);
-            $vevent = $object->VEVENT;
-            $dtstart = $vevent->DTSTART;
-            $dtend = CalendarService::getDTEndFromVEvent($vevent);
-
-            switch ($dtstart->getDateType()) {
-                case \Sabre\VObject\Property\DateTime::UTC:
-                    $timezone = new \DateTimeZone(CalendarService::getTimezone());
-                    $newDT    = $dtstart->getDateTime();
-                    $newDT->setTimezone($timezone);
-                    $dtstart->setDateTime($newDT);
-                    $newDT    = $dtend->getDateTime();
-                    $newDT->setTimezone($timezone);
-                    $dtend->setDateTime($newDT);
-                    // no break
-                case \Sabre\VObject\Property\DateTime::LOCALTZ:
-                case \Sabre\VObject\Property\DateTime::LOCAL:
-                    $startdate = $dtstart->getDateTime()->format('Y-m-d');
-                    $starttime = $dtstart->getDateTime()->format('H:i');
-                    $enddate = $dtend->getDateTime()->format('Y-m-d');
-                    $endtime = $dtend->getDateTime()->format('H:i');
-                    $allday = false;
-                    break;
-                case \Sabre\VObject\Property\DateTime::DATE:
-                    $startdate = $dtstart->getDateTime()->format('Y-m-d');
-                    $starttime = '';
-                    $dtend->getDateTime()->modify('-1 day');
-                    $enddate = $dtend->getDateTime()->format('Y-m-d');
-                    $endtime = '';
-                    $allday = true;
-                    break;
-            }
-
-            $summary = strtr($vevent->getAsString('SUMMARY'), array('\,' => ',', '\;' => ';'));
-            $location = strtr($vevent->getAsString('LOCATION'), array('\,' => ',', '\;' => ';'));
-            $description = strtr($vevent->getAsString('DESCRIPTION'), array('\,' => ',', '\;' => ';'));
-            $categories = $vevent->getAsString('CATEGORIES');
-
-            if ($vevent->VALARM) {
-                $valarm = $vevent->VALARM->getAsString('TRIGGER');
-            }
-
-            if ($vevent->RRULE) {
-                $rrule = explode(';', $vevent->getAsString('RRULE'));
-                $rrulearr = array();
-                foreach ($rrule as $rule) {
-                    list($attr, $val) = explode('=', $rule);
-                    $rrulearr[$attr] = $val;
-                }
-                if (!isset($rrulearr['INTERVAL']) || $rrulearr['INTERVAL'] == '') {
-                    $rrulearr['INTERVAL'] = 1;
-                }
-                if (array_key_exists('BYDAY', $rrulearr)) {
-                    if (substr_count($rrulearr['BYDAY'], ',') == 0) {
-                        if (strlen($rrulearr['BYDAY']) == 2) {
-                            $repeat['weekdays'] = array($rrulearr['BYDAY']);
-                        } elseif (strlen($rrulearr['BYDAY']) == 3) {
-                            $repeat['weekofmonth'] = substr($rrulearr['BYDAY'], 0, 1);
-                            $repeat['weekdays'] = array(substr($rrulearr['BYDAY'], 1, 2));
-                        } elseif (strlen($rrulearr['BYDAY']) == 4) {
-                            $repeat['weekofmonth'] = substr($rrulearr['BYDAY'], 0, 2);
-                            $repeat['weekdays'] = array(substr($rrulearr['BYDAY'], 2, 2));
-                        }
-                    } else {
-                        $byday_days = explode(',', $rrulearr['BYDAY']);
-                        foreach ($byday_days as $byday_day) {
-                            if (strlen($byday_day) == 2) {
-                                $repeat['weekdays'][] = $byday_day;
-                            } elseif (strlen($byday_day) == 3) {
-                                $repeat['weekofmonth'] = substr($byday_day, 0, 1);
-                                $repeat['weekdays'][] = substr($byday_day, 1, 2);
-                            } elseif (strlen($byday_day) == 4) {
-                                $repeat['weekofmonth'] = substr($byday_day, 0, 2);
-                                $repeat['weekdays'][] = substr($byday_day, 2, 2);
-                            }
-                        }
-                    }
-                }
-                if (array_key_exists('BYMONTHDAY', $rrulearr)) {
-                    if (substr_count($rrulearr['BYMONTHDAY'], ',') == 0) {
-                        $repeat['bymonthday'][] = $rrulearr['BYMONTHDAY'];
-                    } else {
-                        $bymonthdays = explode(',', $rrulearr['BYMONTHDAY']);
-                        foreach ($bymonthdays as $bymonthday) {
-                            $repeat['bymonthday'][] = $bymonthday;
-                        }
-                    }
-                }
-                if (array_key_exists('BYYEARDAY', $rrulearr)) {
-                    if (substr_count($rrulearr['BYYEARDAY'], ',') == 0) {
-                        $repeat['byyearday'][] = $rrulearr['BYYEARDAY'];
-                    } else {
-                        $byyeardays = explode(',', $rrulearr['BYYEARDAY']);
-                        foreach ($byyeardays as $yearday) {
-                            $repeat['byyearday'][] = $yearday;
-                        }
-                    }
-                }
-                if (array_key_exists('BYWEEKNO', $rrulearr)) {
-                    if (substr_count($rrulearr['BYWEEKNO'], ',') == 0) {
-                        $repeat['byweekno'][] = (string) $rrulearr['BYWEEKNO'];
-                    } else {
-                        $byweekno = explode(',', $rrulearr['BYWEEKNO']);
-                        foreach ($byweekno as $weekno) {
-                            $repeat['byweekno'][] = (string) $weekno;
-                        }
-                    }
-                }
-                if (array_key_exists('BYMONTH', $rrulearr)) {
-                    if (substr_count($rrulearr['BYMONTH'], ',') == 0) {
-                        $repeat['bymonth'][] = $month;
-                    } else {
-                        $bymonth = explode(',', $rrulearr['BYMONTH']);
-                        foreach ($bymonth as $month) {
-                            $repeat['bymonth'][] = $month;
-                        }
-                    }
-                }
-                switch ($rrulearr['FREQ']) {
-                    case 'DAILY':
-                        $repeat['repeat'] = 'daily';
-                        break;
-                    case 'WEEKLY':
-                        if ($rrulearr['INTERVAL'] % 2 == 0) {
-                            $repeat['repeat'] = 'biweekly';
-                            $rrulearr['INTERVAL'] = $rrulearr['INTERVAL'] / 2;
-                        } elseif ($rrulearr['BYDAY'] == 'MO,TU,WE,TH,FR') {
-                            $repeat['repeat'] = 'weekday';
-                        } else {
-                            $repeat['repeat'] = 'weekly';
-                        }
-                        break;
-                    case 'MONTHLY':
-                        $repeat['repeat'] = 'monthly';
-                        if (array_key_exists('BYDAY', $rrulearr)) {
-                            $repeat['month'] = 'weekday';
-                        } else {
-                            $repeat['month'] = 'monthday';
-                        }
-                        break;
-                    case 'YEARLY':
-                        $repeat['repeat'] = 'yearly';
-                        if (array_key_exists('BYMONTH', $rrulearr)) {
-                            $repeat['year'] = 'bydaymonth';
-                        } elseif (array_key_exists('BYWEEKNO', $rrulearr)) {
-                            $repeat['year'] = 'byweekno';
-                        } else {
-                            $repeat['year'] = 'byyearday';
-                        }
-                }
-                $repeat['interval'] = $rrulearr['INTERVAL'];
-                if (array_key_exists('COUNT', $rrulearr)) {
-                    $repeat['end'] = 'count';
-                    $repeat['count'] = $rrulearr['COUNT'];
-                } elseif (array_key_exists('UNTIL', $rrulearr)) {
-                    $repeat['end'] = 'date';
-                    $endbydate_year = substr($rrulearr['UNTIL'], 0, 4);
-                    $endbydate_month = substr($rrulearr['UNTIL'], 4, 2);
-                    $endbydate_day = substr($rrulearr['UNTIL'], 6, 2);
-                    $repeat['date'] = $endbydate_year . '-' .  $endbydate_month . '-' . $endbydate_day;
-                } else {
-                    $repeat['end'] = 'never';
-                }
-                if (array_key_exists('weekdays', $repeat)) {
-                    $repeat_weekdays_ = array();
-                    foreach ($repeat['weekdays'] as $weekday) {
-                        $repeat_weekdays_[] = $weekday;
-                    }
-                    $repeat['weekdays'] = $repeat_weekdays_;
-                }
-            } else {
-                $repeat['repeat'] = 'doesnotrepeat';
-            }
-
-            $options['calendar_options']= CalendarService::getCalendars(Auth::id(), false);
-            $options['access_class_options'] = CalendarService::getAccessClassOptions();
-            $options['valarm_options'] = CalendarService::getValarmOptions();
-            $options['repeat_options'] = CalendarService::getRepeatOptions();
-            $options['repeat_end_options'] = CalendarService::getEndOptions();
-            $options['repeat_month_options'] = CalendarService::getMonthOptions();
-            $options['repeat_year_options'] = CalendarService::getYearOptions();
-            $options['repeat_weekly_options'] = CalendarService::getWeeklyOptions();
-            $options['repeat_weekofmonth_options'] = CalendarService::getWeekofMonth();
-            $options['repeat_byyearday_options'] = CalendarService::getByYearDayOptions();
-            $options['repeat_bymonth_options'] = CalendarService::getByMonthOptions();
-            $options['repeat_byweekno_options'] = CalendarService::getByWeekNoOptions();
-            $options['repeat_bymonthday_options'] = CalendarService::getByMonthDayOptions();
-
-            $options['id'] = $gets['id'];
-            $options['lastmodified'] = $event['lastmodified'];
-            $options['title'] = $summary;
-            $options['location'] = $location;
-            $options['categories'] = $categories;
-            $options['calendarid'] = $event['calendarid'];
-            $options['allday'] = $allday;
-            $options['valarm'] = $valarm;
-            $options['startdate'] = $startdate;
-            $options['starttime'] = $starttime;
-            $options['enddate'] = $enddate;
-            $options['endtime'] = $endtime;
-            $options['description'] = $description;
-
-            $repeats['repeat'] = $repeat['repeat'];
-
-            if ($repeat['repeat'] != 'doesnotrepeat') {
-                $repeats['repeat_month'] = isset($repeat['month']) ? $repeat['month'] : 'monthday';
-                $repeats['repeat_weekdays'] = isset($repeat['weekdays']) ? $repeat['weekdays'] : array();
-                $repeats['repeat_interval'] = isset($repeat['interval']) ? $repeat['interval'] : '1';
-                $repeats['repeat_end'] = isset($repeat['end']) ? $repeat['end'] : 'never';
-                $repeats['repeat_count'] = isset($repeat['count']) ? $repeat['count'] : '10';
-                $repeats['repeat_weekofmonth'] = $repeat['weekofmonth'];
-                $repeats['repeat_date'] = isset($repeat['date']) ? $repeat['date'] : '';
-                $repeats['repeat_year'] = isset($repeat['year']) ? $repeat['year'] : array();
-                $repeats['repeat_byyearday'] = isset($repeat['byyearday']) ? $repeat['byyearday'] : array();
-                $repeats['repeat_bymonthday'] = isset($repeat['bymonthday']) ? $repeat['bymonthday'] : array();
-                $repeats['repeat_bymonth'] = isset($repeat['bymonth']) ? $repeat['bymonth'] : array();
-                $repeats['repeat_byweekno'] = isset($repeat['byweekno']) ? $repeat['byweekno'] : array();
-            } else {
-                $repeats['repeat_month'] = 'monthday';
-                $repeats['repeat_weekdays'] = array();
-                $repeats['repeat_byyearday'] = array();
-                $repeats['repeat_bymonthday'] = array();
-                $repeats['repeat_bymonth'] = array();
-                $repeats['repeat_byweekno'] = array();
-                $repeats['repeat_interval'] = '1';
-                $repeats['repeat_end'] = 'never';
-                $repeats['repeat_count'] = '10';
-                $repeats['repeat_weekofmonth'] = 'auto';
-                $repeats['repeat_date'] = '';
-                $repeats['repeat_year'] = 'bydate';
-            }
-
-            $attachment = AttachmentService::edit($event['attachment'], 'calendar_object', 'attachment', 'calendar');
-            $share = ShareService::getItem('event', $gets['id']);
-            return $this->render(array(
-                'attachment' => $attachment,
-                'repeats' => $repeats,
-                'options' => $options,
-                'share' => $share,
-            ), 'add');
+        if (empty($event)) {
+            return $this->json('事件数据不正确。');
         }
+
+        $object = VObject::parse($event['calendardata']);
+        $vevent = $object->VEVENT;
+        $dtstart = $vevent->DTSTART;
+        $dtend = CalendarService::getDTEndFromVEvent($vevent);
+
+        switch ($dtstart->getDateType()) {
+            case \Sabre\VObject\Property\DateTime::UTC:
+                $timezone = new \DateTimeZone(CalendarService::getTimezone());
+                $newDT = $dtstart->getDateTime();
+                $newDT->setTimezone($timezone);
+                $dtstart->setDateTime($newDT);
+                $newDT = $dtend->getDateTime();
+                $newDT->setTimezone($timezone);
+                $dtend->setDateTime($newDT);
+                // no break
+            case \Sabre\VObject\Property\DateTime::LOCALTZ:
+            case \Sabre\VObject\Property\DateTime::LOCAL:
+                $startdate = $dtstart->getDateTime()->format('Y-m-d');
+                $starttime = $dtstart->getDateTime()->format('H:i');
+                $enddate = $dtend->getDateTime()->format('Y-m-d');
+                $endtime = $dtend->getDateTime()->format('H:i');
+                $allday = false;
+                break;
+            case \Sabre\VObject\Property\DateTime::DATE:
+                $startdate = $dtstart->getDateTime()->format('Y-m-d');
+                $starttime = '';
+                $dtend->getDateTime()->modify('-1 day');
+                $enddate = $dtend->getDateTime()->format('Y-m-d');
+                $endtime = '';
+                $allday = true;
+                break;
+        }
+
+        $summary = strtr($vevent->getAsString('SUMMARY'), array('\,' => ',', '\;' => ';'));
+        $location = strtr($vevent->getAsString('LOCATION'), array('\,' => ',', '\;' => ';'));
+        $description = strtr($vevent->getAsString('DESCRIPTION'), array('\,' => ',', '\;' => ';'));
+        $categories = $vevent->getAsString('CATEGORIES');
+
+        if ($vevent->VALARM) {
+            $valarm = $vevent->VALARM->getAsString('TRIGGER');
+        }
+
+        if ($vevent->RRULE) {
+            $rrule = explode(';', $vevent->getAsString('RRULE'));
+            $rrulearr = array();
+            foreach ($rrule as $rule) {
+                list($attr, $val) = explode('=', $rule);
+                $rrulearr[$attr] = $val;
+            }
+            if (!isset($rrulearr['INTERVAL']) || $rrulearr['INTERVAL'] == '') {
+                $rrulearr['INTERVAL'] = 1;
+            }
+            if (array_key_exists('BYDAY', $rrulearr)) {
+                if (substr_count($rrulearr['BYDAY'], ',') == 0) {
+                    if (strlen($rrulearr['BYDAY']) == 2) {
+                        $repeat['weekdays'] = array($rrulearr['BYDAY']);
+                    } elseif (strlen($rrulearr['BYDAY']) == 3) {
+                        $repeat['weekofmonth'] = substr($rrulearr['BYDAY'], 0, 1);
+                        $repeat['weekdays'] = array(substr($rrulearr['BYDAY'], 1, 2));
+                    } elseif (strlen($rrulearr['BYDAY']) == 4) {
+                        $repeat['weekofmonth'] = substr($rrulearr['BYDAY'], 0, 2);
+                        $repeat['weekdays'] = array(substr($rrulearr['BYDAY'], 2, 2));
+                    }
+                } else {
+                    $byday_days = explode(',', $rrulearr['BYDAY']);
+                    foreach ($byday_days as $byday_day) {
+                        if (strlen($byday_day) == 2) {
+                            $repeat['weekdays'][] = $byday_day;
+                        } elseif (strlen($byday_day) == 3) {
+                            $repeat['weekofmonth'] = substr($byday_day, 0, 1);
+                            $repeat['weekdays'][] = substr($byday_day, 1, 2);
+                        } elseif (strlen($byday_day) == 4) {
+                            $repeat['weekofmonth'] = substr($byday_day, 0, 2);
+                            $repeat['weekdays'][] = substr($byday_day, 2, 2);
+                        }
+                    }
+                }
+            }
+            if (array_key_exists('BYMONTHDAY', $rrulearr)) {
+                if (substr_count($rrulearr['BYMONTHDAY'], ',') == 0) {
+                    $repeat['bymonthday'][] = $rrulearr['BYMONTHDAY'];
+                } else {
+                    $bymonthdays = explode(',', $rrulearr['BYMONTHDAY']);
+                    foreach ($bymonthdays as $bymonthday) {
+                        $repeat['bymonthday'][] = $bymonthday;
+                    }
+                }
+            }
+            if (array_key_exists('BYYEARDAY', $rrulearr)) {
+                if (substr_count($rrulearr['BYYEARDAY'], ',') == 0) {
+                    $repeat['byyearday'][] = $rrulearr['BYYEARDAY'];
+                } else {
+                    $byyeardays = explode(',', $rrulearr['BYYEARDAY']);
+                    foreach ($byyeardays as $yearday) {
+                        $repeat['byyearday'][] = $yearday;
+                    }
+                }
+            }
+            if (array_key_exists('BYWEEKNO', $rrulearr)) {
+                if (substr_count($rrulearr['BYWEEKNO'], ',') == 0) {
+                    $repeat['byweekno'][] = (string) $rrulearr['BYWEEKNO'];
+                } else {
+                    $byweekno = explode(',', $rrulearr['BYWEEKNO']);
+                    foreach ($byweekno as $weekno) {
+                        $repeat['byweekno'][] = (string) $weekno;
+                    }
+                }
+            }
+            if (array_key_exists('BYMONTH', $rrulearr)) {
+                if (substr_count($rrulearr['BYMONTH'], ',') == 0) {
+                    $repeat['bymonth'][] = $month;
+                } else {
+                    $bymonth = explode(',', $rrulearr['BYMONTH']);
+                    foreach ($bymonth as $month) {
+                        $repeat['bymonth'][] = $month;
+                    }
+                }
+            }
+            switch ($rrulearr['FREQ']) {
+                case 'DAILY':
+                    $repeat['repeat'] = 'daily';
+                    break;
+                case 'WEEKLY':
+                    if ($rrulearr['INTERVAL'] % 2 == 0) {
+                        $repeat['repeat'] = 'biweekly';
+                        $rrulearr['INTERVAL'] = $rrulearr['INTERVAL'] / 2;
+                    } elseif ($rrulearr['BYDAY'] == 'MO,TU,WE,TH,FR') {
+                        $repeat['repeat'] = 'weekday';
+                    } else {
+                        $repeat['repeat'] = 'weekly';
+                    }
+                    break;
+                case 'MONTHLY':
+                    $repeat['repeat'] = 'monthly';
+                    if (array_key_exists('BYDAY', $rrulearr)) {
+                        $repeat['month'] = 'weekday';
+                    } else {
+                        $repeat['month'] = 'monthday';
+                    }
+                    break;
+                case 'YEARLY':
+                    $repeat['repeat'] = 'yearly';
+                    if (array_key_exists('BYMONTH', $rrulearr)) {
+                        $repeat['year'] = 'bydaymonth';
+                    } elseif (array_key_exists('BYWEEKNO', $rrulearr)) {
+                        $repeat['year'] = 'byweekno';
+                    } else {
+                        $repeat['year'] = 'byyearday';
+                    }
+            }
+            $repeat['interval'] = $rrulearr['INTERVAL'];
+            if (array_key_exists('COUNT', $rrulearr)) {
+                $repeat['end'] = 'count';
+                $repeat['count'] = $rrulearr['COUNT'];
+            } elseif (array_key_exists('UNTIL', $rrulearr)) {
+                $repeat['end'] = 'date';
+                $endbydate_year = substr($rrulearr['UNTIL'], 0, 4);
+                $endbydate_month = substr($rrulearr['UNTIL'], 4, 2);
+                $endbydate_day = substr($rrulearr['UNTIL'], 6, 2);
+                $repeat['date'] = $endbydate_year . '-' .  $endbydate_month . '-' . $endbydate_day;
+            } else {
+                $repeat['end'] = 'never';
+            }
+            if (array_key_exists('weekdays', $repeat)) {
+                $repeat_weekdays_ = array();
+                foreach ($repeat['weekdays'] as $weekday) {
+                    $repeat_weekdays_[] = $weekday;
+                }
+                $repeat['weekdays'] = $repeat_weekdays_;
+            }
+        } else {
+            $repeat['repeat'] = 'doesnotrepeat';
+        }
+
+        $options['calendar_options']= CalendarService::getCalendars(Auth::id(), false);
+        $options['access_class_options'] = CalendarService::getAccessClassOptions();
+        $options['valarm_options'] = CalendarService::getValarmOptions();
+        $options['repeat_options'] = CalendarService::getRepeatOptions();
+        $options['repeat_end_options'] = CalendarService::getEndOptions();
+        $options['repeat_month_options'] = CalendarService::getMonthOptions();
+        $options['repeat_year_options'] = CalendarService::getYearOptions();
+        $options['repeat_weekly_options'] = CalendarService::getWeeklyOptions();
+        $options['repeat_weekofmonth_options'] = CalendarService::getWeekofMonth();
+        $options['repeat_byyearday_options'] = CalendarService::getByYearDayOptions();
+        $options['repeat_bymonth_options'] = CalendarService::getByMonthOptions();
+        $options['repeat_byweekno_options'] = CalendarService::getByWeekNoOptions();
+        $options['repeat_bymonthday_options'] = CalendarService::getByMonthDayOptions();
+
+        $options['id'] = $gets['id'];
+        $options['lastmodified'] = $event['lastmodified'];
+        $options['title'] = $summary;
+        $options['location'] = $location;
+        $options['categories'] = $categories;
+        $options['calendarid'] = $event['calendarid'];
+        $options['allday'] = $allday;
+        $options['valarm'] = $valarm;
+        $options['startdate'] = $startdate;
+        $options['starttime'] = $starttime;
+        $options['enddate'] = $enddate;
+        $options['endtime'] = $endtime;
+        $options['description'] = $description;
+
+        $repeats['repeat'] = $repeat['repeat'];
+
+        if ($repeat['repeat'] != 'doesnotrepeat') {
+            $repeats['repeat_month'] = isset($repeat['month']) ? $repeat['month'] : 'monthday';
+            $repeats['repeat_weekdays'] = isset($repeat['weekdays']) ? $repeat['weekdays'] : array();
+            $repeats['repeat_interval'] = isset($repeat['interval']) ? $repeat['interval'] : '1';
+            $repeats['repeat_end'] = isset($repeat['end']) ? $repeat['end'] : 'never';
+            $repeats['repeat_count'] = isset($repeat['count']) ? $repeat['count'] : '10';
+            $repeats['repeat_weekofmonth'] = $repeat['weekofmonth'];
+            $repeats['repeat_date'] = isset($repeat['date']) ? $repeat['date'] : '';
+            $repeats['repeat_year'] = isset($repeat['year']) ? $repeat['year'] : array();
+            $repeats['repeat_byyearday'] = isset($repeat['byyearday']) ? $repeat['byyearday'] : array();
+            $repeats['repeat_bymonthday'] = isset($repeat['bymonthday']) ? $repeat['bymonthday'] : array();
+            $repeats['repeat_bymonth'] = isset($repeat['bymonth']) ? $repeat['bymonth'] : array();
+            $repeats['repeat_byweekno'] = isset($repeat['byweekno']) ? $repeat['byweekno'] : array();
+        } else {
+            $repeats['repeat_month'] = 'monthday';
+            $repeats['repeat_weekdays'] = array();
+            $repeats['repeat_byyearday'] = array();
+            $repeats['repeat_bymonthday'] = array();
+            $repeats['repeat_bymonth'] = array();
+            $repeats['repeat_byweekno'] = array();
+            $repeats['repeat_interval'] = '1';
+            $repeats['repeat_end'] = 'never';
+            $repeats['repeat_count'] = '10';
+            $repeats['repeat_weekofmonth'] = 'auto';
+            $repeats['repeat_date'] = '';
+            $repeats['repeat_year'] = 'bydate';
+        }
+
+        $attachment = AttachmentService::edit($event['attachment'], 'calendar_object', 'attachment', 'calendar');
+        $share = ShareService::getItem('event', $gets['id']);
+        return $this->render(array(
+            'attachment' => $attachment,
+            'repeats' => $repeats,
+            'options' => $options,
+            'share' => $share,
+        ), 'add');
     }
 
     public function view()

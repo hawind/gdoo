@@ -47,12 +47,12 @@
         var table = 'material_plan';
         var search = JSON.parse('{{json_encode($search)}}');
         var cols = [ 
-            {field: "product_name", headerName: "成品品种", sortable: false, suppressMenu: true, width: 140, rowSpan: rowSpan, cellClassRules: cellClassRules}, 
+            {field: "product_name", headerName: "成品名称", sortable: false, suppressMenu: true, width: 140, rowSpan: rowSpan, cellClassRules: cellClassRules}, 
             {field: "product_spec", headerName: "规格型号", sortable: false, suppressMenu: true, cellClass: "text-center", width: 120, rowSpan: rowSpan, cellClassRules: cellClassRules}, 
             {field: "product_unit", headerName: "计量单位", sortable: false, suppressMenu: true, cellClass: "text-center", width: 60, rowSpan: rowSpan, cellClassRules: cellClassRules}, 
             {field: "product_num", headerName: "计划数量", sortable: false, suppressMenu: true, cellClass: "text-right",  width: 80, rowSpan: rowSpan, cellClassRules: cellClassRules}, 
-            {field: "category_name", headerName: "品种", sortable: false, suppressMenu: true, width: 140}, 
-            {field: "material_name", headerName: "名称", sortable: false, suppressMenu: true, width: 100}, 
+            {field: "category_name", headerName: "物料分类", sortable: false, suppressMenu: true, width: 140}, 
+            {field: "material_name", headerName: "物料名称", sortable: false, suppressMenu: true, width: 100}, 
             {field: "material_num", headerName: "数量", sortable: false, suppressMenu: true, cellClass: "text-right", calcFooter: "sum", type: "number", width: 60}, 
             {field: "total_num", headerName: "计划用料数量", sortable: false, suppressMenu: true, cellClass: "text-right", calcFooter: "sum", type: "number", width: 70}, 
             {field: "remark", headerName: "备注", sortable: false, suppressMenu: true, cellClass: "text-right", calcFooter: "sum", type: "number", width: 70}
@@ -61,7 +61,7 @@
         var grid = new agGridOptions();
         grid.suppressRowTransform = true;
         var gridDiv = document.querySelector("#material_plan-grid");
-        gridDiv.style.height = getPanelHeight(48);
+        gridDiv.style.height = getPanelHeight(12);
 
         grid.remoteDataUrl = '{{url()}}';
         grid.remoteParams = search.query;

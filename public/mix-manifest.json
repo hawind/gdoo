@@ -1,9 +1,9 @@
 {
-    "/assets/dist/bundle.min.js": "/assets/dist/bundle.min.js?id=4ccf319172adf4f16820",
-    "/assets/dist/vendor.min.js": "/assets/dist/vendor.min.js?id=29c59d13160c6607b4af",
-    "/assets/dist/gdoo.min.js": "/assets/dist/gdoo.min.js?id=ae7df56b730a240cb42f",
-    "/assets/dist/index.min.js": "/assets/dist/index.min.js?id=e68deaa21814b7ec0d1c",
-    "/assets/dist/vendor.min.css": "/assets/dist/vendor.min.css?id=99a58728a17257718260",
-    "/assets/dist/gdoo.min.css": "/assets/dist/gdoo.min.css?id=b892b527a7b042089ee8",
-    "/assets/dist/index.min.css": "/assets/dist/index.min.css?id=ccde8d73c536940b91d9"
+    "/assets/dist/bundle.min.js": "/assets/dist/bundle.min.js",
+    "/assets/dist/vendor.min.js": "/assets/dist/vendor.min.js",
+    "/assets/dist/gdoo.min.js": "/assets/dist/gdoo.min.js",
+    "/assets/dist/index.min.js": "/assets/dist/index.min.js",
+    "/assets/dist/vendor.min.css": "/assets/dist/vendor.min.css",
+    "/assets/dist/gdoo.min.css": "/assets/dist/gdoo.min.css",
+    "/assets/dist/index.min.css": "/assets/dist/index.min.css"
 }

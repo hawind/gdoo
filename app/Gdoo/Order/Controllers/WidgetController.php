@@ -3,9 +3,9 @@
 use DB;
 use Request;
 use Auth;
-use Gdoo\Index\Services\InfoService;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Gdoo\Index\Services\InfoService;
 
 class WidgetController extends DefaultController
 {
@@ -267,11 +267,6 @@ class WidgetController extends DefaultController
             'count2' => $count2,
             'rate' => $rate,
         ];
-        
-        return $this->render([
-            'dates' => $config['dates'],
-            'info' => $config['info'],
-            'res' => $res,
-        ]);
+        return $this->json($res, true);
     }
 }

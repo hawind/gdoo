@@ -320,7 +320,7 @@ class OrderService
             ) sdd ON d.sale_data_id = sdd.sale_data_id
                                         
             LEFT JOIN (SELECT product_id,
-                sum(isnull(ky_num, (0)::numeric)) AS ky_num
+                sum(isnull(ky_num, 0)) AS ky_num
                 FROM (".StockService::getStockSelectSql().") ss
                 WHERE (warehouse_name like '%成品%') AND warehouse_code <> '25'
                 GROUP BY product_id

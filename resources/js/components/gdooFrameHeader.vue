@@ -1,15 +1,6 @@
 <template>
     <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
         
-        <li class="dropdown" v-if="realtime">
-            <a href="javascript:;" @click="chatToggle()" title="即时消息" class="dropdown-toggle hidden-xs">
-                <i class="fa fa-comments pulse-box">
-                    <span class='pulse green'></span>
-                </i>
-                <span class="visible-xs-inline">即时消息</span>
-            </a>
-        </li>
-
         <li class="dropdown hidden-xs">
             <a href="#" data-toggle="dropdown" title="通知" class="dropdown-toggle">
                 <i class="fa fa-bell-o pulse-box">

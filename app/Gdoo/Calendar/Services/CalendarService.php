@@ -9,6 +9,8 @@ use App\Support\VObject;
 use Gdoo\Index\Services\AttachmentService;
 use Gdoo\Calendar\Models\Calendar;
 use Gdoo\Calendar\Models\CalendarObject;
+use Gdoo\Calendar\Models\CalendarReminder;
+use Gdoo\Index\Services\ShareService;
 
 class CalendarService
 {
@@ -94,7 +96,7 @@ class CalendarService
     {
         $calendar = self::getCalendar($id, false);
         if ($calendar['userid'] != Auth::id()) {
-            throw new \Exception('您没有权限编辑此日历。');
+            abort_error('您没有权限编辑此日历。');
         }
 
         if (is_null($name)) {
@@ -154,7 +156,7 @@ class CalendarService
         $calendar = self::getCalendar($id, false);
 
         if ($calendar['userid'] != Auth::id()) {
-            throw new \Exception('您没有权限删除此日历。');
+            abort_error('您没有权限删除此日历。');
         }
         $events = CalendarObject::where('calendarid', $id)->get();
         if (sizeof($events)) {
@@ -187,15 +189,6 @@ class CalendarService
         $start = strtotime($start);
         $end = strtotime($end);
 
-        /*
-        $model = CalendarObject::where(function ($q) use ($start, $end) {
-            $q->where('rrule', 0);
-            $q->whereBetween('firstoccurence', [$start, $end]);
-            $q->orWhereBetween('lastoccurence', [$start, $end]);
-        })->orWhere(function ($q) use ($start, $end) {
-            $q->where('rrule', 1)->where('firstoccurence', '<=', $end);
-        });
-        */
         $model = CalendarObject::whereRaw('(
             (firstoccurence between '.$start.' and '.$end.' or lastoccurence between '.$start.' and '.$end.')
              or (rrule = 1 and firstoccurence <= '.$end.')
@@ -231,13 +224,13 @@ class CalendarService
             $allday = ($vcalendar->VEVENT->DTSTART->getDateType() == \Sabre\VObject\Property\DateTime::DATE) ? true : false;
 
             $output = array(
-                'id' => (int)$row->id,
-                'calendarid' => (int)$row->calendarid,
-                'title' => (isset($vevent->SUMMARY) && $vevent->SUMMARY->value) ? strtr($vevent->SUMMARY->value, array('\,' => ',', '\;' => ';')) : 'unnamed',
-                'description' => (isset($vevent->DESCRIPTION) && $vevent->DESCRIPTION->value) ? strtr($vevent->DESCRIPTION->value, array('\,' => ',', '\;' => ';')) : '',
-                'location' => (isset($vevent->LOCATION) && $vevent->LOCATION->value) ? strtr($vevent->LOCATION->value, array('\,' => ',', '\;' => ';')) : '',
+                'id'           => (int)$row->id,
+                'calendarid'   => (int)$row->calendarid,
+                'title'        => (isset($vevent->SUMMARY) && $vevent->SUMMARY->value) ? strtr($vevent->SUMMARY->value, array('\,' => ',', '\;' => ';')) : 'unnamed',
+                'description'  => (isset($vevent->DESCRIPTION) && $vevent->DESCRIPTION->value) ? strtr($vevent->DESCRIPTION->value, array('\,' => ',', '\;' => ';')) : '',
+                'location'     => (isset($vevent->LOCATION) && $vevent->LOCATION->value) ? strtr($vevent->LOCATION->value, array('\,' => ',', '\;' => ';')) : '',
                 'lastmodified' => $row->lastmodified,
-                'allDay' => $allday,
+                'allDay'       => $allday,
             );
 
             if ($vcalendar->VEVENT->RRULE) {
@@ -277,31 +270,60 @@ class CalendarService
      * @param string $attachment
      * @return integer
      */
-    public static function add($id, $calendardata, $attachment = null)
+    public static function add($params, $vcalendar)
     {
-        $calendar = self::getCalendar($id);
+        $calendarid = $params['calendarid'];
+        $calendar = self::getCalendar($calendarid);
         
         if ($calendar['userid'] != Auth::id()) {
-            throw new \Exception('您没有权限添加事件到此日历。');
+            abort_error('您没有权限添加事件到此日历。');
         }
 
+        $calendardata = $vcalendar->serialize();
         $extraData = self::getDenormalizedData($calendardata);
         $uri = self::createURI().'.ics';
         $data = [
-            'calendarid' => $id,
+            'calendarid' => $calendarid,
             'calendardata' => $calendardata,
-            'attachment' => $attachment,
+            'uri' => $uri,
             'rrule' => $extraData['rrule'],
             'etag' => $extraData['etag'],
             'size' => $extraData['size'],
-            'uri' => $uri,
+            'lastmodified' => time(),
+            'attachment' => $params['attachment'],
             'componenttype' => $extraData['componentType'],
             'firstoccurence' => $extraData['firstOccurence'],
             'lastoccurence' => $extraData['lastOccurence'],
-            'lastmodified' => time(),
         ];
         $objectId = CalendarObject::insertGetId($data);
-        self::touchCalendar($id);
+
+        // 是重复事件
+        $is_recurring = $vcalendar->VEVENT->RRULE ? 1 : 0;
+
+        // 事件提醒
+        if (isset($vcalendar->VEVENT->VALARM)) {
+            $triggerTime = $vcalendar->VEVENT->VALARM->getEffectiveTriggerTime();
+            $valarm_at = $triggerTime->getTimeStamp();
+            CalendarReminder::insert([
+                'calendar_id' => $calendarid,
+                'object_id' => $objectId,
+                'is_recurring' => $is_recurring,
+                'alarm_at' => $valarm_at,
+            ]);
+        }
+
+        // 写入共享数据
+        ShareService::addItem([
+            'source_id' => $objectId,
+            'source_type' => 'event',
+            'is_repeat' => $is_recurring,
+            'receive_id' => $params['receive_id'],
+            'receive_name' => $params['receive_name'],
+            'start_at' => $extraData['firstOccurence'],
+            'end_at' => $extraData['lastOccurence'],
+        ]);
+        
+        self::touchCalendar($calendarid);
         return $objectId;
     }
 
@@ -311,32 +333,72 @@ class CalendarService
      * @param string $data  object
      * @return boolean
      */
-    public static function edit($id, $calendardata, $attachment = null)
+    public static function edit($params, $vcalendar)
     {
-        $event = self::getEvent($id);
+        $event = self::getEvent($params['id']);
         $calendar = self::getCalendar($event['calendarid']);
 
         if ($calendar['userid'] != Auth::id()) {
-            throw new \Exception('您没有权限编辑此事件。');
+            abort_error('您没有权限编辑此事件。');
         }
 
-        if (empty($attachment)) {
-            $attachment = $event['attachment'];
-        }
-
+        $calendardata = $vcalendar->serialize();
         $extraData = self::getDenormalizedData($calendardata);
         $data = [
             'calendardata' => $calendardata,
-            'attachment' => $attachment,
+            'lastmodified' => time(),
             'rrule' => $extraData['rrule'],
             'etag' => $extraData['etag'],
             'size' => $extraData['size'],
             'componenttype' => $extraData['componentType'],
             'firstoccurence' => $extraData['firstOccurence'],
             'lastoccurence' => $extraData['lastOccurence'],
-            'lastmodified' => time(),
         ];
-        CalendarObject::where('id', $id)->update($data);
+
+        // 存在附件字段
+        if (isset($params['attachment'])) {
+            $data['attachment'] = $params['attachment'];
+        }
+
+        CalendarObject::where('id', $params['id'])->update($data);
+
+        // 是重复事件
+        $is_recurring = $vcalendar->VEVENT->RRULE ? 1 : 0;
+
+        // 事件提醒
+        if ($vcalendar->VEVENT->VALARM->TRIGGER) {
+            $triggerTime = $vcalendar->VEVENT->VALARM->getEffectiveTriggerTime();
+            $valarm_at = $triggerTime->getTimeStamp();
+            $reminder = CalendarReminder::firstOrNew(['calendar_id' => $event['calendarid'], 'object_id' => $event['id']]);
+            $reminder->is_recurring = $is_recurring;
+            $reminder->alarm_at = $valarm_at;
+            $reminder->save();
+        } else {
+            CalendarReminder::where('object_id', $event['id'])->delete();
+        }
+
+        // 修改共享数据
+        $share_data = [
+            'source_id' => $params['id'],
+            'source_type' => 'event',
+            'is_repeat' => $is_recurring,
+            'start_at' => $extraData['firstOccurence'],
+            'end_at' => $extraData['lastOccurence'],
+        ];
+
+        // 存在接收人字段
+        if (isset($params['receive_id'])) {
+            $share_data['receive_id'] = $params['receive_id'];
+            $share_data['receive_name'] = $params['receive_name'];
+        }
+
+        $share = ShareService::getItem('event', $params['id']);
+        if (empty($share)) {
+            ShareService::addItem($share_data);
+        } else {
+            ShareService::editItem('event', $params['id'], $share_data);
+        }
+
         self::touchCalendar($event['calendarid']);
         return true;
     }
@@ -352,11 +414,12 @@ class CalendarService
         $calendar = self::getCalendar($event['calendarid']);
 
         if ($calendar['userid'] != Auth::id()) {
-            throw new \Exception('您没有权限删除此事件。');
+            abort_error('您没有权限删除此事件。');
         }
 
         AttachmentService::remove($event['attachment']);
         CalendarObject::where('id', $id)->delete();
+        CalendarReminder::where('object_id', $id)->delete();
         self::touchCalendar($event['calendarid']);
         return true;
     }
@@ -365,7 +428,7 @@ class CalendarService
     {
         $calendar = self::getCalendar($calendarid);
         if ($calendar['userid'] != Auth::id()) {
-            throw new \Exception('您没有权限添加事件到此日历。');
+            abort_error('您没有权限添加事件到此日历。');
         }
         CalendarObject::where('id', $id)->update(array('calendarid'=>$calendarid));
         self::touchCalendar($calendarid);
@@ -440,14 +503,14 @@ class CalendarService
             }
         }
 
-        return [
+        return array(
             'etag' => md5($calendarData),
             'size' => strlen($calendarData),
             'rrule' => $rrule,
             'componentType' => $componentType,
             'firstOccurence' => $firstOccurence,
             'lastOccurence' => $lastOccurence,
-        ];
+        );
     }
 
     /**
@@ -1103,6 +1166,7 @@ class CalendarService
 
         if ($allday) {
             $return['start'] = $start_dt->format('Y-m-d');
+            //$end_dt->modify('-1 minute');
             while ($start_dt >= $end_dt) {
                 $end_dt->modify('+1 day');
             }

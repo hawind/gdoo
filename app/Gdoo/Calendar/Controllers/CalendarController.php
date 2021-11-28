@@ -58,16 +58,16 @@ class CalendarController extends DefaultController
                 $url = url('event/index', ['calendar_id'=>$calendar['id']]);
             }
             $sources[] = [
-                'url' => $url,
-                'id' => $calendar['id'],
-                'userid' => $calendar['userid'],
+                'url'             => $url,
+                'id'              => $calendar['id'],
+                'userid'          => $calendar['userid'],
                 'backgroundColor' => $calendar['calendarcolor'],
-                "borderColor" => $calendar['calendarcolor'],
+                "borderColor"     => $calendar['calendarcolor'],
             ];
         }
         return $this->json([
             'calendars' => $calendars,
-            'sources' => $sources,
+            'sources'   => $sources,
         ], true);
     }
 

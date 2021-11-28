@@ -67,8 +67,8 @@ function InitCalendar(sources)
         allDayText:'全天',
         slotLabelFormat: 'HH:mm',
         timeFormat: 'HH:mm',
-        minTime:'07:00:00',
-        maxTime:'23:00:00',
+        //minTime:'07:00:00',
+        //maxTime:'23:00:00',
         titleRangeSeparator:' - ',
         monthNames: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
         monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
@@ -87,13 +87,11 @@ function InitCalendar(sources)
             });
         },
         viewRender:function(view) {
-            /*
         	window.clearInterval(timelineInterval);
         	timelineInterval = window.setInterval(function() {
 				timeLine(view);
 			}, 10000);
 			timeLine(view);
-            */
         },
 		loading:function(status, view) {
 			if (status) {
@@ -105,33 +103,29 @@ function InitCalendar(sources)
 
 		// 改变大小事件 event, dayDelta, minuteDelta, revertFunc
 		eventResize: function(event, delta, revertFunc) {
-
-			if(auth_id == user_id) {
+			if (auth_id == user_id) {
                 resizeEvent(event, delta, revertFunc);
 			} else {
                 toastrError('不能给下属调整事件。');
 				revertFunc();
 			}
 		},
-
 		// 拖动事件
 		eventDrop: function(event, delta, revertFunc) {
-
-			if(auth_id == user_id) {
+			if (auth_id == user_id) {
                 moveEvent(event, delta, revertFunc);
 			} else {
                 toastrError('不能给下属移动事件。');
 				revertFunc();
 			}
 		},
-
 		// 点击事件
 		eventClick: function(event, jsEvent, view) {
-            if(event.shared == true) {
+            if (event.shared == true) {
 				viewEvent(event, jsEvent, view);
 
-			} else if(auth_id == event.userid) {
-				if(event.id > 0) {
+			} else if (auth_id == event.userid) {
+				if (event.id > 0) {
 					editEvent(event, jsEvent, view);
 				} else {
 					addEvent(event, jsEvent, view);
@@ -143,8 +137,7 @@ function InitCalendar(sources)
 
 		// 选择后弹出
 		select: function(start, end, jsEvent, view) {
-
-			if(auth_id == user_id) {
+			if (auth_id == user_id) {
 				addEvent({start: start, end: end}, jsEvent, view);
 			} else {
                 toastrError('不能给下属添加事件。');
@@ -155,7 +148,6 @@ function InitCalendar(sources)
             if(view.type == 'listMonth') {
                 return;
             }
-
             overlay.find('#overlay-title').text(calEvent.title);
             overlay.find('#overlay-start').text(calEvent.start.format());
             overlay.find('#overlay-end').text(calEvent.end.format());
@@ -207,7 +199,7 @@ function timeLine(curView) {
 
     var timeline = parentDiv.children(".timeline");
     if (timeline.length == 0) {
-        //添加时间线标签
+        // 添加时间线标签
         timeline = $("<hr>").addClass("timeline");
         parentDiv.prepend(timeline);
     }
@@ -222,7 +214,7 @@ function timeLine(curView) {
     var percentOfDay = curSeconds / 86400;
     var topPos = Math.floor(parentDiv.height() * percentOfDay);
 
-    timeline.css("top", topPos+"px");
+    timeline.css("top", topPos + "px");
 
     // 周视图时设置时间线的位置和宽度
     if (curView.name == "agendaWeek") {
@@ -332,8 +324,8 @@ function moveEvent(event, delta, revertFunc)
 function editEvent(event, jsEvent, view)
 {
     var data = dateFormat(event);
-    data.id     = event.id;
-    data.title  = event.title;
+    data.id = event.id;
+    data.title = event.title;
     data.location = event.location;
     data.description = event.description;
     data.lastmodified = event.lastmodified;
@@ -351,7 +343,6 @@ function editEvent(event, jsEvent, view)
             text: '提交',
             'class': 'btn-info',
             click: function() {
-
                 var $this = $(this);
                 if ($('#title').val().length == 0) {
                     toastrError('主题必须填写。');
@@ -461,15 +452,16 @@ function getCalendars(callback)
             if(this.active == 1) {
                 var checkbox = 'checked';
             }
+            
             if(this.id == 'shared') {
-                var checkbox = 'checked disabled';
+                var checkbox = 'checked';
             }
             rows.push('<li class="list-group-item">'+ edit +'<label class="checkbox-inline"><input data-calendar="active" data-id="'+this.id+'" type="checkbox" '+checkbox+' /> <span class="text" style="color:'+this.calendarcolor+'">'+this.displayname+'</span></label></li>');
         });
         rows.push('</ul>');
         $('#calendars').html(rows.join(''));
 
-        if(callback) {
+        if (callback) {
             callback(res.data.sources);
         }
     });
@@ -520,7 +512,7 @@ $(function() {
 
 #loading { background:red; color:#fff; padding:3px; position:absolute; top:5px;right:5px;z-index:9999;}
 
-.category .tree ul {padding:5px 0;}
+.category .tree ul { padding:5px 0; }
 .category .tree ul li.me {padding:5px; color:#666;}
 .category .tree ul li ul {padding:5px 0 0;}
 .category .tree ul li ul li {padding:5px 5px 0 5px; border:0;border-top:1px solid #eee;}
@@ -542,13 +534,13 @@ $(function() {
                 <div class="tree">
 
                 <ul class="list-group">
-
+                    
                     <li class="list-group-item"><strong>下属日历</strong></li>
                     
                          @if($underling['role'])
                          @foreach($underling['role'] as $role_id => $role)
                             <li class="list-group-item">
-                                {{$role['title']}}
+                                <i class="fa fa-angle-down"></i> {{$role['name']}}
                                 <ul>
                                      @if($underling['user'][$role_id])
                                      @foreach($underling['user'][$role_id] as $user)

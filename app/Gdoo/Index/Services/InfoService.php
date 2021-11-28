@@ -18,50 +18,34 @@ class InfoService
         return [$a, $b];
     }
 
-    public static function getInfo($table)
+    public static function getInfo($table, $field = 'created_at', $type = 'ts')
     {
         $auth = auth()->user();
         $gets = Request::all();
-
-        $dates = [
-            'day' => '昨天',
-            'day2' => '前天',
-            'week' => '上周',
-            'week2' => '前周',
-            'month' => '上月',
-            'month2' => '前月',
-            'quarter' => '上季度',
-            'quarter2' => '前季度',
-            'year' => '去年',
-            'year2' => '前年',
-        ];
+        $params = $gets['params'];
 
         $info = Widget::where('id', $gets['id'])
         ->first();
 
         $user_info = UserWidget::where('user_id', $auth['id'])
-        ->where('node_id', $gets['id'])->first();
+        ->where('node_id', $gets['id'])
+        ->first();
 
-        if (not_empty($user_info)) {
-            $info['id'] = $user_info['id'];
-            if ($user_info['name']) {
-                $info['name'] = $user_info['name'];
-            }
-            if ($user_info['color']) {
-                $info['color'] = $user_info['color'];
-            }
-            if ($user_info['icon']) {
-                $info['icon'] = $user_info['icon'];
-            }
+        if ($user_info['name']) {
+            $info['name'] = $user_info['name'];
+        }
+        if ($user_info['color']) {
+            $info['color'] = $user_info['color'];
+        }
+        if ($user_info['icon']) {
+            $info['icon'] = $user_info['icon'];
+        }
+        if ($user_info['params']) {
             $info['params'] = json_decode($user_info['params'], true);
         }
-        $params = $info['params'];
 
-        $permission = empty($params['permission']) ? 'department' : $params['permission'];
+        $permission = empty($params['permission']) ? 'dept2' : $params['permission'];
         $date = empty($params['date']) ? 'month' : $params['date'];
-        $params['permission'] = $permission;
-        $params['date'] = $date;
-        $info['params'] = $params;
 
         switch ($date) {
             case 'day':
@@ -100,53 +84,116 @@ class InfoService
                 // 年
                 $year = date('Y');
                 $year2 = $year - 1;
-                $year3 =  $year - 2;
+                $year3 = $year - 2;
                 break;
         }
 
         $sql = $sql2 = '';
+        $key = $table.'.'.$field;
         switch ($date) {
             case 'day':
-                $sql = sql_year_month_day($table.'.created_at','ts')."='$day'";
-                $sql2 = sql_year_month_day($table.'.created_at','ts')."='$day2'";
+                $sql = sql_year_month_day($key, $type)." = '$day'";
+                $sql2 = sql_year_month_day($key, $type)." = '$day2'";
                 break;
             case 'day2':
-                $sql = sql_year_month_day($table.'.created_at','ts')."='$day2'";
-                $sql2 = sql_year_month_day($table.'.created_at','ts')."='$day3'";
+                $sql = sql_year_month_day($key, $type)." = '$day2'";
+                $sql2 = sql_year_month_day($key, $type)." = '$day3'";
                 break;    
             case 'week':
-                $sql = sql_year_month_day($table.'.created_at','ts')." between '$week[0]' and '$week[1]'";
-                $sql2 = sql_year_month_day($table.'.created_at','ts')." between '$week2[0]' and '$week2[1]'";
+                $sql = sql_year_month_day($key, $type)." between '$week[0]' and '$week[1]'";
+                $sql2 = sql_year_month_day($key, $type)." between '$week2[0]' and '$week2[1]'";
                 break;
             case 'week2':
-                $sql = sql_year_month_day($table.'.created_at','ts')." between '$week2[0]' and '$week2[1]'";
-                $sql2 = sql_year_month_day($table.'.created_at','ts')." between '$week3[0]' and '$week3[1]'";
+                $sql = sql_year_month_day($key, $type)." between '$week2[0]' and '$week2[1]'";
+                $sql2 = sql_year_month_day($key, $type)." between '$week3[0]' and '$week3[1]'";
                 break;
             case 'month':
-                $sql = sql_year_month($table.'.created_at','ts')."='$month'";
-                $sql2 = sql_year_month($table.'.created_at','ts')."='$month2'";
+                $sql = sql_year_month($key, $type)." = '$month'";
+                $sql2 = sql_year_month($key, $type)." = '$month2'";
                 break;
             case 'month2':
-                $sql = sql_year_month($table.'.created_at','ts')."='$month2'";
-                $sql2 = sql_year_month($table.'.created_at','ts')."='$month3'";
+                $sql = sql_year_month($key, $type)." = '$month2'";
+                $sql2 = sql_year_month($key, $type)." = '$month3'";
                 break;
             case 'season':
-                $sql = sql_year_month_day($table.'.created_at','ts')." between '$season[0]' and '$season[1]'";
-                $sql2 = sql_year_month_day($table.'.created_at','ts')." between '$season2[0]' and '$season2[1]'";
+                $sql = sql_year_month_day($key, $type)." between '$season[0]' and '$season[1]'";
+                $sql2 = sql_year_month_day($key, $type)." between '$season2[0]' and '$season2[1]'";
                 break;
             case 'season2':
-                $sql = sql_year_month_day($table.'.created_at','ts')." between '$season2[0]' and '$season2[1]'";
-                $sql2 = sql_year_month_day($table.'.created_at','ts')." between '$season3[0]' and '$season3[1]'";
+                $sql = sql_year_month_day($key, $type)." between '$season2[0]' and '$season2[1]'";
+                $sql2 = sql_year_month_day($key, $type)." between '$season3[0]' and '$season3[1]'";
                 break;
             case 'year':
-                $sql = sql_year($table.'.created_at','ts')."='$year'";
-                $sql2 = sql_year($table.'.created_at','ts')."='$year2'";
+                $sql = sql_year($key, $type)." = '$year'";
+                $sql2 = sql_year($key, $type)." = '$year2'";
                 break;
             case 'year2':
-                $sql = sql_year($table.'.created_at','ts')."='$year2'";
-                $sql2 = sql_year($table.'.created_at','ts')."='$year3'";
+                $sql = sql_year($key, $type)." = '$year2'";
+                $sql2 = sql_year($key, $type)." = '$year3'";
                 break;
         }
-        return ['info' => $info, 'dates' => $dates, 'sql' => $sql, 'sql2' => $sql2, 'gets' => $gets, 'params' => $params, 'auth' => $auth];
+        return ['info' => $info, 'sql' => $sql, 'sql2' => $sql2, 'gets' => $gets, 'params' => $params, 'auth' => $auth];
+    }
+
+    public static function getWidget($table, $field = 'created_at', $type = 'ts')
+    {
+        $auth = auth()->user();
+        $gets = Request::all();
+        $params = $gets['params'];
+
+        $widget = Widget::where('id', $gets['id'])
+        ->first();
+
+        $user_widget = UserWidget::where('user_id', $auth['id'])
+        ->where('node_id', $gets['id'])
+        ->first();
+
+        if ($user_widget['name']) {
+            $widget['name'] = $user_widget['name'];
+        }
+        if ($user_widget['color']) {
+            $widget['color'] = $user_widget['color'];
+        }
+        if ($user_widget['icon']) {
+            $widget['icon'] = $user_widget['icon'];
+        }
+        if ($user_widget['params']) {
+            $widget['params'] = json_decode($user_widget['params'], true);
+        }
+
+        $permission = empty($params['permission']) ? 'dept2' : $params['permission'];
+        $date = empty($params['date']) ? 'month' : $params['date'];
+
+        switch ($date) {
+            case 'last_day7':
+                $day = date('Y-m-d');
+                $day2 = date('Y-m-d', strtotime('-7 day'));
+            case 'last_day28':
+                $day = date('Y-m-d');
+                $day2 = date('Y-m-d', strtotime('-28 day'));
+                break;    
+            case 'last_month':
+                $month2 = date('Y-m', strtotime("-1 month"));
+                break;
+            case 'year2':
+                $year2 = date('Y', strtotime("-1 year"));
+                break;
+        }
+
+        $sql = '';
+        $key = $table.'.'.$field;
+        switch ($date) {
+            case 'day7':
+            case 'day28':
+                $sql = sql_year_month_day($key, $type)." between '$day' and '$day2'";
+                break;
+            case 'last_month':
+                $sql = sql_year_month($key, $type)." = '$month2'";
+                break;
+            case 'year2':
+                $sql = sql_year($key, $type)." = '$year2'";
+                break;
+        }
+        return ['widget' => $widget, 'sql' => $sql, 'gets' => $gets, 'params' => $params, 'auth' => $auth];
     }
 }

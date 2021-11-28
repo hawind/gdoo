@@ -59,15 +59,12 @@ class UserAssetService
             $assets = static::getAssets();
         }
 
-        $res = [];
-        if ($roleId > 0) {
-            foreach ($assets as $key => $asset) {
-                $rules = (array)json_decode($asset['rules'], true);
-    
-                foreach ($rules as $key => $rule) {
-                    if (isset($rule[$roleId])) {
-                        $res[$asset['name']][$key] = ($rule[$roleId] > 0 ? $rule[$roleId] : 1);
-                    }
+        foreach ($assets as $key => $asset) {
+            $rules = (array)json_decode($asset['rules'], true);
+
+            foreach ($rules as $key => $rule) {
+                if (isset($rule[$roleId])) {
+                    $res[$asset['name']][$key] = ($rule[$roleId] > 0 ? $rule[$roleId] : 1);
                 }
             }
         }

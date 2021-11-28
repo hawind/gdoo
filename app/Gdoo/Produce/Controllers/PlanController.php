@@ -10,6 +10,7 @@ use Gdoo\Model\Grid;
 
 use Gdoo\User\Models\User;
 use Gdoo\Produce\Models\Plan;
+use Gdoo\Produce\Models\Formula;
 
 use Gdoo\Produce\Services\ProduceService;
 
@@ -123,9 +124,9 @@ class PlanController extends WorkflowController
                     ];
 
                     $rows[] = [
-                        'product_name' => '成品品种',
-                        'product_spec' => '规格',
-                        'product_unit' => '单位',
+                        'product_name' => '成品名称',
+                        'product_spec' => '规格型号',
+                        'product_unit' => '计量单位',
                         'plan_num' => '计划数量',
                         'quantity' => '生产数量',
                         'remark' => '备注',

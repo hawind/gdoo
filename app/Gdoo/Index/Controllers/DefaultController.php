@@ -62,6 +62,7 @@ class DefaultController extends Controller
         if (Request::method() == 'POST') {
             // 检查表单
             $valid = Form::flowRules($models, $gets);
+
             if ($valid['rules']) {
                 $v = Validator::make($gets, $valid['rules'], $valid['messages'], $valid['attributes']);
                 if ($v->fails()) {

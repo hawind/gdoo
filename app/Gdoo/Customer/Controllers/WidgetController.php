@@ -2,15 +2,15 @@
 
 use DB;
 use Request;
-use Gdoo\Index\Services\InfoService;
 
 use Gdoo\Index\Controllers\DefaultController;
+use Gdoo\Index\Services\InfoService;
 
 class WidgetController extends DefaultController
 {
     public $permission = ['birthday', 'customerCount', 'customerContactCount'];
 
-    // 生日提醒
+    // 客户生日
     public function birthday()
     {
         if (Request::method() == 'POST') {
@@ -30,12 +30,11 @@ class WidgetController extends DefaultController
                     (datediff(dd, getdate(), dateadd(year, datediff(year, head_birthday, getdate())+1, head_birthday)) between 0 and 7)')
                 ->selectRaw('id, code, name, head_name, head_phone, head_birthday')
                 ->get();
-            }
-            else if($this->dbType == 'mysql') {
+            } else if($this->dbType == 'mysql') {
                 $model->whereRaw("
-                    (concat(year(now()), DATE_FORMAT(head_birthday,'-%m-%d')) BETWEEN DATE_FORMAT(now(),'%Y-%m-%d') AND DATE_FORMAT(DATE_ADD(now(), interval 10 day),'%Y-%m-%d'))
+                    (concat(year(now()), DATE_FORMAT(head_birthday,'-%m-%d')) BETWEEN DATE_FORMAT(now(),'%Y-%m-%d') AND DATE_FORMAT(DATE_ADD(now(), interval 7 day),'%Y-%m-%d'))
                     OR 
-                    (concat(year(now()) + 1, DATE_FORMAT(head_birthday,'-%m-%d')) BETWEEN DATE_FORMAT(now(),'%Y-%m-%d') AND DATE_FORMAT(DATE_ADD(now(), interval 10 day),'%Y-%m-%d'))")
+                    (concat(year(now()) + 1, DATE_FORMAT(head_birthday,'-%m-%d')) BETWEEN DATE_FORMAT(now(),'%Y-%m-%d') AND DATE_FORMAT(DATE_ADD(now(), interval 7 day),'%Y-%m-%d'))")
                 ->selectRaw("id, code, name, head_name, head_phone, concat(year(now()), DATE_FORMAT(head_birthday,'-%m-%d')) as head_birthday");
             }
 
@@ -78,12 +77,7 @@ class WidgetController extends DefaultController
             'count2' => $count2,
             'rate' => $rate,
         ];
-
-        return $this->render([
-            'dates' => $config['dates'],
-            'info' => $config['info'],
-            'res' => $res,
-        ]);
+        return $this->json($res, true);
     }
 
     /**
@@ -107,11 +101,6 @@ class WidgetController extends DefaultController
             'count2' => $count2,
             'rate' => $rate,
         ];
-        
-        return $this->render([
-            'dates' => $config['dates'],
-            'info' => $config['info'],
-            'res' => $res,
-        ]);
+        return $this->json($res, true);
     }
 }

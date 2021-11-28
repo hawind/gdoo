@@ -26,7 +26,7 @@ class User extends BaseModel implements
             ['value' => 'role', 'type' => 'a', 'url' => 'user/role/index', 'name' => '角色'],
             ['value' => 'department', 'type' => 'a', 'url' => 'user/department/index', 'name' => '部门'],
             ['value' => 'group', 'type' => 'a', 'url' => 'user/group/index', 'name' => '用户组'],
-            ['value' => 'position', 'type' => 'a', 'url' => 'user/position/index', 'name' => '职位'],
+            ['value' => 'position', 'type' => 'a', 'url' => 'user/position/index', 'name' => '岗位'],
         ]
     ];
 

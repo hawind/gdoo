@@ -9,6 +9,7 @@ return [
             'type' => 2,
             'url' => 'project/widget/info',
             'more_url' => 'project/project/index',
+            'params' => ['permission' => 'dept2', 'date' => 'month'],
         ],
     ],
     'badges' => [

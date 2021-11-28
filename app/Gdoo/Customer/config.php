@@ -50,19 +50,22 @@ return [
             'name' => '客户生日',
             'type' => 1,
             'url' => 'customer/widget/birthday',
-            'more_url' => 'customer/customer/birthday',
+            'more_url' => 'customer/customer/index',
+            'params' => ['permission' => 'dept2', 'date' => 'last_day7'],
         ],
         'info_customer_count' => [
             'name' => '客户',
             'type' => 2,
             'url' => 'customer/widget/customerCount',
             'more_url' => 'customer/customer/index',
+            'params' => ['permission' => 'dept2', 'date' => 'month'],
         ],
         'info_customer_contact_count' => [
             'name' => '客户联系人',
             'type' => 2,
             'url' => 'customer/widget/customerContactCount',
             'more_url' => 'customer/contact/index',
+            'params' => ['permission' => 'dept2', 'date' => 'month'],
         ],
     ],
     "listens" => [

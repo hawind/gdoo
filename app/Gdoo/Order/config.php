@@ -29,7 +29,7 @@ return [
     ],
     'widgets' => [
         'widget_order_index' => [
-            'name' => '订单统计',
+            'name' => '销售订单统计',
             'type' => 1,
             'url' => 'order/widget/index',
             'more_url' => 'order/order/index',
@@ -45,6 +45,7 @@ return [
             'type' => 2,
             'url' => 'order/widget/orderCount',
             'more_url' => 'order/order/index',
+            'params' => ['permission' => 'dept2', 'date' => 'month'],
         ],
     ],
     "controllers" => [

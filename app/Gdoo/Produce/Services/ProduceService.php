@@ -1022,21 +1022,21 @@ class ProduceService
         }
 	
         $sql2[] = "select p.id,
-        pc.id as category_id,
-        pc.code as category_code,
-        pc.name as category_name,
+        pc.id as category_id, 
+        pc.code as category_code, 
+        pc.name as category_name, 
         p.id as product_id,
-        p.code as product_code,
-        p.name as product_name,
-        p.spec as product_spec,
-        Concat(p.name,' ', isnull(p.spec,'')) as product_name_spec,
+        p.code as product_code, 
+        p.name as product_name, 
+        p.spec as product_spec, 
+        Concat(p.name,' ', isnull(p.spec,'')) as product_name_spec, 
         isnull(batch_sn,'') as batch_sn,
         pu.name as product_unit,
         sum(wf_num) dphz_num,
         sum(wf_num_ydk) ydk_num,
         sum(wf_num_wdk) wdk_num, 
         sum(kc_num) kc_num,
-        ISNULL(sum(wf_num), 0) - ISNULL(sum(kc_num), 0) as xqzc_num,
+        ISNULL(sum(wf_num), 0) - ISNULL(sum(kc_num), 0) as xqzc_num, 
         ISNULL(sum(wf_num_ydk) ,0) as yhk_num,
         ISNULL(sum(wf_num_ydk), 0) - ISNULL(sum(kc_num), 0) as kfzc_num,
         ISNULL(sum(wfhjh_num), 0) - ISNULL(sum(kc_num), 0) as kfjh_num,
@@ -1058,7 +1058,8 @@ class ProduceService
             $sql2[] = "and p.is_export = 1";
         }
 
-        $sql2[] = "group by pc.id,pc.name,pc.code,p.id,p.code,p.name,isnull(batch_sn,''),p.spec,pu.name order by p.code";
+        $sql2[] = "group by pc.id,pc.name,pc.code,p.id,p.code,p.name,isnull(batch_sn,''),p.spec,pu.name
+        order by p.code";
         $rows = DB::select(join(' ', $sql2));
         return $rows;
     }

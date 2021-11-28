@@ -98,18 +98,6 @@ class Totp
     }
 
     /**
-     * @param string $user
-     * @param string $hostname
-     * @param string $secret
-     * @return string
-     */
-    public function getURL($user, $hostname, $secret)
-    {
-        $encoderURL = sprintf("otpauth://totp/%s@%s%%3Fsecret%%3D%s", $user, $hostname, $secret);
-        return $encoderURL;
-    }
-
-    /**
      * @return string
      */
     public function generateSecret($secret = null)
@@ -122,6 +110,19 @@ class Totp
             }
         }
         return Base32::encode($secret);
+    }
+
+    /**
+     * @param string $user
+     * @param string $host
+     * @param string $secret
+     * @param string $issuer
+     * @return string
+     */
+    public static function getURL($user, $host, $secret, $issuer)
+    {
+        $encoderURL = sprintf("otpauth://totp/%s@%s%%3Fsecret%%3D%s%%3Fissuer%%3D%s", $user, $host, $secret, urlencode($issuer));
+        return $encoderURL;
     }
 }
 

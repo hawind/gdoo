@@ -101,11 +101,11 @@ class UserController extends DefaultController
     {
         $id = (int)Request::get('id');
         $form = Form::make(['code' => 'user', 'id' => $id, 'action' => 'show']);
+        $user = $form['row'];
 
-        $t = new Totp();
-        $form['row']['secret_qrcode'] = $t->getURL($form['row']['login'], Request::server('HTTP_HOST'), $form['row']['auth_secret']);
-
+        $secret_qrcode = Totp::getURL($user['username'], Request::server('HTTP_HOST'), $user['auth_secret'], $user['name']);
         return $this->display([
+            'secret_qrcode' => $secret_qrcode,
             'form' => $form,
         ], 'create');
     }

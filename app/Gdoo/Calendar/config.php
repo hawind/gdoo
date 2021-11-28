@@ -7,6 +7,14 @@ return [
         ['name' => '工作', 'id' => 'work'],
         ['name' => '日程管理', 'id' => 'calendar_calendar_index', 'parent' => 'work', 'url' => 'calendar/calendar/index'],
     ],
+    'widgets' => [
+        'widget_calendar_index' => [
+            'name' => '日程管理',
+            'type' => 1,
+            'url' => 'calendar/widget/index',
+            'more_url' => 'calendar/calendar/index',
+        ],
+    ],
     "controllers" => [
         "calendar" => [
             "name" => "日历",
@@ -28,6 +36,9 @@ return [
                 ],
                 "delete" => [
                     "name" => "删除"
+                ],
+                "help" => [
+                    "name" => "帮助"
                 ]
             ]
         ],

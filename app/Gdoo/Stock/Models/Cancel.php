@@ -8,14 +8,14 @@ class Cancel extends BaseModel
     protected $table = 'stock_cancel';
 
     public static $tabs = [
-        'name'  => 'tab',
+        'name' => 'tab',
         'items' => [
-            ['value' => 'cancel', 'url' => 'stock/cancel/index', 'name' => '退货申请'],
+            ['value' => 'cancel', 'url' => 'stock/cancel/index', 'name' => '退货单'],
         ]
     ];
 
     public static $bys = [
-        'name'  => 'by',
+        'name' => 'by',
         'items' => [
             ['value' => '', 'name' => '全部'],
             ['value' => 'enabled', 'name' => '启用'],

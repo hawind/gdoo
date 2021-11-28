@@ -3,33 +3,58 @@
         <tr>
             <td align="right">名称</td>
             <td align="left">
-                <input type="text" autocomplete="off" class="form-control input-sm" readonly="readonly" value="{{$row['widget_name']}}">
+                <input type="text" autocomplete="off" class="form-control input-sm" readonly="readonly" value="{{$widget['widget_name']}}">
             </td>
         </tr>
         <tr>
             <td align="right">显示名称</td>
             <td align="left">
-                <input type="text" autocomplete="off" class="form-control input-sm" id="name" name="name" value="{{$row['name']}}">
+                <input type="text" autocomplete="off" class="form-control input-sm" id="name" name="name" value="{{$widget['name']}}">
             </td>
         </tr>
-        <!--
+
+        @if($widget['params']['permission'])
+            <tr>
+                <td align="right">权限</td>
+                <td>
+                    <select class="form-control input-sm" name="permission" id="permission">
+                        @foreach($permissions as $key => $permission)
+                        <option value="{{$key}}" @if($widget['params']['permission'] == $key) selected="selected" @endif>{{$permission}}</option>
+                        @endforeach
+                    </select>
+                </td>
+            </tr>
+        @endif
+
+        @if($widget['params']['date'])
+        <tr>
+            <td align="right">日期</td>
+            <td>
+            <select class="form-control input-sm" name="date" id="date">
+                    @foreach($dates as $key => $date)
+                    <option value="{{$key}}" @if($widget['params']['date'] == $key) selected="selected" @endif>{{$date}}</option>
+                    @endforeach
+                </select>
+            </td>
+        </tr>
+        @endif
+
         <tr>
             <td align="right">图标</td>
             <td align="left">
                 <div class="input-group">
                     <span class="input-group-addon" id="icon-picker"></span>
-                    <input data-placement="bottomLeft" type="text" autocomplete="off" class="form-control icp icp-auto input-sm" id="icon" name="icon">
+                    <input data-placement="bottomLeft" type="text" autocomplete="off" value="{{$widget['icon']}}" class="form-control icp icp-auto input-sm" id="icon" name="icon">
                 </div>
             </td>
         </tr>
-        -->
         <tr>
             <td align="right">背景颜色</td>
             <td align="left">
                 <div class="colorpicker-controller" title="选择颜色">
-                    <div id="color-picker" class="colorpicker"></div>
+                    <div id="color-picker" class="colorpicker" style="background-color:{{$widget['color']}}"></div>
                 </div>
-                <input type="hidden" id="color" name="color">
+                <input type="hidden" id="color" name="color" value="{{$widget['color']}}">
             </td>
         </tr>
     </table>

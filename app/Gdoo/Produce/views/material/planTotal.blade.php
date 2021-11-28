@@ -24,8 +24,8 @@ var params = JSON.parse('{{json_encode($query)}}');
     grid.defaultColDef.sortable = false;
     grid.columnDefs = [
         {cellClass:'text-center', headerName: '', field: 'sn', type: 'sn', suppressSizeToFit: true, width: 40},
-        {cellClass:'text-left', field: 'category_name', headerName: '品种', width: 100},
-        {cellClass:'text-left', field: 'material_name', headerName: '名称', width: 80},
+        {cellClass:'text-left', field: 'category_name', headerName: '物料分类', width: 100},
+        {cellClass:'text-left', field: 'material_name', headerName: '物料名称', width: 80},
         {cellClass:'text-right', field:'material_num', headerName: '数量', width: 80, calcFooter: "sum", type: "number"},
         {cellClass:'text-right', field:'total_num', headerName: '计划用料数量', width: 80, calcFooter: "sum", type: "number"},
     ];

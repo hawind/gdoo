@@ -45,7 +45,8 @@ class UserService
         return $user;
     }
 
-    public static function getUser($user_id = 0) {
+    public static function getUser($user_id = 0) 
+    {
         $user = null;
         if ($user_id == 0) {
             $user = auth()->user();

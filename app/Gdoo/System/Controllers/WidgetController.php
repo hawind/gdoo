@@ -246,11 +246,10 @@ class WidgetController extends DefaultController
             if ($v->fails()) {
                 return $this->json($v->errors()->first());
             }
-            if ($gets['id']) {
-                DB::table('widget')->where('id', $gets['id'])->update($gets);
-            } else {
-                DB::table('widget')->insert($gets);
-            }
+
+            $model = Widget::findOrNew($gets['id']);
+            $model->fill($gets);
+            $model->save();
             return $this->json('恭喜你，操作成功。', true);
         }
         $row = DB::table('widget')->where('id', $id)->first();
@@ -287,6 +286,7 @@ class WidgetController extends DefaultController
             $widgets = ModuleService::widgets();
             foreach($widgets as $code => $widget) {
                 $model = Widget::firstOrNew(['code' => $code]);
+                $widget['params'] = json_encode($widget['params'], JSON_UNESCAPED_UNICODE);
                 $model->fill($widget);
                 $model->save();
             }

@@ -8,6 +8,7 @@ use App\Support\Pinyin;
 
 use Gdoo\User\Models\User;
 use Gdoo\Index\Models\Notification;
+use Cron\CronExpression;
 
 class ApiController extends Controller
 {
@@ -36,7 +37,7 @@ class ApiController extends Controller
         $rows = DB::table('cron')->where('status', 1)->get();
         if ($rows) {
             foreach ($rows as $row) {
-                $cron = \Cron\CronExpression::factory($row['expression']);
+                $cron = new \Cron\CronExpression($row['expression']);
 
                 // 由于定时任务无法定义秒这里特殊处理一下
                 if (strtotime($row['next_run']) <= time()) {

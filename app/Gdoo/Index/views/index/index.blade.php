@@ -47,12 +47,11 @@
             </a>
 
             <a href="{{url('/')}}" class="navbar-brand">
-                
-                <img src="{{$asset_url}}/images/logo.svg" width="18" />
-                <!--
-                <i class="fa text-lg fa-buysellads"></i>
-                -->
+                <span class="navbar-brand-min-title">
+                    <img src="{{$asset_url}}/images/white-logo.svg" width="20" />
+                </span>
                 <span class="navbar-brand-title">
+                    <img src="{{$asset_url}}/images/white-logo.svg" width="20" />
                     {{$setting['title']}}
                 </span>
             </a>

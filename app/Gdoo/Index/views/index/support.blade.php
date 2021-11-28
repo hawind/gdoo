@@ -5,7 +5,7 @@
             软件版本
         </td>
         <td align="left" style="border-top:0;">
-        {{$edition}} {{$version}}
+            {{$version}}
         </td>
     </tr>
     <tr>

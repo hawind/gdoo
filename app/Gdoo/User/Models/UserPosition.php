@@ -4,7 +4,7 @@ use Gdoo\Index\Models\BaseModel;
 
 class UserPosition extends BaseModel
 {
-    protected $table = 'user_position';
+    protected $table = 'user_post';
 
     public static $tabs = [
         'name'  => 'tab',

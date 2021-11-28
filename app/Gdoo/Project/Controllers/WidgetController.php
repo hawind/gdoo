@@ -29,17 +29,14 @@ class WidgetController extends DefaultController
         ->count();
         $rate = 0;
         if ($count2 > 0) {
-            $rate = $count / $count2 * 100;
+            $rate = ($count - $count2) / $count2 * 100;
+            $rate = number_format($rate, 2);
         }
         $res = [
             'count' => $count,
             'count2' => $count2,
             'rate' => $rate,
         ];
-        return $this->render([
-            'dates' => $config['dates'],
-            'info' => $config['info'],
-            'res' => $res,
-        ]);
+        return $this->json($res, true);
     }
 }

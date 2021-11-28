@@ -7,16 +7,6 @@
 
     @if(is_customer())
     @else
-        <a href="javascript:promotionDialog();" class="btn btn-sm btn-default">
-            促销
-            <span class="badge badge-sm bg-danger" id="promotion_count">0</span>
-        </a>
-
-        <a href="javascript:costDialog();" class="btn btn-sm btn-default">
-            费用
-            <span class="badge badge-sm bg-danger" id="cost_count">0</span>
-        </a>
-
         <a href="javascript:orderDialog();" class="btn btn-sm btn-default">
             未发货订单
         </a>
@@ -65,15 +55,6 @@ var form_action = '{{$action}}';
         }, 'json');
     }
 
-    function get_cost_count(id) {
-        $.get(app.url('promotion/promotion/useCount'), {customer_id: id}, function (res) {
-            $('#promotion_count').text(res.data);
-        }, 'json');
-        $.get(app.url('customerCost/cost/useCount'), {customer_id: id}, function (res) {
-            $('#cost_count').text(res.data);
-        }, 'json');
-    }
-
     function get_customer_tax(customer_id, tax_id) {
         $.post(app.url('customer/tax/dialog'), {customer_id: customer_id}, function (res) {
             var html = '<option value=""> - </option>';
@@ -91,7 +72,6 @@ var form_action = '{{$action}}';
         var tax_id = "{{$row['tax_id']}}";
         get_customer_tax(customer_id, tax_id);
         serviceCustomerMoney(tax_id);
-        get_cost_count(customer_id);
     }
 
     gdoo.event.set('customer_order.customer_id', {
@@ -108,7 +88,6 @@ var form_action = '{{$action}}';
                 $('#customer_order_warehouse_tel').val(row.warehouse_tel);
                 var $option = $('<option selected>'+ row.warehouse_address + '</option>').val(row.warehouse_address);
                 $('#customer_order_warehouse_address').html($option).trigger('change');
-                get_cost_count(row.id);
                 get_customer_tax(row.id);
                 return true;
             }

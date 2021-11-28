@@ -38,7 +38,7 @@ class ReportController extends DefaultController
         View::share('customer_type', $customer_type);
     }
 
-    // 销售曲线图分析
+    // 销售曲线
     public function index()
     {
         // 本年时间
@@ -190,6 +190,7 @@ class ReportController extends DefaultController
             foreach ($years as $year => $months) {
                 if ($year > 0) {
                     $j['name'] = $year;
+                    $j['type'] = 'line';
                     $j['data'] = [];
                     for ($i=1; $i <= 12; $i++) {
                         $i = sprintf("%02d", $i);
@@ -214,7 +215,7 @@ class ReportController extends DefaultController
         ]);
     }
 
-    // 全国数据分类方法
+    // 商品分类
     public function category()
     {
         $customer_type = Request::get('customer_type', 0);
@@ -415,18 +416,14 @@ class ReportController extends DefaultController
         $percentData['sum'][$end_year]  = $now_year_sum;
         $percentData['sum'][$start_year] = $last_year_sum;
 
-        //饼图数据
-        $json = array();
+        // 饼图数据
+        $json = [];
         if ($pieData) {
             foreach ($pieData as $year => $category) {
-                $pie = array();
+                $pie = [];
                 foreach ($category as $category_id => $v) {
                     $title = $product_categorys[$category_id]['name'];
-                    if (empty($pie)) {
-                        $pie[] = array('name'=>$title,'y'=>$v,'sliced'=>true,'selected'=>true);
-                    } else {
-                        $pie[] = array($title,$v);
-                    }
+                    $pie[] = array($title, $v);
                 }
                 $json['pie'][$year] = $pie;
             }
@@ -442,14 +439,19 @@ class ReportController extends DefaultController
 
         if ($columnData) {
             foreach ($columnData as $year => $category) {
-                for ($i=1; $i <= 12; $i++) {
-                    $m = sprintf("%02d", $i);
-                    $json['column']['categories'][] = $m.'月';
+
+                if (empty($json['column']['categories'])) {
+                    for ($i=1; $i <= 12; $i++) {
+                        $m = sprintf("%02d", $i);
+                        $json['column']['categories'][] = $m.'月';
+                    }
                 }
+
                 foreach ($category as $category_id => $months) {
-                    $series = array();
+                    $series = [];
                     $title = $product_categorys[$category_id]['name'];
                     $series['name'] = $title;
+                    $series['type'] = 'line';
                     for ($i=1; $i <= 12; $i++) {
                         $m = sprintf("%02d", $i);
                         $series['data'][] = (int)$months[$m];
@@ -458,6 +460,7 @@ class ReportController extends DefaultController
                 }
             }
         }
+
         $query = url().'?'.http_build_query($selects['query']);
 
         $startTime = date('Y', strtotime($this->setting['setup_dt']));
@@ -478,7 +481,7 @@ class ReportController extends DefaultController
         ));
     }
 
-    // 客户销售排序
+    // 客户销售排名
     public function ranking()
     {
         // 客户名称
@@ -671,7 +674,7 @@ class ReportController extends DefaultController
         ));
     }
 
-    // 单品查询
+    // 客户单品销售
     public function single()
     {
         // 客户权限
@@ -815,7 +818,7 @@ class ReportController extends DefaultController
         ));
     }
 
-    // 城市数据分析
+    // 区域销售品类
     public function city()
     {
         // 当前年月日
@@ -1059,7 +1062,7 @@ class ReportController extends DefaultController
         ));
     }
 
-    // 单品客户数据分析
+    // 单品客户销售
     public function client()
     {
         $now_year = Request::get('year', date('Y'));
@@ -1241,7 +1244,7 @@ class ReportController extends DefaultController
         ));
     }
 
-    // 客户数据分析
+    // 单品客户销售详情
     public function clientdata()
     {
         $year = Request::get('year');
@@ -1416,7 +1419,7 @@ class ReportController extends DefaultController
     }
 
     /**
-     * 新客户分析
+     * 新客户
      * 计算本年度有订单去年无订单为新客户
      */
     public function newclient()
@@ -1543,7 +1546,7 @@ class ReportController extends DefaultController
     }
 
     /**
-     * 连续3个月未进货的客户
+     * 连续3个月未发货的客户
      */
     public function stockmonth()
     {

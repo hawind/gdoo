@@ -225,7 +225,7 @@
             buttons: [],
             tabs: {items:[], active:''},
             search_form:{columns:[]},
-            bys: {name:'全部',items:[]}
+            bys: {name: '全部',items:[]}
         });
 
         this.search = {
@@ -324,7 +324,7 @@
                         me.header.bys.active = search_form.params['by'];
                         for (let i = 0; i < header.bys.items.length; i++) {
                             const item = header.bys.items[i];
-                            if (item.value == search_form.params['by']) {
+                            if (item.value == me.header.bys.active) {
                                 me.header.bys.name = item.name;
                             }
                         }

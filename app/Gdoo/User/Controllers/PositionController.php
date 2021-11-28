@@ -19,7 +19,7 @@ class PositionController extends DefaultController
     public function index()
     {
         $header = Grid::header([
-            'code' => 'user_position',
+            'code' => 'user_post',
             'referer' => 1,
             'search' => ['tab' => 'position'],
             'trash_btn' => 0,
@@ -70,7 +70,7 @@ class PositionController extends DefaultController
     public function create()
     {
         $id = (int)Request::get('id');
-        $form = Form::make(['code' => 'user_position', 'id' => $id]);
+        $form = Form::make(['code' => 'user_post', 'id' => $id]);
         return $this->render([
             'form' => $form,
         ], 'create');
@@ -84,8 +84,8 @@ class PositionController extends DefaultController
     public function dialog()
     {
         $search = search_form([], [
-            ['text','user_position.name','名称'],
-            ['text','user_position.id','ID'],
+            ['text','user_post.name','名称'],
+            ['text','user_post.id','ID'],
         ]);
 
         if (Request::method() == 'POST') {
@@ -107,7 +107,7 @@ class PositionController extends DefaultController
     {
         if (Request::method() == 'POST') {
             $ids = Request::get('id');
-            return Form::remove(['code' => 'user_position', 'ids' => $ids]);
+            return Form::remove(['code' => 'user_post', 'ids' => $ids]);
         }
     }
 }
