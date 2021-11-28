@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost_3308
+ Source Server         : 116.63.177.134_3306
  Source Server Type    : MySQL
- Source Server Version : 100508
- Source Host           : localhost:3308
+ Source Server Version : 100415
+ Source Host           : 116.63.177.134:3306
  Source Schema         : gdoo_demo
 
  Target Server Type    : MySQL
- Target Server Version : 100508
+ Target Server Version : 100415
  File Encoding         : 65001
 
- Date: 28/11/2021 11:54:54
+ Date: 28/11/2021 19:37:07
 */
 
 SET NAMES utf8mb4;
@@ -642,6 +642,40 @@ CREATE TABLE `customer_contact`  (
 -- Records of customer_contact
 -- ----------------------------
 INSERT INTO `customer_contact` VALUES (1, 1, NULL, NULL, '\n\n\n', NULL, NULL, NULL, '刘洋', 1625361995, '系统管理员', '系统管理员', 1620381252, '15879653821', NULL, NULL, 1, 1, 5, '52347', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for customer_cost_category
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_cost_category`;
+CREATE TABLE `customer_cost_category`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `remark` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `status` tinyint(4) NULL DEFAULT NULL,
+  `updated_by` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '更新人',
+  `updated_at` int(11) NULL DEFAULT NULL COMMENT '更新时间',
+  `created_at` int(11) NULL DEFAULT NULL COMMENT '新建时间',
+  `created_by` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '新建人',
+  `created_id` int(11) NULL DEFAULT NULL COMMENT '创建人编号',
+  `updated_id` int(11) NULL DEFAULT NULL COMMENT '编辑人ID',
+  `sort` tinyint(4) NULL DEFAULT NULL COMMENT '排序',
+  `is_cal` tinyint(4) NULL DEFAULT NULL COMMENT '参与对账单计算',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_customer_cost_category_is_cal`(`is_cal`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_cost_category
+-- ----------------------------
+INSERT INTO `customer_cost_category` VALUES (1, '001', '其他费用', '', 1, '系统管理员', 1612648902, NULL, NULL, NULL, 1, 1, 1);
+INSERT INTO `customer_cost_category` VALUES (2, '002', '合同返利', '', 1, '系统管理员', 1612648906, NULL, NULL, NULL, 1, 2, 1);
+INSERT INTO `customer_cost_category` VALUES (3, '003', '合同补损', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1);
+INSERT INTO `customer_cost_category` VALUES (4, '004', '货补', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, 4, 1);
+INSERT INTO `customer_cost_category` VALUES (5, '005', '票折', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, 5, 1);
+INSERT INTO `customer_cost_category` VALUES (6, '006', '赠品', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, 6, 1);
+INSERT INTO `customer_cost_category` VALUES (7, '007', '物资', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, 7, 1);
+INSERT INTO `customer_cost_category` VALUES (8, '008', '客情费用', '', 1, '系统管理员', 1603200146, NULL, NULL, NULL, 1, 8, 0);
 
 -- ----------------------------
 -- Table structure for customer_delivery_address
@@ -8820,7 +8854,7 @@ CREATE TABLE `system_log`  (
   `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '日志类型',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_action_log_created_id`(`created_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of system_log
@@ -8891,7 +8925,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '', '系统管理员', 20, 1, 3, 0, 0, 1, 0, '', 0, 'BWGH4CJLWCH2FZ3V', '7WEzgSXH9q89XtjeyJltmqPLCjOWO8vrnaw8q0cyYghM3ZJHATt9H2hFhytJ', 1, 1, '2020-10-05', 0, '', '', '028-12345678', '', '', '24', '', 1, '$2y$10$DFN0jlZa0x3IGcZAkolJTuYMnJpOnX78L9XG2Q5N2Y32FuAST8UwO', '123456', 'fvzone@qq.com', 0, '0', 0, 'primary', '系统管理员', 1630866714, 0, '', 0, NULL, '15182223008', 24, NULL);
+INSERT INTO `user` VALUES (1, 'admin', '', '系统管理员', 20, 1, 3, 0, 0, 1, 0, '', 0, 'BWGH4CJLWCH2FZ3V', '7WEzgSXH9q89XtjeyJltmqPLCjOWO8vrnaw8q0cyYghM3ZJHATt9H2hFhytJ', 1, 1, '2020-10-05', 0, '', '', '028-12345678', '', '', '24', '', 1, '$2y$10$DFN0jlZa0x3IGcZAkolJTuYMnJpOnX78L9XG2Q5N2Y32FuAST8UwO', '123456', 'fvzone@qq.com', 0, '0', 0, 'blue2', '系统管理员', 1638072594, 0, '', 0, NULL, '15182223008', 24, NULL);
 INSERT INTO `user` VALUES (2, '01001', NULL, '王二小食品有限公司', 1, 2, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1594147787, '系统管理员', NULL, NULL, '系统管理员', 1615757797, NULL, NULL, 1, NULL, '213', NULL, NULL);
 INSERT INTO `user` VALUES (3, 'zhaoyun', NULL, '赵云', 3, 1, 1, NULL, NULL, 1, NULL, NULL, 0, NULL, 'PkQgGwICP0oAuhOQVCeUkLV75RnH2gnyrweQcL6Hqi5mJP9cpN8sDpFh5Rr7', 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$qkonB.DXNaXvAzNQinz9UeXLAmIybudyYCN4FWiTf6JyeQk4BXT8W', '123456', NULL, 1601234908, '系统管理员', NULL, 'primary', '系统管理员', 1638069793, NULL, NULL, 0, NULL, '15182223008', 22, NULL);
 INSERT INTO `user` VALUES (4, '关羽', NULL, '关羽', 19, 83, 0, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '$2y$10$a/sqD3GeTkC5UkB4BDyOvu67uQIoGm1sRLVS5TFyQsePC0qm0cT8m', '123456', NULL, 1601369401, '系统管理员', NULL, 'primary', '系统管理员', 1631040190, NULL, NULL, 0, NULL, '15182223008', 26, 22);
