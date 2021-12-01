@@ -13,7 +13,7 @@ use App\Support\Pinyin;
 use App\Support\License;
 
 use Gdoo\Hr\Models\Hr;
-use Gdoo\User\Models\UserPosition;
+use Gdoo\User\Models\UserPost;
 use Gdoo\User\Models\User;
 
 use Gdoo\Index\Controllers\DefaultController;

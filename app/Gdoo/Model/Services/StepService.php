@@ -267,7 +267,7 @@ class StepService
         $form_data['[start_department_id]'] = $start_user['department_id'];
 
         $form_data['[start_user]'] = $start_user['user_name'];
-        $form_data['[start_position]'] = $start_user['position_name'];
+        $form_data['[start_post]'] = $start_user['post_name'];
         $form_data['[start_group]'] = $start_user['group_name'];
         $form_data['[start_role]'] = $start_user['role_name'];
         $form_data['[start_department]'] = $start_user['department_name'];
@@ -277,7 +277,7 @@ class StepService
         $form_data['[edit_department_id]'] = $current_user['department_id'];
 
         $form_data['[edit_user]'] = $current_user['user_name'];
-        $form_data['[edit_position]'] = $current_user['position_name'];
+        $form_data['[edit_post]'] = $current_user['post_name'];
         $form_data['[edit_group]'] = $current_user['group_name'];
         $form_data['[edit_role]'] = $current_user['role_name'];
         $form_data['[edit_department]'] = $current_user['department_name'];
@@ -519,7 +519,7 @@ class StepService
         ->LeftJoin('role', 'role.id', '=', 'user.role_id')
         ->LeftJoin('user_group', 'user_group.id', '=', 'user.group_id')
         ->LeftJoin('department', 'department.id', '=', 'user.department_id')
-        ->LeftJoin('user_position', 'user_position.id', '=', 'user.position_id')
+        ->LeftJoin('user_post', 'user_post.id', '=', 'user.post_id')
         
         ->where('user.id', $user_id)
         ->first([
@@ -527,8 +527,8 @@ class StepService
             'user.group_id',
             'user.department_id',
             'user.role_id',
-            'user.position_id',
-            'user_position.name as position_name',
+            'user.post_id',
+            'user_post.name as post_name',
             'user.name as user_name',
             'role.name as role_name',
             'department.name as department_name',

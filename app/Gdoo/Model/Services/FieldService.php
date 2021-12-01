@@ -148,8 +148,8 @@ class FieldService
             'sys_user_name_date'       => '当前用户姓名+日期',
             'sys_user_name_datetime'   => '当前用户姓名+日期+时间',
             'sys_department_name'      => '当前用户部门',
-            'sys_user_position'        => '当前用户职位',
-            'sys_user_position_assist' => '当前用户辅助职位',
+            'sys_user_post'            => '当前用户职位',
+            'sys_user_post_assist'     => '当前用户辅助职位',
             'sys_sql'                  => '来自sql查询语句',
         ];
 
@@ -619,7 +619,7 @@ class FieldService
             'sys_user_name_datetime' => $user['name'].' '.date('Y-m-d H:i'),
             'sys_department_name' => $user->department['name'],
             '{UR}' => $user->role['name'],
-            '{UP}' => $user->position['name'],
+            '{UP}' => $user->post['name'],
         ];
 
         if ($field['is_read']) {

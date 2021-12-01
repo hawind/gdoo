@@ -36,7 +36,7 @@
                     <option value="role" @if($row->type == 'role') selected @endif>指定角色</option>
                     <option value="created_id" @if($row->type == 'created_id') selected @endif>单据创建人ID</option>
                     <option value="field" @if($row->type == 'field') selected @endif>指定字段</option>
-                    <option value="position" @if($row->type == 'position') selected @endif>职位</option>
+                    <option value="post" @if($row->type == 'post') selected @endif>职位</option>
                     <option value="custom" @if($row->type == 'custom') selected @endif>自定义</option>
                 </select>
             </td>

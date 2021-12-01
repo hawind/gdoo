@@ -19,10 +19,10 @@ return [
             'model' => 'Gdoo\User\Models\Role::Dialog',
             'url' => 'user/role/dialog',
         ],
-        'position' => [
+        'post' => [
             'name' => '岗位',
-            'model' => 'Gdoo\User\Models\UserPosition::Dialog',
-            'url' => 'user/position/dialog',
+            'model' => 'Gdoo\User\Models\UserPost::Dialog',
+            'url' => 'user/post/dialog',
         ],
         'user' => [
             'name' => '用户',
@@ -126,7 +126,7 @@ return [
                 ]
             ]
         ],
-        "position" => [
+        "post" => [
             "name" => "用户职位",
             "actions" => [
                 "index" => [

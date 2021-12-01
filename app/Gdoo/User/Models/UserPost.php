@@ -2,14 +2,14 @@
 
 use Gdoo\Index\Models\BaseModel;
 
-class UserPosition extends BaseModel
+class UserPost extends BaseModel
 {
     protected $table = 'user_post';
 
     public static $tabs = [
         'name'  => 'tab',
         'items' => [
-            ['value' => 'position.index', 'url' => 'user/position/index', 'name' => '职位列表'],
+            ['value' => 'post.index', 'url' => 'user/post/index', 'name' => '职位列表'],
         ]
     ];
 

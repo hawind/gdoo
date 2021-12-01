@@ -8,11 +8,11 @@ use Gdoo\Model\Grid;
 use Gdoo\Model\Form;
 
 use Gdoo\User\Models\User;
-use Gdoo\User\Models\UserPosition;
+use Gdoo\User\Models\UserPost;
 
 use Gdoo\Index\Controllers\DefaultController;
 
-class PositionController extends DefaultController
+class PostController extends DefaultController
 {
     public $permission = ['dialog'];
 
@@ -21,7 +21,7 @@ class PositionController extends DefaultController
         $header = Grid::header([
             'code' => 'user_post',
             'referer' => 1,
-            'search' => ['tab' => 'position'],
+            'search' => ['tab' => 'post'],
             'trash_btn' => 0,
         ]);
 
@@ -89,7 +89,7 @@ class PositionController extends DefaultController
         ]);
 
         if (Request::method() == 'POST') {
-            $model = UserPosition::orderBy('sort', 'asc');
+            $model = UserPost::orderBy('sort', 'asc');
             foreach ($search['where'] as $where) {
                 if ($where['active']) {
                     $model->search($where);

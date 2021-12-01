@@ -26,7 +26,7 @@ class User extends BaseModel implements
             ['value' => 'role', 'type' => 'a', 'url' => 'user/role/index', 'name' => '角色'],
             ['value' => 'department', 'type' => 'a', 'url' => 'user/department/index', 'name' => '部门'],
             ['value' => 'group', 'type' => 'a', 'url' => 'user/group/index', 'name' => '用户组'],
-            ['value' => 'position', 'type' => 'a', 'url' => 'user/position/index', 'name' => '岗位'],
+            ['value' => 'post', 'type' => 'a', 'url' => 'user/post/index', 'name' => '岗位'],
         ]
     ];
 
@@ -80,9 +80,9 @@ class User extends BaseModel implements
         return $this->hasOne('Gdoo\Hr\Models\Hr');
     }
 
-    public function position()
+    public function post()
     {
-        return $this->belongsTo('Gdoo\User\Models\UserPosition', 'post');
+        return $this->belongsTo('Gdoo\User\Models\UserPost', 'post');
     }
 
     public function tasks()
