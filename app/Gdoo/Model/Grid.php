@@ -339,7 +339,7 @@ class Grid
 
     public static function recursiveJoin(&$joins, $parent_id = 0) {
         foreach($joins as $k => &$join) {
-            if ($join[4] == $parent_id) {
+            if ($join[4] === $parent_id) {
                 $join[5] = $joins[$parent_id][5] + 1;
                 static::recursiveJoin($joins, $k);
             }
