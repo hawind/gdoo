@@ -173,7 +173,7 @@ class ProductController extends DefaultController
     }
 
     /**
-     * 以客户产品列表
+     * 客户产品列表
      */
     public function serviceCustomer()
     {
