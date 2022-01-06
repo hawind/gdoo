@@ -239,10 +239,12 @@ class WidgetController extends DefaultController
         $config = InfoService::getInfo('customer_order');
 
         $model = DB::table('customer_order')
+        ->leftJoin('customer','customer.id', '=', 'customer_order.customer_id')
         ->leftJoin('customer_order_data','customer_order_data.order_id', '=', 'customer_order.id')
         ->whereRaw('('.$config['sql'].')');
 
         $model2 = DB::table('customer_order')
+        ->leftJoin('customer','customer.id', '=', 'customer_order.customer_id')
         ->leftJoin('customer_order_data','customer_order_data.order_id', '=', 'customer_order.id')
         ->whereRaw('('.$config['sql2'].')');
 
