@@ -135,44 +135,7 @@ class ReportController extends DefaultController
 
         unset($rows);
 
-        // bd 预估费用， bm 兑现费用
-        $model = DB::table('promotion')
-        ->leftJoin('customer', 'customer.id', '=', 'promotion.customer_id')
-        ->whereRaw(sql_year('promotion.created_at', 'ts')."=?", [date('Y')])
-        ->groupBy('promotion.type_id')
-        ->selectRaw('
-            promotion.type_id,
-            SUM(isnull(promotion.area_money, 0)) as bd,
-            SUM(isnull(promotion.undertake_money, 0)) as bm
-        ');
-        // 客户圈权限
-        if ($selects['authorise']) {
-            foreach ($selects['whereIn'] as $key => $whereIn) {
-                $model->whereIn($key, $whereIn);
-            }
-        }
-        $ps = $model->get();
-
-        $promotion = [];
-        if ($ps->count()) {
-            foreach ($ps as $key => $value) {
-                // 本年读已经兑现的促销金额
-                $promotion_honor += $value['bm'];
-                //本年促销分类金额
-                $promotion['cat'][$value['type_id']] = $value['bd'];
-                //本年所有促销金额
-                $promotion['all'] += $value['bd'];
-            }
-        }
-        unset($ps);
-
         $data_all = array_sum($categorys);
-
-        // 本年促销费比(金额)计算
-        if ($data_all > 0) {
-            $promotions_all = ($promotion['all']/$data_all) * 100;
-        }
-        $assess = number_format($promotions_all, 2).'%';
 
         // 多产品年度颜色定义
         $color = array('FF9900','339900','3399FF','FF66CC');
@@ -206,8 +169,6 @@ class ReportController extends DefaultController
         return $this->display([
             'product_categorys' => $_categorys,
             'categorys' => $categorys,
-            'promotion' => $promotion,
-            'promotion_honor' => $promotion_honor,
             'select' => $selects,
             'query' => $query,
             'assess' => $assess,
@@ -1002,21 +963,6 @@ class ReportController extends DefaultController
                 }
             }
         }
-
-        // 促销计算
-        $model = DB::table('promotion')
-        ->leftJoin('customer', 'customer.id', '=', 'promotion.customer_id')
-        ->leftJoin('region', 'region.id', '=', 'customer.city_id')
-        ->whereRaw(sql_year('promotion.created_at', 'ts')."=?", [date('Y')])
-        ->groupBy('customer.region_id')
-        ->groupBy('promotion.customer_id')
-        ->groupBy('promotion.type_id')
-        ->selectRaw('
-            customer.region_id, 
-            promotion.customer_id,
-            SUM(promotion.undertake_money) bd_sum, 
-            promotion.type_id
-        ');
         
         // 客户圈权限
         if ($selects['authorise']) {
@@ -1024,22 +970,6 @@ class ReportController extends DefaultController
                 $model->whereIn($key, $whereIn);
             }
         }
-
-        $_promotions = $model->get();
-
-        $promotions = [];
-
-        if ($_promotions->count()) {
-            foreach ($_promotions as $v) {
-                if ($v['region_id'] > 0) {
-                    // 促销分类金额
-                    $group = $v['region_id'];
-                    $promotions[$group][$v['type_id']] += $v['bd_sum'];
-                    $promotions['all'][$group] += $v['bd_sum'];
-                }
-            }
-        }
-        unset($_promotions);
 
         $query = url().'?'.http_build_query($selects['query']);
 
@@ -1057,7 +987,6 @@ class ReportController extends DefaultController
             'now_year' => $now_year,
             'select' => $selects,
             'query' => $query,
-            'promotions' => $promotions,
             'regions' => $regions,
         ));
     }
