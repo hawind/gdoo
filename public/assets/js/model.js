@@ -496,6 +496,15 @@
         }
     }
 
+    // 导出子表
+    model.exportDataAsExcel = function (table) {
+        var grid = gdoo.forms[table];
+        var d = new Date();
+        var date = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-');
+        var params = {fileName: grid.tableTitle + "-" + date};
+        grid.api.exportDataAsExcel(params);
+    }
+
     window.flow = model;
 })(window);
 
